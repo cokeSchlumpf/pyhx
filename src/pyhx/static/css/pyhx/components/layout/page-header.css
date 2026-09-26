@@ -1,0 +1,255 @@
+/* --- Page header with optional secondary navigation ---
+
+   A horizontal header that sits at the top of a page's main column.
+   The left side (``__header``) carries breadcrumbs and the page title;
+   the right side (``__actions``) carries page-level actions.
+
+   An optional secondary navigation (``__navigation``) is rendered below
+   the title row. It provides navigation between related pages within
+   the same application area.
+
+   The title row and secondary navigation are contained within the same
+   sticky header. A thin neutral border separates the complete header
+   from the page content below. */
+
+
+/* --- Tokens --- */
+
+:root {
+    --page-header--base-height: 6rem;
+    --page-header--navigation-height: 3rem;
+    --page-header--height: var(--page-header--base-height);
+}
+
+/* Increase the shared header height when secondary navigation is present.
+   The shared ``--page-header--height`` token is also used to calculate
+   sticky offsets for page sections and tables. */
+:root:has(.hx-page-header__navigation) {
+    --page-header--height: calc(
+        var(--page-header--base-height)
+        + var(--page-header--navigation-height)
+    );
+}
+
+
+/* --- Page header --- */
+
+.hx-page-header {
+    /* Position */
+    position: sticky;
+    top: 0;
+    z-index: var(--hx-z-page-header);
+
+    /* Layout */
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+
+    /* Box */
+    height: var(--page-header--height);
+    padding-block: var(--hx-spacing-md);
+    margin-bottom: var(--hx-spacing-md);
+    border-bottom: 2px solid var(--hx-color-neutral-300);
+
+    /* Visual */
+    background-color: color-mix(
+        in srgb,
+        var(--hx-color-background) 60%,
+        transparent
+    );
+    backdrop-filter: var(--hx-blur-sm);
+
+    view-transition-name: page-header;
+}
+
+/* The navigation reaches the bottom of the header so its active indicator
+   sits directly above the header's separating border. */
+.hx-page-header:has(.hx-page-header__navigation) {
+    padding-bottom: 0;
+}
+
+::view-transition-group(page-header) {
+    z-index: var(--hx-z-page-header);
+}
+
+
+.hx-page-header .hx-container {
+    /* Layout */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: var(--hx-spacing-md);
+}
+
+.hx-page-header:has(.hx-page-header__navigation) .hx-container {
+    /* Layout */
+    grid-template-rows:
+        minmax(0, 1fr)
+        var(--page-header--navigation-height);
+}
+
+
+/* --- Header (left side: breadcrumbs + title) --- */
+
+.hx-page-header__header {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-xs);
+
+    /* Box */
+    min-width: 0;
+}
+
+.hx-page-header__header :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    padding: 0;
+    margin: 0;
+}
+
+
+/* --- Actions (right side: buttons, status, …) --- */
+
+.hx-page-header__actions {
+    /* Layout */
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+}
+
+
+/* --- Secondary navigation --- */
+
+.hx-page-header__navigation {
+    /* Layout */
+    grid-column: 1 / -1;
+    min-width: 0;
+    align-self: end;
+    margin-bottom: -2px;
+
+    margin-left: calc(var(--hx-spacing-md) * -1);
+    margin-right: calc(var(--hx-spacing-md) * -1);
+}
+
+.hx-page-header__navigation > ul.hx-page-header__navigation-list {
+    /* Layout */
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    min-width: 0;
+    overflow-x: auto;
+
+    /* Reset Pico nav-list spacing. */
+    padding: 0;
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-page-header__navigation-item {
+    /* Reset Pico nav-item spacing. */
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+}
+
+/* Override Pico's list pseudo-element. */
+.hx-page-header__navigation-item::before {
+    content: none;
+}
+
+.hx-page-header__navigation-item > a {
+    /* Position */
+    position: relative;
+
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+
+    /* Reset Pico's negative nav-link margin. */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    margin: 0;
+    border-bottom: 2px solid transparent;
+
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.hx-page-header__navigation-item > a:hover {
+    color: var(--hx-color-primary);
+}
+
+.hx-page-header__navigation-item > a[aria-current="page"] {
+    /* Typography */
+    color: var(--hx-color-primary);
+
+    /* Visual */
+    border-bottom-color: var(--hx-color-primary);
+    border-radius: 0;
+}
+
+.hx-page-header__navigation-item > a:hover:not([aria-current="page"]) {
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+
+    /* Visual */
+    border-bottom-color: var(--hx-color-neutral-400);
+    border-radius: 0;
+}
+
+.hx-page-header__navigation-item > a:focus-visible {
+    outline: 2px solid var(--hx-color-primary);
+    outline-offset: 2px;
+}
+
+
+/* --- Breadcrumbs --- */
+
+.hx-page-header__breadcrumbs {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-xs);
+
+    /* Box */
+    padding: 0;
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-page-header__breadcrumbs li {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: var(--hx-spacing-xs);
+
+    /* Box */
+    padding: 0;
+    margin: 0;
+}
+
+/* Override Pico's zero-width-space pseudo-element. */
+.hx-page-header__breadcrumbs li::before {
+    content: none;
+}
+
+.hx-page-header__breadcrumbs li:not(:last-child)::after {
+    /* Visual */
+    content: "/";
+
+    /* Typography */
+    color: var(--hx-color-neutral-500);
+}

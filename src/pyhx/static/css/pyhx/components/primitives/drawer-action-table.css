@@ -1,0 +1,95 @@
+/* --- Drawer action table ---
+
+   Popup-drawer picker whose row click fires a caller-owned action instead of
+   setting a value. Visually the same shell as the drawer radio (search pinned on top, scrollable item list below, actions pinned at the bottom),
+   just without an on-page control of its own. */
+
+.hx-drawer-action-table {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-md);
+
+    /* Box — fill the host drawer section so the column can distribute height */
+    height: 100%;
+}
+
+.hx-drawer-action-table__search {
+    /* Layout — pinned on top, only as tall as its content */
+    flex: 0 0 auto;
+}
+
+.hx-drawer-action-table__search input {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-drawer-action-table__available-items {
+    /* Position */
+    position: relative;
+
+    /* Layout — takes all remaining space in the column */
+    flex: 1 1 auto;
+
+    /* Box */
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.hx-drawer-action-table__available-items table {
+    /* Box — fixed layout so the single column takes the full row width
+       instead of shrinking to its longest label, giving the ellipsis rule
+       below (`.hx-drawer-action-table__label`) something to truncate against. */
+    table-layout: fixed;
+    width: 100%;
+}
+
+.hx-drawer-action-table__label {
+    /* Typography — long titles truncate with an ellipsis instead of
+       wrapping or overflowing the drawer; the full label is still available
+       as a native tooltip via the cell's `title` attribute. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hx-drawer-action-table__available-items tbody tr:hover td {
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-primary) 5%, transparent);
+
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-drawer-action-table__available-items thead {
+    /* Position */
+    position: sticky;
+    top: 0;
+}
+
+.hx-drawer-action-table__available-items thead th {
+    /* Tokens */
+    --pico-border-width: 0;
+
+    /* Visual — translucent bg so the backdrop-filter blur is visible as rows
+       scroll underneath the pinned header (see data_table.css). */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-md);
+    -webkit-backdrop-filter: var(--hx-blur-md);
+    box-shadow: inset 0 -2px 0 var(--hx-color-neutral-200);
+}
+
+.hx-drawer-action-table__actions {
+    /* Layout — pinned at the bottom, only as tall as its content */
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hx-drawer-action-table__empty {
+    /* Typography */
+    font-style: italic;
+    text-align: center;
+    color: var(--hx-color-neutral-400);
+}

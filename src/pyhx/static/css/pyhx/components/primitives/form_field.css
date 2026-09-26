@@ -1,0 +1,88 @@
+/* --- Form field --- */
+
+.hx-form-field__required {
+    /* Typography */
+    color: var(--hx-color-danger-600);
+    font-weight: var(--hx-font-semibold);
+}
+
+
+/* --- Disabled state ---
+   `form_field` forwards `disabled=True` to its inner control, which
+   sets the native `disabled` attribute on whatever the factory produces
+   (text input, dropdown's inner radios, segment_control radios,
+   `<fieldset>`). `:has(:disabled)` keys off any of them — including the
+   controls cascaded from `<fieldset disabled>` — and mutes the label
+   text + switches the cursor. Inner primitives already bring their own
+   opacity, so the label intentionally doesn't add more (otherwise the
+   muted look would stack). */
+
+.hx-form-field:has(:disabled) {
+    /* Typography */
+    color: var(--hx-color-neutral-500);
+
+    /* Interaction */
+    cursor: not-allowed;
+}
+
+
+/* --- State: error / success drive the help-text colour via aria-invalid --- */
+
+.hx-form-field:has([aria-invalid="true"]) small {
+    /* Typography */
+    color: var(--hx-color-danger-600);
+}
+
+.hx-form-field:has([aria-invalid="false"]) small {
+    /* Typography */
+    color: var(--hx-color-success-600);
+}
+
+.hx-form-field:has([type="checkbox"], [type="radio"]) {
+    width: 100%;
+}
+
+:where(input, select, textarea, fieldset, .grid, details)+small {
+    display: block;
+    width: 100%;
+    margin-top: calc(var(--pico-spacing) * -.75);
+    margin-bottom: var(--pico-spacing);
+    color: var(--pico-muted-color);
+}
+
+.hx-form-field>details.dropdown[aria-invalid="true"] {
+    summary {
+        border-color: var(--hx-color-danger-600);
+        outline: var(--hx-color-danger-600);
+    }
+
+    summary:not([role]):focus {
+        box-shadow: 0 0 0 var(--pico-outline-width) var(--hx-color-danger-600);
+    }
+}
+
+.hx-form-field>details.dropdown[aria-invalid="false"] {
+    summary {
+        border-color: var(--hx-color-success-600);
+        outline: var(--hx-color-success-600);
+    }
+
+    summary:not([role]):focus {
+        box-shadow: 0 0 0 var(--pico-outline-width) var(--hx-color-success-600);
+    }
+}
+
+.hx-form-field>.hx-segment-control--md.hx-segment-control {
+    margin-top: calc(var(--pico-spacing) * .25);
+    height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2);
+}
+
+form.hx-grid>.hx-select-fieldset {
+    & > label {
+        margin-top: calc(0.4rem * var(--pico-line-height));
+    }
+}
+
+.hx-data-form__actions .hx-button {
+    margin-bottom: 0;
+}

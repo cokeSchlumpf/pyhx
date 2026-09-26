@@ -1,0 +1,138 @@
+/* --- Segment control --- */
+
+.hx-segment-control {
+    /* Layout */
+    display: flex;
+    align-items: stretch;
+    gap: var(--hx-spacing-2xs);
+
+    /* Box */
+    padding: var(--hx-spacing-2xs);
+    border-radius: var(--hx-radius-md);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-150);
+}
+
+.hx-segment-control__option {
+    /* Position */
+    position: relative;
+
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+
+    /* Box */
+    margin: 0;
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    border-radius: var(--hx-radius-sm);
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: var(--hx-text-base);
+    font-weight: var(--hx-font-medium);
+    line-height: 1;
+    white-space: nowrap;
+
+    /* Motion */
+    transition:
+        background-color var(--hx-transition-base),
+        color var(--hx-transition-base),
+        box-shadow var(--hx-transition-base);
+
+    /* Interaction */
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Visually hide the radio while keeping it focusable and form-submittable.
+   Standard "sr-only" pattern: 1x1 clipped, but still in the tab order. */
+.hx-segment-control__option input[type="radio"] {
+    /* Position */
+    position: absolute;
+
+    /* Box */
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    overflow: hidden;
+
+    /* Visual */
+    clip: rect(0, 0, 0, 0);
+}
+
+.hx-segment-control__option:has(:checked) {
+    /* Typography */
+    color: var(--hx-color-background);
+
+    /* Visual */
+    background-color: var(--hx-color-secondary);
+}
+
+.hx-segment-control__option:hover:not(:has(:checked)) {
+    /* Typography */
+    color: var(--hx-color-text);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-300);
+}
+
+/* Keyboard focus surfaces on the label since the input is visually hidden. */
+.hx-segment-control__option:has(:focus-visible) {
+    /* Box */
+    outline: 2px solid var(--hx-color-primary);
+    outline-offset: 2px;
+}
+
+
+/* --- Sizes --- */
+
+.hx-segment-control--sm .hx-segment-control__option {
+    /* Box */
+    padding: var(--hx-spacing-xs) var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+}
+
+.hx-segment-control--lg .hx-segment-control__option {
+    /* Box */
+    padding: var(--hx-spacing-md) var(--hx-spacing-lg);
+
+    /* Typography */
+    font-size: var(--hx-text-lg);
+}
+
+
+/* --- Disabled state ---
+   Each radio carries the native `disabled` attribute (so values don't
+   submit and selection can't change). `:has(:disabled)` on the wrapper
+   dims the whole control and switches the cursor. `pointer-events: none`
+   on the option labels suppresses the `:hover` pseudo so the hover
+   highlight stays off. */
+
+.hx-segment-control:has(:disabled) {
+    /* Visual */
+    opacity: var(--pico-form-element-disabled-opacity);
+
+    /* Interaction */
+    cursor: not-allowed;
+}
+
+.hx-segment-control:has(:disabled) .hx-segment-control__option {
+    /* Interaction */
+    pointer-events: none;
+}
+
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-segment-control__option {
+        /* Motion */
+        transition: none;
+    }
+}

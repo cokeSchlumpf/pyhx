@@ -1,0 +1,91 @@
+/* --- Drawer select ---
+
+   Layout for the select drawer's body. Fills the host drawer <section>
+   as a vertical column: search pinned on top, the scrollable item list
+   in the middle, and the action buttons pinned at the bottom. */
+
+.hx-drawer-select__drawer-content {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-md);
+
+    /* Box — fill the host drawer section so the column can distribute height */
+    height: 100%;
+}
+
+.hx-drawer-select__search {
+    /* Layout — pinned on top, only as tall as its content */
+    flex: 0 0 auto;
+}
+
+.hx-drawer-select__search input {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-drawer-select__available-items {
+    /* Position */
+    position: relative;
+
+    /* Layout — takes all remaining space in the column */
+    flex: 1 1 auto;
+
+    /* Box */
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.hx-drawer-select__available-items tbody tr:hover td {
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-primary) 5%, transparent);
+
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-drawer-select__to-be-added {
+    /* Layout — grows with its content (may not be rendered) */
+    flex: 0 0 auto;
+
+    /* Box */
+    max-height: 40%;
+    margin-top: 0;
+    border-top: 2px solid var(--hx-color-neutral-200);
+    overflow-y: auto;
+}
+
+.hx-drawer-select__available-items thead,
+.hx-drawer-select__to-be-added thead {
+    /* Position */
+    position: sticky;
+    top: 0;
+}
+
+.hx-drawer-select__available-items thead th,
+.hx-drawer-select__to-be-added thead th {
+    /* Tokens */
+    --pico-border-width: 0;
+
+    /* Visual — translucent bg so the backdrop-filter blur is visible as rows
+       scroll underneath the pinned header (see data_table.css). */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-md);
+    -webkit-backdrop-filter: var(--hx-blur-md);
+    box-shadow: inset 0 -2px 0 var(--hx-color-neutral-200);
+}
+
+.hx-drawer-select__actions {
+    /* Layout — pinned at the bottom, only as tall as its content */
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hx-drawer-select__empty {
+    /* Typography */
+    font-style: italic;
+    text-align: center;
+    color: var(--hx-color-neutral-400);
+}

@@ -1,0 +1,123 @@
+/* --- File dropzone ---
+   A bordered drag-and-drop file picker: a dashed box  that highlights while a file is dragged over it,
+   plus a "Select File" button for click-to-browse. */
+
+.hx-file-dropzone {
+    /* Layout */
+    position: relative;
+
+    /* Box - dashed, rounded, roughly square via generous vertical padding
+       rather than a forced aspect-ratio (so it still reads sensibly at
+       narrow container widths). */
+    border: var(--hx-border-width-md) dashed var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-md);
+    padding: var(--hx-spacing-lg);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+
+    /* Motion */
+    transition:
+        border-color var(--pico-transition),
+        background-color var(--pico-transition);
+
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-file-dropzone:focus-within {
+    /* Box - same focus treatment the WYSIWYG editor gives its box, so a
+       Tab-focused (hidden) input still gets a visible focus ring on the box
+       around it. */
+    border-color: var(--pico-form-element-active-border-color);
+    box-shadow: 0 0 0 var(--pico-outline-width) var(--pico-form-element-focus-color);
+}
+
+.hx-file-dropzone.is-drag-over {
+    /* Box */
+    border-color: var(--hx-color-primary);
+
+    /* Visual */
+    background-color: var(--hx-color-primary-focus);
+}
+
+.hx-file-dropzone--disabled {
+    /* Visual */
+    opacity: 0.6;
+
+    /* Interaction */
+    cursor: not-allowed;
+}
+
+
+/* --- Hidden-but-focusable input ---
+   Standard visually-hidden technique (not `display: none`): stays in the tab
+   order and the accessibility tree, just occupies no visible space. */
+
+.hx-file-dropzone__input {
+    /* Layout */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+
+    /* Box */
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+}
+
+
+/* --- Surface (icon + placeholder + browse button) --- */
+
+.hx-file-dropzone__surface {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hx-spacing-xs);
+    text-align: center;
+
+    /* Interaction - clicks land on the root, which forwards to the input;
+       children don't need their own handling (the browse button excepted,
+       handled in JS). */
+    pointer-events: none;
+}
+
+.hx-file-dropzone__surface > * {
+    /* Interaction - re-enable for the browse button specifically, so it's
+       still directly clickable/focusable despite the surface itself
+       ignoring pointer events. */
+    pointer-events: auto;
+}
+
+.hx-file-dropzone__icon {
+    /* Box */
+    width: 28px;
+    height: 28px;
+
+    /* Visual */
+    color: var(--hx-color-neutral-500);
+}
+
+.hx-file-dropzone__placeholder {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    color: var(--pico-form-element-placeholder-color, var(--hx-color-neutral-500));
+    font-size: var(--pico-font-size);
+}
+
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-file-dropzone {
+        /* Motion */
+        transition: none;
+    }
+}

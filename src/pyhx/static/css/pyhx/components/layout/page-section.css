@@ -1,0 +1,174 @@
+/* --- Page section (titled sub-section below a page header) ---
+
+   A block in the page's main column, rendered after a `.hx-page-header`. Its
+   header row mirrors the page header (title left, actions right, thin bottom
+   border, blurred backdrop) but with a slightly smaller title, and pins
+   sticky directly below the page header while its content scrolls under it.
+
+   The section width tracks the width preset of the sibling page header it
+   follows (see the `:has() ~` rules below), so the two columns line up. */
+
+
+.hx-page-section {
+    /* Sticky offset of the section header; the concrete value is set by the
+       page template (see app-shell.css). Standalone default: below a page
+       header pinned at the top of the viewport. */
+    --page-section--top: var(--page-header--height);
+    --page-section--header-height: 4rem;
+
+    /* A data table inside the section sticks below the SECTION header (which is
+       itself stuck below the page header), so push its sticky offset down by
+       the section-header height. The custom property inherits to descendant
+       tables and, being set on a closer ancestor, overrides the app-shell
+       body value. */
+    --hx-table--sticky-top: calc(var(--page-section--top) + var(--page-section--header-height));
+
+    /* The section header's bottom line runs a gutter past the content on each
+       side. We size the section BOX to (content column + 2 × gutter) and inset
+       the content back with padding (on __header/__content below) — rather than
+       letting the header break out with negative margins. A breakout isn't
+       clamped by the box, so it bleeds under the navigation when the section is
+       full width; a wider box is still capped by `width: 100%`. */
+    --hx-page-section-gutter: var(--hx-spacing-lg);
+
+    /* Content column aligns with the page header's content: its container
+       preset (rules below) minus that container's inline padding. Falls back to
+       the wide preset when there is no page header sibling. */
+    --hx-page-section-content-width: calc(var(--hx-page-section-width, var(--hx-container-width-wide)) - 2 * var(--hx-spacing-md));
+
+    max-width: calc(var(--hx-page-section-content-width) + 2 * var(--hx-page-section-gutter));
+    width: 100%;
+    margin-inline: auto;
+}
+
+
+/* Space between stacked sections (not above the first). */
+.hx-page-section+.hx-page-section {
+    margin-top: calc(2 * var(--hx-spacing-2xl));
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: calc(-1 * var(--hx-spacing-2xl));
+        left: 0;
+        right: 0;
+        height: 32px;
+        pointer-events: none;
+
+        /* horizontal color: purple (left) -> primary (right) */
+        background: linear-gradient(to right,
+                var(--hx-color-neutral-400),
+                var(--hx-color-neutral-200));
+
+        /* soft glow strongest in the center, fading to invisible at both ends */
+        -webkit-mask-image: radial-gradient(65% 130% at 50% -15%,
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0) 80%);
+        mask-image: radial-gradient(65% 130% at 50% -15%,
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0) 80%);
+    }
+}
+
+
+/* --- Width tracks the sibling page header's container preset --- */
+
+.hx-page-header:has(.hx-container--prose)~.hx-page-section {
+    --hx-page-section-width: var(--hx-container-width-prose);
+}
+
+.hx-page-header:has(.hx-container--narrow)~.hx-page-section {
+    --hx-page-section-width: var(--hx-container-width-narrow);
+}
+
+.hx-page-header:has(.hx-container--medium)~.hx-page-section {
+    --hx-page-section-width: var(--hx-container-width-medium);
+}
+
+.hx-page-header:has(.hx-container--wide)~.hx-page-section {
+    --hx-page-section-width: var(--hx-container-width-wide);
+}
+
+.hx-page-header:has(.hx-container--stretch)~.hx-page-section {
+    /* Full-bleed: no calc width. Fall the gutter back to the container's own
+       inline padding so the content still lines up with the stretched header. */
+    --hx-page-section-gutter: var(--hx-spacing-md);
+    max-width: none;
+}
+
+
+/* --- Header row: like the page header, smaller title, header-only sticky.
+   Fixed height (token) so a data table inside the section can offset its own
+   sticky header by exactly this amount (see --hx-table--sticky-top above). */
+
+.hx-page-section__header {
+    /* Position */
+    position: sticky;
+    top: var(--page-section--top);
+    z-index: calc(var(--hx-z-page-header) - 1);
+    /* tucks under the page header (85) */
+
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--hx-spacing-md);
+
+    /* Box */
+    height: var(--page-section--header-height);
+    /* Inset the title/actions to the content column; the header (and its bottom
+       border) fills the wider section box, so the line runs a gutter past the
+       content on each side. */
+    padding-inline: var(--hx-page-section-gutter);
+    border-bottom: 2px solid var(--hx-color-neutral-200);
+
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-sm);
+}
+
+
+/* --- Content (body below the sticky header) --- */
+
+.hx-page-section__content {
+    /* Inset to the content column, matching the header's title/actions. */
+    padding-inline: var(--hx-page-section-gutter);
+
+    /* Gap below the header line — owned by the content, not the header. */
+    margin-top: var(--hx-spacing-md);
+}
+
+
+/* --- Title (left): one step smaller than the page header's h1 --- */
+
+.hx-page-section__title {
+    /* Typography */
+    font-size: var(--hx-text-2xl);
+    font-weight: var(--hx-font-semibold);
+
+    p {
+        font-size: var(--hx-text-base);
+    }
+}
+
+.hx-page-section__title :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    padding: 0;
+    margin: 0;
+
+    /* Typography */
+    font-size: inherit;
+}
+
+
+/* --- Actions (right: buttons, status, …) --- */
+
+.hx-page-section__actions {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+}

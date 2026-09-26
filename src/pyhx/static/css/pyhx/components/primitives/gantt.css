@@ -1,0 +1,168 @@
+/* --- Gantt ---
+   Skeleton container plus the timeline-header cell treatments driven by
+   `TimelineTableHeader`: a neutral wash on weekend columns and an
+   appearance-tinted surface on highlighted dates. The header is a `hx-table`,
+   so these modifier classes sit on `.hx-table__cell` header cells. */
+
+:root {
+    /* Weekend wash — a faint neutral tint so the work-week reads as the
+       foreground. */
+    --hx-gantt--weekend-bg: color-mix(in srgb, var(--hx-color-neutral-500) 10%, transparent);
+
+    /* Highlight tint strength — how much of the appearance colour bleeds into
+       the cell surface (the text keeps the full colour). */
+    --hx-gantt--highlight-tint: 16%;
+
+    /* Uniform height for every body row (planned-load and activity alike). */
+    --hx-gantt--row-height: 44px;
+}
+
+.hx-gantt {
+    /* Layout */
+    display: block;
+}
+
+
+/* --- Planned-utilization body ---
+   Uniform row height, with labels and bars vertically centred within it. The
+   generic table centres `tbody td` content but not row-header `th` cells, and
+   `layout` cells (stack charts, bubble bars) opt out of that centring — so the
+   Gantt restores it here, scoped under `.hx-gantt`. */
+
+.hx-gantt .hx-table tbody tr {
+    /* Box — one height for all body rows. */
+    height: var(--hx-gantt--row-height);
+}
+
+/* Row-header labels: vertically centred (the table's `tbody td` rule skips
+   `th`). */
+.hx-gantt .hx-table tbody th {
+    /* Layout */
+    display: flex;
+    align-items: center;
+}
+
+/* Activity (level-2) labels read as normal weight — only the planned-utilization
+   (level-1) row header stays bold to head its group. */
+.hx-gantt .hx-table tbody tr[aria-level="2"] th {
+    /* Typography */
+    font-weight: var(--hx-font-normal);
+}
+
+/* Timespan bubble: fill the cell width, centred vertically at its own (small)
+   height rather than stretching to the full row. */
+.hx-gantt .hx-table tbody td.hx-table__cell--layout:has(.hx-bubble) {
+    /* Layout */
+    display: flex;
+    align-items: center;
+}
+
+.hx-gantt .hx-table tbody .hx-bubble {
+    /* Box */
+    flex: 1;
+}
+
+/* Stacked-load cells: 1px around each bar, with the right gutter widened by the
+   header divider width so the bar clears the column separator with a matching
+   1px gap either side (the `layout` kind otherwise zeroes all padding). */
+.hx-gantt .hx-table tbody td.hx-table__cell--layout:has(.hx-table__stack-chart) {
+    /* Box */
+    padding: 1px;
+    padding-inline-end: calc(var(--hx-table--divider-width) + 1px);
+}
+
+/* 100% load reference: a danger rule marking full allocation on an over-booked
+   day's stack. The row scales to the busiest day, so the over-100% portion of
+   the bar rises above this line. `bottom` is set inline (100% / row scale);
+   positioned within `.hx-table__stack-chart`, its containing block. */
+.hx-gantt__load-limit {
+    /* Position — spans the full cell, so the 100% axis runs unbroken across the
+       row's day columns. */
+    position: absolute;
+    inset-inline: 0;
+
+    /* Box */
+    height: 2px;
+
+    /* Visual */
+    background-color: var(--hx-color-danger-600);
+}
+
+/* Days within budget carry the same 100% reference, de-emphasised. */
+.hx-gantt__load-limit--muted {
+    /* Visual */
+    opacity: 0.35;
+}
+
+
+/* --- Month labels ---
+   Each month header cell (`hx-gantt__month`) spans its days via `grid-column`,
+   so the grid already caps its width at the day-span. When the span is narrower
+   than the label — a timeline that starts or ends mid-month — clip the text with
+   an ellipsis rather than letting it overflow into the neighbouring month.
+
+   The header content wrapper is `inline-flex` by default, which `text-overflow`
+   ignores; make the month wrapper a block so the ellipsis applies. The two-class
+   selector outranks the table's own `.hx-table__cell-content` rule (imported
+   after this file). */
+
+.hx-table__cell.hx-gantt__month {
+    /* Layout */
+    overflow: hidden;
+}
+
+.hx-table__cell.hx-gantt__month .hx-table__cell-content {
+    /* Layout */
+    display: block;
+    max-width: 100%;
+
+    /* Typography */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* --- Weekend columns ---
+   Saturday/Sunday header cells (weekday + date rows) carry `hx-gantt__weekend`. */
+
+.hx-table__cell.hx-gantt__weekend {
+    /* Visual — compounded with `.hx-table__cell` so it outranks that cell's own
+       background, which is imported after this file (equal single-class
+       specificity would otherwise let the table cell win). */
+    background: var(--hx-gantt--weekend-bg);
+}
+
+
+/* --- Highlighted dates ---
+   Each highlighted day sets `--hx-gantt--highlight-color` from its appearance
+   (matching the shared `--hx-color` palette); the shared rule below mixes that
+   into a tinted surface + coloured text so every variant shares one tint
+   strength. Declared after the weekend rule so a highlighted weekend cell shows
+   the highlight, not the neutral wash (equal specificity → source order wins).
+   Compounded with `.hx-table__cell` for the same reason as the weekend rule
+   above — to outrank the table cell's own background/text colour. */
+
+.hx-gantt__highlight--neutral { --hx-gantt--highlight-color: var(--hx-color-neutral-600); }
+.hx-gantt__highlight--primary { --hx-gantt--highlight-color: var(--hx-color-primary); }
+.hx-gantt__highlight--info    { --hx-gantt--highlight-color: var(--hx-color-info-600); }
+.hx-gantt__highlight--success { --hx-gantt--highlight-color: var(--hx-color-success-600); }
+.hx-gantt__highlight--warning { --hx-gantt--highlight-color: var(--hx-color-warning-500); }
+.hx-gantt__highlight--danger  { --hx-gantt--highlight-color: var(--hx-color-danger-600); }
+
+.hx-table__cell.hx-gantt__highlight--neutral,
+.hx-table__cell.hx-gantt__highlight--primary,
+.hx-table__cell.hx-gantt__highlight--info,
+.hx-table__cell.hx-gantt__highlight--success,
+.hx-table__cell.hx-gantt__highlight--warning,
+.hx-table__cell.hx-gantt__highlight--danger {
+    /* Visual */
+    background: color-mix(
+        in srgb,
+        var(--hx-gantt--highlight-color) var(--hx-gantt--highlight-tint),
+        transparent
+    );
+
+    /* Typography */
+    color: var(--hx-gantt--highlight-color);
+    font-weight: var(--hx-font-semibold);
+}

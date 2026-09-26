@@ -1,0 +1,582 @@
+/* --- Tokens --- */
+
+:root {
+    --hx-table--sticky-top: 0;
+    --hx-table--fullscreen-top: 0;
+    --hx-table--fullscreen-bottom: 0;
+
+    --hx-table--grid-auto-flow: row;
+    --hx-table--expand-column-width: 40px;
+
+    /* Width of the header's inter-column divider (`thead th::after`). Reserved as
+       a trailing gutter on edge-filling body cells too, so their content stops at
+       the same column line the divider marks. */
+    --hx-table--divider-width: 3px;
+}
+
+
+/* --- Layout ---
+   The table renders as a CSS grid: `thead`/`tbody`/`tfoot` are blocks and each
+   `tr` is a grid whose tracks come from `--hx-table--cols` (or auto-flow when
+   no explicit widths are set). `thead` sticks to the top of the scroll area. */
+
+.hx-table__wrapper {
+    /* Position */
+    position: relative;
+}
+
+.hx-table {
+    /* Position */
+    position: relative;
+
+    /* Layout */
+    display: block;
+}
+
+.hx-table thead,
+.hx-table tbody,
+.hx-table tfoot {
+    /* Layout */
+    display: block;
+}
+
+.hx-table thead {
+    /* Position */
+    position: sticky;
+    top: var(--hx-table--sticky-top);
+    z-index: var(--hx-z-table-header);
+
+    /* Layout — let descendants query when the header is pinned. */
+    container-type: scroll-state;
+}
+
+.hx-table tr:not(.hx-table__toolbar) {
+    /* Layout */
+    display: grid;
+    grid-auto-flow: var(--hx-table--grid-auto-flow);
+    grid-template-columns: var(--hx-table--cols, none);
+    grid-auto-columns: var(--hx-table--auto-cols, auto);
+}
+
+/* Column span — cells default to one track; `span=N` sets
+   `--hx-table--cell-span` inline (see `_KxTableCell`). */
+
+.hx-table__cell {
+    /* Layout */
+    grid-column: span var(--hx-table--cell-span, 1);
+}
+
+
+/* --- Column headers --- */
+
+.hx-table thead tr th {
+    /* Position */
+    position: relative;
+
+    /* Typography */
+    white-space: nowrap;
+
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-md);
+
+    /* Motion */
+    transition:
+        background-color var(--hx-transition-fast),
+        box-shadow var(--hx-transition-fast);
+}
+
+/* Right-hand divider between header cells (hidden on the last one). */
+
+.hx-table thead tr th::after {
+    content: "";
+
+    /* Position */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: var(--hx-table--divider-width);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-200);
+}
+
+.hx-table thead tr th:last-child::after {
+    /* Layout */
+    display: none;
+}
+
+.hx-table thead tr th a {
+    /* Typography */
+    color: currentColor;
+    text-decoration: none;
+}
+
+/* Label + sort/filter icons share one inline-flex baseline (see
+   `_KxTableHeaderCell`, which wraps header content in this span). */
+
+.hx-table thead tr th .hx-table__cell-content {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Typography */
+    color: currentColor;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.hx-table thead tr th svg {
+    /* Box */
+    width: 1em;
+    height: 1em;
+
+    /* Typography */
+    color: currentColor;
+
+    /* Visual */
+    opacity: 0.5;
+    stroke-width: 3px;
+}
+
+
+/* --- Row headers (sticky first column) ---
+   A `<th>` inside `tbody` acts as a sticky row header, pinned to the left edge
+   as the table scrolls horizontally. */
+
+.hx-table tbody tr th {
+    /* Tokens */
+    --pico-font-weight: 600;
+
+    /* Position */
+    position: sticky;
+    left: 0;
+    z-index: var(--hx-z-table-header);
+
+    /* Layout */
+    container-type: scroll-state;
+
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-md);
+}
+
+.hx-table tbody tr th::after {
+    content: "";
+
+    /* Position */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: 3px;
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-200);
+}
+
+/* The header cell above the sticky row-header column must stick in both axes so
+   it stays in the top-left corner. */
+
+.hx-table:has(tbody tr th) thead tr th:first-child {
+    /* Position */
+    position: sticky;
+    left: 0;
+    z-index: var(--hx-z-table-header);
+}
+
+
+/* --- Cell kinds ---
+   `kind` on a cell renders as `hx-table__cell--{kind}`. Body cells are flex
+   containers so the modifiers can align their contents; header cells align
+   their inline content via `text-align`. The two properties are paired on each
+   modifier and each no-ops on the cell type it doesn't apply to, so the rule
+   stays single-source across `<th>` and `<td>`. */
+
+.hx-table tbody td {
+    /* Layout */
+    display: flex;
+    align-items: center;
+
+    /* Box */
+    min-height: 3em;
+}
+
+.hx-table__cell--numeric,
+.hx-table__cell--date {
+    /* Layout */
+    justify-content: flex-end;
+
+    /* Typography */
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.hx-table__cell--boolean {
+    /* Layout */
+    justify-content: center;
+
+    /* Typography */
+    text-align: center;
+}
+
+/* Action button cluster — right-aligned, vertically centred (inherited from
+   the body-cell flex rule), spaced as a flex row. */
+
+.hx-table__cell--actions {
+    /* Layout */
+    justify-content: flex-end;
+    gap: var(--hx-spacing-sm);
+
+    /* Typography */
+    text-align: right;
+}
+
+/* Pico gives buttons a margin-bottom; the actions cell is a self-spaced flex
+   row (see `gap` above), so strip it from the buttons it holds. */
+
+.hx-table__cell--actions :is(.hx-button, button) {
+    /* Box */
+    margin-block-end: 0;
+}
+
+.hx-table__cell--actions .hx-button-group {
+    /* Layout */
+    justify-content: flex-end;
+}
+
+/* `layout` — strip the cell's own flex layout and padding so a self-contained
+   layout can own the full cell box. Scoped under the body row so it outweighs
+   the generic `tbody td` flex rule above. */
+
+.hx-table tbody td.hx-table__cell--layout {
+    /* Position — containing block for an optional `overlay` annotation, which
+       spans the full cell rather than the padding-inset chart. */
+    position: relative;
+
+    /* Layout */
+    display: block;
+
+    /* Box — no padding except a trailing gutter matching the header divider, so
+       an edge-filling layout (a chart or bar) stops at the same column line. */
+    min-height: 0;
+    padding: 0;
+    padding-inline-end: var(--hx-table--divider-width);
+}
+
+
+/* `stack_chart_cell` — a vertical stacked-bar chart owning the full `layout`
+   cell. Rendered inside a `layout` cell (no padding, inherited above), the
+   stack fills the cell's full width and height; segments stack from the bottom
+   up, each sized and coloured by the inline custom properties set per
+   `StackChartItem`. */
+
+.hx-table__stack-chart {
+    /* Layout — stack segments bottom-up; the first item sits at the bottom. */
+    display: flex;
+    flex-direction: column-reverse;
+
+    /* Box */
+    width: 100%;
+    height: 100%;
+}
+
+.hx-table__stack-chart-item {
+    /* Box — exact height from the item's percent; never grow or shrink. */
+    flex: 0 0 var(--hx-stack-chart-item--height, 0%);
+    width: 100%;
+
+    /* Visual */
+    background-color: var(--hx-stack-chart-item--color, transparent);
+}
+
+/* `list` — a row of pills that wraps within the cell. */
+
+.hx-table__cell--list .hx-pill-container {
+    /* Layout */
+    flex-wrap: wrap;
+}
+
+/* `empty` — a single cell that visually spans every column. `colspan` is a
+   no-op under `display: grid`, so span via `grid-column` instead; the cell
+   stays a flex container (see above) so `justify-content` centres the message. */
+
+.hx-table__cell--empty {
+    /* Layout */
+    grid-column: 1 / -1;
+    justify-content: center;
+
+    /* Typography */
+    text-align: center;
+    font-style: italic;
+}
+
+
+/* --- Selectable rows ---
+   Rows that carry `is_selected` (→ `aria-selected`) are clickable and tint on
+   hover; the selected row (`aria-selected="true"`) keeps a stronger tint. */
+
+.hx-table tr[aria-selected] td {
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-table tr[aria-selected]:hover td {
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-primary) 5%, var(--hx-color-background))
+}
+
+.hx-table tr[aria-selected="true"] td,
+.hx-table tr[aria-selected="true"]:hover td {
+    /* Visual */
+    background-color: color-mix(in srgb, var(--hx-color-primary) 20%, var(--hx-color-background));
+}
+
+
+/* --- Hierarchical rows (tree) ---
+   `level` (→ `aria-level`) indents the first cell one spacing step per level so
+   nested rows read as a tree; `is_tree` (→ role="treegrid") reserves a leading
+   expand column for the row's toggle, whose width scales with tree depth.
+
+   The indent keys off `aria-level` alone — it is independent of `is_tree`, so a
+   table can read as a tree via row indent without the expand column. The first
+   cell may be a `td` or a row-header `th`, hence `:is(td, th)` below. */
+
+/* When the first cell hosts an expand toggle, drop its left padding so the
+   button sits flush against the cell edge, and let the button size to its
+   content instead of stretching to fill the cell. Tree-only: scoped via
+   `:where([role="treegrid"])` (zero specificity) so it does NOT leak into other
+   `.hx-table` consumers (e.g. the focus-list table, whose first cell may hold an
+   action button) while keeping the specificity EQUAL to the per-level padding
+   rules below — this reset must precede them so source order lets the level
+   indent win for an expandable row. */
+
+.hx-table:where([role="treegrid"]) > tbody > tr > td:first-child:has(.hx-button) {
+    /* Box */
+    padding-left: 0;
+}
+
+.hx-table:where([role="treegrid"]) > tbody > tr > td:first-child .hx-button {
+    /* Box */
+    width: auto;
+    margin: 0;
+}
+
+.hx-table > tbody > tr[aria-level="2"] > :is(td, th):first-child {
+    /* Box */
+    padding-left: var(--hx-spacing-md);
+}
+
+.hx-table > tbody > tr[aria-level="3"] > :is(td, th):first-child {
+    /* Box */
+    padding-left: calc(2 * var(--hx-spacing-md));
+}
+
+.hx-table > tbody > tr[aria-level="4"] > :is(td, th):first-child {
+    /* Box */
+    padding-left: calc(3 * var(--hx-spacing-md));
+}
+
+.hx-table > tbody > tr[aria-level="5"] > :is(td, th):first-child {
+    /* Box */
+    padding-left: calc(4 * var(--hx-spacing-md));
+}
+
+.hx-table > tbody > tr[aria-level="6"] > :is(td, th):first-child {
+    /* Box */
+    padding-left: calc(5 * var(--hx-spacing-md));
+}
+
+/* Expand-column width. The `<table>` prepends
+   `var(--hx-table--actual-expand-column-width)` as its leading grid track; the
+   `[role="treegrid"]` default sizes it for an empty tree (first paint, before
+   rows load) and the `:has()` rules widen it one spacing step per level once
+   rows at a given depth are present. */
+
+.hx-table[role="treegrid"] {
+    --hx-table--actual-expand-column-width: var(--hx-table--expand-column-width);
+}
+
+.hx-table:has(tr[aria-level="2"]) {
+    --hx-table--actual-expand-column-width: calc(1 * var(--hx-spacing-md) + var(--hx-table--expand-column-width));
+}
+
+.hx-table:has(tr[aria-level="3"]) {
+    --hx-table--actual-expand-column-width: calc(2 * var(--hx-spacing-md) + var(--hx-table--expand-column-width));
+}
+
+.hx-table:has(tr[aria-level="4"]) {
+    --hx-table--actual-expand-column-width: calc(3 * var(--hx-spacing-md) + var(--hx-table--expand-column-width));
+}
+
+.hx-table:has(tr[aria-level="5"]) {
+    --hx-table--actual-expand-column-width: calc(4 * var(--hx-spacing-md) + var(--hx-table--expand-column-width));
+}
+
+.hx-table:has(tr[aria-level="6"]) {
+    --hx-table--actual-expand-column-width: calc(5 * var(--hx-spacing-md) + var(--hx-table--expand-column-width));
+}
+
+/* The leading expand column is a structural affordance, not a data column — it
+   carries no divider and is not resizable. */
+
+.hx-table[role="treegrid"] thead tr th:first-child::after {
+    /* Layout */
+    display: none;
+}
+
+.hx-table[role="treegrid"] thead tr th:first-child .hx-table__col-resizer {
+    /* Layout */
+    display: none;
+}
+
+
+/* --- Column resizer ---
+   A draggable handle at a header cell's right edge; `pyhx.table.js` rewrites the
+   `--hx-table--cols` track on drag. Its presence replaces the static divider. */
+
+.hx-table thead tr th:has(.hx-table__col-resizer)::after {
+    /* Layout */
+    display: none;
+}
+
+.hx-table__col-resizer {
+    /* Position */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Box */
+    width: 3px;
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-100);
+
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+
+    /* Interaction */
+    cursor: col-resize;
+    user-select: none;
+    touch-action: none;
+}
+
+.hx-table__col-resizer:hover {
+    /* Visual */
+    background-color: var(--hx-color-neutral-300);
+}
+
+
+/* --- Toolbar (row above the header, revealed on thead hover) --- */
+
+.hx-table__toolbar {
+    /* Position */
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: var(--hx-z-dropdown);
+
+    /* Layout */
+    display: inline-block;
+
+    /* Box */
+    padding: var(--hx-spacing-xs);
+    border-bottom: none;
+    border-radius: var(--hx-radius-sm);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-elevated);
+    opacity: 0;
+
+    /* Motion */
+    transform: translateY(calc(-100% - var(--hx-spacing-sm)));
+    transition: opacity var(--hx-transition-fast) 500ms;
+}
+
+.hx-table__wrapper:has(.hx-table thead:hover) .hx-table__toolbar,
+.hx-table__toolbar:hover {
+    /* Visual */
+    opacity: 1;
+
+    /* Motion */
+    transition: opacity var(--hx-transition-fast);
+}
+
+
+/* --- Scroll container --- */
+
+.hx-table__scroll-container {
+    /* Tokens */
+    --hx-table--sticky-top: 0;
+
+    /* Box */
+    overflow: auto;
+    border: 1px solid var(--hx-color-neutral-300);
+}
+
+
+/* --- Fullscreen variant --- */
+
+.hx-table__wrapper.hx-table--fullscreen {
+    /* Position */
+    position: fixed;
+    top: var(--hx-table--fullscreen-top);
+    right: 0;
+    bottom: var(--hx-table--fullscreen-bottom);
+    left: 0;
+    z-index: var(--hx-z-dialog);
+
+    /* Box */
+    overflow: auto;
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+}
+
+.hx-table__wrapper.hx-table--fullscreen .hx-table {
+    /* Box */
+    margin: 0;
+}
+
+.hx-table__wrapper.hx-table--fullscreen .hx-table thead {
+    /* Position */
+    top: 0;
+}
+
+/* In fullscreen the toolbar sits inside a fixed overlay — the default upward
+   translate would push it off-screen, so pin it in place. */
+.hx-table__wrapper.hx-table--fullscreen .hx-table__toolbar {
+    /* Position */
+    z-index: var(--hx-z-dropdown);
+
+    /* Motion */
+    transform: none;
+}
+
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-table thead tr th,
+    .hx-table__col-resizer,
+    .hx-table__toolbar,
+    .hx-table__wrapper:has(.hx-table thead:hover) .hx-table__toolbar,
+    .hx-table__toolbar:hover {
+        /* Motion */
+        transition: none;
+    }
+}

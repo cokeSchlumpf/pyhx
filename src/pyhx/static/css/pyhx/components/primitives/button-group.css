@@ -1,0 +1,25 @@
+/* --- Button group --- */
+
+.hx-button-group {
+    /* Layout */
+    display: flex;
+    gap: var(--hx-spacing-sm);
+
+    button {
+        width: auto;
+        margin-bottom: 0;
+    }
+}
+
+.hx-button-group--horizontal {
+    /* Layout — natural-width buttons in a row, wrapping if they overflow. */
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hx-button-group--vertical {
+    /* Layout — stacked buttons; `stretch` makes them all the same (container) width. */
+    flex-direction: column;
+    align-items: stretch;
+}

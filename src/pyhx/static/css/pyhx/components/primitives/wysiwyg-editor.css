@@ -1,0 +1,121 @@
+/* --- WYSIWYG editor ---
+   A lightweight rich-text editor: a toolbar of formatting buttons sitting
+   above a `contenteditable` area, plus a hidden input that carries the
+   sanitized HTML for normal form submission (see wysiwyg_editor.py).
+
+   The outer element is styled to read as a single form control — a bordered
+   box that lifts a focus ring when the inner editable area takes focus, the
+   same affordance Pico gives native inputs. */
+
+.hx-wysiwyg-editor {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Box — match a native textarea: same border + radius Pico gives form
+       elements. */
+    border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+    border-radius: var(--pico-border-radius);
+
+    /* Visual — clip the toolbar's top corners to the rounded box. */
+    overflow: hidden;
+    background-color: var(--pico-form-element-background-color);
+
+    /* Motion */
+    transition:
+        border-color var(--pico-transition),
+        box-shadow var(--pico-transition);
+}
+
+/* Focus ring on the box when the contenteditable area is focused, mirroring
+   the focus treatment Pico applies to native form controls. */
+.hx-wysiwyg-editor:focus-within {
+    /* Box */
+    border-color: var(--pico-form-element-active-border-color);
+    box-shadow: 0 0 0 var(--pico-outline-width) var(--pico-form-element-focus-color);
+}
+
+
+/* --- Toolbar --- */
+
+.hx-wysiwyg-editor__toolbar {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-2xs);
+
+    /* Box */
+    padding: var(--hx-spacing-2xs) var(--hx-spacing-xs);
+    border-bottom: var(--pico-border-width) solid var(--hx-color-neutral-200);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-050);
+}
+
+.hx-wysiwyg-editor__toolbar-button {
+    /* Box — the button primitive carries Pico's bottom margin; drop it so the
+       toolbar row stays tight. */
+    margin: 0;
+}
+
+.hx-wysiwyg-editor__toolbar-button[aria-pressed="true"] {
+    box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+
+/* --- Editable area --- */
+
+.hx-wysiwyg-editor__input {
+    /* Box — native textarea padding; `min-height` is set inline from the
+       `min_height` prop. */
+    padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+
+    /* Layout — grow to fill, scroll once content overflows. */
+    flex: 1 1 auto;
+    overflow-y: auto;
+
+    /* Typography — mirror a native form element. */
+    color: var(--pico-form-element-color);
+    font-family: var(--pico-font-family);
+    font-size: var(--pico-font-size);
+    font-weight: var(--pico-font-weight);
+    line-height: var(--pico-line-height);
+
+    /* Interaction */
+    cursor: text;
+}
+
+/* Focus is surfaced on the container (`:focus-within`), so suppress the
+   default outline on the editable area itself. */
+.hx-wysiwyg-editor__input:focus {
+    /* Box */
+    outline: none;
+}
+
+/* Tame the margins of rich content so the first/last blocks sit flush with
+   the editor padding. */
+.hx-wysiwyg-editor__input > :first-child {
+    margin-top: 0;
+}
+
+.hx-wysiwyg-editor__input > :last-child {
+    margin-bottom: 0;
+}
+
+.hx-wysiwyg-editor__input ul,
+.hx-wysiwyg-editor__input ol {
+    /* Box — keep list markers inside the padded area. */
+    margin: var(--hx-spacing-xs) 0;
+    padding-left: var(--hx-spacing-lg);
+}
+
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-wysiwyg-editor {
+        /* Motion */
+        transition: none;
+    }
+}

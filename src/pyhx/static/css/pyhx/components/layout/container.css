@@ -1,0 +1,55 @@
+/* --- Container (centered content wrapper) ---
+
+   A horizontally-centered block whose maximum width is selected by a
+   ``--{width}`` modifier. Use it to keep page content within a comfortable
+   reading or layout width without committing the surrounding template to a
+   fixed column. Inline padding is always-on so content never kisses the
+   viewport edge on small viewports (where every variant collapses to
+   stretch). Override per call site with the custom property:
+       <div class="hx-container" style="--hx-container-padding-inline: 0">...</div> */
+
+/* Width presets as tokens so other components (e.g. page_section) can align to
+   the same widths from a single source of truth. */
+:root {
+    --hx-container-width-prose:  65ch;
+    --hx-container-width-narrow: 40rem;
+    --hx-container-width-medium: 60rem;
+    --hx-container-width-wide:   120rem;
+}
+
+.hx-container {
+    /* Tokens */
+    --hx-container-padding-inline: var(--hx-spacing-md);
+
+    /* Layout */
+    margin-inline: auto;
+
+    /* Box */
+    width: 100%;
+    padding-inline: var(--hx-container-padding-inline);
+}
+
+.hx-container--prose {
+    /* Box */
+    max-width: var(--hx-container-width-prose);
+}
+
+.hx-container--narrow {
+    /* Box */
+    max-width: var(--hx-container-width-narrow);
+}
+
+.hx-container--medium {
+    /* Box */
+    max-width: var(--hx-container-width-medium);
+}
+
+.hx-container--wide {
+    /* Box */
+    max-width: var(--hx-container-width-wide);
+}
+
+.hx-container--stretch {
+    /* Box */
+    max-width: none;
+}

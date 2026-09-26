@@ -1,0 +1,68 @@
+/* --- Grid (any-container grid layout) ---
+
+   Apply ``hx-grid`` to any container element (``div``, ``form``,
+   ``section``, ``ul``, …) to lay out its direct children on a CSS Grid.
+   Tune via the public custom properties:
+       <form class="hx-grid" style="--hx-grid-columns: 6">...</form>
+
+   Children become cells automatically — no marker class required. To make
+   a child span multiple columns add ``hx-grid-span-{n}`` (or
+   ``hx-grid-span-full`` for the full row); for multiple rows add
+   ``hx-grid-row-span-{n}`` (or ``hx-grid-row-span-full``). To override a
+   single cell's vertical alignment add
+   ``hx-grid-align-{top|center|bottom|stretch}``. */
+
+.hx-grid {
+    /* Tokens */
+    --hx-grid-columns: 12;
+    --hx-grid-gap: var(--hx-spacing-md);
+    --hx-grid-align: stretch;
+
+    /* Layout */
+    display: grid;
+    grid-template-columns: repeat(var(--hx-grid-columns), 1fr);
+    gap: var(--hx-grid-gap);
+    align-items: var(--hx-grid-align);
+}
+
+
+/* --- Span: how many columns a single cell occupies. --- */
+
+.hx-grid-span-1  { grid-column: span 1; }
+.hx-grid-span-2  { grid-column: span 2; }
+.hx-grid-span-3  { grid-column: span 3; }
+.hx-grid-span-4  { grid-column: span 4; }
+.hx-grid-span-5  { grid-column: span 5; }
+.hx-grid-span-6  { grid-column: span 6; }
+.hx-grid-span-7  { grid-column: span 7; }
+.hx-grid-span-8  { grid-column: span 8; }
+.hx-grid-span-9  { grid-column: span 9; }
+.hx-grid-span-10 { grid-column: span 10; }
+.hx-grid-span-11 { grid-column: span 11; }
+.hx-grid-span-12 { grid-column: span 12; }
+.hx-grid-span-full { grid-column: 1 / -1; }
+
+
+/* --- Row span: how many rows a single cell occupies. --- */
+
+.hx-grid-row-span-1  { grid-row: span 1; }
+.hx-grid-row-span-2  { grid-row: span 2; }
+.hx-grid-row-span-3  { grid-row: span 3; }
+.hx-grid-row-span-4  { grid-row: span 4; }
+.hx-grid-row-span-5  { grid-row: span 5; }
+.hx-grid-row-span-6  { grid-row: span 6; }
+.hx-grid-row-span-7  { grid-row: span 7; }
+.hx-grid-row-span-8  { grid-row: span 8; }
+.hx-grid-row-span-9  { grid-row: span 9; }
+.hx-grid-row-span-10 { grid-row: span 10; }
+.hx-grid-row-span-11 { grid-row: span 11; }
+.hx-grid-row-span-12 { grid-row: span 12; }
+.hx-grid-row-span-full { grid-row: 1 / -1; }
+
+
+/* --- Align: per-cell vertical alignment within the row. --- */
+
+.hx-grid-align-top     { align-self: start; }
+.hx-grid-align-center  { align-self: center; }
+.hx-grid-align-bottom  { align-self: end; }
+.hx-grid-align-stretch { align-self: stretch; }

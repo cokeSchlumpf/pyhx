@@ -1,0 +1,6 @@
+/* conditional_select — two-mode selector (all/none vs. a specific set). */
+
+.hx-conditional-select__toggle {
+  margin-block-end: var(--hx-space-md, 1rem);
+  max-width: 200px;
+}

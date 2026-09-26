@@ -1,0 +1,28 @@
+.hx-text-diff {
+    line-height: 1.5;
+}
+
+.hx-text-diff__line {
+    margin: 0 0 var(--hx-spacing-xs);
+}
+
+.hx-text-diff__line:last-child {
+    margin-bottom: 0;
+}
+
+.hx-text-diff__ins {
+    background: var(--hx-color-success-050);
+    color: var(--hx-color-success-600);
+    text-decoration: underline;
+}
+
+.hx-text-diff__del {
+    background: var(--hx-color-danger-050);
+    color: var(--hx-color-danger-600);
+    text-decoration: line-through;
+    cursor: default;
+
+    &:hover {
+        text-decoration: none;
+    }
+}

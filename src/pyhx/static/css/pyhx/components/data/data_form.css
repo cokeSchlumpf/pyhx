@@ -1,0 +1,29 @@
+/* --- Data form --- */
+
+
+/* --- Actions row — flex container so additional buttons (Cancel /
+       Reset) can sit alongside the primary submit later. Right-aligned
+       by default; the grid cell itself spans the full row via the
+       inline ``grid-column: 1 / -1`` style on ``.hx-data-form__actions``. */
+
+.hx-data-form__actions>div {
+    /* Layout */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+}
+
+/* Pico stretches form buttons to 100% width by default — undo that so the
+   submit (and any future Cancel / Reset siblings) hug their content and let
+   the flex row's `justify-content: flex-end` push them to the right. */
+.hx-data-form__actions button {
+    /* Box */
+    width: auto;
+}
+
+.hx-drawer .hx-grid.hx-data-form {
+    :where(input, select, textarea, fieldset, .grid, details)+small {
+        margin-bottom: 0;
+    }
+}

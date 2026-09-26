@@ -1,0 +1,7 @@
+:where(a:not([role=button])), [role=link] {
+    --pico-text-decoration: none;
+}
+
+:where(a:not([role=button])):is([aria-current]:not([aria-current=false]),:hover,:active,:focus), [role=link]:is([aria-current]:not([aria-current=false]),:hover,:active,:focus) {
+    --pico-text-decoration: underline;
+}

@@ -1,0 +1,174 @@
+/*  ===========================================================================
+    # PyHX Theme Variables (PicoCSS Overrides)
+    ======================================================================== */
+
+:root,
+:root:not([data-theme="dark"]), [data-theme="light"] {
+    /* PyHX Brand Colors */
+    --hx-color-text: #333333;
+    --hx-color-background: #ffffff;
+    --hx-color-primary: #1A3BB8;
+    --hx-color-primary-hover: #132C8C;
+    --hx-color-primary-focus: rgba(26, 59, 184, 0.25);
+    --hx-color-primary-underline: rgba(26, 59, 184, 0.5);
+    --hx-color-secondary: #1E49E2;
+    --hx-color-secondary-hover: color-mix(in srgb, var(--hx-color-secondary) 85%, black);
+    --hx-color-secondary-focus: rgba(30, 73, 226, 0.25);
+    --hx-color-purple: #7213EA;
+    --hx-color-purple-hover: color-mix(in srgb, var(--hx-color-purple) 85%, black);
+    --hx-color-purple-focus: rgba(114, 19, 234, 0.25);
+
+    /* Force light theme regardless of system preference */
+    color-scheme: light;
+
+    /* Typography */
+    --pico-font-size: 87.5%;
+    --pico-font-family: 'Roboto', sans-serif;
+    --hx-font-heading: "Roboto", system-ui, sans-serif;
+    --hx-font-mono: ui-monospace, "Menlo", "Consolas", "DejaVu Sans Mono", monospace;
+
+    /* Map PyHX colors to PicoCSS variables */
+    --pico-color: var(--hx-color-text);
+    --pico-background-color: var(--hx-color-background);
+    --pico-primary: var(--hx-color-primary);
+    --pico-primary-background: var(--hx-color-secondary);
+    --pico-primary-hover: var(--hx-color-primary);
+    --pico-primary-hover-background: var(--hx-color-secondary-hover);
+    --pico-primary-hover-underline: underline;
+    --pico-primary-focus: var(--hx-color-primary-focus);
+    --pico-primary-underline: var(--hx-color-primary-underline);
+    --pico-secondary: var(--hx-color-secondary);
+    --pico-secondary-background: var(--hx-color-secondary);
+    --pico-secondary-hover: var(--hx-color-secondary-hover);
+    --pico-secondary-focus: var(--hx-color-secondary-focus);
+    --pico-form-element-disabled-opacity: 0.8;
+
+    /* Semantic Color Scales */
+
+    /* Neutral (Gray) */
+    --hx-color-neutral-050: #F9F8F7;
+    --hx-color-neutral-100: #F5F5F5;
+    --hx-color-neutral-150: #F3F2F1;
+    --hx-color-neutral-200: #EDEBE9;
+    --hx-color-neutral-300: #E1DFDD;
+    --hx-color-neutral-400: #D0D0D0;
+    --hx-color-neutral-500: #8A8886;
+    --hx-color-neutral-600: #7B8495;
+    --hx-color-neutral-700: #605E5C;
+    --hx-color-neutral-800: #333333;
+    --hx-color-neutral-900: #212529;
+
+    /* Danger (Red) */
+    --hx-color-danger-050: #FEF2F2;
+    --hx-color-danger-100: #FDE8E8;
+    --hx-color-danger-500: #DC3545;
+    --hx-color-danger-600: #C82333;
+
+    /* Warning (Amber) */
+    --hx-color-warning-050: #FFF4CE;
+    --hx-color-warning-100: #FEF3CD;
+    --hx-color-warning-500: #F0AD4E;
+    --hx-color-warning-600: #EC971F;
+    --hx-color-warning-700: #856404;
+    --hx-color-warning-800: #835C00;
+
+    /* Success (Green) */
+    --hx-color-success-050: #DFF6DD;
+    --hx-color-success-500: #28A745;
+    --hx-color-success-600: #107C10;
+
+    /* Info (Blue) */
+    --hx-color-info-050: #DEECF9;
+    --hx-color-info-600: #0078D4;
+
+    /* Base */
+    --hx-color-white: #FFFFFF;
+    --hx-color-black: #000000;
+
+    /* Spacing Scale */
+    --hx-spacing-none: 0;
+    --hx-spacing-xs:   0.25rem;  /*  4px */
+    --hx-spacing-sm:   0.5rem;   /*  8px */
+    --hx-spacing-md:   1rem;     /* 16px */
+    --hx-spacing-lg:   1.5rem;   /* 24px */
+    --hx-spacing-xl:   2rem;     /* 32px */
+    --hx-spacing-2xl:  3rem;     /* 48px */
+
+    /* Spacing scale extension */
+    --hx-spacing-2xs: 0.125rem; /* 2px */
+
+    /* Border Radius Scale */
+    --hx-radius-none:  0;
+    --hx-radius-sm:    0.125rem; /*  2px */
+    --hx-radius-md:    0.25rem;  /*  4px */
+    --hx-radius-lg:    0.5rem;   /*  8px */
+    --hx-radius-xl:    1rem;     /* 16px */
+    --hx-radius-full:  9999px;
+
+    /* Border Width Scale */
+    --hx-border-width-none: 0;
+    --hx-border-width-sm:   1px;
+    --hx-border-width-md:   2px;
+    --hx-border-width-lg:   4px;
+
+    /* Shadow Scale */
+    --hx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --hx-shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --hx-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --hx-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --hx-shadow-panel-left: -4px 0 16px rgba(0, 0, 0, 0.1);
+
+    /* Overlay/Surface Colors (translucent) */
+    --hx-color-overlay-light: rgba(255, 255, 255, 0.85);
+    --hx-color-overlay-dark: rgba(0, 0, 0, 0.3);
+    --hx-color-overlay-divider: rgba(0, 0, 0, 0.05);
+
+    /* Backdrop blur */
+    --hx-blur-sm: blur(6px);
+    --hx-blur-md: blur(8px);
+    --hx-blur-lg: blur(10px);
+
+    /* Transitions */
+    --hx-transition-fast: 0.15s ease;
+    --hx-transition-base: 0.2s ease;
+    --hx-transition-slow: 0.25s ease;
+
+    /* Z-index Scale */
+    --hx-z-base:         0;
+    --hx-z-sticky:       10;
+    --hx-z-backdrop:     60;
+    --hx-z-table-header: 70;
+    --hx-z-page-header:  90;
+    --hx-z-dialog:       100;
+    --hx-z-sidepanel:    200;
+    --hx-z-dropdown:     300;
+
+    /* Font Size Scale */
+    --hx-text-xs:   0.75rem;   /* 12px */
+    --hx-text-sm:   0.875rem;  /* 14px */
+    --hx-text-base: 1rem;      /* 16px */
+    --hx-text-lg:   1.125rem;  /* 18px */
+    --hx-text-xl:   1.25rem;   /* 20px */
+    --hx-text-2xl:  1.5rem;    /* 24px */
+    --hx-text-3xl:  2rem;      /* 32px */
+
+    /* Font Weight Scale */
+    --hx-font-light:    300;
+    --hx-font-normal:   400;
+    --hx-font-medium:   500;
+    --hx-font-semibold: 600;
+    --hx-font-bold:     700;
+
+    /* Line Height Scale */
+    --hx-leading-tight:   1.25;
+    --hx-leading-normal:  1.5;
+    --hx-leading-relaxed: 1.75;
+
+    /* Form Control Dimensions (match PicoCSS) */
+    --hx-control-size:         1.25em;  /* checkbox/radio width & height */
+    --hx-control-gap:          0.5em;   /* space between control and label text */
+    --hx-control-indent:       1.75em;  /* control-size + control-gap */
+    --hx-switch-size:          2.25em;  /* switch width */
+    --hx-switch-indent:        2.75em;  /* switch-size + control-gap */
+    --hx-required-gap:         0.25em;  /* space before required * */
+}

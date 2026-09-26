@@ -1,0 +1,26 @@
+/* --- Example component ---
+   A live preview above a c.code terminal. The terminal styles live in code.css;
+   this file owns only the outer frame and the preview surface. */
+
+.hx-example {
+    /* Box — the single outer frame around preview + code block. */
+    margin: 0;
+    border: 1px solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-md);
+    overflow: hidden;
+}
+
+.hx-example__preview {
+    /* Box */
+    padding: var(--hx-spacing-lg);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+}
+
+/* The nested code block's own frame is neutralized so there's no double border;
+   .hx-example provides the single frame. */
+.hx-example .hx-code {
+    border: 0;
+    border-radius: 0;
+}

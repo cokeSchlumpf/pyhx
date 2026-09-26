@@ -1,0 +1,111 @@
+/* --- Metric tile --- */
+
+.hx-metric-tile {
+    --hx-metric-tile--accent: var(--hx-color-neutral-600);
+    --hx-metric-tile--value-color: var(--hx-color-neutral-900);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+
+    /* Box */
+    padding: var(--hx-spacing-md);
+    margin: 0;
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--hx-metric-tile--accent) 35%,
+            var(--hx-color-background)
+        );
+    border-radius: var(--hx-radius-lg);
+
+    /* Visual */
+    background-color:
+        color-mix(
+            in srgb,
+            var(--hx-metric-tile--accent) 8%,
+            var(--hx-color-background)
+        );
+}
+
+.hx-metric-tile__value {
+    /* Layout */
+    order: 1;
+
+    /* Box */
+    margin: 0 0 var(--hx-spacing-xs);
+
+    /* Typography */
+    color: var(--hx-metric-tile--value-color);
+    font-size: var(--hx-text-2xl);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.hx-metric-tile__label {
+    /* Layout */
+    order: 2;
+
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: var(--hx-text-sm);
+    font-weight: var(--hx-font-medium);
+    overflow-wrap: anywhere;
+}
+
+.hx-metric-tile__supporting-text {
+    /* Layout */
+    order: 3;
+
+    /* Box */
+    margin: var(--hx-spacing-xs) 0 0;
+
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+    font-size: var(--hx-text-xs);
+    overflow-wrap: anywhere;
+}
+
+
+/* --- Appearances --- */
+
+.hx-metric-tile--neutral {
+    --hx-metric-tile--accent: var(--hx-color-neutral-600);
+    --hx-metric-tile--value-color: var(--hx-color-neutral-900);
+}
+
+.hx-metric-tile--info {
+    --hx-metric-tile--accent: var(--hx-color-info-600);
+    --hx-metric-tile--value-color: var(--hx-color-info-600);
+}
+
+.hx-metric-tile--success {
+    --hx-metric-tile--accent: var(--hx-color-success-600);
+    --hx-metric-tile--value-color: var(--hx-color-success-600);
+}
+
+.hx-metric-tile--warning {
+    --hx-metric-tile--accent: var(--hx-color-warning-500);
+    --hx-metric-tile--value-color: var(--hx-color-warning-800);
+}
+
+.hx-metric-tile--danger {
+    --hx-metric-tile--accent: var(--hx-color-danger-500);
+    --hx-metric-tile--value-color: var(--hx-color-danger-500);
+}
+
+.hx-metric-tile--primary {
+    --hx-metric-tile--accent: var(--hx-color-primary);
+    --hx-metric-tile--value-color: var(--hx-color-primary);
+}
+
+.hx-metric-tile--purple {
+    --hx-metric-tile--accent: var(--hx-color-purple);
+    --hx-metric-tile--value-color: var(--hx-color-purple);
+}

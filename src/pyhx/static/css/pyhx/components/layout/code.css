@@ -1,0 +1,182 @@
+/* --- Code component ---
+
+   A dark, terminal-styled source viewer. Part switching is server-driven (htmx
+   fragment): clicking a tab re-renders only the shell with the new active panel.
+   The switcher bar is sticky inside the scrolling code area, so code scrolls
+   behind the frosted glass buttons. */
+
+.hx-code {
+    /* Width of the line-number gutter column. */
+    --hx-code-gutter: 3.25rem;
+
+    /* Terminal foreground: shared by the code text and the nested switcher
+       buttons, so the buttons read in the same colour as the source below. */
+    --hx-code-fg: var(--hx-color-white);
+
+    /* Position */
+    position: relative;
+
+    /* Box — self-contained frame so a standalone code block looks complete. */
+    max-height: var(--hx-code-max-height);
+    overflow-y: auto;
+    border: 1px solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-md);
+
+    /* Visual — the terminal surface plus a fixed gutter stripe: a lighter
+       column of width --hx-code-gutter with a 1px right border, painted on
+       the container so it spans the full height from the very top (behind the
+       transparent sticky bar) and stays put while the code scrolls. */
+    background-color: var(--hx-color-neutral-900);
+    background-image: linear-gradient(
+        to right,
+        var(--hx-color-neutral-800) 0 var(--hx-code-gutter),
+        var(--hx-color-neutral-700) var(--hx-code-gutter) calc(var(--hx-code-gutter) + 1px),
+        transparent calc(var(--hx-code-gutter) + 1px)
+    );
+    background-repeat: no-repeat;
+
+    /* Typography — only the colour is set here (inherited by the bar); the
+       mono font is scoped to the code panels so the switcher keeps the usual
+       UI font. */
+    color: var(--hx-color-neutral-100);
+}
+
+/* --- Sticky switcher bar --- */
+
+.hx-code__bar {
+    /* Position */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    /* Layout */
+    display: flex;
+    gap: var(--hx-spacing-sm);
+
+    /* Box — md breathing room all round; the start padding clears the gutter
+       so the buttons line up with the left edge of the code, not the numbers.
+       The bar is transparent, so the gutter stripe shows behind it. */
+    margin: 0;
+    padding: var(--hx-spacing-md);
+    padding-inline-start: calc(var(--hx-code-gutter) + var(--hx-spacing-md));
+    border: 0;
+}
+
+/* Every button nested in the terminal — tabs and the copy button, whether in
+   the switcher bar or docked top-right — takes the terminal foreground, so it
+   reads in the same colour as the source code. Scoped under .hx-code
+   (specificity 0,2,0) so it outranks `.hx-button--glass { color: ... }` (0,1,0),
+   which is imported after this file in the same cascade layer and would
+   otherwise win with dark button text. */
+.hx-code .hx-button {
+    color: var(--hx-code-fg);
+}
+
+.hx-code__copy {
+    /* Push the copy button to the right edge of the bar. */
+    margin-inline-start: auto;
+}
+
+/* Single-part box (no bar): dock the copy button top-right without reserving a
+   row, so the code starts at the very top. The dock is a zero-height sticky
+   strip pinned to the top of the scroll area; it lets clicks fall through to
+   the code except on the button itself. */
+.hx-code__copy-dock {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    /* Zero height reserves no space; the button overflows downward over the
+       code (which has empty top-right space). */
+    height: 0;
+    padding: 0;
+    pointer-events: none;
+}
+
+.hx-code__copy-dock .hx-code__copy {
+    pointer-events: auto;
+    margin: var(--hx-spacing-md) var(--hx-spacing-md);
+}
+
+.hx-code__copy.is-copied {
+    /* Brief confirmation tint after a successful copy. `background` (not
+       -color) to override the glass gradient. */
+    background: color-mix(in srgb, var(--hx-color-success-500), transparent 55%);
+}
+
+/* --- Panels + line numbers --- */
+
+.hx-code__panel {
+    /* Reset the global light <pre> chrome; this surface is dark. No inline
+       padding — each line carries its own left inset past the gutter. */
+    margin: 0;
+    padding: var(--hx-spacing-sm) 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    counter-reset: hx-code-line;
+    overflow-x: auto;
+
+    /* Mono is scoped here (not on .hx-code) so the switcher bar keeps
+       the usual UI font. */
+    font-family: var(--hx-font-mono);
+    font-size: var(--hx-text-sm);
+}
+
+.hx-code__panel code {
+    /* Strip inline-code chrome inherited from elements/code.css; crisp
+       near-white code text against the dark surface (shared with the nested
+       switcher buttons via --hx-code-fg). */
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--hx-code-fg);
+    font-size: inherit;
+}
+
+.hx-code__line {
+    display: block;
+    /* Ensure empty lines occupy a full line height so line numbers stay aligned. */
+    min-height: 1lh;
+    counter-increment: hx-code-line;
+    white-space: pre;
+    /* Right breathing room for long lines that scroll. */
+    padding-inline-end: var(--hx-spacing-md);
+}
+
+/* The line contributes only the number; the gutter column itself (background +
+   right border) is painted on .hx-code. The number is `position:
+   sticky; left: 0` so it stays pinned in the gutter while long code lines
+   scroll horizontally, right-aligned within the gutter width. */
+.hx-code__line::before {
+    content: counter(hx-code-line);
+    position: sticky;
+    left: 0;
+    display: inline-block;
+    box-sizing: border-box;
+    width: var(--hx-code-gutter);
+    padding-inline-end: var(--hx-spacing-sm);
+    margin-inline-end: var(--hx-spacing-md);
+    color: var(--hx-color-neutral-500);
+    text-align: right;
+    user-select: none;
+}
+
+/* --- Active tab ---
+   Switching is server-driven (htmx fragment); only the active part's panel is
+   ever in the DOM, so panels need no show/hide rules. The active tab is marked
+   server-side with `is-active`. Real <button> tabs get the standard focus ring
+   for free. */
+
+/* The active tab is already "on", so it takes no hover effect — covering
+   `:hover` here (specificity 0,3,0) keeps it ahead of the glass hover wash
+   (0,2,0), which is imported after this file. */
+.hx-code__tab.is-active,
+.hx-code__tab.is-active:hover {
+    /* Brighter, flatter fill (`background`, not -color, to override the glass
+       gradient) so the selected tab clearly stands out. */
+    background: color-mix(in srgb, var(--hx-color-neutral-200) 42%, transparent);
+    color: var(--hx-code-fg);
+}

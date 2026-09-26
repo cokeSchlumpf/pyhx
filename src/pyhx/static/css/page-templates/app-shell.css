@@ -1,0 +1,681 @@
+@layer templates {
+
+    body {
+
+        /* --- Tokens --- */
+
+        --header--height: 3rem;
+        --sidepanel--width: 260px;
+        --footer--height: 2rem;
+
+        /* `--hx-table--sticky-top` is still consumed by focus-list.css until
+           the focus-list is migrated to the table primitive; the fullscreen
+           equivalents had no remaining consumer after data_table.css was
+           removed, so only the sticky-top carry-over stays here. */
+
+        --hx-table--fullscreen-top: var(--header--height);
+        --hx-table--fullscreen-bottom: var(--footer--height);
+        --hx-table--sticky-top: var(--header--height);
+
+
+        /* --- Layout --- */
+
+        /* Layout */
+        display: grid;
+        grid-template-columns: var(--sidepanel--width) 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "header header"
+            "main_nav main"
+            "footer footer";
+
+        /* Box */
+        /* dvh tracks the dynamic viewport (mobile address bar); vh is the fallback. */
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: clip;
+
+        &[data-hx-main-menu="false"] {
+            grid-template-areas:
+                "header header"
+                "main main"
+                "footer footer";
+        }
+
+        & > header {
+            /* Position */
+            position: sticky;
+            top: 0;
+            z-index: var(--hx-z-table-header);
+
+            /* Layout */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            grid-area: header;
+
+            /* Box */
+            height: var(--header--height);
+            padding: 0;
+
+            /* Typography */
+            color: var(--hx-color-background);
+
+            /* Visual */
+            background: linear-gradient(150deg, var(--hx-color-purple) 30%, var(--hx-color-primary) 100%);
+            view-transition-name: app-shell-header;
+
+            >div {
+                /* Layout */
+                display: flex;
+                align-items: center;
+            }
+
+            a {
+                /* Typography */
+                text-decoration: none;
+                color: currentColor;
+            }
+        }
+
+        & > .hx-sidepanel {
+            /* Layout */
+            display: block;
+            grid-area: main_nav;
+
+            /* Box */
+            padding: 0;
+            border-right: 1px solid var(--hx-color-neutral-300);
+
+            /* Visual */
+            background: var(--hx-color-neutral-150);
+        }
+
+        & > main {
+            /* Layout */
+            grid-area: main;
+
+            /* Box */
+            padding: 0;
+            /* `1fr` is `minmax(auto, 1fr)`; without this, the column expands to
+               its min-content (e.g. the longest line in a <pre>) and breaks
+               the viewport-width contract. */
+            min-width: 0;
+        }
+
+        & > footer {
+            /* Layout */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            grid-area: footer;
+            gap: var(--hx-spacing-sm);
+
+            /* Box */
+            height: var(--footer--height);
+            padding: 0 var(--hx-spacing-md);
+            border-top: 1px solid var(--hx-color-neutral-300);
+
+            /* Typography */
+            font-size: var(--hx-text-sm);
+            white-space: nowrap;
+
+            /* Visual */
+            background: var(--hx-color-neutral-200);
+        }
+
+        .hx-sticky {
+            /* Position */
+            position: sticky;
+            top: var(--header--height);
+        }
+
+        /* Exception rule for vertically centered login screen. */
+        .hx-sticky:has(div.hx-login) {
+            /* Position */
+            min-height: 100%;
+        }
+
+        .hx-page-header {
+            top: var(--header--height);
+        }
+
+        &:has(.hx-page-header) {
+            --hx-table--sticky-top: calc(var(--header--height) + var(--page-header--height));
+        }
+
+        /* Section header pins below both the app-shell header and the page
+           header. (page-section.css then offsets tables inside a section by the
+           section-header height on top of this.) */
+        .hx-page-section {
+            --page-section--top: calc(var(--header--height) + var(--page-header--height));
+        }
+
+
+        /* --- Brand --- */
+
+        .hx-brand {
+            /* Layout */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            /* Box */
+            margin-left: var(--hx-spacing-sm);
+
+            /* Typography */
+            font-size: var(--hx-text-xl);
+
+            img {
+                /* Box */
+                height: calc(var(--header--height) * 0.6);
+            }
+        }
+
+        .hx-brand__title {
+            /* Box */
+            margin-left: var(--hx-spacing-md);
+        }
+
+
+        /* --- Menu button --- */
+
+        .hx-menu-button,
+        & > header button,
+        & > header a[role="button"] {
+            /* Layout */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--hx-spacing-sm);
+
+            /* Box */
+            height: var(--header--height);
+            padding: 0 var(--hx-spacing-md);
+            margin: 0;
+            border: 0;
+
+            /* Typography */
+            font-family: inherit;
+            font-size: var(--hx-text-base);
+            line-height: 1;
+            color: currentColor;
+
+            /* Visual */
+            background: transparent;
+
+            /* Interaction */
+            cursor: pointer;
+            user-select: none;
+            appearance: none;
+
+            svg {
+                /* Box */
+                width: calc(var(--header--height) / 2);
+                height: calc(var(--header--height) / 2);
+            }
+
+            &:hover {
+                /* Visual */
+                background-color: color-mix(in srgb, var(--hx-color-background) 10%, transparent);
+            }
+        }
+
+        .hx-menu-button--icon {
+            /* Box */
+            width: var(--header--height);
+            padding: 0;
+
+            /* Typography */
+            font-size: var(--hx-text-2xl);
+        }
+
+        /* Desktop default: the mobile sidepanel toggle is hidden;
+           the desktop compact toggle is visible. Mobile media query swaps these. */
+        label.hx-menu-button[for="hx-menu__toggle"] {
+            /* Layout */
+            display: none;
+        }
+
+
+        /* --- Menu (sidepanel toggle) --- */
+
+        /* Visually hidden but keyboard-focusable; state-holder for the :has() toggle. */
+        .hx-menu__toggle {
+            /* Position */
+            position: absolute;
+
+            /* Box */
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            overflow: hidden;
+
+            /* Typography */
+            white-space: nowrap;
+
+            /* Visual */
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+        }
+
+        .hx-menu__backdrop {
+            /* Layout */
+            display: none;
+        }
+
+
+        /* --- Nav menu (shared by main + user) --- */
+
+        nav[aria-label="main"],
+        nav[aria-label="user"] {
+            ul {
+                /* Layout */
+                display: block;
+
+                /* Box */
+                margin: 0;
+                padding: 0;
+
+                /* Visual */
+                list-style: none;
+            }
+
+            li {
+                /* Layout */
+                display: block;
+
+                /* Box */
+                margin: 0;
+                padding: 0;
+                border-radius: 0;
+
+                /* Override Pico's zero-width-space "\200B" pseudo-element. */
+                &::before {
+                    content: none;
+                }
+            }
+
+            h3 {
+                /* Box */
+                margin: var(--hx-spacing-md) var(--hx-spacing-md) var(--hx-spacing-xs) var(--hx-spacing-lg);
+
+                /* Typography */
+                font-size: var(--hx-text-sm);
+                font-weight: var(--hx-font-semibold);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--hx-color-neutral-600);
+            }
+
+            a {
+                /* Layout */
+                display: flex;
+                align-items: center;
+                gap: var(--hx-spacing-sm);
+
+                /* Box */
+                border-radius: 0;
+                border-left: 3px solid transparent;
+                padding: var(--hx-spacing-md) var(--hx-spacing-lg);
+                margin: 0;
+
+                /* Typography */
+                text-decoration: none;
+                color: var(--hx-color-text);
+
+                &:hover {
+                    /* Visual */
+                    background-color: var(--hx-color-neutral-300);
+                }
+
+                &.active {
+                    /* Box */
+                    border-left-color: var(--hx-color-primary);
+
+                    /* Typography */
+                    font-weight: var(--hx-font-semibold);
+
+                    /* Visual */
+                    background-color: color-mix(in srgb, var(--hx-color-primary) 20%, transparent);
+                }
+
+                svg {
+                    /* Box */
+                    width: calc(var(--hx-text-base) * 1.5);
+                    height: calc(var(--hx-text-base) * 1.5);
+                }
+            }
+
+            li[role="separator"] {
+                /* Box */
+                margin: var(--hx-spacing-xs) 0;
+                border-top: 1px solid var(--hx-color-neutral-200);
+            }
+        }
+
+
+        /* --- Main nav layout (sidebar column flex) --- */
+
+        nav[aria-label="main"] {
+            /* Layout */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+
+            li[role="group"] {
+                /* Layout */
+                display: flow-root;
+            }
+
+            li[role="group"].active {
+                /* Visual */
+                background-color: var(--hx-color-neutral-200);
+            }
+        }
+
+
+        /* --- User menu (dropdown chrome) --- */
+
+        nav[aria-label="user"] {
+            /* Position */
+            position: fixed;
+            top: var(--header--height);
+            right: 0;
+            z-index: var(--hx-z-dropdown);
+
+            /* Layout */
+            display: none;
+
+            /* Box */
+            min-width: 200px;
+            width: max-content;
+            max-width: 90vw;
+            padding: var(--hx-spacing-xs) 0;
+            border: 1px solid var(--hx-color-neutral-300);
+            border-radius: var(--hx-radius-md);
+
+            /* Visual */
+            background-color: var(--hx-color-background);
+            box-shadow: var(--hx-shadow-elevated);
+        }
+
+        &:has(#hx-user-menu__toggle:checked) nav[aria-label="user"] {
+            /* Layout */
+            display: block;
+        }
+
+        .hx-user-menu__backdrop {
+            /* Layout */
+            display: none;
+        }
+
+        &:has(#hx-user-menu__toggle:checked) .hx-user-menu__backdrop {
+            /* Position */
+            position: fixed;
+            inset: 0;
+            z-index: var(--hx-z-backdrop);
+
+            /* Layout */
+            display: block;
+        }
+
+
+        /* --- App mode --- */
+
+        &[data-hx-mode="app"] {
+            footer {
+                /* Position */
+                position: sticky;
+                bottom: 0;
+                z-index: var(--hx-z-sticky);
+            }
+        }
+
+
+        /* --- Compact mode (desktop) --- */
+
+        @media (min-width: 768px) {
+            /* Smooth transition when toggling compact mode. */
+            /* Motion */
+            transition: grid-template-columns var(--hx-transition-slow);
+
+            /* Compact: shrink the sidepanel column to an icon rail; hide labels. */
+            &:has(#hx-menu__compact:checked) {
+                --sidepanel--width: 4rem;
+
+                nav[aria-label="main"] {
+                    h3 {
+                        /* Layout */
+                        display: none;
+                    }
+
+                    a {
+                        /* Layout */
+                        justify-content: center;
+
+                        /* Box */
+                        /* Drop horizontal padding so the icon keeps its full 24px size in the narrow rail. */
+                        padding-inline: 0;
+
+                        span {
+                            /* Layout */
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /* --- Responsive (mobile sidepanel) --- */
+
+        @media (max-width: 767px) {
+            /* Layout */
+            grid-template-columns: 1fr;
+            grid-template-areas:
+                "header"
+                "main"
+                "footer";
+
+            >.hx-sidepanel {
+                /* Position */
+                position: fixed;
+                top: var(--header--height);
+                bottom: 0;
+                left: 0;
+                z-index: var(--hx-z-sidepanel);
+
+                /* Box */
+                width: 80%;
+                max-width: 320px;
+                overflow-y: auto;
+
+                /* Motion */
+                transform: translateX(-100%);
+                transition: transform var(--hx-transition-slow);
+            }
+
+            /* Sidepanel is its own scroll container; desktop sticky offset would create a phantom gap. */
+            .hx-sticky {
+                /* Position */
+                position: static;
+            }
+
+            .hx-menu__backdrop {
+                /* Position */
+                position: fixed;
+                top: var(--header--height);
+                right: 0;
+                bottom: 0;
+                left: 0;
+                z-index: var(--hx-z-backdrop);
+
+                /* Layout */
+                display: block;
+
+                /* Visual */
+                background-color: var(--hx-color-overlay-dark);
+                opacity: 0;
+
+                /* Motion */
+                transition: opacity var(--hx-transition-slow);
+
+                /* Interaction */
+                pointer-events: none;
+            }
+
+            /* Hide the user-menu trigger; the menu lives inside the sidepanel on mobile. */
+            label.hx-menu-button[for="hx-user-menu__toggle"] {
+                /* Layout */
+                display: none;
+            }
+
+            /* Swap which burger toggle is active: show the sidepanel toggle, hide the compact toggle. */
+            label.hx-menu-button[for="hx-menu__toggle"] {
+                /* Layout */
+                display: inline-flex;
+            }
+            label.hx-menu-button[for="hx-menu__compact"] {
+                /* Layout */
+                display: none;
+            }
+
+            /* User nav becomes inline within the sidepanel flow on mobile. */
+            nav[aria-label="user"] {
+                /* Position */
+                position: static;
+                z-index: auto;
+
+                /* Layout */
+                display: block;
+
+                /* Box */
+                min-width: 0;
+                width: auto;
+                max-width: none;
+                padding: 0;
+                border: 0;
+                border-radius: 0;
+
+                /* Visual */
+                background-color: transparent;
+                box-shadow: none;
+            }
+
+            &:has(#hx-menu__toggle:checked) {
+                /* Box */
+                overflow: hidden;
+
+                >.hx-sidepanel {
+                    /* Motion */
+                    transform: translateX(0);
+                }
+
+                >.hx-menu__backdrop {
+                    /* Visual */
+                    opacity: 1;
+
+                    /* Interaction */
+                    pointer-events: auto;
+                }
+            }
+
+            /* Honor OS-level reduce-motion preference. */
+            @media (prefers-reduced-motion: reduce) {
+
+                >.hx-sidepanel,
+                .hx-menu__backdrop {
+                    /* Motion */
+                    transition: none;
+                }
+            }
+        }
+
+        .hx-login {
+            height: calc(100vh - var(--header--height) - var(--footer--height));
+            display: flex;
+            width: 100vw;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            & > article {
+                width: 400px;
+            }
+        }
+    }
+
+    ::view-transition-group(app-shell-header) {
+        z-index: var(--hx-z-table-header);
+    }
+
+    body[data-hx-mode="app"]:has(> main > .hx-sticky > .hx-page-header):has(
+        > main > .hx-sticky > :is(.hx-container--wide, .hx-container--stretch) > .hx-table__wrapper:only-child > .hx-table__scroll-container
+    ) {
+        /* Two-row grid: page header keeps its natural height (auto), the table
+           container fills the rest (1fr). `minmax(0, 1fr)` on the fill row AND
+           the single column defeats grid's automatic (min-content) minimum, so a
+           wide/tall table can't blow the tracks out — it stays inside the sticky
+           and the scroll-container scrolls instead. This is why grid beats flex
+           here: the track caps the size directly, no min-width/height:0 chasing. */
+        & > main > .hx-sticky {
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            grid-template-columns: minmax(0, 1fr);
+            /* NOT height: 100% — `main` has no definite height (the body uses
+               min-height: 100dvh, not height), so a percentage would resolve to
+               auto = content height and balloon to the full table. Derive a
+               definite height straight from the viewport minus the two fixed
+               bands instead. */
+            height: calc(100dvh - var(--header--height) - var(--footer--height));
+        }
+
+        & > main > .hx-sticky > .hx-page-header {
+            margin-bottom: 0;
+        }
+
+        & > main > .hx-sticky > div[data-hx-include="always"] { 
+            display: none;
+        }
+
+        /* Fills the 1fr row; its own single minmax(0, 1fr) cell then sizes and
+           caps the wrapper the same way. Works for both `--stretch` and `--wide`
+           (e.g. a DataPage): max-width: none neutralises `--wide`'s 80rem cap so
+           the table goes full-bleed in this full-height layout. */
+        & > main > .hx-sticky > :is(.hx-container--wide, .hx-container--stretch) {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: minmax(0, 1fr);
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Wrapper stays flex so the empty state-input div collapses and the
+           abspos toolbar stays pinned; the scroll-container takes the space.
+           min-*: 0 lets the scroll box shrink to the cell in both axes. */
+        & > main > .hx-sticky > :is(.hx-container--wide, .hx-container--stretch) > .hx-table__wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        & > main > .hx-sticky > :is(.hx-container--wide, .hx-container--stretch) > .hx-table__wrapper > .hx-table__scroll-container {
+            flex: 1 1 auto;
+            min-height: 0;
+            min-width: 0;
+            border: none;
+            /* This IS the scroll box, so the sticky <thead> pins to its top.
+               table.css already sets this to 0 here; pin it explicitly so the
+               calc(header + page-header) offset the app shell puts on <body>
+               can never leak in via the cascade. */
+            --hx-table--sticky-top: 0;
+        }
+    }
+
+}

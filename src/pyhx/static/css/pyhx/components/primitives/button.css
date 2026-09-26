@@ -1,0 +1,275 @@
+/* --- Button --- */
+
+.hx-button {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    border: 1px solid transparent;
+    border-radius: var(--hx-radius-md);
+
+    /* Typography */
+    font-family: inherit;
+    font-size: var(--hx-text-base);
+    font-weight: var(--hx-font-medium);
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;  /* Anchor reset — when rendered as <a href=...>. */
+
+    /* Visual */
+    background: transparent;
+
+    /* Motion */
+    transition:
+        background-color var(--hx-transition-base),
+        border-color var(--hx-transition-base),
+        color var(--hx-transition-base);
+
+    /* Interaction */
+    cursor: pointer;
+    user-select: none;
+    appearance: none;
+
+    /* SVG icon (e.g. <i data-feather="…">) sized to follow the label. */
+    svg {
+        /* Box */
+        width: 1em;
+        height: 1em;
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+        /* Visual */
+        opacity: var(--pico-form-element-disabled-opacity);
+
+        /* Interaction */
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+}
+
+
+/* --- Appearance: sets the local colors used by every variant. --- */
+
+.hx-button--neutral {
+    --_button-color: var(--hx-color-neutral-200);
+    --_button-text-color-solid: var(--hx-color-text);
+    --_button-text-color: var(--hx-color-neutral-600);
+}
+
+.hx-button--info {
+    --_button-color: var(--hx-color-info-600);
+    --_button-text-color-solid: var(--hx-color-background);
+    --_button-text-color: var(--hx-color-info-600);
+}
+
+.hx-button--success {
+    --_button-color: var(--hx-color-success-500);
+    --_button-text-color-solid: var(--hx-color-background);
+    --_button-text-color: var(--hx-color-success-500);
+}
+
+.hx-button--warning {
+    --_button-color: var(--hx-color-warning-500);
+    --_button-text-color-solid: var(--hx-color-background);
+    --_button-text-color: var(--hx-color-warning-500);
+}
+
+.hx-button--danger {
+    --_button-color: var(--hx-color-danger-500);
+    --_button-text-color-solid: var(--hx-color-background);
+    --_button-text-color: var(--hx-color-danger-500);
+}
+
+.hx-button--primary {
+    --_button-color: var(--hx-color-secondary);
+    --_button-text-color-solid: var(--hx-color-background);
+    --_button-text-color: var(--hx-color-secondary);
+}
+
+.hx-button--ghost,
+.hx-button--outline {
+    &.hx-button--neutral {
+        --_button-color: var(--hx-color-neutral-400);
+    }
+}
+
+.hx-button--link {
+    &.hx-button--neutral {
+        --_button-color: var(--hx-color-text);
+    }
+}
+
+
+/* --- Variant: solid (filled, highest emphasis) --- */
+
+.hx-button--solid {
+    /* Typography */
+    color: var(--_button-text-color-solid);
+
+    /* Box */
+    border-color: var(--_button-color);
+
+    /* Visual */
+    background-color: var(--_button-color);
+
+    &:hover {
+        /* Visual */
+        background-color: color-mix(in srgb, var(--_button-color), var(--hx-color-background) 20%);
+        border-color: color-mix(in srgb, var(--_button-color), var(--hx-color-background) 20%);
+    }
+}
+
+
+/* --- Variant: outline (border-only) --- */
+
+.hx-button--outline {
+    /* Typography */
+    color: var(--_button-text-color);
+
+    /* Box */
+    border-color: var(--_button-color);
+
+    /* Visual */
+    background-color: transparent;
+
+    &:hover {
+        /* Visual */
+        background-color: color-mix(in srgb, var(--_button-color), transparent 80%);
+    }
+}
+
+
+/* --- Variant: ghost (no border, hover only) --- */
+
+.hx-button--ghost {
+    /* Typography */
+    color: var(--_button-text-color);
+
+    /* Box */
+    border-color: transparent;
+
+    /* Visual */
+    background-color: transparent;
+
+    &:hover {
+        /* Visual */
+        background-color: color-mix(in srgb, var(--_button-color), transparent 80%);
+    }
+}
+
+
+/* --- Size: padding + font-size. md is the base (no rule needed). --- */
+
+.hx-button--sm {
+    /* Box */
+    padding: var(--hx-spacing-xs) var(--hx-spacing-sm);
+    gap: var(--hx-spacing-xs);
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+}
+
+.hx-button--lg {
+    /* Box */
+    padding: var(--hx-spacing-md) var(--hx-spacing-lg);
+    gap: var(--hx-spacing-md);
+
+    /* Typography */
+    font-size: var(--hx-text-lg);
+}
+
+
+/* --- Icon-only: square aspect-ratio, equal padding so the icon stays centred. --- */
+
+.hx-button--icon-only {
+    /* Box */
+    padding: var(--hx-spacing-sm);
+    aspect-ratio: 1 / 1;
+
+    &.hx-button--sm {
+        /* Box */
+        padding: var(--hx-spacing-xs);
+    }
+
+    &.hx-button--lg {
+        /* Box */
+        padding: var(--hx-spacing-md);
+    }
+}
+
+
+/* --- Variant: glass (semi-transparent fill + backdrop blur)
+
+   A solid fill rendered translucent over a backdrop blur, so it frosts
+   whatever scrolls behind it. Consumes the appearance custom properties like
+   the other variants. Degrades to a plain translucent button where
+   backdrop-filter is unsupported. */
+
+.hx-button--glass {
+    /* Typography */
+    color: var(--_button-text-color-solid);
+
+    /* Box — no border at all; the glass surface defines its own edge. */
+    border: 0;
+
+    /* Visual
+       Depth comes from a subtle gradient in the tint itself (like the pill):
+       slightly rotated off-vertical, brighter at the edges than the middle so
+       the surface reads as glass rather than a flat translucent slab. No
+       separate border colour — the base 1px transparent border stays.
+
+       The gradient is a static background-IMAGE; hover bumps the
+       background-COLOR by a small amount. Gradients aren't transitionable, but
+       background-color is (the base .hx-button transition covers it), so hover
+       reads as a gentle, animated rise in overall opacity rather than a jump. */
+    background-color: transparent;
+    background-image: linear-gradient(
+        170deg,
+        color-mix(in srgb, var(--_button-color) 24%, transparent) 0%,
+        color-mix(in srgb, var(--_button-color) 12%, transparent) 50%,
+        color-mix(in srgb, var(--_button-color) 24%, transparent) 100%
+    );
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+
+    &:hover {
+        /* A subtle extra wash layered over the static gradient. */
+        background-color: color-mix(in srgb, var(--_button-color) 12%, transparent);
+    }
+}
+
+
+/* --- Variant: link (renders as a Pico-style anchor — no box, hover underline)
+
+   Inherits its colour from --_button-text-color so it composes with the
+   appearance scale (default neutral; pass appearance="primary" for the
+   classic blue link look). Defined after sizes/icon-only so its zero
+   padding wins on equal-specificity cascade. */
+
+.hx-button--link {
+    /* Typography */
+    color: var(--_button-text-color);
+    text-decoration: none;
+
+    /* Box */
+    padding: 0;
+    border-color: transparent;
+
+    /* Visual */
+    background-color: transparent;
+
+    &:hover,
+    &:focus,
+    &:active {
+        /* Typography */
+        text-decoration: underline;
+
+        /* Visual */
+        background-color: transparent;
+    }
+}

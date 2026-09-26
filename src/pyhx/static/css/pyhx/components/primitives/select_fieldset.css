@@ -1,0 +1,17 @@
+/* --- Select fieldset (radio / checkbox group with <legend>) --- */
+
+
+/* --- Disabled state ---
+   `<fieldset disabled>` is native HTML — the browser cascades the
+   disabled state to every contained form control automatically, so
+   there's no per-input wiring. This rule only adds the muted look so
+   the disabled fieldset matches the rest of the disabled form
+   primitives. */
+
+.hx-select-fieldset:disabled {
+    /* Visual */
+    opacity: var(--pico-form-element-disabled-opacity);
+
+    /* Interaction */
+    cursor: not-allowed;
+}

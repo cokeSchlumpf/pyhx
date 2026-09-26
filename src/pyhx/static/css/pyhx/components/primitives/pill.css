@@ -1,0 +1,194 @@
+/* --- Pill --- */
+
+.hx-pill {
+    /* Tokens
+       Depth comes from a subtle top-to-bottom gradient in the variant
+       tint itself — no box-shadow. Each variant only sets --pill--color
+       and inherits the surface gradient and edge for free. */
+    --pill--color: var(--hx-color-info-600);
+    --pill--surface: linear-gradient(
+        170deg,
+        color-mix(in srgb, var(--pill--color) 18%, transparent) 0%,
+        color-mix(in srgb, var(--pill--color) 10%, transparent) 50%,
+        color-mix(in srgb, var(--pill--color) 18%, transparent) 100%
+    );
+    --pill--edge: color-mix(in srgb, var(--pill--color) 28%, transparent);
+    --pill--padding-inline: var(--hx-spacing-sm);
+    /* Fixed outer height so the pill never grows or shrinks based on
+       which slots are filled. Includes the 2 × 1px border to stay
+       box-sizing-honest. */
+    --pill--height: calc(var(--hx-text-xs) + var(--hx-spacing-xs) * 3 + 2px);
+
+    /* Layout */
+    display: inline-flex;
+    align-items: stretch;
+
+    /* Box */
+    box-sizing: border-box;
+    height: var(--pill--height);
+    border-radius: var(--hx-radius-md);
+    border: 1px solid var(--pill--edge);
+    overflow: hidden;
+
+    /* Typography */
+    color: var(--pill--color);
+    font-size: var(--hx-text-sm);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1;
+    white-space: nowrap;
+
+    /* Visual */
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+
+
+/* --- Cells ---
+   The pill carries the height; every cell stretches to fill it via
+   `align-items: stretch` on the pill, then each cell centres its own
+   content vertically. No vertical padding on cells — the fixed pill
+   height + each cell's `align-items: center` handles centring without
+   a typography-vs-icon size race. */
+
+.hx-pill__label,
+.hx-pill__value,
+.hx-pill__close {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Box */
+    padding: 0 var(--pill--padding-inline);
+}
+
+.hx-pill__label {
+    /* Visual */
+    background: var(--pill--surface);
+}
+
+.hx-pill__value {
+    /* Typography */
+    color: var(--hx-color-text);
+    font-weight: var(--pico-font-weight);
+}
+
+
+/* --- State: label + button (no value) ---
+   With a value present the chip is two-tone (coloured label, neutral
+   value/button area). With a button BUT no value, the chip reads as a
+   single coloured tag with an inline × — fill the whole pill so the
+   button sits on the variant colour instead of the page background. */
+
+.hx-pill:has(.hx-pill__button):not(:has(.hx-pill__value)) {
+    /* Visual */
+    background: var(--pill--surface);
+}
+
+
+/* --- Button slot ---
+   `display: inline-flex` rather than `display: contents` so we don't
+   rely on Chrome's contents-delegation through a <button> child (a
+   known edge case). The slot is a proper flex cell that stretches to
+   the chip height; the inner button fills it. */
+
+.hx-pill__button {
+    /* Layout */
+    display: inline-flex;
+    align-items: stretch;
+
+    /* Box */
+    padding: 0;
+}
+
+
+/* --- pill.button (chip-scoped close button) ---
+   Aggressive UA reset so the <button> doesn't drag in its own margin,
+   min-height (Webkit tap-target), border, font strut, or box-shadow
+   that would otherwise push the chip row taller than the label.
+   `line-height: 0` zeroes the font strut so Chrome doesn't oversize
+   the button on its empty text line. `-webkit-appearance: none` is
+   the prefixed form Chrome still needs alongside `appearance: none`. */
+
+.hx-pill__close {
+    /* Box */
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    min-height: 0;
+
+    /* Typography */
+    color: inherit;
+    font: inherit;
+    line-height: 0;
+
+    /* Visual */
+    background-color: transparent;
+    box-shadow: none;
+
+    /* Motion */
+    transition: background-color var(--hx-transition-base);
+
+    /* Interaction */
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.hx-pill__close:hover,
+.hx-pill__close:focus-visible {
+    /* Visual */
+    background-color: color-mix(in srgb, var(--pill--color) 22%, transparent);
+}
+
+.hx-pill__close svg {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: 1em;
+    height: 1em;
+    margin: auto;
+}
+
+
+/* --- pill.container (multi-pill flex row) ---
+   Lays out a sequence of pills horizontally with a consistent gap;
+   wraps to a new row when the line is full. */
+
+.hx-pill-container {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--hx-spacing-sm);
+}
+
+
+/* --- Variants ---
+   Each variant only redefines --pill--color; surface, edge, gradient,
+   and shadow are derived from it via the calculations in the base
+   rule's Tokens block. */
+
+.hx-pill--neutral {
+    --pill--color: var(--hx-color-neutral-700);
+}
+
+.hx-pill--primary {
+    --pill--color: var(--hx-color-primary);
+}
+
+.hx-pill--info {
+    --pill--color: var(--hx-color-info-600);
+}
+
+.hx-pill--success {
+    --pill--color: var(--hx-color-success-600);
+}
+
+.hx-pill--warning {
+    --pill--color: var(--hx-color-warning-500);
+}
+
+.hx-pill--danger {
+    --pill--color: var(--hx-color-danger-600);
+}

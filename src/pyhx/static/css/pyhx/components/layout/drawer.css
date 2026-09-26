@@ -1,0 +1,148 @@
+/* --- Drawer (modal slide-over) ---
+
+   Initial implementation. Auto-shows when the inner <section> has any
+   element children — the close action swaps the aside back to an empty
+   <section>, which lets pure CSS hide it again. No JS / no checkbox. */
+
+/* Hidden state is the default; the open state below is triggered by
+   the inner section having element children. */
+
+.hx-drawer {
+    --hx--drawer--top: 50px;
+    --hx--drawer-bottom: 50px;
+}
+
+.hx-drawer__backdrop {
+    /* Position */
+    position: fixed;
+    inset: 0;
+    z-index: var(--hx-z-backdrop);
+
+    /* Visual */
+    background-color: var(--hx-color-overlay-dark);
+
+    /* Motion */
+    opacity: 0;
+    transition: opacity var(--hx-transition-slow);
+
+    /* Interaction */
+    pointer-events: none;
+}
+
+.hx-drawer > aside {
+    /* Position */
+    position: fixed;
+    top: var(--hx--drawer--top);
+    right: 0;
+    bottom: var(--hx--drawer-bottom);
+    z-index: var(--hx-z-sidepanel);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Box */
+    width: 100%;
+    max-width: 480px;
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-panel-left);
+
+    /* Motion */
+    transform: translateX(100%);
+    transition: transform var(--hx-transition-slow);
+
+    > header {
+        /* Layout */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--hx-spacing-md);
+        flex: 0 0 auto;
+
+        /* Box */
+        padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+        border-bottom: 1px solid var(--hx-color-neutral-200);
+
+        h3 {
+            /* Box */
+            margin: 0;
+
+            /* Typography */
+            font-size: var(--hx-text-lg);
+            font-weight: var(--hx-font-semibold);
+        }
+    }
+
+    > section {
+        /* Layout */
+        flex: 1 1 auto;
+
+        /* Box */
+        padding: var(--hx-spacing-md);
+        overflow-y: auto;
+        margin-bottom: 0;
+    }
+}
+
+
+/* --- Open state: triggered when the section has element children.
+   Close action returns a drawer with an empty <section>, which collapses
+   this :has() match and slides everything back out. --- */
+
+.hx-drawer:has(> aside > section > *) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    > .hx-drawer__backdrop {
+        /* Motion */
+        opacity: 1;
+
+        /* Interaction */
+        pointer-events: auto;
+    }
+
+    > aside {
+        /* Motion */
+        transform: translateX(0);
+    }
+}
+
+/* --- Popup drawer: a second drawer instance stacked above the primary one.
+   Used by drawer-based pickers (`drawer_select` / `drawer_radio`) so they open
+   on top of a form rendered in the primary drawer instead of replacing it.
+   Only the stacking differs; all open/close behaviour is inherited from the
+   base `.hx-drawer` rules above. Stays below `--hx-z-dropdown` (200) so
+   dropdowns inside the picker still layer correctly. --- */
+
+.hx-drawer--popup > .hx-drawer__backdrop {
+    z-index: calc(var(--hx-z-sidepanel) + 10); /* 110 */
+}
+
+.hx-drawer--popup > aside {
+    z-index: calc(var(--hx-z-sidepanel) + 20); /* 120 */
+}
+
+
+/* Drawer-context layout for the `DataForm` action area: stack the
+   buttons vertically with the submit on top. `column-reverse` surfaces
+   the last DOM child (the submit) at the top; the secondary actions
+   stack below it in reverse DOM order, so the rightmost extra from
+   the page layout sits closest to the submit in the drawer too. */
+
+.hx-drawer .hx-data-form__actions div {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: var(--hx-spacing-sm);
+
+    padding: 0 var(--hx-spacing-md);
+
+    .hx-button {
+        width: unset;
+    }
+}

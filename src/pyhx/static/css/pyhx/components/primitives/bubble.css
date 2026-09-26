@@ -1,0 +1,150 @@
+/* --- Bubble ---
+   A full-width, block-level container with rounded corners and a tinted
+   surface. Mirrors the pill palette: each appearance variant only sets
+   --hx-bubble--color and inherits the derived surface + edge + text for
+   free. The color / text_color component props override --hx-bubble--bg
+   and --hx-bubble--text inline, bypassing the palette. */
+
+.hx-bubble {
+    /* Tokens
+       The surface is a subtle tint of the variant colour; the edge a
+       slightly stronger tint. --hx-bubble--bg and --hx-bubble--text are
+       the override hooks — set inline by the `color` / `text_color`
+       component props, otherwise derived from --hx-bubble--color. */
+    --hx-bubble--color: var(--hx-color-info-600);
+    --hx-bubble--bg: color-mix(in srgb, var(--hx-bubble--color) 12%, transparent);
+    --hx-bubble--edge: color-mix(in srgb, var(--hx-bubble--color) 28%, transparent);
+    --hx-bubble--text: var(--hx-bubble--color);
+
+    /* Solid-variant fill + text. The default (outline) variant ignores
+       these; .hx-bubble--solid maps them onto --bg / --edge / --text. Each
+       appearance overrides them to match the solid-button palette. */
+    --hx-bubble--solid-bg: var(--hx-color-info-600);
+    --hx-bubble--solid-text: var(--hx-color-background);
+
+    /* Size tokens — the inline padding is constant across sizes; only the
+       block (vertical) padding and font-size shrink for sm. The --{sm,md}
+       modifiers override --padding-block / --font-size. */
+    --hx-bubble--padding-inline: var(--hx-spacing-md);
+    --hx-bubble--padding-block: var(--hx-spacing-md);
+    --hx-bubble--font-size: var(--hx-text-base);
+
+    /* Optical centring — a font reserves descender space below the
+       baseline, so a single line of text reads as sitting high even when
+       it is metrically centred (equal padding top/bottom). Nudge the
+       content down by a hair — add this to the top padding, subtract it
+       from the bottom — so the x-height band sits on the optical centre.
+       In em so it scales with font-size across sizes. */
+    --hx-bubble--optical-shift: 0.09em;
+
+    /* Layout */
+    display: block;
+    width: 100%;
+
+    /* Box */
+    box-sizing: border-box;
+    padding:
+        calc(var(--hx-bubble--padding-block) + var(--hx-bubble--optical-shift))
+        var(--hx-bubble--padding-inline)
+        calc(var(--hx-bubble--padding-block) - var(--hx-bubble--optical-shift));
+    border-radius: var(--hx-radius-lg);
+    border: 1px solid var(--hx-bubble--edge);
+
+    /* Visual */
+    background: var(--hx-bubble--bg);
+
+    /* Typography */
+    color: var(--hx-bubble--text);
+    font-size: var(--hx-bubble--font-size);
+}
+
+
+/* --- Content ---
+   Collapse the outer vertical margins of the first and last child so the
+   block padding stays symmetric and the content sits vertically centred —
+   otherwise the typography margins headings/paragraphs carry (Pico adds a
+   1rem bottom margin) push the content off-centre, most visibly in sm. */
+
+.hx-bubble > :first-child {
+    margin-top: 0;
+}
+
+.hx-bubble > :last-child {
+    margin-bottom: 0;
+}
+
+
+/* --- Sizes ---
+   Inline padding is inherited from the base rule (constant across sizes);
+   each size only shrinks the vertical padding + font-size. md matches the
+   base defaults and is spelled out so the modifier is explicit. */
+
+.hx-bubble--md {
+    --hx-bubble--padding-block: var(--hx-spacing-md);
+    --hx-bubble--font-size: var(--hx-text-base);
+}
+
+.hx-bubble--sm {
+    --hx-bubble--padding-block: var(--hx-spacing-sm);
+    --hx-bubble--font-size: var(--hx-text-sm);
+    /* sm needs a touch more optical shift than the em scaling gives —
+       the descender offset is a larger fraction at the smaller size. */
+    --hx-bubble--optical-shift: 0.06em;
+}
+
+
+/* --- Emphasis variants ---
+   outline (default) is the base tinted, bordered surface. solid fills the
+   bubble with the appearance colour using the SAME palette as solid buttons
+   — the per-appearance --solid-bg / --solid-text tokens below mirror the
+   --_button-color / --_button-text-color-solid values in button.css. It maps
+   those onto the base --bg / --edge / --text hooks, so the color / text_color
+   inline overrides still win. */
+
+.hx-bubble--solid {
+    --hx-bubble--bg: var(--hx-bubble--solid-bg);
+    --hx-bubble--edge: var(--hx-bubble--solid-bg);
+    --hx-bubble--text: var(--hx-bubble--solid-text);
+}
+
+
+/* --- Appearance palette ---
+   --hx-bubble--color drives the outline surface/edge/text (derived in the
+   base rule). --solid-bg / --solid-text drive the solid variant and match
+   button.css exactly. */
+
+.hx-bubble--neutral {
+    --hx-bubble--color: var(--hx-color-neutral-700);
+    --hx-bubble--solid-bg: var(--hx-color-neutral-200);
+    --hx-bubble--solid-text: var(--hx-color-text);
+}
+
+.hx-bubble--primary {
+    --hx-bubble--color: var(--hx-color-primary);
+    --hx-bubble--solid-bg: var(--hx-color-secondary);
+    --hx-bubble--solid-text: var(--hx-color-background);
+}
+
+.hx-bubble--info {
+    --hx-bubble--color: var(--hx-color-info-600);
+    --hx-bubble--solid-bg: var(--hx-color-info-600);
+    --hx-bubble--solid-text: var(--hx-color-background);
+}
+
+.hx-bubble--success {
+    --hx-bubble--color: var(--hx-color-success-600);
+    --hx-bubble--solid-bg: var(--hx-color-success-500);
+    --hx-bubble--solid-text: var(--hx-color-background);
+}
+
+.hx-bubble--warning {
+    --hx-bubble--color: var(--hx-color-warning-500);
+    --hx-bubble--solid-bg: var(--hx-color-warning-500);
+    --hx-bubble--solid-text: var(--hx-color-background);
+}
+
+.hx-bubble--danger {
+    --hx-bubble--color: var(--hx-color-danger-600);
+    --hx-bubble--solid-bg: var(--hx-color-danger-500);
+    --hx-bubble--solid-text: var(--hx-color-background);
+}

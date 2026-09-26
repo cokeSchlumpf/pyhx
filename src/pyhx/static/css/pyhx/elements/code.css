@@ -1,0 +1,44 @@
+/* --- Inline code --- */
+
+code {
+    /* Box */
+    padding: 0.125em 0.375em;
+    border: 1px solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-sm);
+
+    /* Typography */
+    /* em-based size lets inline code track the surrounding text scale. */
+    font-family: var(--hx-font-mono);
+    font-size: 0.875em;
+    color: var(--hx-color-neutral-800);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-150);
+}
+
+
+/* --- Code blocks --- */
+
+pre {
+    /* Box */
+    padding: var(--hx-spacing-md);
+    border: 1px solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-md);
+    max-width: 100%;
+    overflow-x: auto;
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-100);
+}
+
+pre code {
+    /* Strip the inline-code chrome — pre carries it instead. */
+    padding: 0;
+    border: 0;
+
+    /* Typography */
+    font-size: 1em;
+
+    /* Visual */
+    background: transparent;
+}

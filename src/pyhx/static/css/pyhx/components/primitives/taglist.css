@@ -1,0 +1,117 @@
+.hx-taglist {
+    /* Position — anchor for the absolutely-positioned dropdown below. */
+    position: relative;
+}
+
+.hx-taglist .hx-taglist__dropdown {
+    /* Position — floats below the search input so the value chips never
+       get pushed down by the dropdown's presence, and the (invisible)
+       dropdown never claims layout space when hidden. */
+    position: absolute;
+    left: 0;
+    z-index: var(--hx-z-dropdown);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Box */
+    width: 100%;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+    margin: 0;
+    margin-top: calc(var(--pico-outline-width) - var(--pico-spacing));
+    padding: var(--hx-spacing-md);
+    border: var(--pico-border-width) solid var(--pico-dropdown-border-color);
+    border-radius: var(--pico-border-radius);
+
+    /* Typography */
+    color: var(--pico-dropdown-color);
+    white-space: nowrap;
+
+    /* Visual — translucent bg so the backdrop-filter blur is visible
+       behind the dropdown surface (glassmorphic effect). */
+    background-color: color-mix(in srgb, var(--pico-dropdown-background-color) 70%, transparent);
+    backdrop-filter: var(--hx-blur-md) saturate(140%);
+    -webkit-backdrop-filter: var(--hx-blur-md) saturate(140%);
+    box-shadow: var(--pico-dropdown-box-shadow);
+    opacity: 0;
+
+    /* Motion */
+    transition: opacity var(--pico-transition);
+
+    /* Interaction — `pointer-events: none` while hidden lets clicks (and
+       hover) pass through to the value-chip Remove buttons that sit
+       behind this absolute element. Children stay in Tab order (no
+       `display: none`), so pressing Tab from the search input always
+       reaches the suggestion Add buttons when the dropdown has content. */
+    pointer-events: none;
+
+    small {
+        /* Box */
+        margin-bottom: var(--hx-spacing-sm);
+
+        /* Typography */
+        color: var(--hx-color-neutral-600);
+    }
+}
+
+
+/* --- State: visible when the taglist has focus AND the dropdown has
+   content. `:focus-within` is true while focus is on the input OR on any
+   Add button (since both live inside `.hx-taglist`), so moving focus
+   from the input to an Add button keeps the dropdown open. */
+
+.hx-taglist:focus-within .hx-taglist__dropdown:not(:empty) {
+    /* Visual */
+    opacity: 1;
+
+    /* Interaction */
+    pointer-events: auto;
+}
+
+
+/* --- State: disabled ---
+   `form_field`'s `:has(:disabled)` rule already dims the surrounding
+   label; here we dim the taglist's own surface and lock down the value-
+   chip Remove buttons (whose backing <button> elements aren't natively
+   disabled — the CSS prevents the click instead). The search input has
+   the native `disabled` attribute set in Python so it can't be typed
+   into and won't submit. */
+
+.hx-taglist:has(:disabled) {
+    /* Visual */
+    opacity: var(--pico-form-element-disabled-opacity);
+
+    /* Interaction */
+    cursor: not-allowed;
+}
+
+.hx-taglist:has(:disabled) .hx-pill__close {
+    /* Interaction */
+    pointer-events: none;
+}
+
+
+/* --- State: aria-invalid (error / success) ---
+   `form_field` sets `aria-invalid="true"` / `"false"` on the wrapped
+   control's attributes when `error_text` / `success_text` is supplied.
+   Those land on the wrapper here (via the `**kwargs` pass-through in
+   `__call__`) and we colour the search input's border to match the help
+   text colour — same idea as `form_field.css`'s rule for dropdowns. */
+
+.hx-taglist[aria-invalid="true"] input[data-taglist-search] {
+    /* Box */
+    border-color: var(--hx-color-danger-600);
+
+    /* Visual */
+    outline-color: var(--hx-color-danger-600);
+}
+
+.hx-taglist[aria-invalid="false"] input[data-taglist-search] {
+    /* Box */
+    border-color: var(--hx-color-success-600);
+
+    /* Visual */
+    outline-color: var(--hx-color-success-600);
+}

@@ -1,0 +1,23 @@
+.hx-notification-badge-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.hx-notification-badge {
+    position: absolute;
+    top: -0.4rem;
+    right: -0.4rem;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--hx-radius-full);
+    background: var(--hx-color-danger-500);
+    color: var(--hx-color-white);
+    font-size: var(--hx-text-xs);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1;
+    pointer-events: none;
+}

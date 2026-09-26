@@ -1,0 +1,149 @@
+/* --- Notifications (floating toast stack) ---
+
+   Items appear in a fixed corner stack. Producers append items via HTMX
+   OOB swap (`hx-swap-oob="beforeend:#hx-notifications"`) — multiple
+   notifications coexist without replacing each other.
+   Dismissal is purely client-side (an X button removes the item from
+   the DOM); optional self-removal via `hx-on:load="setTimeout(...)"`. */
+
+
+.hx-notifications {
+    --hx-notifications--top: 0px;
+    
+    /* Position */
+    position: fixed;
+    right: var(--hx-spacing-lg);
+    top: calc(var(--hx-notifications--top) + var(--hx-spacing-lg));
+    z-index: var(--hx-z-sidepanel);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-md);
+
+    /* Box */
+    width: 100%;
+    max-width: 360px;
+
+    /* Interaction: container is click-through; children opt back in. */
+    pointer-events: none;
+}
+
+
+.hx-notification {
+    /* Layout */
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--hx-spacing-md);
+    align-items: start;
+
+    /* Box */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    border-left: 4px solid var(--hx-color-info-600);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-elevated);
+
+    /* Motion */
+    animation: hx-notification-in var(--hx-transition-base) ease-out;
+
+    /* Interaction */
+    pointer-events: auto;
+}
+
+.hx-notification__icon {
+    /* Visual */
+    color: var(--hx-color-info-600);
+
+    /* Layout */
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.hx-notification__body {
+    /* Layout */
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hx-notification__title {
+    /* Box */
+    margin: 0 0 var(--hx-spacing-xs) 0;
+
+    /* Typography */
+    font-size: var(--hx-text-md);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.2;
+}
+
+/* The title and content slots are always rendered (so JS template clones can
+   fill them by text node), but should collapse when empty. */
+.hx-notification__title:empty,
+.hx-notification__content:empty {
+    display: none;
+}
+
+.hx-notification__content {
+    /* Typography */
+    font-size: var(--hx-text-md);
+    color: var(--hx-color-neutral-700);
+    line-height: 1.4;
+}
+
+
+@keyframes hx-notification-in {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* --- Appearance variants (mirror pill.css palette) --- */
+
+.hx-notification--neutral {
+    border-left-color: var(--hx-color-neutral-400);
+}
+.hx-notification--neutral .hx-notification__icon {
+    color: var(--hx-color-neutral-700);
+}
+
+.hx-notification--primary {
+    border-left-color: var(--hx-color-primary);
+}
+.hx-notification--primary .hx-notification__icon {
+    color: var(--hx-color-primary);
+}
+
+.hx-notification--info {
+    border-left-color: var(--hx-color-info-600);
+}
+.hx-notification--info .hx-notification__icon {
+    color: var(--hx-color-info-600);
+}
+
+.hx-notification--success {
+    border-left-color: var(--hx-color-success-600);
+}
+.hx-notification--success .hx-notification__icon {
+    color: var(--hx-color-success-600);
+}
+
+.hx-notification--warning {
+    border-left-color: var(--hx-color-warning-600);
+}
+.hx-notification--warning .hx-notification__icon {
+    color: var(--hx-color-warning-800);
+}
+
+.hx-notification--danger {
+    border-left-color: var(--hx-color-danger-600);
+}
+.hx-notification--danger .hx-notification__icon {
+    color: var(--hx-color-danger-600);
+}

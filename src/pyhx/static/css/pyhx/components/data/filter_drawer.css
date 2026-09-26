@@ -1,0 +1,16 @@
+.hx-filter-drawer:has(input[name="view"][value="sort"]:checked) {
+    .hx-filter-drawer__sort {
+        display: block;
+    }
+}
+
+.hx-filter-drawer:has(input[name="view"][value="filter"]:checked) {
+    .hx-filter-drawer__filter {
+        display: block;
+    }
+}
+
+.hx-filter-drawer__sort,
+.hx-filter-drawer__filter {
+    display: none;
+}

@@ -1,0 +1,52 @@
+/* Layer order: lower → higher priority. Templates win over pyhx; pyhx wins over pico.
+   Templates load their own stylesheets that wrap content in @layer templates { ... }.
+   Theme overrides can be added as unlayered <link>s after pyhx.css — they win
+   over everything via the implicit final layer. Theme overrides should contain
+   only :root { ... } token redefinitions. */
+@layer pico, pyhx, templates;
+
+@import "./pico.min.css" layer(pico);
+
+@import "./pyhx/reset.css" layer(pyhx);
+@import "./pyhx/theme.css" layer(pyhx);
+
+@import "./pyhx/elements/a.css" layer(pyhx);
+@import "./pyhx/elements/code.css" layer(pyhx);
+
+@import "./pyhx/components/data/data_form.css" layer(pyhx);
+@import "./pyhx/components/data/filter_drawer.css" layer(pyhx);
+
+@import "./pyhx/components/layout/container.css" layer(pyhx);
+@import "./pyhx/components/layout/drawer.css" layer(pyhx);
+@import "./pyhx/components/layout/grid.css" layer(pyhx);
+@import "./pyhx/components/layout/message.css" layer(pyhx);
+@import "./pyhx/components/layout/notifications.css" layer(pyhx);
+@import "./pyhx/components/layout/page-header.css" layer(pyhx);
+@import "./pyhx/components/layout/page-section.css" layer(pyhx);
+@import "./pyhx/components/layout/example.css" layer(pyhx);
+@import "./pyhx/components/layout/code.css" layer(pyhx);
+@import "./pyhx/components/layout/code-highlight.css" layer(pyhx);
+
+@import "./pyhx/components/primitives/bubble.css" layer(pyhx);
+@import "./pyhx/components/primitives/button.css" layer(pyhx);
+@import "./pyhx/components/primitives/button-group.css" layer(pyhx);
+@import "./pyhx/components/primitives/conditional-select.css" layer(pyhx);
+@import "./pyhx/components/primitives/drawer-action-table.css" layer(pyhx);
+@import "./pyhx/components/primitives/drawer-radio.css" layer(pyhx);
+@import "./pyhx/components/primitives/drawer-select.css" layer(pyhx);
+@import "./pyhx/components/primitives/dropdown.css" layer(pyhx);
+@import "./pyhx/components/primitives/file-dropzone.css" layer(pyhx);
+@import "./pyhx/components/primitives/focus-list.css" layer(pyhx);
+@import "./pyhx/components/primitives/gantt.css" layer(pyhx);
+@import "./pyhx/components/primitives/metric-tile.css" layer(pyhx);
+@import "./pyhx/components/primitives/notification-badge.css" layer(pyhx);
+@import "./pyhx/components/primitives/table.css" layer(pyhx);
+@import "./pyhx/components/primitives/taglist.css" layer(pyhx);
+@import "./pyhx/components/primitives/form_field.css" layer(pyhx);
+@import "./pyhx/components/primitives/pill.css" layer(pyhx);
+@import "./pyhx/components/primitives/segment-control.css" layer(pyhx);
+@import "./pyhx/components/primitives/select_fieldset.css" layer(pyhx);
+@import "./pyhx/components/primitives/text-diff.css" layer(pyhx);
+@import "./pyhx/components/primitives/wysiwyg-editor.css" layer(pyhx);
+
+@import "./pyhx/styles.css" layer(pyhx);

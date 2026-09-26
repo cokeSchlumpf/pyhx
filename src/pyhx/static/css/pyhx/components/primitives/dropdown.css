@@ -1,0 +1,48 @@
+/* --- Dropdown --- */
+
+details.dropdown {
+    /* Box */
+    width: 100%;
+    margin-top: calc(var(--pico-spacing) * .25 + 1px);
+}
+
+details.dropdown summary {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+details.dropdown > summary + ul {
+    z-index: var(--hx-z-dropdown)
+}
+
+details.dropdown summary span {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: calc(100% - 2em);
+    overflow: hidden;
+
+    /* Typography */
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* --- Disabled state ---
+   The wrapper carries `inert` (fully removes the element from pointer,
+   focus, and keyboard interaction — so summary clicks AND keyboard
+   activation are blocked) plus `aria-disabled="true"` (for assistive
+   tech). Every inner radio/checkbox also carries the native `disabled`
+   attribute so values don't submit. The opacity gives the muted look
+   used by the rest of the disabled form primitives. */
+
+details.dropdown[aria-disabled="true"] {
+    /* Visual */
+    opacity: var(--pico-form-element-disabled-opacity);
+
+    /* Interaction */
+    cursor: not-allowed;
+}

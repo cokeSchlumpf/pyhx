@@ -1,0 +1,54 @@
+site_name: PyHX
+site_description: WebApps with HTMX and Python
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Your First App: getting-started/first-app.md
+  - Concepts:
+      - Pages: concepts/pages.md
+      - Fragments & HTMX: concepts/fragments.md
+      - API Endpoints: concepts/api-endpoints.md
+      - Components: concepts/components.md
+  - Building Apps:
+      - Routing & Paths: guides/routing.md
+      - Navigation: guides/navigation.md
+      - Layouts & Templates: guides/layouts.md
+      - Sidepanel: guides/sidepanel.md

@@ -1,0 +1,277 @@
+/* --- Focus list ---
+   A vertical list of cards where selecting one item pulls it into focus: the
+   active item lifts above the rest while the others dim and lock (stop taking
+   pointer input), funnelling attention onto the single active item.
+
+   Three visual variants, selected on the list element:
+     · `--variant-cards` — spaced, rounded, shadowed cards on the page surface.
+     · `--variant-plain` — flush rows divided by a bottom rule; only the active
+        row carries a shadow and lifts above its neighbours.
+     · `--variant-table` — real <table> markup laid out on a CSS grid (like the
+        data tables); shares the plain look, with the cells aligned in columns.
+
+   Selection is server-driven — htmx swaps the affected item(s) and the
+   incoming HTML already carries `data-is-active`, so this is NOT a client-side
+   class toggle. Because the swapped nodes are replaced (not mutated), an
+   ordinary CSS `transition` can't animate the change: the old node is gone, so
+   there is nothing to interpolate from. The smooth lift / resize / cross-fade
+   is instead driven by the View Transitions API, which htmx triggers when the
+   swap opts in with `hx-swap="... transition:true"` and each item carries a
+   stable `view-transition-name` (set inline from its id by the component). */
+
+.hx-focus-list {
+    /* Position — containing block for the absolutely-positioned backdrop. */
+    position: relative;
+
+    /* Layout — gap is variant-specific (see below). */
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* --- Item ---
+   Box + motion shared by every variant. The resting surface (background,
+   border, radius, shadow) is variant-specific. */
+
+.hx-focus-list__item {
+    /* Box */
+    box-sizing: border-box;
+    padding: var(--hx-spacing-md);
+
+    /* Visual */
+    opacity: 1;
+
+    /* Motion — applies when `data-is-active` is toggled on a persistent
+       element (non-htmx usage). Under htmx swaps the nodes are replaced, so
+       the animation is driven by View Transitions instead. */
+    transition:
+        opacity var(--hx-transition-base),
+        box-shadow var(--hx-transition-base);
+}
+
+
+/* --- Variant: cards ---
+   Spaced cards, each on the background surface with rounded corners and a
+   subtle resting shadow. */
+
+.hx-focus-list--variant-cards {
+    /* Layout */
+    gap: var(--hx-spacing-md);
+}
+
+.hx-focus-list--variant-cards .hx-focus-list__item {
+    /* Box */
+    border-radius: var(--hx-radius-lg);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-md);
+}
+
+
+/* --- Variants: plain & table ---
+   Flush rows with no gap and no radius, separated only by a bottom rule. No
+   resting shadow — only the active row lifts (see the active state below). The
+   `table` variant shares this look and adds a column grid further down. */
+
+.hx-focus-list--variant-plain .hx-focus-list__item,
+.hx-focus-list--variant-table .hx-focus-list__item {
+    /* Box */
+    border-bottom: 2px solid var(--hx-color-neutral-100);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+}
+
+.hx-focus-list--variant-plain .hx-focus-list__item:not(:first-child),
+.hx-focus-list--variant-table .hx-focus-list__item:not(:first-child) {
+    /* Collapse the shared edge so adjacent borders read as a single 1px line. */
+    margin-top: -1px;
+}
+
+
+/* --- Variant: table ---
+   Real <table>/<tbody>/<tr>/<td> markup, laid out with CSS grid exactly like
+   the table primitive (`tbody { display: block }`, `tr { display: grid }`,
+   `td { display: flex }`). Because the row is a grid box rather than a
+   table-row box, the active-row lift (shadow / z-index) and the
+   `view-transition-name` morph behave just as they do in the plain variant —
+   the table-row painting limitations never come into play.
+
+   Column tracks are inherited from `--hx-table--cols`, the same variable
+   the table primitive uses; set it on the list element (e.g. with
+   `column_widths_to_css_cols`) and the `.hx-table__cell--*` modifiers
+   work on the cells too. */
+
+.hx-focus-list--variant-table > table {
+    /* Box */
+    width: 100%;
+}
+
+/* The ONLY forced divergence from the standard table: the <thead> carries a
+   `view-transition-name`, making it a backdrop root — so the primitive's frosted
+   blur (which sits on the <th> cells) would clip to an empty backdrop there and
+   show nothing. Move the same frosting up onto the <thead> itself. Everything
+   else about the header (border, padding, typography) is left to the primitive
+   + Pico, exactly as the standard table. Two focus-list classes outrank the
+   primitive's `.hx-table thead` (0-2-1 > 0-1-1). */
+.hx-focus-list--variant-table .hx-table thead {
+    /* Position — keep focus-list on the retained token (scope decision). */
+    top: var(--hx-table--sticky-top);
+
+    /* Visual — same frosting as the standard table's <th>, moved to the <thead>. */
+    background-color: color-mix(in srgb, var(--hx-color-background) 60%, transparent);
+    backdrop-filter: var(--hx-blur-md);
+
+    /* Motion — shared class targeted by the ::view-transition-group rule. */
+    view-transition-class: focus-list-table-header;
+}
+
+/* Keep the sticky header above the morphing rows during a View Transition.
+   Targets the shared class so it applies to every focus-list table header,
+   whatever unique name each instance carries. */
+
+::view-transition-group(.focus-list-table-header) {
+    /* Position */
+    z-index: var(--hx-z-page-header);
+}
+
+/* Header cell override — neutralise the primitive's frosted th chrome; keep
+   focus-list's padding/typography; the primitive's `th::after` divider
+   replaces focus-list's old `border-right`. */
+
+.hx-focus-list--variant-table .hx-table thead th {
+    /* Box — keep focus-list's cell padding so header and body cells align.
+       The bottom border is left to Pico's default (same 1px as the standard
+       table) now that the <thead> no longer draws its own heavier border. */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+
+    /* Visual — the frosted blur lives on the <thead>; keep the cells transparent
+       and drop the primitive's th-level backdrop-filter (it would clip to empty
+       under the thead's view-transition backdrop root anyway). */
+    background: transparent;
+    backdrop-filter: none;
+
+    /* Typography */
+    font-weight: var(--hx-font-semibold);
+    text-align: left;
+}
+
+/* Body rows + cells. */
+
+.hx-focus-list--variant-table .hx-focus-list__item {
+    /* Box — row padding lives on the cells (below); override the base item
+       padding. The grid layout itself is inherited from `.hx-table tr`. */
+    padding: 0;
+}
+
+.hx-focus-list--variant-table .hx-focus-list__item > td {
+    /* Box — the primitive supplies neither cell padding nor a border reset. */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    border-bottom: none;
+}
+
+
+/* --- State: clickable / selectable rows ---
+   Opt-in, the same convention the data tables use (see data_table.css): only a
+   row carrying `aria-selected` is clickable — pointer cursor + a faint hover
+   tint — and `aria-selected="true"` shows the stronger selected tint. The click
+   behaviour is the caller's own htmx on the row; this only supplies the visual
+   affordance. Scoped to the flush-row variants (plain / table): the cards
+   variant has its own elevated surface, where a translucent row tint wouldn't
+   read.
+
+   Where the tint paints differs by variant. The `plain` item is the surface, so
+   it takes the tint directly. The `table` variant's selectable-row tint (cursor
+   + hover/selected background on the cells) is inherited from the primitive's
+   `.hx-table tr[aria-selected] td` rules. */
+
+.hx-focus-list--variant-plain .hx-focus-list__item[aria-selected] {
+    cursor: pointer;
+}
+
+/* plain variant — tint the item (it is the surface). */
+.hx-focus-list--variant-plain .hx-focus-list__item[aria-selected]:hover {
+    background-color: color-mix(in srgb, var(--hx-color-primary) 5%, transparent);
+}
+
+.hx-focus-list--variant-plain .hx-focus-list__item[aria-selected="true"],
+.hx-focus-list--variant-plain .hx-focus-list__item[aria-selected="true"]:hover {
+    background-color: color-mix(in srgb, var(--hx-color-primary) 20%, transparent);
+}
+
+
+/* --- State: active ---
+   The focused item lifts above the rest with a stronger shadow and sits on its
+   own stacking context so the lift renders above its neighbours — for the
+   plain variant this is what raises the row over the adjacent 1px borders.
+
+   Scoped under `.hx-focus-list` (specificity 0-3-0) so it overrides the
+   variant resting shadows regardless of source order. The lift shadow is one
+   step above --hx-shadow-md; the theme has no token stronger than md, so this
+   single-use value is inlined per the CSS conventions (extract a token if it's
+   ever reused). */
+
+.hx-focus-list .hx-focus-list__item[data-is-active="true"] {
+    /* Position */
+    position: relative;
+    z-index: 2; /* above the backdrop (z-index: 1), so it stays interactive */
+
+    /* Visual */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+
+/* --- Backdrop ---
+   Transparent overlay the consumer renders while an item is focused (see
+   `focus_list.backdrop`). It covers the list above the locked siblings but
+   below the active item, intercepting clicks on the rest of the list — wire it
+   (via attributes the consumer passes) to clear the selection. The dimming
+   lives on the items themselves, so this layer is fully transparent. */
+
+.hx-focus-list__backdrop {
+    /* Position */
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    /* Visual */
+    background: transparent;
+
+    /* Interaction */
+    cursor: default;
+}
+
+
+/* --- State: a sibling is active ---
+   When any item is focused, the others recede (dim) and lock (stop receiving
+   pointer input), reinforcing the single-focus model. `:has()` keeps this
+   CSS-only — the swapped-in HTML carries the state, no class toggling on the
+   siblings. */
+
+.hx-focus-list:has(.hx-focus-list__item[data-is-active="true"]) .hx-focus-list__item:not([data-is-active="true"]) {
+    /* Visual */
+    opacity: 0.3;
+
+    /* Interaction */
+    pointer-events: none;
+    user-select: none;
+}
+
+
+/* --- Reduced motion ---
+   Disable both the element transitions and the View Transitions animations
+   (the latter morph the list during an htmx swap). */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-focus-list__item {
+        /* Motion */
+        transition: none;
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}

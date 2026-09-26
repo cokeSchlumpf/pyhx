@@ -1,0 +1,145 @@
+/* --- Message (inline alert / callout) ---
+
+   An in-flow boxed message: soft-tinted surface, coloured left accent, optional
+   title + content, an optional leading icon, and an optional close button.
+   Unlike the floating notifications, a message sits in the normal page layout.
+
+   Each appearance sets only `--message--color`; the surface tint and accent
+   derive from it. Buttons placed inside adopt the message colour by default —
+   see the `.hx-message .hx-button--neutral` rule below. */
+
+
+.hx-message {
+    /* Tokens
+       A very light top-to-bottom gradient in the accent tint (like the pill):
+       brighter at the edges than the middle, over the page background so the
+       fill stays soft and readable. Each appearance only sets --message--color. */
+    --message--color: var(--hx-color-info-600);
+    --message--surface: linear-gradient(
+        170deg,
+        color-mix(in srgb, var(--message--color) 14%, var(--hx-color-background)) 0%,
+        color-mix(in srgb, var(--message--color) 7%, var(--hx-color-background)) 50%,
+        color-mix(in srgb, var(--message--color) 14%, var(--hx-color-background)) 100%
+    );
+
+    /* Layout — flex so the icon slot can be omitted without leaving a gap.
+       `flex-start` pins the icon to the top; the icon box below is sized to one
+       text line so it centres against the FIRST line (single-line messages read
+       as vertically centred; multi-line ones keep the icon by the top line). */
+    display: flex;
+    align-items: flex-start;
+    gap: var(--hx-spacing-md);
+
+    /* Box */
+    padding: var(--hx-spacing-md) var(--hx-spacing-md);
+    border-left: 4px solid var(--message--color);
+    border-radius: var(--hx-radius-md);
+    margin-bottom: var(--hx-spacing-md);
+
+    /* Visual */
+    background: var(--message--surface);
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.hx-message__icon {
+    /* Visual */
+    color: var(--message--color);
+
+    /* Layout
+       The box is exactly one text line tall and centres the (smaller) svg
+       within it, so the icon lines up with the vertical centre of the first
+       line of text — not its top edge. */
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--hx-text-base) * var(--hx-leading-normal));
+}
+
+.hx-message__icon svg {
+    /* Box */
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.hx-message__body {
+    /* Layout */
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hx-message__title {
+    /* Box */
+    margin: 0 0 var(--hx-spacing-xs) 0;
+
+    /* Typography */
+    font-size: var(--hx-text-base);
+    font-weight: var(--hx-font-semibold);
+    line-height: var(--hx-leading-normal);
+}
+
+.hx-message__content {
+    /* Typography */
+    font-size: var(--hx-text-base);
+    color: var(--hx-color-neutral-700);
+    line-height: var(--hx-leading-normal);
+}
+
+/* Collapse the content slot when empty (icon + title only). */
+.hx-message__content:empty {
+    display: none;
+}
+
+
+/* --- Buttons inside a message ---
+   Default (neutral) buttons adopt the message colour by redefining the
+   appearance tokens they consume (see button.css). This selector's
+   specificity (0,2,0) beats `.hx-button--neutral` (0,1,0), so it wins; and
+   because it only targets `--neutral`, buttons with an explicit non-neutral
+   appearance keep their own colour. */
+
+.hx-message .hx-button--neutral {
+    --_button-color: var(--message--color);
+    --_button-text-color: var(--message--color);
+    --_button-text-color-solid: var(--hx-color-background);
+}
+
+
+/* --- Links inside a message ---
+   Plain links adopt the message's accent colour. Anchor-styled buttons carry
+   `.hx-button` and are themed by the rule above, so they're excluded here. */
+
+.hx-message a:not(.hx-button) {
+    color: var(--message--color);
+    font-weight: var(--hx-font-medium);
+}
+
+
+/* --- Appearance variants (mirror pill.css / notifications.css palette) --- */
+
+.hx-message--neutral {
+    --message--color: var(--hx-color-neutral-600);
+}
+
+.hx-message--primary {
+    --message--color: var(--hx-color-secondary);
+}
+
+.hx-message--info {
+    --message--color: var(--hx-color-info-600);
+}
+
+.hx-message--success {
+    --message--color: var(--hx-color-success-500);
+}
+
+.hx-message--warning {
+    --message--color: var(--hx-color-warning-500);
+}
+
+.hx-message--danger {
+    --message--color: var(--hx-color-danger-500);
+}

@@ -1,0 +1,89 @@
+/* Generated: Pygments one-dark token colours, scoped to the code panel.
+   Regenerate (e.g. to swap the style) with:
+     poetry run python -c "from pygments.formatters import HtmlFormatter as F; \
+     s='.hx-code__panel'; r=F(style='one-dark').get_style_defs(s); \
+     open('src/pyhx/static/css/pyhx/components/layout/code-highlight.css','w')\
+       .write('\n'.join(l for l in r.splitlines() if l.strip().startswith(s+' .'))+'\n')"
+   Only the scoped per-token rules are kept; the unscoped `pre`, the root
+   background, and the unused linenos rules are dropped so the terminal's
+   own --hx-color-neutral-900 surface and gutter remain. */
+
+.hx-code__panel .hll { background-color: #ffffcc }
+.hx-code__panel .c { color: #7F848E } /* Comment */
+.hx-code__panel .err { color: #ABB2BF } /* Error */
+.hx-code__panel .esc { color: #ABB2BF } /* Escape */
+.hx-code__panel .g { color: #ABB2BF } /* Generic */
+.hx-code__panel .k { color: #C678DD } /* Keyword */
+.hx-code__panel .l { color: #ABB2BF } /* Literal */
+.hx-code__panel .n { color: #E06C75 } /* Name */
+.hx-code__panel .o { color: #56B6C2 } /* Operator */
+.hx-code__panel .x { color: #ABB2BF } /* Other */
+.hx-code__panel .p { color: #ABB2BF } /* Punctuation */
+.hx-code__panel .ch { color: #7F848E } /* Comment.Hashbang */
+.hx-code__panel .cm { color: #7F848E } /* Comment.Multiline */
+.hx-code__panel .cp { color: #7F848E } /* Comment.Preproc */
+.hx-code__panel .cpf { color: #7F848E } /* Comment.PreprocFile */
+.hx-code__panel .c1 { color: #7F848E } /* Comment.Single */
+.hx-code__panel .cs { color: #7F848E } /* Comment.Special */
+.hx-code__panel .gd { color: #ABB2BF } /* Generic.Deleted */
+.hx-code__panel .ge { color: #ABB2BF } /* Generic.Emph */
+.hx-code__panel .ges { color: #ABB2BF } /* Generic.EmphStrong */
+.hx-code__panel .gr { color: #ABB2BF } /* Generic.Error */
+.hx-code__panel .gh { color: #ABB2BF } /* Generic.Heading */
+.hx-code__panel .gi { color: #ABB2BF } /* Generic.Inserted */
+.hx-code__panel .go { color: #ABB2BF } /* Generic.Output */
+.hx-code__panel .gp { color: #ABB2BF } /* Generic.Prompt */
+.hx-code__panel .gs { color: #ABB2BF } /* Generic.Strong */
+.hx-code__panel .gu { color: #ABB2BF } /* Generic.Subheading */
+.hx-code__panel .gt { color: #ABB2BF } /* Generic.Traceback */
+.hx-code__panel .kc { color: #E5C07B } /* Keyword.Constant */
+.hx-code__panel .kd { color: #C678DD } /* Keyword.Declaration */
+.hx-code__panel .kn { color: #C678DD } /* Keyword.Namespace */
+.hx-code__panel .kp { color: #C678DD } /* Keyword.Pseudo */
+.hx-code__panel .kr { color: #C678DD } /* Keyword.Reserved */
+.hx-code__panel .kt { color: #E5C07B } /* Keyword.Type */
+.hx-code__panel .ld { color: #ABB2BF } /* Literal.Date */
+.hx-code__panel .m { color: #D19A66 } /* Literal.Number */
+.hx-code__panel .s { color: #98C379 } /* Literal.String */
+.hx-code__panel .na { color: #E06C75 } /* Name.Attribute */
+.hx-code__panel .nb { color: #E5C07B } /* Name.Builtin */
+.hx-code__panel .nc { color: #E5C07B } /* Name.Class */
+.hx-code__panel .no { color: #E06C75 } /* Name.Constant */
+.hx-code__panel .nd { color: #61AFEF } /* Name.Decorator */
+.hx-code__panel .ni { color: #E06C75 } /* Name.Entity */
+.hx-code__panel .ne { color: #E06C75 } /* Name.Exception */
+.hx-code__panel .nf { color: #61AFEF; font-weight: bold } /* Name.Function */
+.hx-code__panel .nl { color: #E06C75 } /* Name.Label */
+.hx-code__panel .nn { color: #E06C75 } /* Name.Namespace */
+.hx-code__panel .nx { color: #E06C75 } /* Name.Other */
+.hx-code__panel .py { color: #E06C75 } /* Name.Property */
+.hx-code__panel .nt { color: #E06C75 } /* Name.Tag */
+.hx-code__panel .nv { color: #E06C75 } /* Name.Variable */
+.hx-code__panel .ow { color: #56B6C2 } /* Operator.Word */
+.hx-code__panel .pm { color: #ABB2BF } /* Punctuation.Marker */
+.hx-code__panel .w { color: #ABB2BF } /* Text.Whitespace */
+.hx-code__panel .mb { color: #D19A66 } /* Literal.Number.Bin */
+.hx-code__panel .mf { color: #D19A66 } /* Literal.Number.Float */
+.hx-code__panel .mh { color: #D19A66 } /* Literal.Number.Hex */
+.hx-code__panel .mi { color: #D19A66 } /* Literal.Number.Integer */
+.hx-code__panel .mo { color: #D19A66 } /* Literal.Number.Oct */
+.hx-code__panel .sa { color: #98C379 } /* Literal.String.Affix */
+.hx-code__panel .sb { color: #98C379 } /* Literal.String.Backtick */
+.hx-code__panel .sc { color: #98C379 } /* Literal.String.Char */
+.hx-code__panel .dl { color: #98C379 } /* Literal.String.Delimiter */
+.hx-code__panel .sd { color: #98C379 } /* Literal.String.Doc */
+.hx-code__panel .s2 { color: #98C379 } /* Literal.String.Double */
+.hx-code__panel .se { color: #98C379 } /* Literal.String.Escape */
+.hx-code__panel .sh { color: #98C379 } /* Literal.String.Heredoc */
+.hx-code__panel .si { color: #98C379 } /* Literal.String.Interpol */
+.hx-code__panel .sx { color: #98C379 } /* Literal.String.Other */
+.hx-code__panel .sr { color: #98C379 } /* Literal.String.Regex */
+.hx-code__panel .s1 { color: #98C379 } /* Literal.String.Single */
+.hx-code__panel .ss { color: #98C379 } /* Literal.String.Symbol */
+.hx-code__panel .bp { color: #E5C07B } /* Name.Builtin.Pseudo */
+.hx-code__panel .fm { color: #56B6C2; font-weight: bold } /* Name.Function.Magic */
+.hx-code__panel .vc { color: #E06C75 } /* Name.Variable.Class */
+.hx-code__panel .vg { color: #E06C75 } /* Name.Variable.Global */
+.hx-code__panel .vi { color: #E06C75 } /* Name.Variable.Instance */
+.hx-code__panel .vm { color: #E06C75 } /* Name.Variable.Magic */
+.hx-code__panel .il { color: #D19A66 } /* Literal.Number.Integer.Long */
