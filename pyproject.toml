@@ -1,6 +1,6 @@
 [project]
 name = "pyhx"
-version = "0.1.0"
+version = "0.2.0"
 description = "Web apps with Python and HTMX"
 authors = [
     {name = "Michael Wellner", email = "michael.wellner@gmail.com"}
