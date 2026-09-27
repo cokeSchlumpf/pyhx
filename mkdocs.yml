@@ -1,5 +1,9 @@
 site_name: PyHX
 site_description: WebApps with HTMX and Python
+site_url: https://cokeschlumpf.github.io/pyhx/
+repo_url: https://github.com/cokeSchlumpf/pyhx
+repo_name: cokeSchlumpf/pyhx
+edit_uri: edit/main/docs/
 
 theme:
   name: material
@@ -30,6 +34,8 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      check_paths: true
   - pymdownx.tabbed:
       alternate_style: true
   - toc:
@@ -52,3 +58,4 @@ nav:
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
       - Sidepanel: guides/sidepanel.md
+  - Changelog: changelog.md

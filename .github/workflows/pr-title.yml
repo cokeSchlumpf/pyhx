@@ -1,0 +1,14 @@
+name: PR Title
+
+# PRs are squash-merged, so the PR title becomes the commit message on main.
+# release-please derives versions and the changelog from it, so it must be a conventional commit.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  pr-title:
+    uses: cokeSchlumpf/core--devops-workflows/.github/workflows/conventional-pr-title.yml@versions/1

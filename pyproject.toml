@@ -21,7 +21,7 @@ nh3 = "^0.3.5"
 pygments = "^2.19"
 python-multipart = "^0.0.32"
 
-commons = { git = "https://KPMGCH@dev.azure.com/KPMGCH/Financial%20Service%20-%20Consulting/_git/lib--commons", branch = "main" }
+commons = { git = "https://github.com/cokeSchlumpf/lib--python-commons.git", branch = "versions/0" }
 typing-extensions = "^4.16.0"
 
 [build-system]
@@ -69,12 +69,13 @@ pythonpath = ["."]
 
 [tool.poe.tasks]
 docs = { cmd = "mkdocs serve -a localhost:8090", help = "Serve documentation locally" }
-docs-build = { cmd = "mkdocs build", help = "Build documentation site" }
+docs-build = { cmd = "mkdocs build --strict", help = "Build documentation site into site/" }
 
 check = [
     { cmd = "ruff check src/pyhx"},
     { cmd = "ruff format --check src/pyhx"},
-    { cmd = "mypy src/pyhx"}
+    { cmd = "mypy src/pyhx"},
+    { cmd = "pytest" }
 ]
 
 fix = [

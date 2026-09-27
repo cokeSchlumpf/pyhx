@@ -1,0 +1,11 @@
+name: Check
+
+on:
+  push:
+    branches:
+      - "feature/**"
+      - "fix/**"
+
+jobs:
+  check:
+    uses: cokeSchlumpf/core--devops-workflows/.github/workflows/python-check.yml@versions/1
