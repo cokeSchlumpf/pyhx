@@ -46,7 +46,9 @@
 @import "./pyhx/components/primitives/pill.css" layer(pyhx);
 @import "./pyhx/components/primitives/segment-control.css" layer(pyhx);
 @import "./pyhx/components/primitives/select_fieldset.css" layer(pyhx);
+@import "./pyhx/components/primitives/slider.css" layer(pyhx);
 @import "./pyhx/components/primitives/text-diff.css" layer(pyhx);
+@import "./pyhx/components/primitives/timeline.css" layer(pyhx);
 @import "./pyhx/components/primitives/wysiwyg-editor.css" layer(pyhx);
 
 @import "./pyhx/styles.css" layer(pyhx);

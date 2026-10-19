@@ -1,0 +1,21 @@
+/* --- Timeline ---
+   Skeleton container plus a placeholder until the timeline renders real
+   content. */
+
+.hx-timeline {
+    /* Layout */
+    display: block;
+}
+
+.hx-timeline__placeholder {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 8rem;
+
+    /* Visual */
+    border: 1px dashed var(--hx-color-neutral-500);
+    border-radius: var(--hx-radius-md);
+    color: var(--hx-color-neutral-500);
+}
