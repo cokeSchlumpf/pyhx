@@ -78,6 +78,29 @@ app = WebApp(title="My App", default_page_template=MyLayout())
 
 Templates are plain objects; anything callable with the right signature works, including a plain `async def` function.
 
+## Designs
+
+Every page template declares the **design** its components render in, via a `design` attribute typed as `Design` (`"plain"`, `"default"` or `"canvas"`):
+
+- `Skeleton` is `"plain"` by default. Templates built on top of it pass their own design through: `Skeleton(design=self.design, ...)`.
+- `AppShell` is `"default"`.
+
+The design is rendered as `data-hx-design` on the `<html>` element, so stylesheets can restyle components per design (`[data-hx-design="canvas"] .hx-button { … }`). Components that need different markup read it with `RequestContext.get_design()`; app code can use `hx.design`:
+
+```python
+from pyhx.core import RequestContext, hx
+
+if RequestContext.get_design() == "canvas":   # in components
+    ...
+
+if hx.design == "canvas":                     # in app code
+    ...
+```
+
+Both read the app's **default** page template, so they return the same value in page and fragment requests. A per-page `page_template` override does not change it — use one design per app. For templates without a `design` attribute both return `"plain"`; outside a request only `RequestContext.get_design()` works (it returns `"plain"`), while `hx` raises because no `WebApp` is set.
+
+Branch only on designs that render differently and let all others fall through to the default rendering.
+
 ## Per-page overrides
 
 A single page can override the layout for one response by returning a `PageResponse`:

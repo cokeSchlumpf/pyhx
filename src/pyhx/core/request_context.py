@@ -1,12 +1,15 @@
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, overload
+from typing import TYPE_CHECKING, Any, overload
 
 from commons.users import AnonymousUser, User
 from fastapi import Request
 from starlette.websockets import WebSocket
 
 from .app_context import AppContext
+
+if TYPE_CHECKING:
+    from .templates import Design, PageTemplate
 
 
 def _empty_app_context() -> AppContext:
@@ -20,6 +23,7 @@ class RequestContext:
     websocket: WebSocket | None = None
     user: User = field(default_factory=AnonymousUser)
     app_context: AppContext = field(default_factory=_empty_app_context)
+    page_template: "PageTemplate | None" = None
 
     @staticmethod
     def get() -> "RequestContext":
@@ -34,6 +38,26 @@ class RequestContext:
             "Request can only be read during request procesing of HTTP Requests (fragments and pages), not in WebSocket calls."
         )
         return req
+
+    @staticmethod
+    def get_design() -> "Design":
+        """The design of the app's default page template, e.g. ``"canvas"``.
+
+        The same in page and fragment requests, so a fragment re-rendered by
+        HTMX matches the page it is swapped into. The page body is rendered
+        before a per-page ``PageResponse.page_template`` is applied, so a
+        per-page template does not change the design — one design per app.
+        App code can read the same value as ``hx.design``.
+
+        Returns ``"plain"`` outside a request (e.g. components rendered in
+        tests) and for templates without a ``design`` attribute.
+        """
+        try:
+            page_template = RequestContext.get().page_template
+        except LookupError:
+            return "plain"
+
+        return getattr(page_template, "design", "plain")
 
     # fmt: off
     @staticmethod
@@ -150,6 +174,7 @@ def set_request_context(ctx: RequestContext) -> None:
 def build_from_request(
     request: Request,
     app_context: AppContext | None = None,
+    page_template: "PageTemplate | None" = None,
 ) -> RequestContext:
     """Build a ``RequestContext`` from a Starlette ``Request``.
 
@@ -163,6 +188,9 @@ def build_from_request(
     keeps direct ``RequestContext`` construction (e.g. in tests)
     working.
 
+    ``page_template`` is the WebApp's default page template; components
+    read its design via :meth:`RequestContext.get_design`.
+
     Any other per-request data the application needs from middleware should
     be read directly off the FastAPI-injected ``Request`` via ``request.state``.
     """
@@ -170,21 +198,24 @@ def build_from_request(
         request=request,
         user=getattr(request.state, "user", AnonymousUser()),
         app_context=app_context if app_context is not None else _empty_app_context(),
+        page_template=page_template,
     )
 
 
 def build_from_websocket(
     websocket: WebSocket,
     app_context: AppContext | None = None,
+    page_template: "PageTemplate | None" = None,
 ) -> RequestContext:
     """Build a ``RequestContext`` from a Starlette ``WebSocket``.
 
     Mirrors :func:`build_from_request` for WS scopes: middleware seeds
     ``websocket.state.user`` (defaults to ``AnonymousUser`` if unset).
-    ``app_context`` is threaded in the same way.
+    ``app_context`` and ``page_template`` are threaded in the same way.
     """
     return RequestContext(
         websocket=websocket,
         user=getattr(websocket.state, "user", AnonymousUser()),
         app_context=app_context if app_context is not None else _empty_app_context(),
+        page_template=page_template,
     )

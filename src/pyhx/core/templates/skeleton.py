@@ -4,7 +4,7 @@ from markupsafe import Markup
 
 from ..request_context import RequestContext
 from .nav import AppNavFn
-from .page_template import PageTemplate
+from .page_template import Design, PageTemplate
 
 # Detect the browser's IANA timezone and write it to the `hx_tz` cookie so it
 # rides along with every subsequent request. Refreshed on every load; the first-ever request (before any page set it) falls back to the configured default zone.
@@ -22,7 +22,9 @@ class Skeleton(PageTemplate):
         scripts: tuple[str, ...] = (),
         head_extras: tuple[y.Node, ...] = (),
         favicon: str = "/static/images/favicon.svg",
+        design: Design = "plain",
     ) -> None:
+        self.design = design
         self.stylesheets = stylesheets
         self.scripts = scripts
         self.head_extras = head_extras
@@ -41,7 +43,7 @@ class Skeleton(PageTemplate):
         html_title = f"{page_title} | {app_title}" if page_title else app_title
         # main_nav = await nav_renderer(slot="main", ctx=request, navigation=navigation)
 
-        return html(data_theme="light")[
+        return html(data_theme="light", data_hx_design=self.design)[
             head[
                 meta(charset="utf-8"),
                 meta(name="viewport", content="width=device-width, initial-scale=1"),

@@ -18,7 +18,7 @@ from ..core.primitives import Omit, classnames, htmx
 from ..core.request_context import RequestContext
 from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
-from ..core.templates.page_template import PageTemplate
+from ..core.templates.page_template import Design, PageTemplate
 from ..core.templates.skeleton import Skeleton
 
 # Hidden <template> id the JS in pyhx.app-shell.js clones on htmx error events.
@@ -80,6 +80,8 @@ class AppShellNavRenderer(NavRenderer):
 
 
 class AppShell(PageTemplate):
+    design: Design = "default"
+
     def __init__(
         self,
         *,
@@ -119,6 +121,7 @@ class AppShell(PageTemplate):
         navigation: AppNavFn,
     ) -> y.Node:
         skeleton = Skeleton(
+            design=self.design,
             stylesheets=(
                 "/static/css/pyhx.css",
                 "/static/css/page-templates/app-shell.css",
