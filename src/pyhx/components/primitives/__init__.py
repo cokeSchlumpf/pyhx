@@ -38,10 +38,12 @@ from .notification_badge import notification_badge
 from .pill import pill
 from .segment_control import segment_control
 from .select_fieldset import checkbox_fieldset, radio_fieldset
+from .slider import SliderThumb, slider
 from .switch import switch
 from .table import StackChartItem, table
 from .taglist import taglist
 from .text_diff import text_diff
+from .timeline import timeline
 from .wysiwyg_editor import wysiwyg_editor
 
 __all__ = [
@@ -63,6 +65,7 @@ __all__ = [
     "PlannedUtilizationItem",
     "ProjectTimeline",
     "SelectControl",
+    "SliderThumb",
     "StackChartItem",
     "bubble",
     "button",
@@ -87,10 +90,12 @@ __all__ = [
     "pill",
     "radio_fieldset",
     "segment_control",
+    "slider",
     "switch",
     "table",
     "taglist",
     "text_diff",
     "textarea_input",
+    "timeline",
     "wysiwyg_editor",
 ]

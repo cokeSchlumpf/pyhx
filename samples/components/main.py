@@ -35,9 +35,11 @@ from samples.components.pages import (
     notifications,
     pills,
     segment_control,
+    slider,
     table,
     taglist,
     text_diff,
+    timeline,
     wysiwyg_editor,
 )
 
@@ -52,6 +54,7 @@ hx.include_router(grid.router)
 hx.include_router(icons.router)
 hx.include_router(data_table.router)
 hx.include_router(segment_control.router)
+hx.include_router(slider.router)
 hx.include_router(table.router)
 hx.include_router(dropdown.router)
 hx.include_router(file_dropzone.router)
@@ -65,6 +68,7 @@ hx.include_router(taglist.router)
 hx.include_router(messages.router)
 hx.include_router(metric_tile.router)
 hx.include_router(text_diff.router)
+hx.include_router(timeline.router)
 hx.include_router(notifications.router)
 hx.include_router(wysiwyg_editor.router)
 
@@ -137,6 +141,12 @@ async def home() -> y.Node:
                     " — radio-group as a connected button bar (1 axis: ",
                     y.code["size"],
                     ")",
+                ],
+                y.li[
+                    y.a(href=slider.slider_page.url())["Slider"],
+                    " — blank scaffold page for the ",
+                    y.code["slider"],
+                    " skeleton component",
                 ],
                 y.li[
                     y.a(href=dropdown.dropdown_page.url())["Dropdown"],
@@ -229,6 +239,12 @@ async def home() -> y.Node:
                     " + ",
                     y.code["pill.button"],
                 ],
+                y.li[
+                    y.a(href=timeline.timeline_page.url())["Timeline"],
+                    " — blank scaffold page for the ",
+                    y.code["timeline"],
+                    " skeleton component",
+                ],
             ],
         ]
     )
@@ -245,6 +261,7 @@ hx.navigation.set(
         hx.nav_item(icons.icons_page, icon="star"),
         hx.nav_item(data_table.data_table_page, icon="list"),
         hx.nav_item(segment_control.segment_control_page, icon="toggle-left"),
+        hx.nav_item(slider.slider_page, icon="sliders"),
         hx.nav_item(table.table_page, icon="columns"),
         hx.nav_item(dropdown.dropdown_page, icon="chevron-down"),
         hx.nav_item(file_dropzone.file_dropzone_page, icon="upload-cloud"),
@@ -259,6 +276,7 @@ hx.navigation.set(
         hx.nav_item(notifications.notifications_page, icon="bell"),
         hx.nav_item(taglist.taglist_page, icon="tag"),
         hx.nav_item(text_diff.text_diff_page, icon="git-pull-request"),
+        hx.nav_item(timeline.timeline_page, icon="clock"),
         hx.nav_item(wysiwyg_editor.wysiwyg_editor_page, icon="edit-3"),
     ]
 )

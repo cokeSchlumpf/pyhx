@@ -1,0 +1,144 @@
+/* --- Slider ---
+   A track with a filled range and one or more thumbs. Range and thumbs are
+   absolutely positioned along the track through the custom properties
+   `--hx-slider--start` / `--hx-slider--end` / `--hx-slider--position`, which
+   the server sets inline (and dragging will later update). */
+
+:root {
+    /* Rail thickness and thumb diameter. */
+    --hx-slider--track-height: 4px;
+    --hx-slider--thumb-size: 18px;
+
+    --hx-slider--track-color: var(--hx-color-neutral-300);
+    --hx-slider--range-color: var(--hx-color-primary);
+    --hx-slider--thumb-color: var(--hx-color-white);
+}
+
+.hx-slider {
+    /* Layout */
+    display: block;
+
+    /* Box
+       Room for the thumbs: half a thumb on every side, so a thumb at 0% or
+       100% (or the thumb's height above and below the rail) never spills out
+       of the container. */
+    padding: calc(var(--hx-slider--thumb-size) / 2);
+
+    /* Visual
+       `pyhx.slider.js` handles pointer input on the whole root: no browser
+       panning / scrolling or text selection while dragging. */
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* --- Track --- */
+
+.hx-slider__track {
+    /* Layout */
+    position: relative;
+
+    /* Box */
+    height: var(--hx-slider--track-height);
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--hx-slider--track-color);
+}
+
+
+/* --- Range ---
+   Spans from `--hx-slider--start` to `--hx-slider--end` on the track. */
+
+.hx-slider__range {
+    /* Layout */
+    position: absolute;
+    inset-block: 0;
+    left: var(--hx-slider--start, 0%);
+    right: calc(100% - var(--hx-slider--end, 100%));
+
+    /* Box */
+    border-radius: inherit;
+
+    /* Visual */
+    background: var(--hx-slider--range-color);
+}
+
+
+/* --- Thumb ---
+   Centred on `--hx-slider--position`, both along and across the rail. */
+
+.hx-slider__thumb {
+    /* Layout */
+    position: absolute;
+    top: 50%;
+    left: var(--hx-slider--position, 0%);
+
+    /* Box */
+    box-sizing: border-box;
+    width: var(--hx-slider--thumb-size);
+    height: var(--hx-slider--thumb-size);
+    border: 2px solid var(--hx-slider--range-color);
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--hx-slider--thumb-color);
+    box-shadow: var(--hx-shadow-sm);
+    cursor: grab;
+    transform: translate(-50%, -50%);
+    transition:
+        transform var(--hx-transition-fast),
+        box-shadow var(--hx-transition-fast);
+}
+
+.hx-slider__thumb:hover,
+.hx-slider__thumb[data-dragging] {
+    /* Visual */
+    box-shadow: var(--hx-shadow-elevated);
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.hx-slider__thumb:focus-visible {
+    /* Visual */
+    outline: none;
+    box-shadow: 0 0 0 4px var(--hx-color-primary-focus);
+}
+
+.hx-slider__thumb:active,
+.hx-slider__thumb[data-dragging] {
+    /* Visual */
+    cursor: grabbing;
+}
+
+
+/* --- State: disabled ---
+   `aria-disabled` on the root (set by `disabled=True`): the slider dims and
+   its thumbs stop reacting. The hidden inputs keep submitting. */
+
+.hx-slider[aria-disabled="true"] {
+    /* Visual */
+    cursor: not-allowed;
+    opacity: var(--pico-form-element-disabled-opacity);
+}
+
+.hx-slider[aria-disabled="true"] .hx-slider__thumb {
+    /* Visual */
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: translate(-50%, -50%);
+}
+
+
+/* --- State: validation ---
+   `aria-invalid` on the root (set by `form_field` error / success text)
+   recolours range and thumb borders. */
+
+.hx-slider[aria-invalid="true"] {
+    --hx-slider--range-color: var(--hx-color-danger-500);
+}
+
+.hx-slider[aria-invalid="false"] {
+    --hx-slider--range-color: var(--hx-color-success-500);
+}
