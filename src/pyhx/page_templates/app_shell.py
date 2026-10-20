@@ -9,7 +9,7 @@ from markupsafe import Markup
 from ..components.layouts import (
     POPUP_DRAWER_CONTENT_ID,
     drawer,
-    notification_card,
+    notification_error_template,
     notifications,
 )
 from ..components.primitives import pill
@@ -20,12 +20,6 @@ from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
 from ..core.templates.page_template import Design, PageTemplate
 from ..core.templates.skeleton import Skeleton
-
-# Hidden <template> id the JS in pyhx.app-shell.js clones on htmx error events.
-# Lives here (next to the AppShell that renders the template) because the JS
-# that uses it ships with this page template, not with the notifications
-# component.
-APP_SHELL_NOTIFICATION_ERROR_TEMPLATE_ID = "hx-notification__error-template"
 
 
 @component
@@ -127,7 +121,11 @@ class AppShell(PageTemplate):
                 "/static/css/page-templates/app-shell.css",
                 *self.stylesheets,
             ),
-            scripts=("/static/js/pyhx.app-shell.js", *self.scripts),
+            scripts=(
+                "/static/js/pyhx.app-shell.js",
+                "/static/js/pyhx.notifications.js",
+                *self.scripts,
+            ),
             head_extras=(
                 y.script(type="text/javascript")[
                     Markup(f"TOOLTIP_URL = '{render_tooltip.url()}';")
@@ -289,14 +287,7 @@ class AppShell(PageTemplate):
                 bottom="var(--footer--height)",
             ),
             notifications(top="var(--header--height)"),
-            # Skeleton cloned by the htmx-error handler in pyhx.app-shell.js
-            # to surface request / network / timeout / swap failures as toasts.
-            y.template(id=APP_SHELL_NOTIFICATION_ERROR_TEMPLATE_ID)[
-                notification_card(
-                    appearance="danger",
-                    icon="alert-octagon",
-                ),
-            ],
+            notification_error_template(),
         ]
 
     async def _render_user_menu(self, request: RequestContext) -> y.Node:

@@ -1,0 +1,36 @@
+/*  ===========================================================================
+    # Canvas Theme (token overrides)
+
+    Loaded by CanvasShell after pyhx.css. Same token names as pyhx/theme.css,
+    only the values the canvas design changes; every other token keeps its
+    default from theme.css.
+
+    Deliberately unlayered (see the CSS authoring conventions, §10): theme.css
+    sets its tokens with `:root:not([data-theme="dark"])`, which out-specifies
+    a plain `:root` inside the same layer. Unlayered rules win over every
+    layer, so this file must contain only `:root` rules.
+    ======================================================================== */
+
+:root {
+    /* PyHX Brand Colors */
+    --hx-color-text: #171717;
+    --hx-color-canvas: #eeeeee;
+
+    /* Typography */
+    --pico-font-size: 100%;  /* 16px root, so the rem-based scales match the design */
+    --pico-font-family: "Inter", system-ui, sans-serif;
+    --hx-font-heading: "Inter", system-ui, sans-serif;
+
+    /* Neutral (Gray) */
+    --hx-color-neutral-050: #FAFAFA;
+    --hx-color-neutral-100: #F3F3F3;
+    --hx-color-neutral-150: #EEEEEE;
+    --hx-color-neutral-200: #DCE1E5;
+    --hx-color-neutral-300: #D4D4D4;
+    --hx-color-neutral-400: #A1A1A1;
+    --hx-color-neutral-500: #737373;
+    --hx-color-neutral-600: #525252;
+    --hx-color-neutral-700: #404040;
+    --hx-color-neutral-800: #262626;
+    --hx-color-neutral-900: #171717;
+}

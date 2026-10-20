@@ -21,9 +21,11 @@ from .data import (
 )
 from .layouts import (
     DRAWER_CONTENT_ID,
+    NOTIFICATION_ERROR_TEMPLATE_ID,
     NOTIFICATIONS_CONTAINER_ID,
     POPUP_DRAWER_CONTENT_ID,
     ContainerWidth,
+    breadcrumbs,
     code,
     container,
     drawer,
@@ -32,6 +34,7 @@ from .layouts import (
     message,
     notification,
     notification_card,
+    notification_error_template,
     notifications,
     open_drawer_htmx_attributes,
     page_header,
@@ -104,6 +107,7 @@ from .view_model import (
 __all__ = [
     "DRAWER_CONTENT_ID",
     "NOTIFICATIONS_CONTAINER_ID",
+    "NOTIFICATION_ERROR_TEMPLATE_ID",
     "POPUP_DRAWER_CONTENT_ID",
     "BooleanFilter",
     "CalendarLabels",
@@ -153,6 +157,7 @@ __all__ = [
     "StackChartItem",
     "TextFilter",
     "annotations",
+    "breadcrumbs",
     "bubble",
     "button",
     "button_group",
@@ -181,6 +186,7 @@ __all__ = [
     "notification",
     "notification_badge",
     "notification_card",
+    "notification_error_template",
     "notifications",
     "open_drawer_htmx_attributes",
     "page_header",

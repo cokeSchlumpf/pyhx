@@ -1,0 +1,87 @@
+/* --- Breadcrumbs ---
+
+   Standalone breadcrumb trail (``breadcrumbs()``). Ancestors are muted links,
+   the current page (last item, ``aria-current="page"``) is emphasised. The
+   separator is drawn by CSS so screen readers do not announce it. */
+
+
+/* --- Layout --- */
+
+.hx-breadcrumbs {
+    /* Box */
+    margin-bottom: var(--hx-spacing-md);
+}
+
+.hx-breadcrumbs ol {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: 0;
+    margin: 0;
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-breadcrumbs li {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: 0;
+    margin: 0;
+}
+
+/* Override Pico's zero-width-space pseudo-element. */
+.hx-breadcrumbs li::before {
+    content: none;
+}
+
+.hx-breadcrumbs li:not(:last-child)::after {
+    /* Typography */
+    color: var(--hx-color-neutral-300);
+
+    /* Visual */
+    content: "/";
+}
+
+
+/* --- Items --- */
+
+.hx-breadcrumbs a {
+    /* Typography */
+    text-decoration: none;
+    color: inherit;
+
+    /* Motion */
+    transition: color var(--hx-transition-fast);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-breadcrumbs a {
+        /* Motion */
+        transition: none;
+    }
+}
+
+.hx-breadcrumbs a:hover {
+    /* Typography */
+    color: var(--hx-color-text);
+}
+
+.hx-breadcrumbs li[aria-current="page"] {
+    /* Typography */
+    font-weight: var(--hx-font-semibold);
+    color: var(--hx-color-text);
+}

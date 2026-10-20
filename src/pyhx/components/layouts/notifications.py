@@ -10,6 +10,9 @@ from ..variants import Appearance
 
 NOTIFICATIONS_CONTAINER_ID = "hx-notifications"
 
+# Hidden <template> id the JS in pyhx.notifications.js clones on htmx error events.
+NOTIFICATION_ERROR_TEMPLATE_ID = "hx-notification__error-template"
+
 
 _DEFAULT_ICONS: dict[Appearance, IconName] = {
     "info": "info",
@@ -153,4 +156,17 @@ def notification(
             children=children,
             **kwargs,
         ),
+    ]
+
+
+@component
+def notification_error_template() -> y.Node:
+    """Hidden notification card cloned by ``pyhx.notifications.js`` on htmx errors.
+
+    Surfaces request / network / timeout / swap failures as toasts without a
+    server roundtrip. Render once in the page shell, next to
+    :func:`notifications`, and load ``/static/js/pyhx.notifications.js``.
+    """
+    return y.template(id=NOTIFICATION_ERROR_TEMPLATE_ID)[
+        notification_card(appearance="danger", icon="alert-octagon"),
     ]

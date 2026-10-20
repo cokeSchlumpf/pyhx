@@ -84,6 +84,7 @@ Every page template declares the **design** its components render in, via a `des
 
 - `Skeleton` is `"plain"` by default. Templates built on top of it pass their own design through: `Skeleton(design=self.design, ...)`.
 - `AppShell` is `"default"`.
+- `CanvasShell` is `"canvas"`.
 
 The design is rendered as `data-hx-design` on the `<html>` element, so stylesheets can restyle components per design (`[data-hx-design="canvas"] .hx-button { … }`). Components that need different markup read it with `RequestContext.get_design()`; app code can use `hx.design`:
 
@@ -100,6 +101,39 @@ if hx.design == "canvas":                     # in app code
 Both read the app's **default** page template, so they return the same value in page and fragment requests. A per-page `page_template` override does not change it — use one design per app. For templates without a `design` attribute both return `"plain"`; outside a request only `RequestContext.get_design()` works (it returns `"plain"`), while `hx` raises because no `WebApp` is set.
 
 Branch only on designs that render differently and let all others fall through to the default rendering.
+
+## `CanvasShell`
+
+`CanvasShell` is the page template of the `canvas` design: a white top bar above a grey canvas, without sidebar or footer. Pages place their own breadcrumbs and content on the canvas.
+
+```python
+import htpy as y
+import pyhx.components as c
+from pyhx.core import RequestContext, WebApp
+from pyhx.page_templates import CanvasShell
+
+def header_content() -> y.Node:          # evaluated per request
+    return RequestContext.get().user.display_name
+
+app = WebApp(
+    title="Fallbearbeitung",
+    default_page_template=CanvasShell(header_content=header_content),
+)
+
+@app.page("/dossiers/{id}", title="Dossier")
+async def dossier(id: str) -> y.Node:
+    return y.div[
+        c.breadcrumbs(y.a(href="/")["Meine Dossiers"], id),
+        ...,
+    ]
+```
+
+- `header_content` — right side of the top bar; a node, or a zero-argument function (sync or async) evaluated per request. Pass a list of items; the shell draws a thin separator line between them.
+- `mode` — width of the content area: `"centered"` (at most 72rem, default), `"wide"` (at most `--hx-container-width-wide`) or `"full"` (full width, no padding). Change it per page with `page_template=CanvasShell(mode="full")`.
+- `brand_img_src` / `brand_img_alt` — logo and title on the left, as in `AppShell`. Defaults to the PyHX mark (`/static/images/pyhx_mark.svg`).
+- `favicon` — defaults to the PyHX mark as well.
+
+Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
 ## Per-page overrides
 

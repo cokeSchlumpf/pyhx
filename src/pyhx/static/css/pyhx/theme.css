@@ -7,6 +7,7 @@
     /* PyHX Brand Colors */
     --hx-color-text: #333333;
     --hx-color-background: #ffffff;
+    --hx-color-canvas: var(--hx-color-background); /* page background behind content; themes may tint it */
     --hx-color-primary: #1A3BB8;
     --hx-color-primary-hover: #132C8C;
     --hx-color-primary-focus: rgba(26, 59, 184, 0.25);
