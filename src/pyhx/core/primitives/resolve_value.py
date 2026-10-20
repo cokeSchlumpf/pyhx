@@ -19,13 +19,16 @@ from collections.abc import Awaitable, Callable
 from inspect import iscoroutinefunction
 from typing import cast
 
+from htpy import BaseElement
+
 type SyncOrAsyncValue[C] = Callable[[], C] | Callable[[], Awaitable[C]] | C
 """A value, a sync producer of one, or an async producer of one.
 
 Pair with :func:`resolve_value`. Note the inherent ambiguity: if ``C``
 itself is callable (e.g. you want to resolve to a function), this type
 can't distinguish a producer from the value it produces. Don't use it
-when ``C`` may be callable.
+when ``C`` may be callable. htpy elements are the one callable value
+:func:`resolve_value` recognises and passes through.
 """
 
 
@@ -42,7 +45,16 @@ async def resolve_value[C](value: SyncOrAsyncValue[C]) -> C:
     Plain values pass through unchanged. Sync callables are invoked;
     async callables are invoked and awaited. The result is always a
     fully-resolved ``C``.
+
+    htpy elements are values even though they are callable: calling one
+    returns a copy with new attributes, so calling it without arguments
+    would drop the attributes it already has. ``BaseElement`` covers every
+    element type, including void elements (``br``, ``input``, ...), which
+    are not subclasses of ``Element``. Fragments and context providers are
+    not callable and pass through as plain values anyway.
     """
+    if isinstance(value, BaseElement):
+        return cast(C, value)
     if callable(value):
         if iscoroutinefunction(value):
             return await value()
