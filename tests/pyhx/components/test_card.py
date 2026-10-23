@@ -67,7 +67,13 @@ class TestCard:
 
 
 class TestCollapsibleCard:
-    @pytest.mark.parametrize(("open", "details"), [(True, "<details open>"), (False, "<details>")])
+    @pytest.mark.parametrize(
+        ("open", "details"),
+        [
+            (True, '<details class="hx-card__details" open>'),
+            (False, '<details class="hx-card__details">'),
+        ],
+    )
     def test_open_makes_card_collapsible(self, open, details):
         html = str(card(open=open)[card.header["Title"], card.section["body"]])
 
@@ -105,6 +111,47 @@ class TestCollapsibleCard:
 
         assert '<summary class="hx-card__header"><b>async</b>' in html
         assert '<div class="hx-card__section"><b>async</b></div>' in html
+
+
+class TestCardGroup:
+    def test_fixed_group_is_a_div(self):
+        html = str(card.group[card.label["Label"], card.list[card.item["row"]]])
+
+        assert html == (
+            '<div class="hx-card__group">'
+            '<div class="hx-card__label">Label</div>'
+            '<ul class="hx-card__list"><li class="hx-card__item">row</li></ul>'
+            "</div>"
+        )
+
+    @pytest.mark.parametrize(("open", "details"), [(True, " open"), (False, "")])
+    def test_open_makes_group_collapsible(self, open, details):
+        html = str(card.group(open=open)[card.header["Erledigt"], card.list["rows"]])
+
+        assert html.startswith(f'<details{details} class="hx-card__group">')
+        assert '<summary class="hx-card__header">Erledigt' in html
+
+    def test_collapsible_group_in_plain_card(self):
+        html = str(
+            card[
+                card.header["Card"],
+                card.group(open=False)[card.header["Group"]],
+            ]
+        )
+
+        assert '<header class="hx-card__header">Card</header>' in html
+        assert '<summary class="hx-card__header">Group' in html
+
+    def test_fixed_group_in_collapsible_card(self):
+        html = str(card(open=True)[card.header["Card"], card.group[card.header["Group"]]])
+
+        assert '<summary class="hx-card__header">Card' in html
+        assert '<header class="hx-card__header">Group</header>' in html
+
+    def test_collapsible_card_marks_its_details(self):
+        assert '<details class="hx-card__details" open>' in str(
+            card(open=True)[card.header["Card"]]
+        )
 
 
 class TestCardCss:

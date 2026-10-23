@@ -183,6 +183,7 @@ c.card[
 
 - `card.link` / `card.button` make a whole `card.item` clickable by stretching an invisible overlay across it (no JavaScript). Other links and buttons in the item stay clickable on their own.
 - `card(open=False)[...]` or `card(open=True)[...]` makes the card collapsible via a native `<details>`: the header becomes the toggle. It must be the first part and should not contain `card.actions`.
+- `card.group[...]` is an unpadded block, typically a `card.label` above a `card.list`, so the rows run edge to edge. `card.group(open=False)[...]` makes a group collapsible the same way, with its own `card.header` as the toggle. A card can hold any number of (collapsible) groups.
 - In the default design the card has a border and a small radius; in the canvas design it is a white box with a large radius on the grey canvas.
 
 See the "Card" page in `samples/components` and `/dossier` in `samples/canvas_layout`.

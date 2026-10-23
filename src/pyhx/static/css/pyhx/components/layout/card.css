@@ -50,8 +50,8 @@
 }
 
 /* Thin line between consecutive parts; in a collapsible card the parts
-   after the header live in its `details`. */
-:is(.hx-card, .hx-card > details) > * + * {
+   after the header live in its `.hx-card__details`. */
+:is(.hx-card, .hx-card__details) > * + * {
     /* Box */
     border-top: 1px solid var(--card--line);
 }
@@ -131,17 +131,19 @@
 }
 
 
-/* --- Collapsible: the header is the `summary` of a `details` --- */
+/* --- Collapsible: the header is the `summary` of a `details` ---
 
-.hx-card > details {
+   A collapsible card wraps its parts in `.hx-card__details`; a collapsible
+   group is itself a `details.hx-card__group`. Both share the toggle styles. */
+
+:is(.hx-card__details, details.hx-card__group) {
     /* Box */
     margin: 0;
 }
 
-.hx-card > details > summary.hx-card__header {
+summary.hx-card__header {
     /* Box */
     margin: 0;
-    border-radius: var(--card--radius) var(--card--radius) 0 0;
 
     /* Typography */
     line-height: inherit;
@@ -155,29 +157,41 @@
     transition: background-color var(--hx-transition-fast);
 }
 
-.hx-card > details:not([open]) > summary.hx-card__header {
-    /* Box */
-    border-radius: var(--card--radius);
-}
-
 /* Hide the native marker and Pico's chevron; the card draws its own. */
-.hx-card > details > summary.hx-card__header::-webkit-details-marker {
+summary.hx-card__header::-webkit-details-marker {
     display: none;
 }
 
-.hx-card > details > summary.hx-card__header::after {
+summary.hx-card__header::after {
     content: none;
 }
 
-.hx-card > details > summary.hx-card__header:hover {
+summary.hx-card__header:hover {
     /* Visual */
     background: var(--card--hover);
 }
 
-.hx-card > details > summary.hx-card__header:focus-visible {
+summary.hx-card__header:focus-visible {
     /* Visual */
     outline: 2px solid var(--hx-color-primary-focus);
     outline-offset: -2px;
+}
+
+/* The card's own toggle sits at its top edge: round the hover background. */
+.hx-card__details > summary.hx-card__header {
+    /* Box */
+    border-radius: var(--card--radius) var(--card--radius) 0 0;
+}
+
+.hx-card__details:not([open]) > summary.hx-card__header {
+    /* Box */
+    border-radius: var(--card--radius);
+}
+
+/* A collapsed group at the bottom edge rounds its lower corners. */
+:is(.hx-card, .hx-card__details) > details.hx-card__group:last-child:not([open]) > summary.hx-card__header {
+    /* Box */
+    border-radius: 0 0 var(--card--radius) var(--card--radius);
 }
 
 .hx-card__chevron {
@@ -201,8 +215,37 @@
     height: 1rem;
 }
 
-.hx-card > details[open] > summary .hx-card__chevron {
+details[open] > summary .hx-card__chevron {
     rotate: 180deg;
+}
+
+
+/* --- Group: unpadded block, e.g. a label above a list ---
+
+   Rows run edge to edge; there is no line between the group's label and its
+   list. Inside a group the header is one step smaller than the card's. */
+
+.hx-card__group > .hx-card__label {
+    /* Box */
+    padding: 0.75rem var(--card--padding-inline) 0.25rem;
+    margin: 0;
+}
+
+.hx-card__group > .hx-card__header {
+    /* Box */
+    padding-block: 0.75rem;
+}
+
+.hx-card__group > .hx-card__header .hx-card__title {
+    /* Typography */
+    font-size: var(--card--link-size);
+    letter-spacing: normal;
+}
+
+/* An open collapsible group separates its toggle from the content. */
+details.hx-card__group > * + * {
+    /* Box */
+    border-top: 1px solid var(--card--line);
 }
 
 
@@ -301,11 +344,12 @@
 }
 
 /* Rows at the card's edges round their hover background. */
-:is(.hx-card, .hx-card > details) > .hx-card__list:first-child > .hx-card__item:first-child {
+:is(.hx-card, .hx-card__details) > .hx-card__list:first-child > .hx-card__item:first-child {
     border-radius: var(--card--radius) var(--card--radius) 0 0;
 }
 
-:is(.hx-card, .hx-card > details) > .hx-card__list:last-child > .hx-card__item:last-child {
+:is(.hx-card, .hx-card__details) > .hx-card__list:last-child > .hx-card__item:last-child,
+:is(.hx-card, .hx-card__details) > .hx-card__group:last-child > .hx-card__list:last-child > .hx-card__item:last-child {
     border-radius: 0 0 var(--card--radius) var(--card--radius);
 }
 
@@ -382,7 +426,7 @@
 /* --- Motion --- */
 
 @media (prefers-reduced-motion: reduce) {
-    .hx-card > details > summary.hx-card__header,
+    summary.hx-card__header,
     .hx-card__chevron,
     .hx-card__item {
         /* Motion */

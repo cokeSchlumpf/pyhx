@@ -97,6 +97,66 @@ async def full() -> PageResponse:
     )
 
 
+def _action_needed() -> y.Node:
+    """Aside card with fixed groups and a collapsible "Erledigt" group."""
+
+    def item(title: str, *details: y.Node) -> y.Node:
+        return c.card.item[
+            c.card.link(href="#")[title],
+            [c.card.subtle[detail] for detail in details],
+        ]
+
+    return c.card[
+        c.card.header[
+            c.card.title[y.h2["Handlungsbedarf"]],
+            c.card.subtle["4"],
+        ],
+        c.card.group[
+            c.card.label[y.h3["Neues Dokument 1"]],
+            c.card.list[
+                item(
+                    "Psychiatrisches Gutachten",
+                    "Eingang 30.06.2026 · 7 Seiten · bereit zum Validieren",
+                ),
+            ],
+        ],
+        c.card.group[
+            c.card.label[y.h3["Abweichungen 2"]],
+            c.card.list[
+                item("Diagnose", "Dr. Keller F33.2 · Gutachten F32.1"),
+                item(
+                    "Funktionsniveau",
+                    [
+                        "Dr. Keller Konzentration etwa 30 Minuten · Arbeitgeber ",
+                        "zweistündige Besprechung",
+                    ],
+                ),
+            ],
+        ],
+        c.card.group[
+            c.card.label[y.h3["Lücke 1"]],
+            c.card.list[
+                item(
+                    "Keine Arbeitsunfähigkeitszeugnisse im Dossier",
+                    "15.03. bis 01.04.2026",
+                ),
+            ],
+        ],
+        c.card.group(open=False)[
+            c.card.header[
+                c.card.title[y.h3["Erledigt"]],
+                c.card.subtle["4"],
+            ],
+            c.card.list[
+                item("IV-Anmeldung validiert", "15.03.2026"),
+                item("Arztbericht angefordert", "18.03.2026"),
+                item("Beginn AU geprüft", "20.03.2026"),
+                item("Arbeitgeberfragebogen erhalten", "02.04.2026"),
+            ],
+        ],
+    ]
+
+
 @hx.page("/dossier", title="Dossier")
 async def dossier() -> y.Node:
     return y.div[
@@ -197,21 +257,7 @@ async def dossier() -> y.Node:
                     c.card.section[lorem_ipsum(paragraphs=6)],
                 ],
             ],
-            aside=c.card[
-                c.card.header[
-                    c.card.title[y.h2["Handlungsbedarf"]],
-                ],
-                c.card.list[
-                    c.card.item[
-                        c.card.button["Beginn AU prüfen"],
-                        c.card.subtle["IV-Anmeldung 001.001 · unsicher gelesen"],
-                    ],
-                    c.card.item[
-                        c.card.link(href="#")["Arztbericht anfordern"],
-                        c.card.subtle["Frist 05.04.2026"],
-                    ],
-                ],
-            ],
+            aside=_action_needed(),
         ),
     ]
 

@@ -42,8 +42,9 @@ from ..primitives._element import (
     _KxSimpleElementFactory,
 )
 
-# Whether the parts render inside a collapsible card. Every card provides
-# its own value, so a card nested in a collapsible card is not affected.
+# Whether the parts render inside a collapsible card or group. Every card
+# and group provides its own value, so a fixed group in a collapsible card
+# (and vice versa) is not affected.
 _collapsible: y.Context[bool] = y.Context("hx-card-collapsible", default=False)
 
 
@@ -61,7 +62,28 @@ class _HxCard(_HxElement):
             return section[_collapsible.provider(False, self._children)]
 
         return section[
-            y.details(open=self._open)[_collapsible.provider(True, self._children)]
+            y.details(class_="hx-card__details", open=self._open)[
+                _collapsible.provider(True, self._children)
+            ]
+        ]
+
+
+class _HxCardGroup(_HxElement):
+    """An unpadded block inside a card, e.g. a label above a list; a
+    ``<details>`` when ``open`` is given."""
+
+    def __init__(self, *, open: bool | Omit = omit, **kwargs: y.Attribute) -> None:
+        self._open = open
+        self._kwargs = kwargs
+
+    def _render(self) -> y.Node:
+        attrs = classnames("hx-card__group", **self._kwargs)
+
+        if isinstance(self._open, Omit):
+            return y.div(**attrs)[_collapsible.provider(False, self._children)]
+
+        return y.details(open=self._open, **attrs)[
+            _collapsible.provider(True, self._children)
         ]
 
 
@@ -81,13 +103,24 @@ def _header(
 
 
 class _HxCardHeader(_HxElement):
-    """``<header>``, or the ``<summary>`` toggle in a collapsible card."""
+    """``<header>``, or the ``<summary>`` toggle in a collapsible card or
+    group."""
 
     def __init__(self, **kwargs: y.Attribute) -> None:
         self._kwargs = kwargs
 
     def _render(self) -> y.Node:
         return _header(self._children, self._kwargs)
+
+
+class _HxCardGroupFactory:
+    def __call__(
+        self, *, open: bool | Omit = omit, **kwargs: y.Attribute
+    ) -> _HxCardGroup:
+        return _HxCardGroup(open=open, **kwargs)
+
+    def __getitem__(self, children: y.Node | None = None) -> y.Node:
+        return self()[children]
 
 
 class _HxCardHeaderFactory:
@@ -126,6 +159,10 @@ class _Card:
     * ``subtitle`` — muted second line below the title.
     * ``actions`` — buttons on the right of the title line.
     * ``section`` — padded body block.
+    * ``group`` — unpadded block, e.g. a ``label`` above a ``list``, so the
+      rows run edge to edge. ``group(open=False)[...]`` makes it collapsible
+      like a card: its ``header`` becomes the toggle. A card can hold any
+      number of (collapsible) groups.
     * ``label`` — small heading inside a section; wraps text or a heading
       (``card.label[y.h3["Ausgangslage"]]``).
     * ``list`` / ``item`` — rows separated by thin lines.
@@ -142,6 +179,7 @@ class _Card:
         self.subtitle = _KxSimpleElementFactory("hx-card__subtitle", y.p)
         self.actions = _KxSimpleElementFactory("hx-card__actions")
         self.section = _KxSimpleElementFactory("hx-card__section")
+        self.group = _HxCardGroupFactory()
         self.label = _KxSimpleElementFactory("hx-card__label")
         self.list = _KxSimpleElementFactory("hx-card__list", y.ul)
         self.item = _KxSimpleElementFactory("hx-card__item", y.li)

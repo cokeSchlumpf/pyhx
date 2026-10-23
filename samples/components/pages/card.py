@@ -1,7 +1,8 @@
 """Card demo page.
 
 A card is built by composition from ``card``'s parts: header (title, subtle
-text, subtitle, actions), sections with labels, lists of rows, footer. The
+text, subtitle, actions), sections with labels, lists of rows, groups (also
+collapsible), footer. The
 CSS places the parts and draws the thin lines between them. This sample runs
 in AppShell (default design: bordered card); see ``samples/canvas_layout``
 for the canvas design.
@@ -121,6 +122,55 @@ async def card_page() -> y.Node:
                 ],
                 # docs:end list
                 code=[("code", src.text("list"), "python")],
+            ),
+            y.h2["Groups"],
+            y.p[
+                y.code["card.group"],
+                " is an unpadded block, typically a ",
+                y.code["card.label"],
+                " above a ",
+                y.code["card.list"],
+                ", so the rows run edge to edge. Passing ",
+                y.code["open"],
+                " makes a group collapsible like a card: its ",
+                y.code["card.header"],
+                " becomes the toggle. A card can hold any number of groups.",
+            ],
+            c.example(
+                # docs:start groups
+                c.card[
+                    c.card.header[c.card.title[y.h3["Handlungsbedarf"]]],
+                    c.card.group[
+                        c.card.label[y.h4["Abweichungen"]],
+                        c.card.list[
+                            c.card.item[
+                                c.card.link(href="#")["Diagnose"],
+                                c.card.subtle["Dr. Keller F33.2 · Gutachten F32.1"],
+                            ],
+                        ],
+                    ],
+                    c.card.group[
+                        c.card.label[y.h4["Lücke"]],
+                        c.card.list[
+                            c.card.item[
+                                c.card.link(href="#")["Keine AU-Zeugnisse"],
+                                c.card.subtle["15.03. bis 01.04.2026"],
+                            ],
+                        ],
+                    ],
+                    c.card.group(open=False)[
+                        c.card.header[
+                            c.card.title[y.h4["Erledigt"]],
+                            c.card.subtle["2"],
+                        ],
+                        c.card.list[
+                            c.card.item[c.card.link(href="#")["Anmeldung validiert"]],
+                            c.card.item[c.card.link(href="#")["Bericht angefordert"]],
+                        ],
+                    ],
+                ],
+                # docs:end groups
+                code=[("code", src.text("groups"), "python")],
             ),
             y.h2["Footer"],
             c.example(
