@@ -11,9 +11,12 @@ breadcrumbs). The panes of the ``full`` page are plain Pico ``<article>``
 placeholders, since a document viewer has panes, not cards.
 """
 
+from typing import get_args
+
 import htpy as y
 import pyhx.components as c
 
+from pyhx.components.variants import Appearance
 from pyhx.core import PageResponse, RequestContext, WebApp
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
@@ -42,6 +45,7 @@ def _modes() -> y.Node:
         y.li[y.a(href="/wide")["wide"], " — at most --hx-container-width-wide"],
         y.li[y.a(href="/full")["full"], " — full width, no padding"],
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
+        y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
     ]
 
 
@@ -103,33 +107,33 @@ def _action_needed() -> y.Node:
     def item(title: str, *details: y.Node) -> y.Node:
         return c.card.item[
             c.card.link(href="#")[title],
-            [c.card.subtle[detail] for detail in details],
+            c.card.subtle[c.meta(*details)],
         ]
 
     return c.card[
         c.card.header[
             c.card.title[y.h2["Handlungsbedarf"]],
-            c.card.subtle["4"],
+            c.pill("4", appearance="warning", size="sm"),
         ],
         c.card.group[
             c.card.label[y.h3["Neues Dokument 1"]],
             c.card.list[
                 item(
                     "Psychiatrisches Gutachten",
-                    "Eingang 30.06.2026 · 7 Seiten · bereit zum Validieren",
+                    "Eingang 30.06.2026",
+                    "7 Seiten",
+                    "bereit zum Validieren",
                 ),
             ],
         ],
         c.card.group[
             c.card.label[y.h3["Abweichungen 2"]],
             c.card.list[
-                item("Diagnose", "Dr. Keller F33.2 · Gutachten F32.1"),
+                item("Diagnose", "Dr. Keller F33.2", "Gutachten F32.1"),
                 item(
                     "Funktionsniveau",
-                    [
-                        "Dr. Keller Konzentration etwa 30 Minuten · Arbeitgeber ",
-                        "zweistündige Besprechung",
-                    ],
+                    "Dr. Keller Konzentration etwa 30 Minuten",
+                    "Arbeitgeber zweistündige Besprechung",
                 ),
             ],
         ],
@@ -145,7 +149,7 @@ def _action_needed() -> y.Node:
         c.card.group(open=False)[
             c.card.header[
                 c.card.title[y.h3["Erledigt"]],
-                c.card.subtle["4"],
+                c.pill("4", appearance="neutral", size="sm"),
             ],
             c.card.list[
                 item("IV-Anmeldung validiert", "15.03.2026"),
@@ -166,9 +170,15 @@ async def dossier() -> y.Node:
                 c.card[
                     c.card.header[
                         c.card.title[y.h1["David Meier"]],
+                        c.pill(
+                            "Neuer Eingang", appearance="success", variant="outline"
+                        ),
                         c.card.subtitle[
-                            "Fall IV-2026-0142 · AHV-Nr. 756.1978.0814.05 · ",
-                            "Geb. 14.08.1978, 47 Jahre",
+                            c.meta(
+                                ["Fall ", y.strong["IV-2026-0142"]],
+                                ["AHV-Nr. ", y.strong["756.1978.0814.05"]],
+                                ["Geb. ", y.strong["14.08.1978"], ", 47 Jahre"],
+                            )
                         ],
                         c.card.actions[c.button("Bearbeiten")],
                     ],
@@ -210,6 +220,7 @@ async def dossier() -> y.Node:
                 c.card(open=False)[
                     c.card.header[
                         c.card.title[y.h2["Extrahierte Angaben"]],
+                        c.pill("4", appearance="neutral", size="sm"),
                         c.card.subtle[
                             "Im Dokument attestiert oder angegeben, ",
                             "je mit Quelle und Seite",
@@ -236,18 +247,21 @@ async def dossier() -> y.Node:
                 c.card[
                     c.card.header[
                         c.card.title[y.h2["Dokumente"]],
-                        c.card.subtle["2"],
+                        c.pill("2", appearance="neutral", size="sm"),
                     ],
                     c.card.list[
                         c.card.item[
                             c.card.link(href="#")["IV-Anmeldung 001.001"],
-                            c.card.subtle["Eingang 15.03.2026 · 12 Seiten"],
+                            c.card.subtle[c.meta("Eingang 15.03.2026", "12 Seiten")],
                         ],
                         c.card.item[
                             c.card.link(href="#")["Arztbericht Dr. Keller"],
                             c.card.subtle[
-                                "Eingang 22.03.2026 · 4 Seiten · ",
-                                y.a(href="#")["Quelle öffnen"],
+                                c.meta(
+                                    "Eingang 22.03.2026",
+                                    "4 Seiten",
+                                    y.a(href="#")["Quelle öffnen"],
+                                )
                             ],
                         ],
                     ],
@@ -259,6 +273,53 @@ async def dossier() -> y.Node:
             ],
             aside=_action_needed(),
         ),
+    ]
+
+
+@hx.page("/colors", title="Colors")
+async def colors() -> y.Node:
+    """Semantic colours of the canvas design (themes/canvas.css)."""
+    appearances: tuple[Appearance, ...] = get_args(Appearance)
+
+    return y.div[
+        c.breadcrumbs(y.a(href="/")["Canvas Layout"], "Colors"),
+        c.card[
+            c.card.header[
+                c.card.title[y.h1["Colors"]],
+                c.card.subtitle[
+                    "Appearance colours of the canvas design, taken from the draft: ",
+                    "success = jade, warning = amber, danger = orange, info = sky.",
+                ],
+            ],
+            c.card.section[
+                c.card.label["Pills"],
+                c.pill.container(
+                    *[c.pill(a, appearance=a) for a in appearances],
+                    style="margin-bottom: 0.75rem;",
+                ),
+                c.pill.container(
+                    *[
+                        c.pill(a, appearance=a, variant="outline")
+                        for a in appearances
+                    ],
+                    style="margin-bottom: 0.75rem;",
+                ),
+                c.pill.container(
+                    *[c.pill(a, appearance=a, size="sm") for a in appearances],
+                ),
+            ],
+            c.card.section[
+                c.card.label["Buttons"],
+                c.pill.container(*[c.button(a, appearance=a) for a in appearances]),
+            ],
+            c.card.section[
+                c.card.label["Messages"],
+                [
+                    c.message(f"A {a} message.", appearance=a, title=a.title())
+                    for a in appearances
+                ],
+            ],
+        ],
     ]
 
 

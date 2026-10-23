@@ -33,4 +33,31 @@
     --hx-color-neutral-700: #404040;
     --hx-color-neutral-800: #262626;
     --hx-color-neutral-900: #171717;
+
+    /* Semantic scales from the design draft (Tailwind v4 palette plus its own
+       "jade" green). Steps the draft doesn't use come from the same Tailwind
+       hue, so the tones stay consistent. */
+
+    /* Danger: orange, the draft's alert colour (it has no red) */
+    --hx-color-danger-050: #FFF7ED;   /* orange-50 */
+    --hx-color-danger-100: #FFEDD4;   /* orange-100 */
+    --hx-color-danger-500: #FF6900;   /* orange-500 */
+    --hx-color-danger-600: #F54A00;   /* orange-600 */
+
+    /* Warning: amber */
+    --hx-color-warning-050: #FFFBEB;  /* amber-50 */
+    --hx-color-warning-100: #FEF3C6;  /* amber-100 */
+    --hx-color-warning-500: #FE9A00;  /* amber-500 */
+    --hx-color-warning-600: #E17100;  /* amber-600 */
+    --hx-color-warning-700: #BB4D00;  /* amber-700 */
+    --hx-color-warning-800: #973C00;  /* amber-800 */
+
+    /* Success: jade */
+    --hx-color-success-050: #EFFCF5;  /* jade-50 */
+    --hx-color-success-500: #00A466;  /* jade-600 */
+    --hx-color-success-600: #00843F;  /* jade-700 */
+
+    /* Info: sky */
+    --hx-color-info-050: #F0F9FF;     /* sky-50 */
+    --hx-color-info-600: #0084D1;     /* sky-600 */
 }

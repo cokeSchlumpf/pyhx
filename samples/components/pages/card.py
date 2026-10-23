@@ -60,6 +60,68 @@ async def card_page() -> y.Node:
                     ("imports", src.text("imports"), "python"),
                 ],
             ),
+            y.h3["Counts and status"],
+            y.p[
+                "A ",
+                y.code["c.pill"],
+                " goes straight into the header, next to the title: ",
+                y.code['size="sm"'],
+                " for a count, ",
+                y.code['variant="outline"'],
+                " for a status. The header centres everything on its first line, ",
+                "so pills, title and buttons share one axis even when a button ",
+                "makes the line taller.",
+            ],
+            c.example(
+                # docs:start header_pills
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h3["Handlungsbedarf"]],
+                        c.pill("4", appearance="warning", size="sm"),
+                    ],
+                ],
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h3["Dossier IV-2026-0142"]],
+                        c.pill("Neu", appearance="success", variant="outline"),
+                        c.card.actions[c.button("Bearbeiten")],
+                    ],
+                ],
+                # docs:end header_pills
+                code=[("code", src.text("header_pills"), "python")],
+                max_height=None,
+            ),
+            y.h2["Title levels"],
+            y.p[
+                "The heading in ",
+                y.code["card.title"],
+                " sets its size: an ",
+                y.code["h1"],
+                " is the page title (e.g. the person on a dossier, with more room ",
+                "in the header), ",
+                y.code["h2"],
+                " the regular card title, ",
+                y.code["h3"],
+                " and ",
+                y.code["h4"],
+                " get smaller.",
+            ],
+            c.example(
+                # docs:start levels
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h1["David Meier"]],
+                        c.pill("Neu", appearance="success", variant="outline"),
+                        c.card.subtitle[c.meta("Fall IV-2026-0142", "Geb. 14.08.1978")],
+                    ],
+                ],
+                c.card[c.card.header[c.card.title[y.h2["Zusammenfassung"]]]],
+                c.card[c.card.header[c.card.title[y.h3["Dokumente"]]]],
+                c.card[c.card.header[c.card.title[y.h4["Notizen"]]]],
+                # docs:end levels
+                code=[("code", src.text("levels"), "python")],
+                max_height=None,
+            ),
             y.h2["Sections and labels"],
             y.p[
                 y.code["card.section"],
@@ -105,13 +167,15 @@ async def card_page() -> y.Node:
                     c.card.list[
                         c.card.item[
                             c.card.link(href="#")["IV-Anmeldung 001.001"],
-                            c.card.subtle["Eingang 15.03.2026 · 12 Seiten"],
+                            c.card.subtle[c.meta("Eingang 15.03.2026", "12 Seiten")],
                         ],
                         c.card.item[
                             c.card.button["Beginn AU prüfen"],
                             c.card.subtle[
-                                "Unsicher gelesen · ",
-                                y.a(href="#")["Anmeldung S. 6"],
+                                c.meta(
+                                    "Unsicher gelesen",
+                                    y.a(href="#")["Anmeldung S. 6"],
+                                )
                             ],
                         ],
                         c.card.item[
@@ -139,13 +203,18 @@ async def card_page() -> y.Node:
             c.example(
                 # docs:start groups
                 c.card[
-                    c.card.header[c.card.title[y.h3["Handlungsbedarf"]]],
+                    c.card.header[
+                        c.card.title[y.h3["Handlungsbedarf"]],
+                        c.pill("3", appearance="warning", size="sm"),
+                    ],
                     c.card.group[
                         c.card.label[y.h4["Abweichungen"]],
                         c.card.list[
                             c.card.item[
                                 c.card.link(href="#")["Diagnose"],
-                                c.card.subtle["Dr. Keller F33.2 · Gutachten F32.1"],
+                                c.card.subtle[
+                                    c.meta("Dr. Keller F33.2", "Gutachten F32.1")
+                                ],
                             ],
                         ],
                     ],
@@ -161,7 +230,7 @@ async def card_page() -> y.Node:
                     c.card.group(open=False)[
                         c.card.header[
                             c.card.title[y.h4["Erledigt"]],
-                            c.card.subtle["2"],
+                            c.pill("2", appearance="neutral", size="sm"),
                         ],
                         c.card.list[
                             c.card.item[c.card.link(href="#")["Anmeldung validiert"]],

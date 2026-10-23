@@ -181,6 +181,7 @@ c.card[
 ]
 ```
 
+- The heading level in `card.title` sets its size: `y.h1` is the page title (larger, with more room in the header, e.g. the person on a dossier), `y.h2` the regular card title, `y.h3` and `y.h4` get smaller.
 - `card.link` / `card.button` make a whole `card.item` clickable by stretching an invisible overlay across it (no JavaScript). Other links and buttons in the item stay clickable on their own.
 - `card(open=False)[...]` or `card(open=True)[...]` makes the card collapsible via a native `<details>`: the header becomes the toggle. It must be the first part and should not contain `card.actions`.
 - `card.group[...]` is an unpadded block, typically a `card.label` above a `card.list`, so the rows run edge to edge. `card.group(open=False)[...]` makes a group collapsible the same way, with its own `card.header` as the toggle. A card can hold any number of (collapsible) groups.

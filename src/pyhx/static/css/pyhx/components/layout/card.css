@@ -25,7 +25,14 @@
     --card--gap: var(--hx-spacing-md);
     --card--padding-block: 0.875rem;
     --card--padding-inline: 1.25rem;
+    /* Title sizes by heading level: h2 (and plain text) uses
+       --card--title-size; h1 is the page title. */
     --card--title-size: var(--hx-text-lg);
+    --card--h1-size: var(--hx-text-3xl);
+    --card--h1-weight: var(--hx-font-semibold);
+    --card--h1-tracking: -0.025em;
+    --card--h3-size: var(--hx-text-base);
+    --card--h4-size: var(--hx-text-sm);
     --card--small-size: var(--hx-text-sm);
     --card--link-size: var(--hx-text-base);
     --card--hover: var(--hx-color-neutral-050);
@@ -63,7 +70,10 @@
     /* Layout */
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    /* centre, not baseline: actions (buttons) make the line taller than
+       the title, and pills are boxes; centring keeps title, pills and
+       buttons on one axis whatever the line's height. */
+    align-items: center;
     gap: 0.125rem 0.75rem;
 
     /* Box */
@@ -74,10 +84,38 @@
 .hx-card__title {
     /* Typography */
     font-size: var(--card--title-size);
-    font-weight: var(--hx-font-semibold);
-    line-height: 1.5;
-    letter-spacing: -0.025em;
+    font-weight: var(--card--title-weight, var(--hx-font-semibold));
+    line-height: var(--card--title-leading, 1.5);
+    letter-spacing: var(--card--title-tracking, -0.025em);
     color: var(--hx-color-text);
+}
+
+/* The heading level sets the size: an h1 is the page title (e.g. the
+   person on a dossier), h3 and below get smaller. */
+.hx-card__title:has(> h1) {
+    --card--title-size: var(--card--h1-size);
+    --card--title-weight: var(--card--h1-weight);
+    --card--title-tracking: var(--card--h1-tracking);
+    --card--title-leading: 1.1;
+}
+
+.hx-card__title:has(> h3) {
+    --card--title-size: var(--card--h3-size);
+    --card--title-tracking: normal;
+}
+
+.hx-card__title:has(> :is(h4, h5, h6)) {
+    --card--title-size: var(--card--h4-size);
+    --card--title-tracking: normal;
+}
+
+/* A page-title header gets more room around the larger title. */
+.hx-card__header:has(> .hx-card__title > h1) {
+    /* Layout */
+    row-gap: 0.25rem;
+
+    /* Box */
+    padding: 1rem 1.5rem;
 }
 
 .hx-card__title :is(h1, h2, h3, h4, h5, h6) {
@@ -223,7 +261,7 @@ details[open] > summary .hx-card__chevron {
 /* --- Group: unpadded block, e.g. a label above a list ---
 
    Rows run edge to edge; there is no line between the group's label and its
-   list. Inside a group the header is one step smaller than the card's. */
+   list. The group's title size follows its heading level (usually h3). */
 
 .hx-card__group > .hx-card__label {
     /* Box */
@@ -234,12 +272,6 @@ details[open] > summary .hx-card__chevron {
 .hx-card__group > .hx-card__header {
     /* Box */
     padding-block: 0.75rem;
-}
-
-.hx-card__group > .hx-card__header .hx-card__title {
-    /* Typography */
-    font-size: var(--card--link-size);
-    letter-spacing: normal;
 }
 
 /* An open collapsible group separates its toggle from the content. */
@@ -442,6 +474,11 @@ details.hx-card__group > * + * {
     --card--border: 0;
     --card--line: var(--hx-color-neutral-100);
     --card--title-size: 0.9375rem;
+    --card--h1-size: 2rem;
+    --card--h1-weight: var(--hx-font-light);
+    --card--h1-tracking: -0.04em;
+    --card--h3-size: var(--hx-text-sm);
+    --card--h4-size: 0.8125rem;
     --card--small-size: var(--hx-text-xs);
     --card--link-size: var(--hx-text-sm);
 }

@@ -32,8 +32,12 @@ async def pills_page() -> y.Node:
                 " renders a short, semantically-coloured label, optionally ",
                 "followed by a secondary ",
                 y.code["value"],
-                " segment. It composes one axis: ",
+                " segment. It composes three axes: ",
                 y.code["appearance"],
+                ", ",
+                y.code["size"],
+                " and ",
+                y.code["variant"],
                 ".",
             ],
             y.h2["All appearances"],
@@ -50,6 +54,50 @@ async def pills_page() -> y.Node:
                     ("code", src.text("all_appearances"), "python"),
                     ("imports", src.text("imports"), "python"),
                 ],
+            ),
+            y.h2["Sizes"],
+            y.p[
+                y.code["size"],
+                " sets the pill's height and font size: ",
+                y.code["sm"],
+                " fits next to a heading (e.g. a count in a card header), ",
+                y.code["md"],
+                " is the default, ",
+                y.code["lg"],
+                " stands on its own.",
+            ],
+            c.example(
+                # docs:start sizes
+                c.pill.container(
+                    c.pill("4", appearance="warning", size="sm"),
+                    c.pill("Small", appearance="neutral", size="sm"),
+                    c.pill("Medium", appearance="neutral", size="md"),
+                    c.pill("Large", appearance="neutral", size="lg"),
+                    style="margin-block: 1rem; align-items: center;",
+                ),
+                # docs:end sizes
+                code=[("code", src.text("sizes"), "python")],
+            ),
+            y.h2["Variants"],
+            y.p[
+                y.code["variant"],
+                " sets the emphasis: ",
+                y.code["solid"],
+                " (default) is the tint, ",
+                y.code["outline"],
+                " adds a thin edge in the appearance colour — e.g. for a ",
+                "status next to a heading.",
+            ],
+            c.example(
+                # docs:start variants
+                c.pill.container(
+                    c.pill("Neuer Eingang", appearance="success"),
+                    c.pill("Neuer Eingang", appearance="success", variant="outline"),
+                    c.pill("In Abklärung", appearance="warning", variant="outline"),
+                    style="margin-block: 1rem; align-items: center;",
+                ),
+                # docs:end variants
+                code=[("code", src.text("variants"), "python")],
             ),
             y.h2["With value"],
             y.p[

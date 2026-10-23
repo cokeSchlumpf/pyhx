@@ -33,9 +33,10 @@ from .gantt import (
 )
 from .icon import icon
 from .markdown import markdown
+from .meta import meta
 from .metric_tile import metric_tile
 from .notification_badge import notification_badge
-from .pill import pill
+from .pill import PillVariant, pill
 from .segment_control import segment_control
 from .select_fieldset import checkbox_fieldset, radio_fieldset
 from .slider import SliderThumb, slider
@@ -59,6 +60,7 @@ __all__ = [
     "HilightedDate",
     "InputFactory",
     "Orientation",
+    "PillVariant",
     "PlannedActivity",
     "PlannedTimespan",
     "PlannedUtilization",
@@ -85,6 +87,7 @@ __all__ = [
     "gantt",
     "icon",
     "markdown",
+    "meta",
     "metric_tile",
     "notification_badge",
     "pill",

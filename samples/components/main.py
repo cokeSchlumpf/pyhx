@@ -31,6 +31,7 @@ from samples.components.pages import (
     grid,
     icons,
     messages,
+    meta,
     metric_tile,
     notification_badge,
     notifications,
@@ -68,6 +69,7 @@ hx.include_router(forms.router)
 hx.include_router(gantt.router)
 hx.include_router(taglist.router)
 hx.include_router(messages.router)
+hx.include_router(meta.router)
 hx.include_router(metric_tile.router)
 hx.include_router(text_diff.router)
 hx.include_router(timeline.router)
@@ -87,8 +89,12 @@ async def home() -> y.Node:
             y.ul[
                 y.li[
                     y.a(href=pills.pills_page.url())["Pill"],
-                    " — short status label (1 axis: ",
+                    " — short status label (3 axes: ",
                     y.code["appearance"],
+                    " × ",
+                    y.code["size"],
+                    " × ",
+                    y.code["variant"],
                     ")",
                 ],
                 y.li[
@@ -96,6 +102,10 @@ async def home() -> y.Node:
                         "Notification Badge"
                     ],
                     " — count bubble overlaid on any wrapped element.",
+                ],
+                y.li[
+                    y.a(href=meta.meta_page.url())["Meta"],
+                    " — line of metadata separated by dots",
                 ],
                 y.li[
                     y.a(href=bubble.bubble_page.url())["Bubble"],
@@ -262,6 +272,7 @@ hx.navigation.set(
         hx.nav_item(home, icon="home", full_match=True),
         hx.nav_item(pills.pills_page, icon="circle"),
         hx.nav_item(bubble.bubble_page, icon="message-circle"),
+        hx.nav_item(meta.meta_page, icon="more-horizontal"),
         hx.nav_item(notification_badge.notification_badge_page, icon="bell"),
         hx.nav_item(buttons.buttons_page, icon="square"),
         hx.nav_item(card.card_page, icon="credit-card"),
