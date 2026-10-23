@@ -158,6 +158,35 @@ c.split_layout(
 
 Below 58rem of **layout** width the columns stack and the aside scrolls with the page, after the main column. The breakpoint is a container query, so AppShell's sidebar is taken into account. An aside taller than the viewport scrolls on its own. See the "Split Layout" page in `samples/app_shell_layout` and `/dossier` in `samples/canvas_layout`.
 
+## Cards
+
+`card` is a box built by composition. Put its parts in and the CSS places them, drawing a thin line between consecutive parts:
+
+```python
+c.card[
+    c.card.header[
+        c.card.title[y.h2["Zusammenfassung"]],
+        c.card.subtle["Jeder Satz mit Quelle"],          # on the title line
+        c.card.subtitle["Aktualisiert am 15.03.2026"],   # always a second line
+        c.card.actions[c.button("Bearbeiten")],          # right
+    ],
+    c.card.section[c.card.label[y.h3["Ausgangslage"]], y.p[...]],
+    c.card.list[
+        c.card.item[
+            c.card.link(href="/dokument/1")["IV-Anmeldung"],   # whole row clickable
+            c.card.subtle["Eingang 15.03.2026"],
+        ],
+    ],
+    c.card.footer[c.button("Übernehmen", appearance="primary")],
+]
+```
+
+- `card.link` / `card.button` make a whole `card.item` clickable by stretching an invisible overlay across it (no JavaScript). Other links and buttons in the item stay clickable on their own.
+- `card(open=False)[...]` or `card(open=True)[...]` makes the card collapsible via a native `<details>`: the header becomes the toggle. It must be the first part and should not contain `card.actions`.
+- In the default design the card has a border and a small radius; in the canvas design it is a white box with a large radius on the grey canvas.
+
+See the "Card" page in `samples/components` and `/dossier` in `samples/canvas_layout`.
+
 ## Per-page overrides
 
 A single page can override the layout for one response by returning a `PageResponse`:

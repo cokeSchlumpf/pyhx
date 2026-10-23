@@ -5,9 +5,10 @@ Run with::
     poetry run fastapi dev samples/canvas_layout/main.py
 
 One page per ``CanvasShell`` mode (``centered``, ``wide``, ``full``), each with
-breadcrumbs and placeholder content, plus a dossier page with a
-``split_layout`` (main column and sticky aside below the breadcrumbs). The placeholders are plain Pico
-``<article>`` elements; the canvas card component comes in a later step.
+breadcrumbs and placeholder content, plus a dossier page built from
+``card``s in a ``split_layout`` (main column and sticky aside below the
+breadcrumbs). The panes of the ``full`` page are plain Pico ``<article>``
+placeholders, since a document viewer has panes, not cards.
 """
 
 import htpy as y
@@ -48,12 +49,14 @@ def _modes() -> y.Node:
 async def centered() -> y.Node:
     return y.div[
         c.breadcrumbs(y.a(href="/")["Canvas Layout"], "Centered"),
-        y.article[
-            y.h1["Centered"],
-            y.p["The content column is centered and at most 72rem wide."],
-            _modes(),
+        c.card[
+            c.card.header[c.card.title[y.h1["Centered"]]],
+            c.card.section[
+                y.p["The content column is centered and at most 72rem wide."],
+                _modes(),
+            ],
         ],
-        y.article[lorem_ipsum(paragraphs=12)],
+        c.card[c.card.section[lorem_ipsum(paragraphs=12)]],
     ]
 
 
@@ -62,12 +65,14 @@ async def wide() -> PageResponse:
     return PageResponse(
         node=y.div[
             c.breadcrumbs(y.a(href="/")["Canvas Layout"], "Wide"),
-            y.article[
-                y.h1["Wide"],
-                y.p["Same design, wider content column — e.g. for wide tables."],
-                _modes(),
+            c.card[
+                c.card.header[c.card.title[y.h1["Wide"]]],
+                c.card.section[
+                    y.p["Same design, wider content column — e.g. for wide tables."],
+                    _modes(),
+                ],
             ],
-            y.article[lorem_ipsum(paragraphs=4)],
+            c.card[c.card.section[lorem_ipsum(paragraphs=4)]],
         ],
         page_template=CanvasShell(header_content=header_content, mode="wide"),
     )
@@ -98,24 +103,114 @@ async def dossier() -> y.Node:
         c.breadcrumbs(y.a(href="/")["Meine Dossiers"], "IV-2026-0142"),
         c.split_layout(
             main=y.fragment[
-                y.article[
-                    y.h1["Dossier IV-2026-0142"],
-                    y.p[
-                        "The breadcrumbs span both columns. Scroll: the aside ",
-                        "pins below the top bar (",
-                        y.code["--hx-sticky-top"],
-                        ") once it reaches it.",
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h1["David Meier"]],
+                        c.card.subtitle[
+                            "Fall IV-2026-0142 · AHV-Nr. 756.1978.0814.05 · ",
+                            "Geb. 14.08.1978, 47 Jahre",
+                        ],
+                        c.card.actions[c.button("Bearbeiten")],
                     ],
-                    _modes(),
                 ],
-                [
-                    y.article[y.h2[f"Document {i}"], lorem_ipsum(paragraphs=3)]
-                    for i in range(1, 6)
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h2["Zusammenfassung"]],
+                        c.card.subtitle[
+                            "Aktualisiert am 15.03.2026, 09:41 Uhr, nach Eingang ",
+                            "IV-Anmeldung 001.001. Jeder Satz mit Quelle.",
+                        ],
+                    ],
+                    c.card.section[
+                        c.card.label["Angabe in der Anmeldung"],
+                        y.p["AU 100% seit 20.01.2026"],
+                    ],
+                    c.card.section[
+                        c.card.label[y.h3["Ausgangslage"]],
+                        y.p[
+                            "Herr David Meier, Bauleiter bei der Muster Bau AG, ",
+                            "meldete sich am 15.03.2026 bei der IV an.",
+                        ],
+                        c.card.label[y.h3["Gesundheit"]],
+                        y.p[
+                            "Als gesundheitliche Beeinträchtigung nennt die Anmeldung ",
+                            "eine Depression mit Erschöpfung und Schlafstörungen.",
+                        ],
+                        c.card.label[y.h3["Erwerb"]],
+                        y.p[
+                            "Herr Meier ist seit 2014 bei der Muster Bau AG als ",
+                            "Bauleiter tätig, mit einem Pensum von 100%.",
+                        ],
+                    ],
+                    c.card.footer[
+                        c.button("Verwerfen"),
+                        c.button("Übernehmen", appearance="primary"),
+                    ],
+                ],
+                c.card(open=False)[
+                    c.card.header[
+                        c.card.title[y.h2["Extrahierte Angaben"]],
+                        c.card.subtle[
+                            "Im Dokument attestiert oder angegeben, ",
+                            "je mit Quelle und Seite",
+                        ],
+                    ],
+                    c.card.list[
+                        [
+                            c.card.item[
+                                c.card.label[label],
+                                y.span[value],
+                                c.card.subtle[
+                                    y.a(href="#")[source],
+                                ],
+                            ]
+                            for label, value, source in (
+                                ("Tätigkeit", "Bauleiter", "Anmeldung S. 9"),
+                                ("Pensum", "100%", "Anmeldung S. 9"),
+                                ("Beginn AU", "20.01.2026", "Anmeldung S. 6"),
+                                ("Grad AU", "100%", "Anmeldung S. 6"),
+                            )
+                        ]
+                    ],
+                ],
+                c.card[
+                    c.card.header[
+                        c.card.title[y.h2["Dokumente"]],
+                        c.card.subtle["2"],
+                    ],
+                    c.card.list[
+                        c.card.item[
+                            c.card.link(href="#")["IV-Anmeldung 001.001"],
+                            c.card.subtle["Eingang 15.03.2026 · 12 Seiten"],
+                        ],
+                        c.card.item[
+                            c.card.link(href="#")["Arztbericht Dr. Keller"],
+                            c.card.subtle[
+                                "Eingang 22.03.2026 · 4 Seiten · ",
+                                y.a(href="#")["Quelle öffnen"],
+                            ],
+                        ],
+                    ],
+                ],
+                c.card[
+                    c.card.header[c.card.title[y.h2["Notizen"]]],
+                    c.card.section[lorem_ipsum(paragraphs=6)],
                 ],
             ],
-            aside=y.article[
-                y.h2["Verlauf"],
-                y.ul[[y.li[f"Event {i}"] for i in range(1, 9)]],
+            aside=c.card[
+                c.card.header[
+                    c.card.title[y.h2["Handlungsbedarf"]],
+                ],
+                c.card.list[
+                    c.card.item[
+                        c.card.button["Beginn AU prüfen"],
+                        c.card.subtle["IV-Anmeldung 001.001 · unsicher gelesen"],
+                    ],
+                    c.card.item[
+                        c.card.link(href="#")["Arztbericht anfordern"],
+                        c.card.subtle["Frist 05.04.2026"],
+                    ],
+                ],
             ],
         ),
     ]

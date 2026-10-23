@@ -1,0 +1,403 @@
+/* --- Card ---
+
+   A box built from parts (``card[...]``): header (title, subtle text,
+   subtitle, actions), sections, lists of rows, footer. The parts place
+   themselves, so their order inside the header does not matter. Consecutive
+   parts are separated by a thin line.
+
+   Default design: bordered box with a small radius, since the AppShell
+   canvas is white. Canvas design: white box on the grey canvas, no border,
+   large radius (overrides at the end). Pico styles `details`, `summary`,
+   `section`, lists and headings; every part sets its own box so those
+   styles don't leak in.
+
+   No `overflow: clip` on the card (it would cut off dropdowns and tooltips
+   inside it); hover backgrounds at the edges round their own corners
+   instead. */
+
+
+/* --- Tokens --- */
+
+.hx-card {
+    --card--radius: var(--hx-radius-lg);
+    --card--border: 1px solid var(--hx-color-neutral-200);
+    --card--line: var(--hx-color-neutral-200);
+    --card--gap: var(--hx-spacing-md);
+    --card--padding-block: 0.875rem;
+    --card--padding-inline: 1.25rem;
+    --card--title-size: var(--hx-text-lg);
+    --card--small-size: var(--hx-text-sm);
+    --card--link-size: var(--hx-text-base);
+    --card--hover: var(--hx-color-neutral-050);
+}
+
+
+/* --- Card --- */
+
+.hx-card {
+    /* Box */
+    margin: 0 0 var(--card--gap);
+    border: var(--card--border);
+    border-radius: var(--card--radius);
+
+    /* Visual */
+    background: var(--hx-color-background);
+}
+
+.hx-card:last-child {
+    /* Box */
+    margin-bottom: 0;
+}
+
+/* Thin line between consecutive parts; in a collapsible card the parts
+   after the header live in its `details`. */
+:is(.hx-card, .hx-card > details) > * + * {
+    /* Box */
+    border-top: 1px solid var(--card--line);
+}
+
+
+/* --- Header --- */
+
+.hx-card__header {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.125rem 0.75rem;
+
+    /* Box */
+    padding: var(--card--padding-block) var(--card--padding-inline);
+    margin: 0;
+}
+
+.hx-card__title {
+    /* Typography */
+    font-size: var(--card--title-size);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.5;
+    letter-spacing: -0.025em;
+    color: var(--hx-color-text);
+}
+
+.hx-card__title :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+}
+
+.hx-card__subtle {
+    /* Typography */
+    font-size: var(--card--small-size);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-500);
+}
+
+/* Always the second line, wherever it stands in the header. */
+.hx-card__subtitle {
+    /* Layout */
+    flex-basis: 100%;
+    order: 1;
+
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: var(--card--small-size);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-card__actions {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    align-self: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin-left: auto;
+}
+
+.hx-card__actions > * {
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Collapsible: the header is the `summary` of a `details` --- */
+
+.hx-card > details {
+    /* Box */
+    margin: 0;
+}
+
+.hx-card > details > summary.hx-card__header {
+    /* Box */
+    margin: 0;
+    border-radius: var(--card--radius) var(--card--radius) 0 0;
+
+    /* Typography */
+    line-height: inherit;
+    color: inherit;
+
+    /* Visual */
+    cursor: pointer;
+    list-style: none;
+
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+}
+
+.hx-card > details:not([open]) > summary.hx-card__header {
+    /* Box */
+    border-radius: var(--card--radius);
+}
+
+/* Hide the native marker and Pico's chevron; the card draws its own. */
+.hx-card > details > summary.hx-card__header::-webkit-details-marker {
+    display: none;
+}
+
+.hx-card > details > summary.hx-card__header::after {
+    content: none;
+}
+
+.hx-card > details > summary.hx-card__header:hover {
+    /* Visual */
+    background: var(--card--hover);
+}
+
+.hx-card > details > summary.hx-card__header:focus-visible {
+    /* Visual */
+    outline: 2px solid var(--hx-color-primary-focus);
+    outline-offset: -2px;
+}
+
+.hx-card__chevron {
+    /* Layout */
+    display: inline-flex;
+    align-self: center;
+
+    /* Box */
+    margin-left: auto;
+
+    /* Typography */
+    color: var(--hx-color-neutral-400);
+
+    /* Motion */
+    transition: rotate var(--hx-transition-base);
+}
+
+.hx-card__chevron svg {
+    /* Box */
+    width: 1rem;
+    height: 1rem;
+}
+
+.hx-card > details[open] > summary .hx-card__chevron {
+    rotate: 180deg;
+}
+
+
+/* --- Section --- */
+
+.hx-card__section {
+    /* Box */
+    padding: 1rem var(--card--padding-inline);
+}
+
+.hx-card__section > :last-child {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-card__label {
+    /* Box */
+    margin: 0 0 0.125rem;
+
+    /* Typography */
+    font-size: var(--card--small-size);
+    font-weight: var(--hx-font-medium);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-500);
+}
+
+.hx-card__label :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+
+/* --- List of rows --- */
+
+.hx-card__list {
+    /* Box */
+    padding: 0;
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-card__item {
+    /* Box */
+    padding: 0.75rem var(--card--padding-inline);
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-card__item + .hx-card__item {
+    /* Box */
+    border-top: 1px solid var(--card--line);
+}
+
+/* Muted description line below the item's link or text. */
+.hx-card__item .hx-card__subtle {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+}
+
+/* Clickable rows: `card.link` / `card.button` stretch an overlay across
+   the item (the "stretched link" pattern), so the whole row is the link. */
+.hx-card__item:has(.hx-card__link, .hx-card__button) {
+    /* Position */
+    position: relative;
+
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+}
+
+.hx-card__item:has(.hx-card__link, .hx-card__button):is(:hover, :focus-within) {
+    /* Visual */
+    background: var(--card--hover);
+}
+
+.hx-card__item:has(:is(.hx-card__link, .hx-card__button):focus-visible) {
+    /* Visual */
+    outline: 2px solid var(--hx-color-primary-focus);
+    outline-offset: -2px;
+}
+
+/* Rows at the card's edges round their hover background. */
+:is(.hx-card, .hx-card > details) > .hx-card__list:first-child > .hx-card__item:first-child {
+    border-radius: var(--card--radius) var(--card--radius) 0 0;
+}
+
+:is(.hx-card, .hx-card > details) > .hx-card__list:last-child > .hx-card__item:last-child {
+    border-radius: 0 0 var(--card--radius) var(--card--radius);
+}
+
+.hx-card__link,
+.hx-card__button {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: auto;
+    padding: 0;
+    margin: 0;
+    border: 0;
+
+    /* Typography */
+    font: inherit;
+    font-size: var(--card--link-size);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    color: var(--hx-color-text);
+
+    /* Visual */
+    background: none;
+    box-shadow: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.hx-card__link::after,
+.hx-card__button::after {
+    /* Position */
+    position: absolute;
+    inset: 0;
+
+    content: "";
+}
+
+.hx-card__item:hover :is(.hx-card__link, .hx-card__button) {
+    /* Typography */
+    text-decoration: underline;
+}
+
+/* Other controls in a clickable row stay clickable above the overlay. */
+.hx-card__item :is(a, button, input, select, textarea, summary, label):not(.hx-card__link, .hx-card__button) {
+    /* Position */
+    position: relative;
+    z-index: 1;
+}
+
+
+/* --- Footer --- */
+
+.hx-card__footer {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: var(--card--padding-block) var(--card--padding-inline);
+    margin: 0;
+}
+
+.hx-card__footer > * {
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-card > details > summary.hx-card__header,
+    .hx-card__chevron,
+    .hx-card__item {
+        /* Motion */
+        transition: none;
+    }
+}
+
+
+/* --- Canvas design: white box on the grey canvas --- */
+
+[data-hx-design="canvas"] .hx-card {
+    --card--radius: var(--hx-radius-xl);
+    --card--border: 0;
+    --card--line: var(--hx-color-neutral-100);
+    --card--title-size: 0.9375rem;
+    --card--small-size: var(--hx-text-xs);
+    --card--link-size: var(--hx-text-sm);
+}
