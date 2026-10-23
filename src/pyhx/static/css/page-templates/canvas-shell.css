@@ -11,8 +11,9 @@
         --content--padding-inline: var(--hx-spacing-lg);
         --content--padding-block: var(--hx-spacing-xl);
 
-        /* Sticky table headers pin below the top bar. */
-        --hx-table--sticky-top: var(--header--height);
+        /* Pinned: the top bar. */
+        --hx-sticky-top: var(--header--height);
+        --hx-table--sticky-top: var(--hx-sticky-top);
 
 
         /* --- Layout --- */

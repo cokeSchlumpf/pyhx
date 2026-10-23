@@ -144,6 +144,11 @@
     --hx-z-sidepanel:    200;
     --hx-z-dropdown:     300;
 
+    /* Sticky offset: height of the bars the page template pins to the top of
+       the viewport (top bar, page header). Sticky components pin below it;
+       page templates set the concrete value. */
+    --hx-sticky-top: 0px;
+
     /* Font Size Scale */
     --hx-text-xs:   0.75rem;   /* 12px */
     --hx-text-sm:   0.875rem;  /* 14px */

@@ -135,6 +135,16 @@ async def dossier(id: str) -> y.Node:
 
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
+## Sticky offset
+
+Page templates publish the height of what they pin to the top of the viewport as `--hx-sticky-top`, so sticky elements in the page know where to stop:
+
+- `AppShell`: the top bar, plus the page header when the page has one.
+- `CanvasShell`: the top bar.
+- Without a shell it is `0px` (default in `theme.css`).
+
+Use it for your own sticky elements: `position: sticky; top: var(--hx-sticky-top);`. Table headers (`--hx-table--sticky-top`) and page-section headers derive their offsets from it.
+
 ## Per-page overrides
 
 A single page can override the layout for one response by returning a `PageResponse`:
