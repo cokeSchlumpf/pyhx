@@ -24,6 +24,7 @@
 @import "./pyhx/components/layout/notifications.css" layer(pyhx);
 @import "./pyhx/components/layout/page-header.css" layer(pyhx);
 @import "./pyhx/components/layout/page-section.css" layer(pyhx);
+@import "./pyhx/components/layout/split-layout.css" layer(pyhx);
 @import "./pyhx/components/layout/example.css" layer(pyhx);
 @import "./pyhx/components/layout/code.css" layer(pyhx);
 @import "./pyhx/components/layout/code-highlight.css" layer(pyhx);

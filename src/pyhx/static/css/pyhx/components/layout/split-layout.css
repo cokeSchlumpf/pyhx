@@ -1,0 +1,72 @@
+/* --- Split layout ---
+
+   Main column plus a sticky aside on the right (``split_layout()``). The aside
+   pins below the bars of the page template (``--hx-sticky-top``) while the
+   main column scrolls. Below 58rem of layout width (aside + a usable main
+   column) both columns stack and the aside scrolls with the page.
+
+   The breakpoint is a container query on ``.hx-split-layout``, not a media
+   query: in AppShell the sidebar takes part of the viewport, so the viewport
+   width says little about the space the layout has. Container query
+   conditions can't read custom properties, so the 58rem is a literal. */
+
+
+/* --- Tokens --- */
+
+.hx-split-layout {
+    --split-layout--aside-width: 22rem;
+    --split-layout--gap: var(--hx-spacing-md);
+
+    /* Layout */
+    container: hx-split-layout / inline-size;
+}
+
+
+/* --- Layout --- */
+
+.hx-split-layout__grid {
+    /* Layout */
+    display: grid;
+    /* minmax(0, 1fr): wide content (tables) can't push the aside out. */
+    grid-template-columns: minmax(0, 1fr) var(--split-layout--aside-width);
+    /* start: the aside keeps its own height; a stretched item has no room
+       to stick. */
+    align-items: start;
+    gap: var(--split-layout--gap);
+}
+
+.hx-split-layout__main {
+    /* Layout */
+    min-width: 0;
+}
+
+.hx-split-layout__aside {
+    /* Position */
+    position: sticky;
+    top: calc(var(--hx-sticky-top) + var(--split-layout--gap));
+
+    /* Box */
+    /* A long aside scrolls on its own instead of running off the viewport. */
+    max-height: calc(100dvh - var(--hx-sticky-top) - 2 * var(--split-layout--gap));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+
+/* --- Responsive --- */
+
+@container hx-split-layout (width < 58rem) {
+    .hx-split-layout__grid {
+        /* Layout */
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hx-split-layout__aside {
+        /* Position */
+        position: static;
+
+        /* Box */
+        max-height: none;
+        overflow-y: visible;
+    }
+}

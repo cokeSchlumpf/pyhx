@@ -23,6 +23,7 @@ from .notifications import (
 )
 from .page_header import page_header
 from .page_section import page_section
+from .split_layout import split_layout
 
 __all__ = [
     "DRAWER_CONTENT_ID",
@@ -45,4 +46,5 @@ __all__ = [
     "open_drawer_htmx_attributes",
     "page_header",
     "page_section",
+    "split_layout",
 ]

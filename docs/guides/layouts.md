@@ -143,7 +143,20 @@ Page templates publish the height of what they pin to the top of the viewport as
 - `CanvasShell`: the top bar.
 - Without a shell it is `0px` (default in `theme.css`).
 
-Use it for your own sticky elements: `position: sticky; top: var(--hx-sticky-top);`. Table headers (`--hx-table--sticky-top`) and page-section headers derive their offsets from it.
+Use it for your own sticky elements: `position: sticky; top: var(--hx-sticky-top);`. Table headers (`--hx-table--sticky-top`), page-section headers and the aside of `split_layout` derive their offsets from it.
+
+## Split layout
+
+`split_layout` puts a main column next to an aside on the right (22rem). The aside sticks below `--hx-sticky-top` while the main column scrolls, so it works the same in both shells:
+
+```python
+c.split_layout(
+    main=y.fragment[overview_card, documents_card],
+    aside=history_card,
+)
+```
+
+Below 58rem of **layout** width the columns stack and the aside scrolls with the page, after the main column. The breakpoint is a container query, so AppShell's sidebar is taken into account. An aside taller than the viewport scrolls on its own. See the "Split Layout" page in `samples/app_shell_layout` and `/dossier` in `samples/canvas_layout`.
 
 ## Per-page overrides
 

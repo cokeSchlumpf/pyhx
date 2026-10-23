@@ -39,6 +39,7 @@ from .layouts import (
     open_drawer_htmx_attributes,
     page_header,
     page_section,
+    split_layout,
 )
 from .primitives import (
     ConditionalSelectLabels,
@@ -195,6 +196,7 @@ __all__ = [
     "radio_fieldset",
     "segment_control",
     "slider",
+    "split_layout",
     "switch",
     "table",
     "taglist",

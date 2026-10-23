@@ -5,7 +5,8 @@ Run with::
     poetry run fastapi dev samples/canvas_layout/main.py
 
 One page per ``CanvasShell`` mode (``centered``, ``wide``, ``full``), each with
-breadcrumbs and placeholder content. The placeholders are plain Pico
+breadcrumbs and placeholder content, plus a dossier page with a
+``split_layout`` (main column and sticky aside below the breadcrumbs). The placeholders are plain Pico
 ``<article>`` elements; the canvas card component comes in a later step.
 """
 
@@ -39,6 +40,7 @@ def _modes() -> y.Node:
         y.li[y.a(href="/")["centered"], " — at most 72rem, the default"],
         y.li[y.a(href="/wide")["wide"], " — at most --hx-container-width-wide"],
         y.li[y.a(href="/full")["full"], " — full width, no padding"],
+        y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
     ]
 
 
@@ -88,6 +90,35 @@ async def full() -> PageResponse:
         ],
         page_template=CanvasShell(header_content=header_content, mode="full"),
     )
+
+
+@hx.page("/dossier", title="Dossier")
+async def dossier() -> y.Node:
+    return y.div[
+        c.breadcrumbs(y.a(href="/")["Meine Dossiers"], "IV-2026-0142"),
+        c.split_layout(
+            main=y.fragment[
+                y.article[
+                    y.h1["Dossier IV-2026-0142"],
+                    y.p[
+                        "The breadcrumbs span both columns. Scroll: the aside ",
+                        "pins below the top bar (",
+                        y.code["--hx-sticky-top"],
+                        ") once it reaches it.",
+                    ],
+                    _modes(),
+                ],
+                [
+                    y.article[y.h2[f"Document {i}"], lorem_ipsum(paragraphs=3)]
+                    for i in range(1, 6)
+                ],
+            ],
+            aside=y.article[
+                y.h2["Verlauf"],
+                y.ul[[y.li[f"Event {i}"] for i in range(1, 9)]],
+            ],
+        ),
+    ]
 
 
 app = hx.create_app()
