@@ -42,7 +42,13 @@
             border-bottom: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
 
             /* Visual */
-            background-color: var(--hx-color-background);
+            /* Light glass: content scrolling underneath shows through faintly. */
+            background-color: color-mix(
+                in srgb,
+                var(--hx-color-background) 80%,
+                transparent
+            );
+            backdrop-filter: var(--hx-blur-sm);
         }
 
         & > main {
