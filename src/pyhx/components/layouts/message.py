@@ -4,6 +4,7 @@ from pyhx.core import component
 from pyhx.core.primitives import IconName, classnames
 
 from ..primitives.button import button
+from ..primitives.icon import icon as render_icon
 from ..variants import Appearance
 
 
@@ -74,7 +75,7 @@ def message(
         # of `.hx-message__icon` — feather.replace() copies the class onto the
         # svg, so a class placed directly on the <i> would move to the svg and
         # the `.hx-message__icon svg` sizing rule would no longer match.
-        y.span(class_="hx-message__icon")[y.i(data_feather=icon)] if icon else None,
+        y.span(class_="hx-message__icon")[render_icon(icon)] if icon else None,
         y.div(class_="hx-message__body")[
             y.h4(class_="hx-message__title")[title] if title else None,
             y.div(class_="hx-message__content")[children],

@@ -1,0 +1,181 @@
+@layer templates {
+
+    body[data-hx-page-template="canvas-shell"] {
+
+        /* --- Tokens --- */
+
+        --header--height: 3.5rem;
+        --header--padding-inline: var(--hx-spacing-lg);
+        --header--gap: 0.75rem;
+        --content--max-width: 72rem;
+        --content--padding-inline: var(--hx-spacing-lg);
+        --content--padding-block: var(--hx-spacing-xl);
+
+        /* Pinned: the top bar. */
+        --hx-sticky-top: var(--header--height);
+        --hx-table--sticky-top: var(--hx-sticky-top);
+
+
+        /* --- Layout --- */
+
+        /* Layout */
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        /* Box */
+        /* dvh tracks the dynamic viewport (mobile address bar); vh is the fallback. */
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: clip;
+
+        /* Visual */
+        background-color: var(--hx-color-canvas);
+
+        & > header {
+            /* Position */
+            position: sticky;
+            top: 0;
+            z-index: var(--hx-z-table-header);
+
+            /* Box */
+            padding: 0;
+            border-bottom: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+
+            /* Visual */
+            /* Light glass: content scrolling underneath shows through faintly. */
+            background-color: color-mix(
+                in srgb,
+                var(--hx-color-background) 80%,
+                transparent
+            );
+            backdrop-filter: var(--hx-blur-sm);
+        }
+
+        & > main {
+            /* Box */
+            padding: 0;
+            /* `1fr` is `minmax(auto, 1fr)`; without this, the row's content
+               (e.g. a wide <pre>) widens the page past the viewport. */
+            min-width: 0;
+        }
+
+        .hx-canvas-shell__header {
+            /* Layout */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--hx-spacing-md);
+
+            /* Box */
+            width: 100%;
+            max-width: var(--content--max-width);
+            height: var(--header--height);
+            padding-inline: var(--header--padding-inline);
+            margin-inline: auto;
+        }
+
+        .hx-canvas-shell__header-content {
+            /* Layout */
+            display: flex;
+            align-items: center;
+            gap: var(--header--gap);
+
+            /* Box */
+            min-width: 0;
+
+            /* Typography */
+            font-size: var(--hx-text-sm);
+            line-height: 1.25rem;
+            white-space: nowrap;
+            color: var(--hx-color-neutral-600);
+        }
+
+        /* Direct children are separated by a thin vertical line, so
+           `header_content` can pass plain items without separator markup. */
+        .hx-canvas-shell__header-content > * + * {
+            /* Layout */
+            display: inline-flex;
+            align-items: center;
+            gap: var(--header--gap);
+        }
+
+        .hx-canvas-shell__header-content > * + *::before {
+            /* Box */
+            width: var(--hx-border-width-sm);
+            height: 1rem;
+
+            /* Visual */
+            content: "";
+            background-color: var(--hx-color-neutral-200);
+        }
+
+        .hx-canvas-shell__content {
+            /* Box */
+            width: 100%;
+            max-width: var(--content--max-width);
+            padding-block: var(--content--padding-block);
+            padding-inline: var(--content--padding-inline);
+            margin-inline: auto;
+        }
+
+
+        /* --- Brand --- */
+
+        .hx-brand {
+            /* Layout */
+            display: inline-flex;
+            align-items: center;
+            gap: var(--header--gap);
+
+            /* Box */
+            min-width: 0;
+
+            /* Typography */
+            font-size: var(--hx-text-sm);
+            font-weight: var(--hx-font-semibold);
+            line-height: 1.25rem;
+            letter-spacing: -0.025em;
+            text-decoration: none;
+            white-space: nowrap;
+            color: var(--hx-color-black);
+
+            img {
+                /* Box */
+                height: 1.75rem;
+            }
+        }
+
+        .hx-brand__title {
+            /* Box */
+            overflow: hidden;
+
+            /* Typography */
+            text-overflow: ellipsis;
+        }
+
+
+        /* --- Mode variants --- */
+
+        &[data-hx-mode="wide"] {
+            --content--max-width: var(--hx-container-width-wide);
+        }
+
+        &[data-hx-mode="full"] {
+            --content--max-width: none;
+            --content--padding-inline: 0;
+            --content--padding-block: 0;
+        }
+
+
+        /* --- Responsive --- */
+
+        @media (max-width: 767px) {
+            --header--padding-inline: var(--hx-spacing-md);
+
+            &:not([data-hx-mode="full"]) {
+                --content--padding-inline: var(--hx-spacing-md);
+                --content--padding-block: var(--hx-spacing-md);
+            }
+        }
+    }
+}

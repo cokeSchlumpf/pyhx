@@ -217,9 +217,9 @@ Branding/theming is done by overriding **theme tokens** on `:root`. An override 
 
 The override file is **unlayered**. Unlayered styles sit in an implicit final layer that beats every named layer, so the override automatically wins over `theme.css` (which is in `pyhx`). Custom properties propagate through inheritance: every `var(--hx-color-primary)` reference, in any layer, resolves to the override's value.
 
-**Constraint:** theme override files **must contain only `:root` rules**. Any non-`:root` rule in an override file is unlayered too and would win over the entire framework — a silent foot-gun. For defense-in-depth, an override can wrap in `@layer pyhx { :root { … } }`: tokens still propagate correctly (custom properties don't care about layers), but any accidental non-`:root` rule is bounded to the `pyhx` layer.
+**Constraint:** theme override files **must contain only `:root` rules**. Any non-`:root` rule in an override file is unlayered too and would win over the entire framework — a silent foot-gun. Do **not** wrap an override in `@layer pyhx { :root { … } }` as defense-in-depth: `theme.css` declares its tokens with `:root:not([data-theme="dark"])`, which out-specifies a plain `:root`, and the skeleton always renders `data-theme="light"` — inside the same layer the override would silently lose. Override files stay unlayered and are kept `:root`-only by review. *(Corrected 2026-10-21.)*
 
-**The neutral PyHX theme** lives in `pyhx/theme.css`, ships with the library, and is the default. Brand themes (e.g. a corporate theme) are `:root`-only override stylesheets linked after `pyhx.css`, as shown above; a consuming project loads one only if it needs to deviate from the PyHX default.
+**The neutral PyHX theme** lives in `pyhx/theme.css`, ships with the library, and is the default. Themes that ship with the library live in `css/themes/` (e.g. `themes/canvas.css`, loaded by `CanvasShell`) and follow the same rules: same token names, only the values that differ. Brand themes (e.g. a corporate theme) are `:root`-only override stylesheets linked after `pyhx.css`, as shown above; a consuming project loads one only if it needs to deviate from the PyHX default.
 
 ## Consequences
 

@@ -15,7 +15,10 @@
 
         --hx-table--fullscreen-top: var(--header--height);
         --hx-table--fullscreen-bottom: var(--footer--height);
-        --hx-table--sticky-top: var(--header--height);
+        --hx-table--sticky-top: var(--hx-sticky-top);
+
+        /* Pinned: the top bar, plus the page header when present (below). */
+        --hx-sticky-top: var(--header--height);
 
 
         /* --- Layout --- */
@@ -141,14 +144,14 @@
         }
 
         &:has(.hx-page-header) {
-            --hx-table--sticky-top: calc(var(--header--height) + var(--page-header--height));
+            --hx-sticky-top: calc(var(--header--height) + var(--page-header--height));
         }
 
         /* Section header pins below both the app-shell header and the page
            header. (page-section.css then offsets tables inside a section by the
            section-header height on top of this.) */
         .hx-page-section {
-            --page-section--top: calc(var(--header--height) + var(--page-header--height));
+            --page-section--top: var(--hx-sticky-top);
         }
 
 

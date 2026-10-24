@@ -1,0 +1,49 @@
+/* --- Meta ---
+
+   A line of metadata (``meta()``): items separated by a dot. Inline, so it
+   flows like text and takes the font size and colour of its context. The
+   dot is generated content with empty alt text, so screen readers skip it;
+   it hangs on the end of each item but the last, so a wrapped line ends
+   with the dot instead of starting with one. The spaces between the items
+   in the markup are the line-break opportunities. */
+
+
+/* --- Tokens --- */
+
+.hx-meta {
+    /* Lighter than the text around it, whatever that colour is. */
+    --meta--separator-color: color-mix(in srgb, currentColor 40%, transparent);
+    /* Space on each side of the dot (~7px at 12px text). The right side is
+       the margin plus the space between the items. */
+    --meta--separator-space: 0.6em;
+}
+
+
+/* --- Items --- */
+
+/* An item wraps as a whole to the next line ("AHV-Nr. 756…" stays
+   together); only an item longer than the line breaks inside itself. */
+.hx-meta__item {
+    /* Layout */
+    display: inline-block;
+
+    /* Box */
+    max-width: 100%;
+}
+
+.hx-meta__item:not(:last-child)::after {
+    /* Box */
+    margin-inline: var(--meta--separator-space) calc(var(--meta--separator-space) - 0.25em);
+
+    /* Typography */
+    color: var(--meta--separator-color);
+
+    content: "·" / "";
+}
+
+/* Values inside an item stand out by colour, not weight. */
+.hx-meta strong {
+    /* Typography */
+    font-weight: inherit;
+    color: var(--hx-color-neutral-700);
+}

@@ -1,0 +1,69 @@
+/* --- Icon ---
+
+   Feather icons (`<i data-feather>`, replaced by an SVG in the browser) and
+   own icons (`svg.hx-icon`, inlined on the server) share their size rules:
+   both carry width/height 24, contexts size them via `svg`. */
+
+
+/* --- Circle: icon in a round, tinted badge (`icon(..., circle=True)`) ---
+
+   Same colour logic as the pill: a light tint of the appearance colour,
+   the icon in a dark variant of it (70 % towards black keeps every
+   appearance readable). */
+
+.hx-icon-circle {
+    /* Tokens */
+    --icon-circle--color: var(--hx-color-neutral-700);
+    --icon-circle--size: 1.75rem;
+    --icon-circle--icon-size: 0.875rem;
+
+    /* Layout */
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    /* Box */
+    width: var(--icon-circle--size);
+    height: var(--icon-circle--size);
+    border-radius: var(--hx-radius-full);
+
+    /* Typography */
+    color: color-mix(in oklab, var(--icon-circle--color) 70%, black);
+
+    /* Visual */
+    background: color-mix(in srgb, var(--icon-circle--color) 10%, transparent);
+}
+
+.hx-icon-circle svg {
+    /* Box */
+    width: var(--icon-circle--icon-size);
+    height: var(--icon-circle--icon-size);
+}
+
+
+/* --- Appearances: only the colour changes --- */
+
+.hx-icon-circle--neutral {
+    --icon-circle--color: var(--hx-color-neutral-700);
+}
+
+.hx-icon-circle--primary {
+    --icon-circle--color: var(--hx-color-primary);
+}
+
+.hx-icon-circle--info {
+    --icon-circle--color: var(--hx-color-info-600);
+}
+
+.hx-icon-circle--success {
+    --icon-circle--color: var(--hx-color-success-600);
+}
+
+.hx-icon-circle--warning {
+    --icon-circle--color: var(--hx-color-warning-500);
+}
+
+.hx-icon-circle--danger {
+    --icon-circle--color: var(--hx-color-danger-600);
+}

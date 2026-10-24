@@ -18,6 +18,7 @@ from pyhx.page_templates import AppShell
 from samples.components.pages import (
     bubble,
     buttons,
+    card,
     conditional_select,
     data_table,
     drawer_radio,
@@ -30,6 +31,7 @@ from samples.components.pages import (
     grid,
     icons,
     messages,
+    meta,
     metric_tile,
     notification_badge,
     notifications,
@@ -50,6 +52,7 @@ hx.include_router(pills.router)
 hx.include_router(bubble.router)
 hx.include_router(notification_badge.router)
 hx.include_router(buttons.router)
+hx.include_router(card.router)
 hx.include_router(grid.router)
 hx.include_router(icons.router)
 hx.include_router(data_table.router)
@@ -66,6 +69,7 @@ hx.include_router(forms.router)
 hx.include_router(gantt.router)
 hx.include_router(taglist.router)
 hx.include_router(messages.router)
+hx.include_router(meta.router)
 hx.include_router(metric_tile.router)
 hx.include_router(text_diff.router)
 hx.include_router(timeline.router)
@@ -85,8 +89,12 @@ async def home() -> y.Node:
             y.ul[
                 y.li[
                     y.a(href=pills.pills_page.url())["Pill"],
-                    " — short status label (1 axis: ",
+                    " — short status label (3 axes: ",
                     y.code["appearance"],
+                    " × ",
+                    y.code["size"],
+                    " × ",
+                    y.code["variant"],
                     ")",
                 ],
                 y.li[
@@ -94,6 +102,10 @@ async def home() -> y.Node:
                         "Notification Badge"
                     ],
                     " — count bubble overlaid on any wrapped element.",
+                ],
+                y.li[
+                    y.a(href=meta.meta_page.url())["Meta"],
+                    " — line of metadata separated by dots",
                 ],
                 y.li[
                     y.a(href=bubble.bubble_page.url())["Bubble"],
@@ -117,6 +129,11 @@ async def home() -> y.Node:
                     " + icons)",
                 ],
                 y.li[
+                    y.a(href=card.card_page.url())["Card"],
+                    " — box built from parts: header, sections, clickable rows, ",
+                    "footer; optionally collapsible",
+                ],
+                y.li[
                     y.a(href=grid.grid_page.url())["Grid"],
                     " — CSS layout utility for any container (",
                     y.code["hx-grid"],
@@ -124,9 +141,9 @@ async def home() -> y.Node:
                 ],
                 y.li[
                     y.a(href=icons.icons_page.url())["Icon"],
-                    " — every feather icon name in the ",
-                    y.code["IconName"],
-                    " literal union",
+                    " — own SVG icons, round badges (",
+                    y.code["circle=True"],
+                    ") and every Feather icon",
                 ],
                 y.li[
                     y.a(href=data_table.data_table_page.url())["Data Table"],
@@ -255,8 +272,10 @@ hx.navigation.set(
         hx.nav_item(home, icon="home", full_match=True),
         hx.nav_item(pills.pills_page, icon="circle"),
         hx.nav_item(bubble.bubble_page, icon="message-circle"),
+        hx.nav_item(meta.meta_page, icon="more-horizontal"),
         hx.nav_item(notification_badge.notification_badge_page, icon="bell"),
         hx.nav_item(buttons.buttons_page, icon="square"),
+        hx.nav_item(card.card_page, icon="credit-card"),
         hx.nav_item(grid.grid_page, icon="grid"),
         hx.nav_item(icons.icons_page, icon="star"),
         hx.nav_item(data_table.data_table_page, icon="list"),
