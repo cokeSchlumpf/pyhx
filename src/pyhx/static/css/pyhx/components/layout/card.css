@@ -1,0 +1,534 @@
+/* --- Card ---
+
+   A box built from parts (``card[...]``): header (title, subtle text,
+   subtitle, actions), sections, lists of rows, footer. The parts place
+   themselves, so their order inside the header does not matter. Consecutive
+   parts are separated by a thin line.
+
+   Default design: bordered box with a small radius, since the AppShell
+   canvas is white. Canvas design: white box on the grey canvas, no border,
+   large radius (overrides at the end). Pico styles `details`, `summary`,
+   `section`, lists and headings; every part sets its own box so those
+   styles don't leak in.
+
+   No `overflow: clip` on the card (it would cut off dropdowns and tooltips
+   inside it); hover backgrounds at the edges round their own corners
+   instead. */
+
+
+/* --- Tokens --- */
+
+.hx-card {
+    --card--radius: var(--hx-radius-lg);
+    --card--border: 1px solid var(--hx-color-neutral-200);
+    --card--line: var(--hx-color-neutral-200);
+    --card--gap: var(--hx-spacing-md);
+    --card--padding-block: 0.875rem;
+    --card--padding-inline: 1.25rem;
+    /* Sizes come from the theme's font size roles, so they fit every
+       design. Title sizes by heading level: h2 (and plain text) uses
+       --card--title-size; h1 is the page title. */
+    --card--title-size: var(--hx-text-title);
+    --card--h1-size: var(--hx-text-page-title);
+    --card--h1-weight: var(--hx-font-semibold);
+    --card--h1-tracking: -0.025em;
+    --card--h3-size: var(--hx-text-item);
+    --card--h4-size: var(--hx-text-meta);
+    --card--small-size: var(--hx-text-meta);
+    --card--link-size: var(--hx-text-item);
+    --card--hover: var(--hx-color-neutral-050);
+}
+
+
+/* --- Card --- */
+
+.hx-card {
+    /* Box */
+    margin: 0 0 var(--card--gap);
+    border: var(--card--border);
+    border-radius: var(--card--radius);
+
+    /* Visual */
+    background: var(--hx-color-background);
+}
+
+.hx-card:last-child {
+    /* Box */
+    margin-bottom: 0;
+}
+
+/* Thin line between consecutive parts; in a collapsible card the parts
+   after the header live in its `.hx-card__details`. */
+:is(.hx-card, .hx-card__details) > * + * {
+    /* Box */
+    border-top: 1px solid var(--card--line);
+}
+
+
+/* --- Header --- */
+
+.hx-card__header {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    /* centre, not baseline: actions (buttons) make the line taller than
+       the title, and pills are boxes; centring keeps title, pills and
+       buttons on one axis whatever the line's height. */
+    align-items: center;
+    gap: 0.125rem 0.75rem;
+
+    /* Box */
+    padding: var(--card--padding-block) var(--card--padding-inline);
+    margin: 0;
+}
+
+.hx-card__title {
+    /* Typography */
+    font-size: var(--card--title-size);
+    font-weight: var(--card--title-weight, var(--hx-font-semibold));
+    line-height: var(--card--title-leading, 1.5);
+    letter-spacing: var(--card--title-tracking, -0.025em);
+    color: var(--hx-color-text);
+}
+
+/* The heading level sets the size: an h1 is the page title (e.g. the
+   person on a dossier), h3 and below get smaller. */
+.hx-card__title:has(> h1) {
+    --card--title-size: var(--card--h1-size);
+    --card--title-weight: var(--card--h1-weight);
+    --card--title-tracking: var(--card--h1-tracking);
+    --card--title-leading: 1.1;
+}
+
+.hx-card__title:has(> h3) {
+    --card--title-size: var(--card--h3-size);
+    --card--title-tracking: normal;
+}
+
+.hx-card__title:has(> :is(h4, h5, h6)) {
+    --card--title-size: var(--card--h4-size);
+    --card--title-tracking: normal;
+}
+
+/* A page-title header gets more room around the larger title. */
+.hx-card__header:has(> .hx-card__title > h1) {
+    /* Layout */
+    row-gap: 0.25rem;
+
+    /* Box */
+    padding: 1rem 1.5rem;
+}
+
+.hx-card__title :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+}
+
+.hx-card__subtle {
+    /* Typography */
+    font-size: var(--card--small-size);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-500);
+}
+
+/* Always the second line, wherever it stands in the header. */
+.hx-card__subtitle {
+    /* Layout */
+    flex-basis: 100%;
+    order: 1;
+
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: var(--card--small-size);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-card__actions {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    align-self: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin-left: auto;
+}
+
+.hx-card__actions > * {
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Collapsible: the header is the `summary` of a `details` ---
+
+   A collapsible card wraps its parts in `.hx-card__details`; a collapsible
+   group is itself a `details.hx-card__group`. Both share the toggle styles. */
+
+:is(.hx-card__details, details.hx-card__group) {
+    /* Box */
+    margin: 0;
+}
+
+summary.hx-card__header {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    line-height: inherit;
+    color: inherit;
+
+    /* Visual */
+    cursor: pointer;
+    list-style: none;
+
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+}
+
+/* Hide the native marker and Pico's chevron; the card draws its own. */
+summary.hx-card__header::-webkit-details-marker {
+    display: none;
+}
+
+summary.hx-card__header::after {
+    content: none;
+}
+
+summary.hx-card__header:hover {
+    /* Visual */
+    background: var(--card--hover);
+}
+
+summary.hx-card__header:focus-visible {
+    /* Visual */
+    outline: 2px solid var(--hx-color-primary-focus);
+    outline-offset: -2px;
+}
+
+/* The card's own toggle sits at its top edge: round the hover background. */
+.hx-card__details > summary.hx-card__header {
+    /* Box */
+    border-radius: var(--card--radius) var(--card--radius) 0 0;
+}
+
+.hx-card__details:not([open]) > summary.hx-card__header {
+    /* Box */
+    border-radius: var(--card--radius);
+}
+
+/* A collapsed group at the bottom edge rounds its lower corners. */
+:is(.hx-card, .hx-card__details) > details.hx-card__group:last-child:not([open]) > summary.hx-card__header {
+    /* Box */
+    border-radius: 0 0 var(--card--radius) var(--card--radius);
+}
+
+.hx-card__chevron {
+    /* Layout */
+    display: inline-flex;
+    align-self: center;
+
+    /* Box */
+    margin-left: auto;
+
+    /* Typography */
+    color: var(--hx-color-neutral-400);
+
+    /* Motion */
+    transition: rotate var(--hx-transition-base);
+}
+
+.hx-card__chevron svg {
+    /* Box */
+    width: 1rem;
+    height: 1rem;
+}
+
+details[open] > summary .hx-card__chevron {
+    rotate: 180deg;
+}
+
+
+/* --- Group: unpadded block, e.g. a label above a list ---
+
+   Rows run edge to edge; there is no line between the group's label and its
+   list. The group's title size follows its heading level (usually h3). */
+
+.hx-card__group > .hx-card__label {
+    /* Box */
+    padding: 0.75rem var(--card--padding-inline) 0.25rem;
+    margin: 0;
+}
+
+.hx-card__group > .hx-card__header {
+    /* Box */
+    padding-block: 0.75rem;
+}
+
+/* An open collapsible group separates its toggle from the content. */
+details.hx-card__group > * + * {
+    /* Box */
+    border-top: 1px solid var(--card--line);
+}
+
+
+/* --- Section --- */
+
+.hx-card__section {
+    /* Box */
+    padding: 1rem var(--card--padding-inline);
+
+    /* Typography */
+    font-size: var(--hx-text-body);
+}
+
+.hx-card__section > :last-child {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-card__label {
+    /* Box */
+    margin: 0 0 0.125rem;
+
+    /* Typography */
+    font-size: var(--card--small-size);
+    font-weight: var(--hx-font-medium);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-500);
+}
+
+.hx-card__label :is(h1, h2, h3, h4, h5, h6) {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+
+/* --- List of rows --- */
+
+.hx-card__list {
+    /* Box */
+    padding: 0;
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-card__item {
+    /* Box */
+    padding: 0.75rem var(--card--padding-inline);
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-card__item + .hx-card__item {
+    /* Box */
+    border-top: 1px solid var(--card--line);
+}
+
+/* Muted description line below the item's link or text. */
+.hx-card__item .hx-card__subtle {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+}
+
+/* Rows with icons: a leading `icon(..., circle=True)` and/or a trailing
+   icon (e.g. an arrow) get their own columns; everything else stacks in
+   the middle column. The spacing comes from margins, so a row with only
+   one of the two has no empty gap. */
+.hx-card__item:has(> :is(.hx-icon-circle, svg, i[data-feather])) {
+    /* Layout */
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+}
+
+/* `:where` keeps this default weaker than the icon rules below. */
+.hx-card__item:where(:has(> :is(.hx-icon-circle, svg, i[data-feather]))) > * {
+    /* Layout */
+    grid-column: 2;
+}
+
+.hx-card__item > .hx-icon-circle {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 1 / span 9;
+
+    /* Box */
+    margin-right: 0.75rem;
+}
+
+.hx-card__item > :is(svg, i[data-feather]):last-child {
+    /* Layout */
+    grid-column: 3;
+    grid-row: 1 / span 9;
+
+    /* Box */
+    width: 1rem;
+    height: 1rem;
+    margin: 0.125rem 0 0 0.75rem;
+
+    /* Typography */
+    color: var(--hx-color-neutral-400);
+}
+
+/* An icon in a muted text line (e.g. "✎ Rückfrage vorbereitet") is as tall
+   as the text. */
+:is(.hx-card__subtle, .hx-card__subtitle) > :is(svg, i[data-feather]) {
+    /* Box */
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.375em;
+
+    /* Typography */
+    vertical-align: -0.2em;
+}
+
+/* Clickable rows: `card.link` / `card.button` stretch an overlay across
+   the item (the "stretched link" pattern), so the whole row is the link. */
+.hx-card__item:has(.hx-card__link, .hx-card__button) {
+    /* Position */
+    position: relative;
+
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+}
+
+.hx-card__item:has(.hx-card__link, .hx-card__button):is(:hover, :focus-within) {
+    /* Visual */
+    background: var(--card--hover);
+}
+
+.hx-card__item:has(:is(.hx-card__link, .hx-card__button):focus-visible) {
+    /* Visual */
+    outline: 2px solid var(--hx-color-primary-focus);
+    outline-offset: -2px;
+}
+
+/* Rows at the card's edges round their hover background. */
+:is(.hx-card, .hx-card__details) > .hx-card__list:first-child > .hx-card__item:first-child {
+    border-radius: var(--card--radius) var(--card--radius) 0 0;
+}
+
+:is(.hx-card, .hx-card__details) > .hx-card__list:last-child > .hx-card__item:last-child,
+:is(.hx-card, .hx-card__details) > .hx-card__group:last-child > .hx-card__list:last-child > .hx-card__item:last-child {
+    border-radius: 0 0 var(--card--radius) var(--card--radius);
+}
+
+.hx-card__link,
+.hx-card__button {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: auto;
+    padding: 0;
+    margin: 0;
+    border: 0;
+
+    /* Typography */
+    font: inherit;
+    font-size: var(--card--link-size);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.25rem;
+    text-align: left;
+    text-decoration: none;
+    color: var(--hx-color-text);
+
+    /* Visual */
+    background: none;
+    box-shadow: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.hx-card__link::after,
+.hx-card__button::after {
+    /* Position */
+    position: absolute;
+    inset: 0;
+
+    content: "";
+}
+
+.hx-card__item:hover :is(.hx-card__link, .hx-card__button) {
+    /* Typography */
+    text-decoration: underline;
+}
+
+/* Other controls in a clickable row stay clickable above the overlay. */
+.hx-card__item :is(a, button, input, select, textarea, summary, label):not(.hx-card__link, .hx-card__button) {
+    /* Position */
+    position: relative;
+    z-index: 1;
+}
+
+
+/* --- Footer --- */
+
+.hx-card__footer {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: var(--card--padding-block) var(--card--padding-inline);
+    margin: 0;
+}
+
+.hx-card__footer > * {
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+    summary.hx-card__header,
+    .hx-card__chevron,
+    .hx-card__item {
+        /* Motion */
+        transition: none;
+    }
+}
+
+
+/* --- Canvas design: white box on the grey canvas --- */
+
+[data-hx-design="canvas"] .hx-card {
+    --card--radius: var(--hx-radius-xl);
+    --card--border: 0;
+    --card--line: var(--hx-color-neutral-100);
+    --card--h1-weight: var(--hx-font-light);
+    --card--h1-tracking: -0.04em;
+}

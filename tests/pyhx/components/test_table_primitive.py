@@ -72,8 +72,10 @@ def test_sticky_top_token_override_sites():
     app_shell = Path("src/pyhx/static/css/page-templates/app-shell.css").read_text()
     page_section = Path("src/pyhx/static/css/pyhx/components/layout/page-section.css").read_text()
 
-    # app-shell.css: the :has(.hx-page-header) rule must set both tokens with the same value
-    assert "--hx-table--sticky-top: calc(var(--header--height) + var(--page-header--height))" in app_shell
+    # app-shell.css: the table offset follows the shell's sticky offset, which
+    # the :has(.hx-page-header) rule extends by the page header
+    assert "--hx-table--sticky-top: var(--hx-sticky-top)" in app_shell
+    assert "--hx-sticky-top: calc(var(--header--height) + var(--page-header--height))" in app_shell
 
     # page-section.css: must set both tokens with the same value
     assert "--hx-table--sticky-top: calc(var(--page-section--top) + var(--page-section--header-height))" in page_section

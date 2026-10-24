@@ -1,6 +1,6 @@
 from typing import Literal
 
-IconName = Literal[
+FeatherIconName = Literal[
     "activity",
     "airplay",
     "alert-circle",
@@ -288,3 +288,22 @@ IconName = Literal[
     "zoom-in",
     "zoom-out",
 ]
+"""Names of the Feather icons (https://feathericons.com), rendered in the
+browser by ``feather.replace()``."""
+
+CustomIconName = Literal[
+    "arrow-right-2",
+    "check-2",
+    "chevron-down-2",
+    "document",
+    "exclamation",
+    "pencil",
+    "send-2",
+    "swap",
+]
+"""Names of PyHX's own icons: one SVG file each in ``static/icons``, inlined
+on the server. A ``-2`` suffix marks an icon whose Feather counterpart has
+the same name; no name may clash with a Feather icon."""
+
+IconName = FeatherIconName | CustomIconName
+"""Any icon :func:`~pyhx.components.icon` can render: Feather or own."""

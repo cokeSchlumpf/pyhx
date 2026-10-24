@@ -13,11 +13,16 @@
         color-mix(in srgb, var(--pill--color) 18%, transparent) 100%
     );
     --pill--edge: color-mix(in srgb, var(--pill--color) 28%, transparent);
+    --pill--text: var(--pill--color);
+    /* Size tokens; the defaults are `md`, see "Sizes" below. */
     --pill--padding-inline: var(--hx-spacing-sm);
     /* Fixed outer height so the pill never grows or shrinks based on
        which slots are filled. Includes the 2 × 1px border to stay
        box-sizing-honest. */
     --pill--height: calc(var(--hx-text-xs) + var(--hx-spacing-xs) * 3 + 2px);
+    --pill--font-size: var(--hx-text-meta);
+    --pill--font-weight: var(--hx-font-semibold);
+    --pill--radius: var(--hx-radius-md);
 
     /* Layout */
     display: inline-flex;
@@ -26,14 +31,14 @@
     /* Box */
     box-sizing: border-box;
     height: var(--pill--height);
-    border-radius: var(--hx-radius-md);
+    border-radius: var(--pill--radius);
     border: 1px solid var(--pill--edge);
     overflow: hidden;
 
     /* Typography */
-    color: var(--pill--color);
-    font-size: var(--hx-text-sm);
-    font-weight: var(--hx-font-semibold);
+    color: var(--pill--text);
+    font-size: var(--pill--font-size);
+    font-weight: var(--pill--font-weight);
     line-height: 1;
     white-space: nowrap;
 
@@ -191,4 +196,66 @@
 
 .hx-pill--danger {
     --pill--color: var(--hx-color-danger-600);
+}
+
+
+/* --- Sizes ---
+   Only geometry; colours come from the variant. `sm` fits next to a
+   heading, e.g. as a count in a card header. Font sizes come from the
+   theme's roles (meta for md, badge for sm); the heights are set for the
+   default design's 14px root, the canvas design sets its own below. */
+
+.hx-pill--sm {
+    --pill--height: 1.25rem;
+    --pill--font-size: var(--hx-text-badge);
+    --pill--padding-inline: 0.375rem;
+}
+
+.hx-pill--lg {
+    --pill--height: 2rem;
+    --pill--font-size: var(--hx-text-base);
+    --pill--padding-inline: var(--hx-spacing-md);
+}
+
+
+/* --- Variants: solid (default) and outline ---
+   The default design's pill already carries a light edge; `outline` makes
+   it clearly visible. */
+
+.hx-pill--outline {
+    --pill--edge: color-mix(in srgb, var(--pill--color) 55%, transparent);
+}
+
+
+/* --- Canvas design: flat, fully rounded tint; outline adds a thin edge --- */
+
+[data-hx-design="canvas"] .hx-pill {
+    --pill--surface: color-mix(in srgb, var(--pill--color) 8%, transparent);
+    /* Dark text on the light tint, as in the draft (e.g. orange-800 on
+       orange-50); the variant colour itself is too light to read. 70 %
+       keeps every appearance at WCAG AA (warning, the lightest, at 4.9:1). */
+    --pill--text: color-mix(in oklab, var(--pill--color) 70%, black);
+    --pill--edge: transparent;
+    --pill--radius: var(--hx-radius-full);
+
+    /* Visual */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* As in the draft: 1px edge in the appearance colour at 20 %. */
+[data-hx-design="canvas"] .hx-pill--outline {
+    --pill--edge: color-mix(in srgb, var(--pill--color) 20%, transparent);
+}
+
+/* Canvas runs on a 16px root; geometry as in the draft. `md` (status, e.g.
+   "Neuer Eingang"): medium weight, 20px high. `sm` (counts): 16px high. */
+[data-hx-design="canvas"] .hx-pill--md {
+    --pill--height: 1.25rem;
+    --pill--font-weight: var(--hx-font-medium);
+    --pill--padding-inline: 0.625rem;
+}
+
+[data-hx-design="canvas"] .hx-pill--sm {
+    --pill--height: 1rem;
 }

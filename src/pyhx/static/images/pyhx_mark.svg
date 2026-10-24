@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 112 112" role="img" aria-label="PyHX">
+  <rect width="112" height="112" rx="32" fill="#1A3BB8"/>
+  <!-- "HX" drawn as paths so the mark renders identically without any font. -->
+  <g fill="#FFFFFF">
+    <path d="M27 38h7.5v14.25h11V38H53v36h-7.5V59.25h-11V74H27z"/>
+    <path d="M59 38h8.75L85 74h-8.75z"/>
+    <path d="M76.25 38H85L67.75 74H59z"/>
+  </g>
+</svg>

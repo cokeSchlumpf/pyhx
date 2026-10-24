@@ -9,23 +9,17 @@ from markupsafe import Markup
 from ..components.layouts import (
     POPUP_DRAWER_CONTENT_ID,
     drawer,
-    notification_card,
+    notification_error_template,
     notifications,
 )
-from ..components.primitives import pill
+from ..components.primitives import icon, pill
 from ..core import component
 from ..core.primitives import Omit, classnames, htmx
 from ..core.request_context import RequestContext
 from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
-from ..core.templates.page_template import PageTemplate
+from ..core.templates.page_template import Design, PageTemplate
 from ..core.templates.skeleton import Skeleton
-
-# Hidden <template> id the JS in pyhx.app-shell.js clones on htmx error events.
-# Lives here (next to the AppShell that renders the template) because the JS
-# that uses it ships with this page template, not with the notifications
-# component.
-APP_SHELL_NOTIFICATION_ERROR_TEMPLATE_ID = "hx-notification__error-template"
 
 
 @component
@@ -52,7 +46,7 @@ class AppShellNavRenderer(NavRenderer):
         # while keeping the leading icon visible as an icon rail.
         inner: list[y.Node] = []
         if item.icon:
-            inner.append(y.i(data_feather=item.icon))
+            inner.append(icon(item.icon))
         inner.append(y.span[item.label])
 
         return y.li(role="treeitem")[
@@ -80,6 +74,8 @@ class AppShellNavRenderer(NavRenderer):
 
 
 class AppShell(PageTemplate):
+    design: Design = "default"
+
     def __init__(
         self,
         *,
@@ -119,12 +115,17 @@ class AppShell(PageTemplate):
         navigation: AppNavFn,
     ) -> y.Node:
         skeleton = Skeleton(
+            design=self.design,
             stylesheets=(
                 "/static/css/pyhx.css",
                 "/static/css/page-templates/app-shell.css",
                 *self.stylesheets,
             ),
-            scripts=("/static/js/pyhx.app-shell.js", *self.scripts),
+            scripts=(
+                "/static/js/pyhx.app-shell.js",
+                "/static/js/pyhx.notifications.js",
+                *self.scripts,
+            ),
             head_extras=(
                 y.script(type="text/javascript")[
                     Markup(f"TOOLTIP_URL = '{render_tooltip.url()}';")
@@ -286,14 +287,7 @@ class AppShell(PageTemplate):
                 bottom="var(--footer--height)",
             ),
             notifications(top="var(--header--height)"),
-            # Skeleton cloned by the htmx-error handler in pyhx.app-shell.js
-            # to surface request / network / timeout / swap failures as toasts.
-            y.template(id=APP_SHELL_NOTIFICATION_ERROR_TEMPLATE_ID)[
-                notification_card(
-                    appearance="danger",
-                    icon="alert-octagon",
-                ),
-            ],
+            notification_error_template(),
         ]
 
     async def _render_user_menu(self, request: RequestContext) -> y.Node:

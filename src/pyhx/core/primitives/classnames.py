@@ -13,7 +13,9 @@ def classnames(classname: str | list[str] | dict[str, bool], **kwargs) -> dict:
             is merged with the provided classnames.
 
     Returns:
-        A copy of kwargs with `class_` set to the merged class string.
+        A copy of kwargs with `class_` set to the merged class string: the
+        given class names first, then the existing `class_`, in order and
+        without duplicates.
 
     Example:
         >>> cx("btn", class_="primary")
@@ -27,11 +29,10 @@ def classnames(classname: str | list[str] | dict[str, bool], **kwargs) -> dict:
     if isinstance(classname, list):
         classname = {c: True for c in classname}
 
-    classnames = str(kwargs.get("class_", "")).split()
+    classnames = [name for name, active in classname.items() if active]
+    classnames += str(kwargs.get("class_", "")).split()
 
-    for name, active in classname.items():
-        if active:
-            classnames.append(name)
-
-    kwargs["class_"] = " ".join(set(classnames))
+    # `dict.fromkeys` drops duplicates but, unlike a set, keeps the order, so
+    # the rendered `class` attribute is the same on every run.
+    kwargs["class_"] = " ".join(dict.fromkeys(classnames))
     return kwargs

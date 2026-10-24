@@ -7,6 +7,7 @@ from pyhx.core import component
 from pyhx.core.primitives import IconName, classnames
 
 from ..variants import Appearance, Size, Variant
+from .icon import icon as render_icon
 
 
 @component
@@ -57,7 +58,7 @@ def button(
     the ``href`` — the styling rule in ``button.css`` keys off both
     selectors, so the disabled appearance is identical on either tag.
     """
-    icon_node: y.Node = y.i(data_feather=icon) if icon is not None else None
+    icon_node: y.Node = render_icon(icon) if icon is not None else None
     is_icon_only = icon is not None and label is None
 
     if is_icon_only:

@@ -23,6 +23,7 @@ from .pages import (
     page_header,
     page_navigation,
     scenarios,
+    split_layout,
     table_view,
 )
 
@@ -37,6 +38,7 @@ hx.include_router(mobile_preview.router)
 hx.include_router(drawer.router)
 hx.include_router(page_header.router)
 hx.include_router(page_navigation.router)
+hx.include_router(split_layout.router)
 hx.include_router(table_view.router)
 hx.include_router(data_page.router)
 
@@ -74,6 +76,10 @@ async def home() -> y.Node:
                     y.a(href=page_navigation.overview.url())["Page Navigation"],
                     " — page header with secondary navigation across four pages",
                 ],
+                y.li[
+                    y.a(href=split_layout.split_layout.url())["Split Layout"],
+                    " — main column with a sticky aside below the page header",
+                ],
             ],
         ],
         width="medium",
@@ -88,6 +94,7 @@ hx.navigation.set(
             hx.nav_item(drawer.drawer),
             hx.nav_item(page_header.page_header),
             hx.nav_item(page_navigation.overview, label="Page Navigation"),
+            hx.nav_item(split_layout.split_layout),
             hx.nav_item(table_view.table_view),
             hx.nav_item(data_page.page, label="Data Page"),
         ],

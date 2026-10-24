@@ -7,6 +7,7 @@
     /* PyHX Brand Colors */
     --hx-color-text: #333333;
     --hx-color-background: #ffffff;
+    --hx-color-canvas: var(--hx-color-background); /* page background behind content; themes may tint it */
     --hx-color-primary: #1A3BB8;
     --hx-color-primary-hover: #132C8C;
     --hx-color-primary-focus: rgba(26, 59, 184, 0.25);
@@ -143,7 +144,13 @@
     --hx-z-sidepanel:    200;
     --hx-z-dropdown:     300;
 
-    /* Font Size Scale */
+    /* Sticky offset: height of the bars the page template pins to the top of
+       the viewport (top bar, page header). Sticky components pin below it;
+       page templates set the concrete value. */
+    --hx-sticky-top: 0px;
+
+    /* Font Size Scale (rem: px values at a 16px root; the default
+       design runs on a 14px root, the canvas design on 16px) */
     --hx-text-xs:   0.75rem;   /* 12px */
     --hx-text-sm:   0.875rem;  /* 14px */
     --hx-text-base: 1rem;      /* 16px */
@@ -151,6 +158,18 @@
     --hx-text-xl:   1.25rem;   /* 20px */
     --hx-text-2xl:  1.5rem;    /* 24px */
     --hx-text-3xl:  2rem;      /* 32px */
+
+    /* Font Size Roles: what a text is, not a step on the scale. Each
+       theme maps them to its own sizes (themes/canvas.css), so components
+       using a role fit every design without per-component overrides.
+       Values here: the default design (14px root). */
+    --hx-text-page-title: var(--hx-text-3xl);  /* 28px, h1 in a card */
+    --hx-text-title:      var(--hx-text-lg);   /* 15.75px, card titles (h2) */
+    --hx-text-item:       var(--hx-text-base); /* 14px, row/entry titles, h3 */
+    --hx-text-meta:       var(--hx-text-sm);   /* 12.25px, dates, meta, subtitles, labels */
+    --hx-text-badge:      0.8125rem;           /* ~11.4px, counts in small pills */
+    --hx-text-body:       var(--hx-text-base); /* 14px, running text in components */
+    --hx-text-control:    var(--hx-text-base); /* 14px, buttons, segment controls */
 
     /* Font Weight Scale */
     --hx-font-light:    300;

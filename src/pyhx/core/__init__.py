@@ -6,7 +6,7 @@ from .fragment import FragmentResponse
 from .nav_item import nav_item
 from .page import PageResponse
 from .request_context import RequestContext
-from .templates import Nav, NavItem, PageTemplate
+from .templates import Design, Nav, NavItem, PageTemplate
 from .webapp import Fragment, Page, WebApp, WebSocket
 from .webapp_router import WebAppRouter
 from .webapp_routes import WebAppRoutes
@@ -14,6 +14,7 @@ from .webapp_routes import WebAppRoutes
 __all__ = [
     "ApiEndpoint",
     "AppContext",
+    "Design",
     "Fragment",
     "FragmentResponse",
     "Nav",

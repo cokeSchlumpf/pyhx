@@ -14,7 +14,7 @@
 
     /* Typography */
     font-family: inherit;
-    font-size: var(--hx-text-base);
+    font-size: var(--hx-text-control);
     font-weight: var(--hx-font-medium);
     line-height: 1;
     white-space: nowrap;
@@ -53,12 +53,22 @@
 }
 
 
-/* --- Appearance: sets the local colors used by every variant. --- */
+/* --- Appearance: sets the local colors used by every variant. ---
+
+   `--_button-color` is the appearance colour; `--_button-fill` is what a
+   solid button fills with. Coloured appearances cap the fill's lightness
+   (OKLCH L ≤ 0.52), so white text keeps at least 4.5:1 contrast in any
+   theme (greens, the brightest at a given L, included): colours that are dark enough stay as they are, light ones (amber,
+   orange, a light green) are darkened just enough. The same capped colour
+   is the text colour of outline, ghost and link buttons on a light
+   background. Browsers without relative colour syntax keep the plain
+   colour (first declaration). */
 
 .hx-button--neutral {
     --_button-color: var(--hx-color-neutral-200);
+    --_button-fill: var(--_button-color);
     --_button-text-color-solid: var(--hx-color-text);
-    --_button-text-color: var(--hx-color-neutral-600);
+    --_button-text-color: var(--hx-color-neutral-700);
 }
 
 .hx-button--info {
@@ -91,6 +101,20 @@
     --_button-text-color: var(--hx-color-secondary);
 }
 
+:is(.hx-button--info, .hx-button--success, .hx-button--warning, .hx-button--danger, .hx-button--primary) {
+    --_button-fill: var(--_button-color);
+    --_button-fill: oklch(from var(--_button-color) min(l, 0.52) c h);
+    --_button-text-color: var(--_button-color);
+    --_button-text-color: oklch(from var(--_button-color) min(l, 0.52) c h);
+}
+
+/* Warning keeps its bright fill (darkened it turns brown) and carries dark
+   text instead, as many design systems do for yellow. */
+.hx-button--warning {
+    --_button-fill: var(--_button-color);
+    --_button-text-color-solid: oklch(from var(--_button-color) 0.3 c h);
+}
+
 .hx-button--ghost,
 .hx-button--outline {
     &.hx-button--neutral {
@@ -112,15 +136,16 @@
     color: var(--_button-text-color-solid);
 
     /* Box */
-    border-color: var(--_button-color);
+    border-color: var(--_button-fill);
 
     /* Visual */
-    background-color: var(--_button-color);
+    background-color: var(--_button-fill);
 
+    /* Hover darkens: lightening would lower the text contrast. */
     &:hover {
         /* Visual */
-        background-color: color-mix(in srgb, var(--_button-color), var(--hx-color-background) 20%);
-        border-color: color-mix(in srgb, var(--_button-color), var(--hx-color-background) 20%);
+        background-color: color-mix(in oklab, var(--_button-fill), black 12%);
+        border-color: color-mix(in oklab, var(--_button-fill), black 12%);
     }
 }
 
@@ -163,7 +188,8 @@
 }
 
 
-/* --- Size: padding + font-size. md is the base (no rule needed). --- */
+/* --- Size: padding + font-size. md is the base (no rule needed); sm and
+   lg scale the control role, so they follow the design. --- */
 
 .hx-button--sm {
     /* Box */
@@ -171,7 +197,7 @@
     gap: var(--hx-spacing-xs);
 
     /* Typography */
-    font-size: var(--hx-text-sm);
+    font-size: calc(var(--hx-text-control) * 0.875);
 }
 
 .hx-button--lg {
@@ -180,7 +206,7 @@
     gap: var(--hx-spacing-md);
 
     /* Typography */
-    font-size: var(--hx-text-lg);
+    font-size: calc(var(--hx-text-control) * 1.125);
 }
 
 

@@ -1,7 +1,7 @@
 from .classnames import classnames
 from .handler_response import HandlerResponse
 from .htmx import HtmxAttrs, HxSwap, htmx
-from .icon_name import IconName
+from .icon_name import CustomIconName, FeatherIconName, IconName
 from .merge_styles import merge_styles
 from .negotiate_locale import LocaleSettings, negotiate_locale
 from .negotiate_timezone import TimezoneSettings, negotiate_timezone
@@ -17,6 +17,8 @@ from .styles import StyleAttribute, styles
 from .validation_error import FieldError, field_error, validation_error
 
 __all__ = [
+    "CustomIconName",
+    "FeatherIconName",
     "FieldError",
     "HandlerResponse",
     "HtmxAttrs",

@@ -18,7 +18,7 @@ from .fragment_registry import get_fragment_registry
 from .log import LOG
 from .nav_item import nav_item
 from .page import Page, PageDecoratorFactory, PageResponse
-from .primitives import HandlerResponse, PathTemplate, omit
+from .primitives import HandlerResponse, Omit, PathTemplate
 from .primitives import Path as UrlPath
 from .reflection_operators import ensure_parameter_type_in_signature
 from .request_context import (
@@ -28,7 +28,7 @@ from .request_context import (
     set_request_context,
 )
 from .static import MultiStaticFiles
-from .templates import AppNavFn, NavFactory, PageTemplate, Skeleton
+from .templates import AppNavFn, Design, NavFactory, PageTemplate, Skeleton
 from .webapp_router import WebAppRouter
 
 # Intermediate pseudo types ...
@@ -142,6 +142,15 @@ class WebApp:
         """
         self._context[key] = value
 
+    @property
+    def design(self) -> Design:
+        """The design of the default page template, e.g. ``"canvas"``.
+
+        Read in app code as ``hx.design``. Library components use
+        :meth:`RequestContext.get_design`, which also works outside a request.
+        """
+        return getattr(self.default_page_template, "design", "plain")
+
     def close(self) -> None:
         """Detach this WebApp from the global FragmentRegistry. Idempotent."""
         if self._unsubscribe_from_registry is not None:
@@ -215,7 +224,11 @@ class WebApp:
             try:
                 set_webapp(self)
                 set_request_context(
-                    build_from_request(kwargs[request_param_name], self.context)
+                    build_from_request(
+                        kwargs[request_param_name],
+                        self.context,
+                        self.default_page_template,
+                    )
                 )
 
                 if request_param_added:
@@ -272,7 +285,11 @@ class WebApp:
             try:
                 set_webapp(self)
                 set_request_context(
-                    build_from_request(kwargs[request_param_name], self.context)
+                    build_from_request(
+                        kwargs[request_param_name],
+                        self.context,
+                        self.default_page_template,
+                    )
                 )
 
                 if request_param_added:
@@ -320,7 +337,11 @@ class WebApp:
             try:
                 set_webapp(self)
                 set_request_context(
-                    build_from_request(kwargs[request_param_name], self.context)
+                    build_from_request(
+                        kwargs[request_param_name],
+                        self.context,
+                        self.default_page_template,
+                    )
                 )
 
                 if request_param_added:
@@ -361,7 +382,9 @@ class WebApp:
     ) -> Callable[[FastAPIWebSocket], Coroutine[Any, Any, None]]:
         async def _handle_websocket_connection(ws: FastAPIWebSocket) -> None:
             set_webapp(self)
-            set_request_context(build_from_websocket(ws, self.context))
+            set_request_context(
+                build_from_websocket(ws, self.context, self.default_page_template)
+            )
 
             # TODO mw: Impelment ....
             await ws.accept()
@@ -440,17 +463,22 @@ class WebApp:
     async def _render_page_template(
         self, page_title: str | None, page_response: PageResponse
     ) -> PageResponse:
-        page_title = page_response.page_title or page_title
-        page_template = page_response.page_template or self.default_page_template
+        # Explicit ``None`` checks: ``omit`` is falsy, so ``or`` would replace
+        # it with the fallback and silently ignore the page's opt-out.
+        title = (
+            page_title if page_response.page_title is None else page_response.page_title
+        )
+        page_template = (
+            self.default_page_template
+            if page_response.page_template is None
+            else page_response.page_template
+        )
 
-        if page_title == omit:
-            page_title = None
-
-        if page_template != omit:
+        if not isinstance(page_template, Omit):
             page_response.node = await page_template(
                 request=RequestContext.get(),
                 app_title=self.title,
-                page_title=page_title,
+                page_title=None if isinstance(title, Omit) else title,
                 body=page_response.node,
                 navigation=self._navigation,
             )

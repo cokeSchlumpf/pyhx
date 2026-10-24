@@ -1,0 +1,279 @@
+/* --- Chronicle ---
+
+   Entries in time order (``chronicle[...]``): date | marker | content, the
+   markers connected by a vertical line. Each entry is its own grid with the
+   same column tracks, so the columns line up across entries.
+
+   Vertical rhythm: `--chronicle--center` is the distance from the top of an
+   entry's content box to the centre of its marker. The marker cell is twice
+   that high and centres the marker; the line runs from one marker centre to
+   the next. Lists with an icon anywhere switch every entry to the larger
+   circle geometry, so the line stays straight. */
+
+
+/* --- Tokens --- */
+
+.hx-chronicle {
+    --chronicle--date-width: 6.5rem;
+    --chronicle--marker-width: 1.25rem;
+    --chronicle--gap: 0.5rem;
+    --chronicle--padding-block: 0.75rem;
+    --chronicle--padding-inline: 0.5rem;
+    /* Font sizes from the theme's roles, so they fit every design. */
+    --chronicle--title-size: var(--hx-text-item);
+    --chronicle--small-size: var(--hx-text-meta);
+    /* Marker centre below the top: half the title's line for dots. */
+    --chronicle--dot-center: 0.7rem;
+    --chronicle--center: var(--chronicle--dot-center);
+    --chronicle--line: var(--hx-color-neutral-200);
+    --chronicle--hover: var(--hx-color-neutral-050);
+}
+
+/* With icons: the 28px circle sets the geometry for every entry. */
+.hx-chronicle:has(.hx-icon-circle) {
+    --chronicle--marker-width: 1.75rem;
+    --chronicle--center: 0.875rem;
+}
+
+
+/* --- List --- */
+
+.hx-chronicle {
+    /* Box */
+    padding: 0.75rem;
+    margin: 0;
+
+    /* Visual */
+    list-style: none;
+}
+
+.hx-chronicle__entry {
+    /* Position */
+    position: relative;
+
+    /* Layout */
+    display: grid;
+    grid-template-columns: var(--chronicle--date-width) var(--chronicle--marker-width) minmax(0, 1fr);
+    column-gap: var(--chronicle--gap);
+
+    /* Box */
+    padding: var(--chronicle--padding-block) var(--chronicle--padding-inline);
+    margin: 0;
+    border-radius: var(--hx-radius-lg);
+
+    /* Visual */
+    list-style: none;
+}
+
+/* The line from this marker's centre to the next one's. Above the next
+   entry's hover background; the markers (later in the DOM) stay above it. */
+.hx-chronicle__entry:not(:last-child)::before {
+    /* Position */
+    position: absolute;
+    z-index: 1;
+    top: calc(var(--chronicle--padding-block) + var(--chronicle--center));
+    bottom: calc(-1 * (var(--chronicle--padding-block) + var(--chronicle--center)));
+    left: calc(
+        var(--chronicle--padding-inline) + var(--chronicle--date-width)
+        + var(--chronicle--gap) + var(--chronicle--marker-width) / 2
+    );
+
+    /* Box */
+    width: 1px;
+
+    /* Visual */
+    background: var(--chronicle--line);
+    transform: translateX(-50%);
+
+    content: "";
+}
+
+
+/* --- Date --- */
+
+.hx-chronicle__date {
+    /* Box */
+    /* Text centred on the marker: centre minus half its own line. */
+    padding-top: max(0px, calc(var(--chronicle--center) - 0.5lh));
+
+    /* Typography */
+    font-size: var(--chronicle--small-size);
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--hx-color-neutral-500);
+}
+
+
+/* --- Marker: dot or icon circle --- */
+
+.hx-chronicle__marker {
+    /* Position */
+    position: relative;
+    z-index: 1;
+
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Box */
+    height: calc(2 * var(--chronicle--center));
+}
+
+.hx-chronicle__dot {
+    /* Tokens */
+    --chronicle--dot-color: var(--hx-color-neutral-400);
+
+    /* Box */
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid var(--hx-color-background);
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--chronicle--dot-color);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--chronicle--dot-color) 50%, transparent);
+}
+
+.hx-chronicle__dot--primary {
+    --chronicle--dot-color: var(--hx-color-primary);
+}
+
+.hx-chronicle__dot--info {
+    --chronicle--dot-color: var(--hx-color-info-600);
+}
+
+.hx-chronicle__dot--success {
+    --chronicle--dot-color: var(--hx-color-success-600);
+}
+
+.hx-chronicle__dot--warning {
+    --chronicle--dot-color: var(--hx-color-warning-500);
+}
+
+.hx-chronicle__dot--danger {
+    --chronicle--dot-color: var(--hx-color-danger-600);
+}
+
+/* `entry(color=…)`: a free colour wins over the appearance. */
+.hx-chronicle__entry--colored .hx-chronicle__dot {
+    --chronicle--dot-color: var(--chronicle--color);
+}
+
+.hx-chronicle__entry--colored .hx-icon-circle {
+    --icon-circle--color: var(--chronicle--color);
+}
+
+
+/* --- Content --- */
+
+.hx-chronicle__title {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+
+    /* Box */
+    /* First line centred on the marker. */
+    padding-top: max(0px, calc(var(--chronicle--center) - 0.5lh));
+
+    /* Typography */
+    font-size: var(--chronicle--title-size);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.4;
+    color: var(--hx-color-text);
+}
+
+/* A pill next to the title may overhang the line slightly instead of
+   making it taller, so the title stays centred on the marker. */
+.hx-chronicle__title > .hx-pill {
+    /* Box */
+    margin-block: -0.125rem;
+}
+
+.hx-chronicle__content > .hx-meta {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    font-size: var(--chronicle--small-size);
+    line-height: 1.4;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-chronicle__text {
+    /* Box */
+    margin: 0.25rem 0 0;
+
+    /* Typography */
+    font-size: var(--chronicle--small-size);
+    line-height: 1.65;
+    color: var(--hx-color-neutral-500);
+}
+
+
+/* --- Clickable entries: a link in the title stretches across the entry --- */
+
+.hx-chronicle__title a {
+    /* Typography */
+    text-decoration: none;
+    color: inherit;
+
+    /* Visual */
+    outline: none;
+}
+
+.hx-chronicle__title a::after {
+    /* Position */
+    position: absolute;
+    inset: 0;
+
+    content: "";
+}
+
+.hx-chronicle__entry:has(.hx-chronicle__title a) {
+    /* Motion */
+    transition: background-color var(--hx-transition-fast);
+}
+
+.hx-chronicle__entry:has(.hx-chronicle__title a):is(:hover, :focus-within) {
+    /* Visual */
+    background: var(--chronicle--hover);
+}
+
+.hx-chronicle__entry:has(.hx-chronicle__title a:focus-visible) {
+    /* Visual */
+    outline: 2px solid var(--hx-color-primary-focus);
+    outline-offset: -2px;
+}
+
+.hx-chronicle__entry:hover .hx-chronicle__title a {
+    /* Typography */
+    text-decoration: underline;
+}
+
+/* Other links and buttons in an entry stay clickable above the overlay. */
+.hx-chronicle__content :is(a, button):not(.hx-chronicle__title a) {
+    /* Position */
+    position: relative;
+    z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-chronicle__entry {
+        /* Motion */
+        transition: none;
+    }
+}
+
+
+/* --- Canvas design: the dot centre follows its slightly smaller title line --- */
+
+[data-hx-design="canvas"] .hx-chronicle {
+    --chronicle--dot-center: 0.625rem;
+}

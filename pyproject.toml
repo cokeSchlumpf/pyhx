@@ -62,6 +62,9 @@ extend-immutable-calls = [
     "pyhx.components.view_model.CalendarLabels",
 ]
 
+[tool.mypy]
+strict_equality = true
+
 [tool.pytest.ini_options]
 # Put the repo root on sys.path so the non-installed `samples` app is
 # importable in tests (`pyhx` itself is an installed package and needs no help).
