@@ -31,7 +31,7 @@
 
     /* Typography */
     color: var(--hx-color-neutral-700);
-    font-size: var(--hx-text-base);
+    font-size: var(--hx-text-control);
     font-weight: var(--hx-font-medium);
     line-height: 1;
     white-space: nowrap;
@@ -95,7 +95,7 @@
     padding: var(--hx-spacing-xs) var(--hx-spacing-sm);
 
     /* Typography */
-    font-size: var(--hx-text-sm);
+    font-size: calc(var(--hx-text-control) * 0.875);
 }
 
 .hx-segment-control--lg .hx-segment-control__option {
@@ -103,7 +103,7 @@
     padding: var(--hx-spacing-md) var(--hx-spacing-lg);
 
     /* Typography */
-    font-size: var(--hx-text-lg);
+    font-size: calc(var(--hx-text-control) * 1.125);
 }
 
 

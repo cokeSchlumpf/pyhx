@@ -2,6 +2,7 @@ from ..variants import Orientation
 from .bubble import bubble
 from .button import button
 from .button_group import button_group
+from .chronicle import chronicle
 from .conditional_select import (
     ConditionalSelectLabels,
     ConditionalSelectMode,
@@ -72,6 +73,7 @@ __all__ = [
     "bubble",
     "button",
     "button_group",
+    "chronicle",
     "checkbox_fieldset",
     "conditional_select",
     "drawer_action_table",

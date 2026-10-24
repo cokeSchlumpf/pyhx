@@ -191,6 +191,52 @@ def _action_needed() -> y.Node:
     ]
 
 
+def _documents() -> y.Node:
+    """Document inbox as a chronicle; dot colours per document type."""
+    new = c.pill("Neu", appearance="success", variant="outline")
+
+    return c.card[
+        c.card.header[
+            c.card.title[y.h2["Dokumente"]],
+            c.pill("3", appearance="neutral", size="sm"),
+        ],
+        c.chronicle[
+            c.chronicle.entry(date="12.04.2026", color="#F194B4")[
+                c.chronicle.title[
+                    y.a(href="#")["Arbeitgeberfragebogen Muster Bau AG"], new
+                ],
+                c.meta(
+                    "Arbeitgeberfragebogen",
+                    "Muster Bau AG, Corinne Baumgartner, Leiterin Personal",
+                    "3 Seiten",
+                ),
+                c.chronicle.text[
+                    "Seit 01.04.2026 Einsatz zu 50%, leitet wöchentlich eine ",
+                    "zweistündige Baustellenbesprechung (S. 2)",
+                ],
+            ],
+            c.chronicle.entry(date="05.04.2026", color="#7EA16B")[
+                c.chronicle.title[y.a(href="#")["Arztbericht Dr. Keller"], new],
+                c.meta(
+                    "Arztbericht", "Dr. med. Daniel Keller, Hausarzt", "4 Seiten"
+                ),
+                c.chronicle.text[
+                    "Bisherige Tätigkeit weiterhin AU 100%, angepasste Tätigkeit ",
+                    "50% zumutbar ab 01.04.2026 (S. 3)",
+                ],
+            ],
+            c.chronicle.entry(date="15.03.2026", color="#BFD5E2")[
+                c.chronicle.title[y.a(href="#")["IV-Anmeldung 001.001"]],
+                c.meta("Anmeldung", "David Meier, versicherte Person", "12 Seiten"),
+                c.chronicle.text[
+                    "AU 100% seit 20.01.2026 (S. 6), gesundheitliche ",
+                    "Beeinträchtigung: Depression (S. 9)",
+                ],
+            ],
+        ],
+    ]
+
+
 @hx.page("/dossier", title="Dossier")
 async def dossier() -> y.Node:
     return y.div[
@@ -274,31 +320,7 @@ async def dossier() -> y.Node:
                         ]
                     ],
                 ],
-                c.card[
-                    c.card.header[
-                        c.card.title[y.h2["Dokumente"]],
-                        c.pill("2", appearance="neutral", size="sm"),
-                    ],
-                    c.card.list[
-                        c.card.item[
-                            c.icon("document", circle=True, appearance="info"),
-                            c.card.link(href="#")["IV-Anmeldung 001.001"],
-                            c.card.subtle[c.meta("Eingang 15.03.2026", "12 Seiten")],
-                            c.icon("arrow-right-2"),
-                        ],
-                        c.card.item[
-                            c.icon("document", circle=True, appearance="success"),
-                            c.card.link(href="#")["Arztbericht Dr. Keller"],
-                            c.card.subtle[
-                                c.meta(
-                                    "Eingang 22.03.2026",
-                                    "4 Seiten",
-                                    y.a(href="#")["Quelle öffnen"],
-                                )
-                            ],
-                        ],
-                    ],
-                ],
+                _documents(),
                 c.card[
                     c.card.header[c.card.title[y.h2["Notizen"]]],
                     c.card.section[lorem_ipsum(paragraphs=6)],

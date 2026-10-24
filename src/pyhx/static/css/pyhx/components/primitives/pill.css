@@ -20,7 +20,7 @@
        which slots are filled. Includes the 2 × 1px border to stay
        box-sizing-honest. */
     --pill--height: calc(var(--hx-text-xs) + var(--hx-spacing-xs) * 3 + 2px);
-    --pill--font-size: var(--hx-text-sm);
+    --pill--font-size: var(--hx-text-meta);
     --pill--font-weight: var(--hx-font-semibold);
     --pill--radius: var(--hx-radius-md);
 
@@ -201,13 +201,13 @@
 
 /* --- Sizes ---
    Only geometry; colours come from the variant. `sm` fits next to a
-   heading, e.g. as a count in a card header. Its values are set for the
-   default design's 14px root (AppShell): ~11.4px text, ~17.5px high. The
-   canvas design (16px root) sets its own below. */
+   heading, e.g. as a count in a card header. Font sizes come from the
+   theme's roles (meta for md, badge for sm); the heights are set for the
+   default design's 14px root, the canvas design sets its own below. */
 
 .hx-pill--sm {
     --pill--height: 1.25rem;
-    --pill--font-size: 0.8125rem;
+    --pill--font-size: var(--hx-text-badge);
     --pill--padding-inline: 0.375rem;
 }
 
@@ -248,17 +248,14 @@
     --pill--edge: color-mix(in srgb, var(--pill--color) 20%, transparent);
 }
 
-/* Canvas runs on a 16px root; sizes as in the draft. `md` (status, e.g.
-   "Neuer Eingang"): 12px medium, 20px high. `sm` (counts): 11px semibold,
-   16px high. */
+/* Canvas runs on a 16px root; geometry as in the draft. `md` (status, e.g.
+   "Neuer Eingang"): medium weight, 20px high. `sm` (counts): 16px high. */
 [data-hx-design="canvas"] .hx-pill--md {
     --pill--height: 1.25rem;
-    --pill--font-size: var(--hx-text-xs);
     --pill--font-weight: var(--hx-font-medium);
     --pill--padding-inline: 0.625rem;
 }
 
 [data-hx-design="canvas"] .hx-pill--sm {
     --pill--height: 1rem;
-    --pill--font-size: 0.6875rem;
 }

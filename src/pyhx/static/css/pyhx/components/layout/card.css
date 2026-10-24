@@ -25,16 +25,17 @@
     --card--gap: var(--hx-spacing-md);
     --card--padding-block: 0.875rem;
     --card--padding-inline: 1.25rem;
-    /* Title sizes by heading level: h2 (and plain text) uses
+    /* Sizes come from the theme's font size roles, so they fit every
+       design. Title sizes by heading level: h2 (and plain text) uses
        --card--title-size; h1 is the page title. */
-    --card--title-size: var(--hx-text-lg);
-    --card--h1-size: var(--hx-text-3xl);
+    --card--title-size: var(--hx-text-title);
+    --card--h1-size: var(--hx-text-page-title);
     --card--h1-weight: var(--hx-font-semibold);
     --card--h1-tracking: -0.025em;
-    --card--h3-size: var(--hx-text-base);
-    --card--h4-size: var(--hx-text-sm);
-    --card--small-size: var(--hx-text-sm);
-    --card--link-size: var(--hx-text-base);
+    --card--h3-size: var(--hx-text-item);
+    --card--h4-size: var(--hx-text-meta);
+    --card--small-size: var(--hx-text-meta);
+    --card--link-size: var(--hx-text-item);
     --card--hover: var(--hx-color-neutral-050);
 }
 
@@ -286,6 +287,9 @@ details.hx-card__group > * + * {
 .hx-card__section {
     /* Box */
     padding: 1rem var(--card--padding-inline);
+
+    /* Typography */
+    font-size: var(--hx-text-body);
 }
 
 .hx-card__section > :last-child {
@@ -525,12 +529,6 @@ details.hx-card__group > * + * {
     --card--radius: var(--hx-radius-xl);
     --card--border: 0;
     --card--line: var(--hx-color-neutral-100);
-    --card--title-size: 0.9375rem;
-    --card--h1-size: 2rem;
     --card--h1-weight: var(--hx-font-light);
     --card--h1-tracking: -0.04em;
-    --card--h3-size: var(--hx-text-sm);
-    --card--h4-size: 0.8125rem;
-    --card--small-size: var(--hx-text-xs);
-    --card--link-size: var(--hx-text-sm);
 }

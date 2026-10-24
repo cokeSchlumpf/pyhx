@@ -33,6 +33,7 @@
 @import "./pyhx/components/primitives/bubble.css" layer(pyhx);
 @import "./pyhx/components/primitives/button.css" layer(pyhx);
 @import "./pyhx/components/primitives/button-group.css" layer(pyhx);
+@import "./pyhx/components/primitives/chronicle.css" layer(pyhx);
 @import "./pyhx/components/primitives/conditional-select.css" layer(pyhx);
 @import "./pyhx/components/primitives/drawer-action-table.css" layer(pyhx);
 @import "./pyhx/components/primitives/drawer-radio.css" layer(pyhx);

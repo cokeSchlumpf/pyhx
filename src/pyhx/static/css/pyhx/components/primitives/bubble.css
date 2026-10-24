@@ -27,7 +27,7 @@
        modifiers override --padding-block / --font-size. */
     --hx-bubble--padding-inline: var(--hx-spacing-md);
     --hx-bubble--padding-block: var(--hx-spacing-md);
-    --hx-bubble--font-size: var(--hx-text-base);
+    --hx-bubble--font-size: var(--hx-text-body);
 
     /* Optical centring — a font reserves descender space below the
        baseline, so a single line of text reads as sitting high even when
@@ -81,12 +81,12 @@
 
 .hx-bubble--md {
     --hx-bubble--padding-block: var(--hx-spacing-md);
-    --hx-bubble--font-size: var(--hx-text-base);
+    --hx-bubble--font-size: var(--hx-text-body);
 }
 
 .hx-bubble--sm {
     --hx-bubble--padding-block: var(--hx-spacing-sm);
-    --hx-bubble--font-size: var(--hx-text-sm);
+    --hx-bubble--font-size: calc(var(--hx-text-body) * 0.875);
     /* sm needs a touch more optical shift than the em scaling gives —
        the descender offset is a larger fraction at the smaller size. */
     --hx-bubble--optical-shift: 0.06em;

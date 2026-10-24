@@ -76,14 +76,14 @@
     margin: 0 0 var(--hx-spacing-xs) 0;
 
     /* Typography */
-    font-size: var(--hx-text-base);
+    font-size: var(--hx-text-body);
     font-weight: var(--hx-font-semibold);
     line-height: var(--hx-leading-normal);
 }
 
 .hx-message__content {
     /* Typography */
-    font-size: var(--hx-text-base);
+    font-size: var(--hx-text-body);
     color: var(--hx-color-neutral-700);
     line-height: var(--hx-leading-normal);
 }

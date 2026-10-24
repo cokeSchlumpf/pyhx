@@ -21,6 +21,15 @@
     --pico-font-family: "Inter", system-ui, sans-serif;
     --hx-font-heading: "Inter", system-ui, sans-serif;
 
+    /* Font size roles (see theme.css), as in the draft */
+    --hx-text-page-title: 2rem;              /* 32px */
+    --hx-text-title:      0.9375rem;         /* 15px */
+    --hx-text-item:       var(--hx-text-sm); /* 14px */
+    --hx-text-meta:       var(--hx-text-xs); /* 12px */
+    --hx-text-badge:      0.6875rem;         /* 11px */
+    --hx-text-body:       0.9375rem;         /* 15px */
+    --hx-text-control:    var(--hx-text-sm); /* 14px */
+
     /* Neutral (Gray) */
     --hx-color-neutral-050: #FAFAFA;
     --hx-color-neutral-100: #F3F3F3;
