@@ -17,12 +17,12 @@ from .styles import StyleAttribute, styles
 from .validation_error import FieldError, field_error, validation_error
 
 __all__ = [
+    "CustomIconName",
+    "FeatherIconName",
     "FieldError",
     "HandlerResponse",
     "HtmxAttrs",
     "HxSwap",
-    "CustomIconName",
-    "FeatherIconName",
     "IconName",
     "LocaleSettings",
     "Omit",
