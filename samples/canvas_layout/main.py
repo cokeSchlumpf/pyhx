@@ -17,6 +17,7 @@ import htpy as y
 import pyhx.components as c
 
 from pyhx.components.variants import Appearance
+from pyhx.core.primitives import IconName
 from pyhx.core import PageResponse, RequestContext, WebApp
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
@@ -104,10 +105,19 @@ async def full() -> PageResponse:
 def _action_needed() -> y.Node:
     """Aside card with fixed groups and a collapsible "Erledigt" group."""
 
-    def item(title: str, *details: y.Node) -> y.Node:
+    def item(
+        icon: IconName,
+        appearance: Appearance,
+        title: str,
+        *details: y.Node,
+        note: y.Node = None,
+    ) -> y.Node:
         return c.card.item[
+            c.icon(icon, circle=True, appearance=appearance),
             c.card.link(href="#")[title],
             c.card.subtle[c.meta(*details)],
+            note,
+            c.icon("arrow-right-2"),
         ]
 
     return c.card[
@@ -119,6 +129,8 @@ def _action_needed() -> y.Node:
             c.card.label[y.h3["Neues Dokument 1"]],
             c.card.list[
                 item(
+                    "document",
+                    "info",
                     "Psychiatrisches Gutachten",
                     "Eingang 30.06.2026",
                     "7 Seiten",
@@ -129,11 +141,23 @@ def _action_needed() -> y.Node:
         c.card.group[
             c.card.label[y.h3["Abweichungen 2"]],
             c.card.list[
-                item("Diagnose", "Dr. Keller F33.2", "Gutachten F32.1"),
                 item(
+                    "swap",
+                    "danger",
+                    "Diagnose",
+                    "Dr. Keller F33.2",
+                    "Gutachten F32.1",
+                ),
+                item(
+                    "swap",
+                    "danger",
                     "Funktionsniveau",
                     "Dr. Keller Konzentration etwa 30 Minuten",
                     "Arbeitgeber zweistündige Besprechung",
+                    note=c.card.subtle[
+                        c.icon("pencil"),
+                        "Rückfrage an Dr. Keller vorbereitet am 17.04.",
+                    ],
                 ),
             ],
         ],
@@ -141,8 +165,14 @@ def _action_needed() -> y.Node:
             c.card.label[y.h3["Lücke 1"]],
             c.card.list[
                 item(
+                    "exclamation",
+                    "neutral",
                     "Keine Arbeitsunfähigkeitszeugnisse im Dossier",
                     "15.03. bis 01.04.2026",
+                    note=c.card.subtle[
+                        c.icon("send-2"),
+                        "Anfrage an Helvetia versendet am 14.04.",
+                    ],
                 ),
             ],
         ],
@@ -152,10 +182,10 @@ def _action_needed() -> y.Node:
                 c.pill("4", appearance="neutral", size="sm"),
             ],
             c.card.list[
-                item("IV-Anmeldung validiert", "15.03.2026"),
-                item("Arztbericht angefordert", "18.03.2026"),
-                item("Beginn AU geprüft", "20.03.2026"),
-                item("Arbeitgeberfragebogen erhalten", "02.04.2026"),
+                item("check-2", "success", "IV-Anmeldung validiert", "15.03.2026"),
+                item("check-2", "success", "Arztbericht angefordert", "18.03.2026"),
+                item("check-2", "success", "Beginn AU geprüft", "20.03.2026"),
+                item("check-2", "success", "Fragebogen erhalten", "02.04.2026"),
             ],
         ],
     ]
@@ -251,10 +281,13 @@ async def dossier() -> y.Node:
                     ],
                     c.card.list[
                         c.card.item[
+                            c.icon("document", circle=True, appearance="info"),
                             c.card.link(href="#")["IV-Anmeldung 001.001"],
                             c.card.subtle[c.meta("Eingang 15.03.2026", "12 Seiten")],
+                            c.icon("arrow-right-2"),
                         ],
                         c.card.item[
+                            c.icon("document", circle=True, appearance="success"),
                             c.card.link(href="#")["Arztbericht Dr. Keller"],
                             c.card.subtle[
                                 c.meta(

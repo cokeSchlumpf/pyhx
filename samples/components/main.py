@@ -141,9 +141,9 @@ async def home() -> y.Node:
                 ],
                 y.li[
                     y.a(href=icons.icons_page.url())["Icon"],
-                    " — every feather icon name in the ",
-                    y.code["IconName"],
-                    " literal union",
+                    " — own SVG icons, round badges (",
+                    y.code["circle=True"],
+                    ") and every Feather icon",
                 ],
                 y.li[
                     y.a(href=data_table.data_table_page.url())["Data Table"],

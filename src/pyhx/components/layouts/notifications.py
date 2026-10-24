@@ -6,6 +6,7 @@ from pyhx.core import component
 from pyhx.core.primitives import IconName, classnames, merge_styles
 
 from ..primitives.button import button
+from ..primitives.icon import icon as render_icon
 from ..variants import Appearance
 
 NOTIFICATIONS_CONTAINER_ID = "hx-notifications"
@@ -73,7 +74,7 @@ def notification_card(
         **card_extras,
         **classnames(["hx-notification", f"hx-notification--{appearance}"], **kwargs),
     )[
-        y.i(class_="hx-notification__icon", data_feather=icon),
+        render_icon(icon, class_="hx-notification__icon"),
         y.div(class_="hx-notification__body")[
             y.h4(class_="hx-notification__title")[title or ""],
             y.div(class_="hx-notification__content")[children],

@@ -41,6 +41,7 @@
 @import "./pyhx/components/primitives/file-dropzone.css" layer(pyhx);
 @import "./pyhx/components/primitives/focus-list.css" layer(pyhx);
 @import "./pyhx/components/primitives/gantt.css" layer(pyhx);
+@import "./pyhx/components/primitives/icon.css" layer(pyhx);
 @import "./pyhx/components/primitives/meta.css" layer(pyhx);
 @import "./pyhx/components/primitives/metric-tile.css" layer(pyhx);
 @import "./pyhx/components/primitives/notification-badge.css" layer(pyhx);

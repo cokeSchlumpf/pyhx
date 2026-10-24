@@ -77,12 +77,14 @@ class TestCollapsibleCard:
     def test_open_makes_card_collapsible(self, open, details):
         html = str(card(open=open)[card.header["Title"], card.section["body"]])
 
-        assert html == (
+        assert html.startswith(
             f'<section class="hx-card">{details}'
             '<summary class="hx-card__header">Title'
-            '<span class="hx-card__chevron" aria-hidden="true">'
-            '<i data-feather="chevron-down"></i></span>'
-            "</summary>"
+            '<span class="hx-card__chevron" aria-hidden="true"><svg '
+        )
+        assert 'class="hx-icon hx-icon-chevron-down-2"' in html
+        assert html.endswith(
+            "</svg></span></summary>"
             '<div class="hx-card__section">body</div>'
             "</details></section>"
         )

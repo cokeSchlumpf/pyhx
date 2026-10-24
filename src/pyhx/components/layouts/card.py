@@ -41,6 +41,7 @@ from ..primitives._element import (
     _KxSimpleElement,
     _KxSimpleElementFactory,
 )
+from ..primitives.icon import icon
 
 # Whether the parts render inside a collapsible card or group. Every card
 # and group provides its own value, so a fixed group in a collapsible card
@@ -96,9 +97,7 @@ def _header(
 
     return y.summary(**classnames("hx-card__header", **kwargs))[
         children,
-        y.span(class_="hx-card__chevron", aria_hidden="true")[
-            y.i(data_feather="chevron-down")
-        ],
+        y.span(class_="hx-card__chevron", aria_hidden="true")[icon("chevron-down-2")],
     ]
 
 

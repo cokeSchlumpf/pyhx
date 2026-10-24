@@ -5,6 +5,7 @@ import htpy as y
 from pyhx.core.primitives import IconName, classnames
 
 from ..variants import Appearance, Size
+from .icon import icon as render_icon
 
 PillVariant = Literal["solid", "outline"]
 """Emphasis of a pill: ``solid`` is the tint alone, ``outline`` adds a thin
@@ -53,7 +54,7 @@ class _Pill:
             type="button",
             aria_label=aria_label,
             **classnames("hx-pill__close", **kwargs),
-        )[y.i(data_feather=icon)]
+        )[render_icon(icon)]
 
     def container(self, *pills: y.Node, **kwargs) -> y.Node:
         return y.div(**classnames("hx-pill-container", **kwargs))[*pills]

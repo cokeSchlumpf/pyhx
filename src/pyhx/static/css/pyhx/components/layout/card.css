@@ -354,6 +354,58 @@ details.hx-card__group > * + * {
     color: var(--hx-color-neutral-600);
 }
 
+/* Rows with icons: a leading `icon(..., circle=True)` and/or a trailing
+   icon (e.g. an arrow) get their own columns; everything else stacks in
+   the middle column. The spacing comes from margins, so a row with only
+   one of the two has no empty gap. */
+.hx-card__item:has(> :is(.hx-icon-circle, svg, i[data-feather])) {
+    /* Layout */
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+}
+
+/* `:where` keeps this default weaker than the icon rules below. */
+.hx-card__item:where(:has(> :is(.hx-icon-circle, svg, i[data-feather]))) > * {
+    /* Layout */
+    grid-column: 2;
+}
+
+.hx-card__item > .hx-icon-circle {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 1 / span 9;
+
+    /* Box */
+    margin-right: 0.75rem;
+}
+
+.hx-card__item > :is(svg, i[data-feather]):last-child {
+    /* Layout */
+    grid-column: 3;
+    grid-row: 1 / span 9;
+
+    /* Box */
+    width: 1rem;
+    height: 1rem;
+    margin: 0.125rem 0 0 0.75rem;
+
+    /* Typography */
+    color: var(--hx-color-neutral-400);
+}
+
+/* An icon in a muted text line (e.g. "✎ Rückfrage vorbereitet") is as tall
+   as the text. */
+:is(.hx-card__subtle, .hx-card__subtitle) > :is(svg, i[data-feather]) {
+    /* Box */
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.375em;
+
+    /* Typography */
+    vertical-align: -0.2em;
+}
+
 /* Clickable rows: `card.link` / `card.button` stretch an overlay across
    the item (the "stretched link" pattern), so the whole row is the link. */
 .hx-card__item:has(.hx-card__link, .hx-card__button) {

@@ -12,7 +12,7 @@ from ..components.layouts import (
     notification_error_template,
     notifications,
 )
-from ..components.primitives import pill
+from ..components.primitives import icon, pill
 from ..core import component
 from ..core.primitives import Omit, classnames, htmx
 from ..core.request_context import RequestContext
@@ -46,7 +46,7 @@ class AppShellNavRenderer(NavRenderer):
         # while keeping the leading icon visible as an icon rail.
         inner: list[y.Node] = []
         if item.icon:
-            inner.append(y.i(data_feather=item.icon))
+            inner.append(icon(item.icon))
         inner.append(y.span[item.label])
 
         return y.li(role="treeitem")[
