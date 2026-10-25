@@ -9,6 +9,7 @@ HTTP / WebSocket scope.
 import asyncio
 import logging
 import secrets
+import time
 from typing import Any, Literal, cast
 
 from commons.settings import read_settings_object
@@ -23,6 +24,16 @@ from pyhx.core import WebApp
 LOG = logging.getLogger(__package__)
 
 SESSION_USER_ID_KEY = "user_id"
+
+# Unix time of the last request of a signed-in user. Writing it marks the
+# session as modified, so Starlette re-signs the cookie with a fresh expiry:
+# ``sessions_max_age`` then counts from the last activity (an idle timeout)
+# instead of from the login.
+SESSION_LAST_SEEN_KEY = "last_seen"
+
+# How often (seconds) the cookie is renewed while the user is active. Every
+# request would work too, but would re-send the cookie on every response.
+SESSION_RENEW_INTERVAL = 60
 
 _MISSING_SECRET_KEY_MESSAGE = (
     "PyHX user-session secret key is missing. "
@@ -106,6 +117,12 @@ class CookieUserSession:
     and writes it to ``scope["state"]["user"]`` so PyHX's RequestContext
     builders pick it up.
 
+    The session slides: while a signed-in user keeps making requests, the
+    cookie is renewed about once a minute (:data:`SESSION_RENEW_INTERVAL`),
+    so ``sessions_max_age`` is the time a user may stay idle, not the
+    lifetime of a login. Background requests such as htmx polling count as
+    activity. WebSocket handshakes can't set cookies and don't renew.
+
     Must run *inside* ``SessionMiddleware``. Use :func:`configure_user_session`
     to wire both layers in the correct order.
     """
@@ -130,7 +147,17 @@ class CookieUserSession:
                 if user is not None:
                     scope.setdefault("state", {})
                     scope["state"]["user"] = user
+                    if scope["type"] == "http":
+                        _renew(session)
         await self.app(scope, receive, send)
+
+
+def _renew(session: dict[str, Any]) -> None:
+    """Refresh the last-seen time if it's older than the renew interval;
+    the write makes Starlette re-sign the cookie with a fresh expiry."""
+    now = int(time.time())
+    if now - int(session.get(SESSION_LAST_SEEN_KEY, 0)) >= SESSION_RENEW_INTERVAL:
+        session[SESSION_LAST_SEEN_KEY] = now
 
 
 def login_user(connection: HTTPConnection, user: User) -> None:
@@ -143,11 +170,13 @@ def login_user(connection: HTTPConnection, user: User) -> None:
     login is always an HTTP concern.
     """
     connection.session[SESSION_USER_ID_KEY] = str(user.id)
+    connection.session[SESSION_LAST_SEEN_KEY] = int(time.time())
 
 
 def logout_user(connection: HTTPConnection) -> None:
     """Clear the user from this session."""
     connection.session.pop(SESSION_USER_ID_KEY, None)
+    connection.session.pop(SESSION_LAST_SEEN_KEY, None)
 
 
 def configure_user_session(
@@ -162,9 +191,10 @@ def configure_user_session(
     domain: str | None = None,
     path: str | None = None,
     **session_extras: Any,
-) -> None:
+) -> str:
     """Wire :class:`CookieUserSession` + Starlette's ``SessionMiddleware``
-    on ``webapp``.
+    on ``webapp``, and return the secret key the session is signed with
+    (other parts of the addon, e.g. email login, key their hashes with it).
 
     Every cookie-shape kwarg (``secret_key``, ``session_cookie``,
     ``max_age``, ``same_site``, ``https_only``, ``domain``, ``path``)
@@ -239,3 +269,4 @@ def configure_user_session(
         )
 
     webapp.configure_fast_api_app(configure_middleware)
+    return secret_key
