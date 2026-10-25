@@ -11,6 +11,9 @@
         --content--padding-inline: var(--hx-spacing-lg);
         --content--padding-block: var(--hx-spacing-xl);
 
+        /* Login column (login.css): centred on the canvas below the top bar. */
+        --hx-login--min-height: calc(100dvh - var(--header--height) - 2 * var(--content--padding-block));
+
         /* Pinned: the top bar. */
         --hx-sticky-top: var(--header--height);
         --hx-table--sticky-top: var(--hx-sticky-top);
