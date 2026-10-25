@@ -111,6 +111,10 @@ Each field has a matching env var: `APP__PYHX__SESSIONS_SECRET_KEY`, `APP__PYHX_
 
 The defaults are dev-friendly: HTTP-safe (`sessions_https_only = false`) and unscoped (no `Domain`). Flip `sessions_https_only` to `true` for any prod deployment served over HTTPS.
 
+### Session lifetime — an idle timeout
+
+The session slides: while a signed-in user keeps making requests, the cookie is renewed about once a minute. `sessions_max_age` is therefore the time a user may stay **idle** before having to sign in again, not the lifetime of a login. Background requests such as htmx polling count as activity, so an open page keeps its session. For a 30-minute idle timeout set `sessions_max_age = 1800`.
+
 ### The secret key — special case
 
 If `sessions_secret_key` is missing (or left at the placeholder `"xxx"`) the addon's behaviour depends on `WebApp.is_dev`:
@@ -121,6 +125,53 @@ If `sessions_secret_key` is missing (or left at the placeholder `"xxx"`) the add
 ### "None means settings" — caveat
 
 Because every cookie kwarg defaults to `None` and falls back to settings, callers cannot force a value *back* to `None` (e.g. clearing `domain` when settings set it). Set the override explicitly via TOML / env in that case instead.
+
+## Login methods
+
+The login page offers the methods passed as `login_methods`, in order. The default is username and password, as before:
+
+```python
+from pyhx.addons.user_authentication import EmailTokenLogin, PasswordLogin
+
+configure_user_authentication(
+    app,
+    users=users,
+    login_methods=[PasswordLogin(), EmailTokenLogin()],   # or [EmailTokenLogin()] alone
+)
+```
+
+### One page per method
+
+Each method has its own page, `{login_path}?method=<key>` — `password` or `email`. With more than one method, each page has a subtle "Sign in with another method" link to `{login_path}?method=select`, which lists the methods (in the order of `login_methods`). `?next=` is carried along.
+
+`default_login_method` decides what `{login_path}` without `?method` shows:
+
+```python
+configure_user_authentication(app, users=users, login_methods=[...])                              # first method
+configure_user_authentication(app, users=users, login_methods=[...], default_login_method=EmailTokenLogin)  # that method
+configure_user_authentication(app, users=users, login_methods=[...], default_login_method=None)     # list of methods
+```
+
+### Design of the login pages
+
+The login pages use the app's own `default_page_template`, so they match the app's design: a `CanvasShell` app signs in on the canvas, an `AppShell` app in an `AppShell` without navigation and user menu. Each method is a `c.card` in a centred column. Pass `login_page_template=` to use a different template.
+
+### Email login (link and code)
+
+`EmailTokenLogin` lets registered users sign in with a link or a code sent to their email address (looked up with `UsersRepository.find_user_by_email`). It's built on `commons.users.login_tokens`.
+
+- The user enters their address and lands on `{login_path}/code` — whatever happened (sent, unknown address, rate limited), so the page doesn't reveal which addresses are registered.
+- **The code** works in the browser that requested it (the pending request is kept in the session).
+- **The link** (`{login_path}/token?t=…`) works on any device. Opened in the requesting browser it signs in right away; anywhere else it asks for a click on "Sign In" first, because mail scanners open links in advance — but never with that browser's session.
+- Link and code are single use, expire after 15 minutes, and redeeming one invalidates the other. After 5 wrong codes the request is invalidated; an address can request 3 links per 15 minutes. Every failure shows the same message.
+- Only HMAC hashes are stored, keyed with the session's secret key. Nothing is stored for unknown addresses, and no IP addresses at all.
+
+| Option | Default | |
+| --- | --- | --- |
+| `store` | `InMemoryLoginTokenStore()` | One process only. With several workers use `SQLLoginTokenStore(engine)`, or a link sent by one worker won't work on another. |
+| `sender` | `LoggingLoginTokenSender()` | Writes link and code to the log — development only. Implement `SendLoginTokenPort` to send real emails. |
+| `settings` | `LoginTokenSettings.read()` | Validity, code length and rate limit from `app.login_tokens.*`. |
+| `base_url` | URL of the request | Absolute base for the links in the email; set it behind a proxy that rewrites the host. |
 
 ## Customising paths and redirects
 

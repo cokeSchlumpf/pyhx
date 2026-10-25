@@ -591,7 +591,7 @@ test = ["pytest"]
 
 [[package]]
 name = "commons"
-version = "0.1.1"
+version = "0.2.1"
 description = "This library contains common functionalities which are used across a broad range of apps and other libs."
 optional = false
 python-versions = ">=3.12, <4.0"
@@ -614,7 +614,7 @@ azure = ["azure-identity (>=1.25.3,<2.0.0)", "azure-storage-blob (>=12.28.0,<13.
 type = "git"
 url = "https://github.com/cokeSchlumpf/lib--python-commons.git"
 reference = "versions/0"
-resolved_reference = "10aa1dcc6ce8fd49bca8efe3c86fceb1c185060b"
+resolved_reference = "c997166e430a5fe84857309c92a6f25991c788e8"
 
 [[package]]
 name = "coverage"

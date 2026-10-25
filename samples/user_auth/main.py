@@ -6,7 +6,13 @@ Run with::
 
 Exercises :func:`configure_user_authentication` — the addon registers
 ``GET``/``POST`` ``/login`` and ``GET`` ``/logout`` against an in-memory
-:class:`SQLUsersRepository` seeded with a test account (``jane`` / ``pw``).
+:class:`SQLUsersRepository` seeded with a test account (``jane`` / ``pw``,
+``jane@example.com``).
+
+The login page offers both login methods: username and password, and a
+link and code sent by email. The sample uses the default
+``LoggingLoginTokenSender``, so the link and the code appear in the console
+instead of an inbox.
 
 The home page uses :func:`get_user` to render the current viewer (real
 or :class:`AnonymousUser`). ``/protected`` calls
@@ -18,25 +24,31 @@ flow lands them back where they came from.
 Note: sessions are kept in-process; restarting the server logs you out.
 """
 
+import tempfile
+from pathlib import Path
+
 import htpy as y
 from commons.users import AnonymousUser, RegisteredUser, SQLUsersRepository
 from sqlalchemy import create_engine
-from sqlalchemy.pool import StaticPool
 
 from pyhx.addons.user_authentication import (
+    EmailTokenLogin,
+    PasswordLogin,
     configure_user_authentication,
     require_authenticated_user,
-    require_user
+    require_user,
 )
 from pyhx.core import WebApp
 from pyhx.page_templates import AppShell
 
 
 def _build_users_repo() -> SQLUsersRepository:
+    # A fresh SQLite file per start, not `:memory:` + StaticPool: the session
+    # middleware looks the user up in worker threads, in parallel for the
+    # page's assets, and a single shared connection can't serve that.
+    path = Path(tempfile.mkdtemp(prefix="pyhx-user-auth-")) / "users.db"
     engine = create_engine(
-        "sqlite:///:memory:",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
+        f"sqlite:///{path}", connect_args={"check_same_thread": False}
     )
     repo = SQLUsersRepository(engine)
     repo.upsert_user(
@@ -44,6 +56,7 @@ def _build_users_repo() -> SQLUsersRepository:
             username="jane",
             password_hash=repo.hash_password("pw"),
             display_name="Jane Doe",
+            email="jane@example.com",
         )
     )
     return repo
@@ -61,6 +74,7 @@ hx = WebApp(
 configure_user_authentication(
     hx,
     users=users,
+    login_methods=[PasswordLogin(), EmailTokenLogin()],
     secret_key="dev-only-sample-key-do-not-use-in-prod",
     https_only=False,
 )
@@ -78,7 +92,9 @@ async def home() -> y.Node:
                 y.code["jane"],
                 " / ",
                 y.code["pw"],
-                ".",
+                ", or with ",
+                y.code["jane@example.com"],
+                " — the login link and code appear in the console.",
             ],
             y.p[y.em["You are not signed in."]]
             if is_anonymous

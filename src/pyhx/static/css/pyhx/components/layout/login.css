@@ -1,0 +1,39 @@
+/* --- Login column ---
+
+   The column of the built-in login pages (``.hx-login``, one card per
+   login method): horizontally centred and narrow, and vertically centred
+   in the height the page template leaves free. A template sets that
+   height as ``--hx-login--min-height`` (e.g. viewport minus its bars);
+   without it the column simply starts at the top. */
+
+
+.hx-login {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hx-spacing-md);
+
+    /* Box */
+    min-height: var(--hx-login--min-height, auto);
+}
+
+.hx-login > * {
+    /* Box */
+    width: min(100%, 25rem);
+    margin: 0;
+}
+
+
+/* Subtle link below a method's card to the list of login methods. */
+.hx-login__switch {
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    text-align: center;
+}
+
+.hx-login__switch a {
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+}
