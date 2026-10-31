@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/cokeSchlumpf/pyhx/compare/v0.3.0...v0.3.1) (2026-10-31)
+
+
+### Documentation
+
+* Set up the change workflow ([#7](https://github.com/cokeSchlumpf/pyhx/issues/7)) ([5bcddaf](https://github.com/cokeSchlumpf/pyhx/commit/5bcddafc36318b665d2e0cbe1a7bd2192c5a5df8))
+
 ## [0.3.0](https://github.com/cokeSchlumpf/pyhx/compare/v0.2.0...v0.3.0) (2026-10-25)
 
 
