@@ -1,6 +1,10 @@
 site_name: PyHX
 site_description: WebApps with HTMX and Python
 site_url: https://cokeschlumpf.github.io/pyhx/
+
+exclude_docs: |
+  decisions/0000-00-00--template.md
+
 repo_url: https://github.com/cokeSchlumpf/pyhx
 repo_name: cokeSchlumpf/pyhx
 edit_uri: edit/main/docs/
@@ -58,4 +62,7 @@ nav:
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
       - Sidepanel: guides/sidepanel.md
+  - Decisions:
+      - NumPy-style docstrings: decisions/2026-05-14-1714--python-docstrings-style.md
+      - CSS authoring conventions: decisions/2026-05-27-1436--css-authoring-conventions.md
   - Changelog: changelog.md
