@@ -81,6 +81,8 @@ def drawer_content(
         id=id,
         # Translators: accessible name of a drawer without a title.
         aria_label=title or _("Details"),
+        # Focusable, so pyhx.drawer.js can move focus into the panel on open.
+        tabindex="-1",
         hx_ext="morph",
         hx_swap_oob="morph",
         **kwargs,

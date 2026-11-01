@@ -517,6 +517,200 @@
 }
 
 
+/* --- Filter bar (quick filter pills and search, above the header) ---
+   Rendered by `DataTable` when it has quick filters or a search field. The
+   pills are a `segment_control` (radio group) restyled as separate pills;
+   colours come from neutral tokens, so the canvas theme's values give the
+   draft's look. The pill selectors double the block class
+   (`.hx-segment-control.hx-table__quick-filters`) to outrank the segment
+   control's own design rules (`[data-hx-design="canvas"] .hx-segment-control`). */
+
+.hx-table__filter-bar {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--hx-spacing-sm) var(--hx-spacing-md);
+
+    /* Box — inline padding lines the pills up with the cells' text */
+    padding: calc(var(--hx-spacing-sm) + var(--hx-spacing-xs)) var(--hx-spacing-md);
+}
+
+.hx-table__filter-bar .hx-segment-control.hx-table__quick-filters {
+    /* Layout */
+    flex-wrap: wrap;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: 0;
+    border: none;
+    border-radius: 0;
+
+    /* Visual */
+    background-color: transparent;
+}
+
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option {
+    /* Layout */
+    flex: 0 0 auto;
+
+    /* Box — as high as a small button of the design */
+    min-height: calc(var(--hx-text-control) * 0.875 + 2 * var(--hx-spacing-xs) + 2px);
+    padding: 0 var(--hx-spacing-md);
+    border-radius: var(--hx-radius-full);
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: calc(var(--hx-text-control) * 0.875);
+    font-weight: var(--hx-font-medium);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-100);
+}
+
+/* Canvas design: the draft's 22px pills with 12px text. */
+[data-hx-design="canvas"] .hx-segment-control.hx-table__quick-filters .hx-segment-control__option {
+    /* Box */
+    min-height: 22px;
+    padding: 0 var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-xs);
+}
+
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option:has(:checked) {
+    /* Typography */
+    color: var(--hx-color-background);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-900);
+}
+
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option:hover:not(:has(:checked)) {
+    /* Typography */
+    color: var(--hx-color-neutral-900);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-200);
+}
+
+.hx-table__search {
+    /* Layout: the label sits on the baseline of the field's text, not on its
+       box centre (a smaller label next to the field's text would look raised). */
+    display: flex;
+    align-items: baseline;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin: 0 0 0 auto;
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: var(--hx-text-control);
+}
+
+/* Default design: a field as high as the page header's buttons, with the
+   border and radius of the design's form fields. */
+.hx-table__search input[type="search"] {
+    /* Box */
+    box-sizing: border-box;
+    width: 18rem;
+    height: calc(var(--hx-text-control) + 2 * var(--hx-spacing-sm) + 2px);
+    margin: 0;
+    padding: 0 var(--hx-spacing-sm);
+    border: 1px solid var(--pico-form-element-border-color);
+    /* Not --pico-border-radius: Pico sets it to 5rem on search fields. */
+    border-radius: var(--hx-radius-md);
+
+    /* Typography */
+    color: var(--hx-color-text);
+    font-size: var(--hx-text-control);
+
+    /* Visual */
+    background-color: var(--pico-form-element-background-color);
+    background-image: none;
+}
+
+/* Canvas design: the draft's 13px label and 32px field. */
+[data-hx-design="canvas"] .hx-table__search {
+    /* Typography */
+    font-size: 0.8125rem;  /* 13px */
+}
+
+[data-hx-design="canvas"] .hx-table__search input[type="search"] {
+    /* Box */
+    width: 260px;
+    height: 32px;
+    padding: 0 10px;
+    border-color: var(--hx-color-neutral-500);
+    border-radius: var(--hx-radius-lg);
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+}
+
+/* Phone width: the search takes the full row below the pills. */
+@media (max-width: 600px) {
+    .hx-table__search {
+        /* Layout */
+        flex: 1 1 100%;
+    }
+
+    .hx-table__search input[type="search"],
+    [data-hx-design="canvas"] .hx-table__search input[type="search"] {
+        /* Layout */
+        flex: 1 1 auto;
+
+        /* Box */
+        width: auto;
+        min-width: 0;
+    }
+}
+
+
+/* --- Footer (count and text, below the table) ---
+   Rendered by `DataTable(footer=…)`. A plain row below the scroll container;
+   in the full-height app shell layout the wrapper is a flex column, so the
+   row keeps its height and the scroll container takes the rest. */
+
+.hx-table__footer {
+    /* Layout */
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--hx-spacing-xs) var(--hx-spacing-md);
+
+    /* Box */
+    padding: var(--hx-spacing-sm) var(--hx-spacing-md);
+    border-top: 1px solid var(--hx-color-neutral-200);
+
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+    font-size: calc(var(--hx-text-control) * 0.875);
+}
+
+/* The footer closes the table: no gap from the table's own bottom margin. */
+.hx-table__wrapper:has(> .hx-table__footer) .hx-table {
+    /* Box */
+    margin-bottom: 0;
+}
+
+/* Canvas design: the draft's 13px text and 12px/16px padding. */
+[data-hx-design="canvas"] .hx-table__footer {
+    /* Box */
+    padding: 0.75rem var(--hx-spacing-md);
+
+    /* Typography */
+    font-size: 0.8125rem;  /* 13px */
+}
+
+
 /* --- Scroll container --- */
 
 .hx-table__scroll-container {

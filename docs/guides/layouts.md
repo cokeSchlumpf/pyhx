@@ -170,6 +170,38 @@ Forms need no extra code on the canvas: text inputs, selects, textareas, checkbo
 
 Contrast follows WCAG 2.2 AA: control borders reach 3:1 against white and the canvas (`#878787`, 1.4.11), help text and error text 4.5:1 (`--hx-color-danger-700` for errors, since the design's orange `--hx-color-danger-600` only reaches 3.58:1). The values are Pico's form tokens in `static/css/themes/canvas.css`; the rules Pico has no token for are in `static/css/pyhx/elements/form.css` and the component stylesheets, under `[data-hx-design="canvas"]`. The page `/forms` of `samples/canvas_layout` shows every control in every state.
 
+### Compact forms
+
+Drawers and asides are narrow, so their forms are compact: 32px fields with a 13px label, help text 4px below, fields 12px apart. The place decides, no code is needed: every `form_field` and `DataForm` in a drawer or in the aside of `split_layout` is compact. `size` overrides the place: `form_field(..., size="sm")`, `DataForm(..., size="sm")` or `DataFormDrawer(..., size="sm")` makes a field or form compact anywhere, `size="md"` keeps the full size in a drawer or aside. In the default design `size` has no visible effect.
+
+### Label position
+
+`label_position` decides where a field's label sits, on `form_field`, `DataForm` and `DataFormDrawer`:
+
+- `"left"` — the label in a 128px column left of the field, while the **field's own cell** is at least 360px wide; in a narrower cell (a column of a two-column form, a phone) the label moves above the field by itself. It works with `columns` and `template_areas`: each field decides for its own cell.
+- `"top"` — the label always above the field; the form keeps its `columns`, in a drawer too.
+- `None` (default) — above the field; a compact form of the canvas design (in a drawer or an aside) shows one field per row with the labels left where the cell has room. Forms with `template_areas` keep their layout.
+
+`label_position` is layout only and works in both designs; colours and sizes come from the design.
+
+### DataPage and drawers
+
+A `DataPage` takes the look of the design without code changes:
+
+- Breadcrumbs, title and actions (e.g. "Filter & Sort", create) sit on the canvas, not in a band; neutral buttons are white with the 3:1 border.
+- The table is a white card (12px radius, thin border) with a light header row; a table directly in the content column gets the card, tables inside cards keep their look.
+- The edit and create drawers have a header with the title and a close button, a scrolling body with the compact form, and 28px buttons in the footer.
+
+`form_size` and `form_label_position` on `DataPage` and `DataSection` are passed to both drawers (as `size` and `label_position`), e.g. `DataPage(..., form_label_position="top")` for a drawer form that keeps its two columns.
+
+In both designs:
+
+- The drawer of `DataFormDrawer` (the edit and create drawers of `DataPage` and `DataSection`) keeps its header on top and its footer at the bottom while the form scrolls: delete on the left as an underlined text button in `--hx-color-danger-700`, cancel and submit on the right. Delete still asks for confirmation in the popup drawer. The default design keeps its colours, labels on top and the form's columns.
+- An open drawer and its backdrop are drawn above the page (page header and sticky table header included) and below the top bar. The page behind it doesn't scroll, also not when the drawer's content ends or fits.
+- Focus moves into a drawer when it opens and back when it closes; Esc closes the topmost drawer.
+
+`/data-page`, `/data-page-detail` (create drawer with `form_label_position="top"`) and `/forms` (a form with `label_position="left"`) of `samples/canvas_layout` show it.
+
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
 ## Sticky offset

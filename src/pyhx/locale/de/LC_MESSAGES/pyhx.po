@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 21:42+0100\n"
+"POT-Creation-Date: 2026-11-01 22:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: components/data/filter_drawer.py:617
+#: components/data/filter_drawer.py:637
 msgid "Add filter ..."
 msgstr "Filter hinzufügen ..."
 
-#: components/data/filter_drawer.py:848
+#: components/data/filter_drawer.py:868
 msgid "Add new rule ..."
 msgstr "Neue Regel hinzufügen ..."
 
@@ -38,11 +38,11 @@ msgstr "Tag hinzufügen"
 msgid "All"
 msgstr "Alle"
 
-#: components/data/filter_drawer.py:575
+#: components/data/filter_drawer.py:583
 msgid "Apply Filter & Sort"
 msgstr "Filter & Sortierung anwenden"
 
-#: components/data/filter_drawer.py:921
+#: components/data/filter_drawer.py:941
 msgid "Ascending"
 msgstr "Aufsteigend"
 
@@ -69,8 +69,8 @@ msgstr "Brotkrümelnavigation"
 msgid "Bullet list"
 msgstr "Aufzählung"
 
-#: components/data/data_form_drawer.py:61 components/data/data_section.py:475
-#: components/data/data_section.py:479 components/data/inline_edit.py:45
+#: components/data/data_form_drawer.py:73 components/data/data_section.py:529
+#: components/data/data_section.py:533 components/data/inline_edit.py:45
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -78,7 +78,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:588
+#: components/data/data_section.py:645
 #, python-brace-format
 msgid "Cannot delete {type}"
 msgstr "{type} kann nicht gelöscht werden"
@@ -92,7 +92,7 @@ msgstr "Prüfen Sie Ihre E-Mails"
 msgid "Choose how you want to sign in."
 msgstr "Wählen Sie, wie Sie sich anmelden möchten."
 
-#: components/data/_table_helpers.py:226 components/data/filter_drawer.py:580
+#: components/data/_table_helpers.py:226 components/data/filter_drawer.py:588
 msgid "Clear Filter & Sort"
 msgstr "Filter & Sortierung zurücksetzen"
 
@@ -100,7 +100,7 @@ msgstr "Filter & Sortierung zurücksetzen"
 msgid "Clear selection"
 msgstr "Auswahl aufheben"
 
-#: components/layouts/drawer.py:96
+#: components/layouts/drawer.py:98
 msgctxt "drawer"
 msgid "Close"
 msgstr "Schließen"
@@ -123,25 +123,25 @@ msgid "Copy code"
 msgstr "Code kopieren"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:437 components/data/data_section.py:443
-#: components/data/data_section.py:456
+#: components/data/data_section.py:491 components/data/data_section.py:497
+#: components/data/data_section.py:510
 #, python-brace-format
 msgid "Create {type}"
 msgstr "{type} erstellen"
 
 #. {type} is the name of the item's type, in lower case.
-#: components/data/data_section.py:609
+#: components/data/data_section.py:666
 #, python-brace-format
 msgid "Delete this {type}?"
 msgstr "{type} löschen?"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:470
+#: components/data/data_section.py:524
 #, python-brace-format
 msgid "Delete {type}"
 msgstr "{type} löschen"
 
-#: components/data/filter_drawer.py:922
+#: components/data/filter_drawer.py:942
 msgid "Descending"
 msgstr "Absteigend"
 
@@ -164,7 +164,7 @@ msgid "Drag & drop a file here, or click to browse"
 msgstr "Datei hierher ziehen oder klicken, um sie auszuwählen"
 
 #. default title of the drawer with the edit form.
-#: components/data/data_form_drawer.py:63
+#: components/data/data_form_drawer.py:75
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -176,7 +176,7 @@ msgid "Edit {label}"
 msgstr "{label} bearbeiten"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:450
+#: components/data/data_section.py:504
 #, python-brace-format
 msgid "Edit {type}"
 msgstr "{type} bearbeiten"
@@ -198,12 +198,12 @@ msgstr "Esc abbrechen · ↵ speichern"
 msgid "Expand All"
 msgstr "Alle aufklappen"
 
-#: components/data/filter_drawer.py:419
+#: components/data/filter_drawer.py:426
 msgctxt "filter drawer tab"
 msgid "Filter"
 msgstr "Filter"
 
-#: components/data/data_section.py:488
+#: components/data/data_section.py:542
 msgid "Filter & Sort"
 msgstr "Filter & Sortierung"
 
@@ -211,7 +211,7 @@ msgstr "Filter & Sortierung"
 msgid "Filter & Sort Settings"
 msgstr "Filter- und Sortiereinstellungen"
 
-#: components/data/filter_drawer.py:594
+#: components/data/filter_drawer.py:614
 msgid "Filter Mode"
 msgstr "Filtermodus"
 
@@ -261,19 +261,19 @@ msgstr "Anmeldung fehlgeschlagen."
 msgid "Login link not valid"
 msgstr "Anmeldelink ungültig"
 
-#: page_templates/app_shell.py:275
+#: page_templates/app_shell.py:277
 msgid "Logout"
 msgstr "Abmelden"
 
-#: components/data/filter_drawer.py:598
+#: components/data/filter_drawer.py:618
 msgid "Match All Filters"
 msgstr "Alle Filter erfüllen"
 
-#: components/data/filter_drawer.py:599
+#: components/data/filter_drawer.py:619
 msgid "Match Any Filter"
 msgstr "Mindestens einen Filter erfüllen"
 
-#: components/data/data_form.py:681 components/data/data_form.py:709
+#: components/data/data_form.py:703 components/data/data_form.py:731
 msgid "No"
 msgstr "Nein"
 
@@ -307,6 +307,10 @@ msgstr "Seitennavigation"
 msgid "Password"
 msgstr "Passwort"
 
+#: components/data/quick_filter.py:23
+msgid "Quick filters"
+msgstr "Schnellfilter"
+
 #: components/primitives/drawer_select.py:69
 msgid "Remove"
 msgstr "Entfernen"
@@ -336,10 +340,14 @@ msgid "Save"
 msgstr "Speichern"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:463
+#: components/data/data_section.py:517
 #, python-brace-format
 msgid "Save {type}"
 msgstr "{type} speichern"
+
+#: components/data/filter_drawer.py:608 components/data/quick_filter.py:24
+msgid "Search"
+msgstr "Suchen"
 
 #: components/primitives/drawer_select.py:68
 msgid "Select"
@@ -381,7 +389,7 @@ msgstr "Ausgewählte Einträge"
 msgid "Send login link"
 msgstr "Anmeldelink senden"
 
-#: page_templates/app_shell.py:269 page_templates/settings_menu.py:134
+#: page_templates/app_shell.py:271 page_templates/settings_menu.py:134
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -391,8 +399,8 @@ msgstr "Tabelle im Vollbild anzeigen"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:316
-#: page_templates/app_shell.py:317 page_templates/app_shell.py:318
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:318
+#: page_templates/app_shell.py:319 page_templates/app_shell.py:320
 msgid "Sign In"
 msgstr "Anmelden"
 
@@ -415,16 +423,16 @@ msgstr "Mit einer anderen Methode anmelden"
 msgid "Sign in with your username and password."
 msgstr "Melden Sie sich mit Ihrem Benutzernamen und Passwort an."
 
-#: components/data/filter_drawer.py:417
+#: components/data/filter_drawer.py:424
 msgctxt "filter drawer tab"
 msgid "Sort"
 msgstr "Sortierung"
 
-#: components/data/filter_drawer.py:438
+#: components/data/filter_drawer.py:446
 msgid "Sort & Filter"
 msgstr "Sortierung & Filter"
 
-#: components/data/filter_drawer.py:878
+#: components/data/filter_drawer.py:898
 msgid "Sort by:"
 msgstr "Sortieren nach:"
 
@@ -440,7 +448,7 @@ msgstr "Der Code ist ungültig oder abgelaufen. Bitte prüfen Sie ihn oder forde
 msgid "The email could not be sent. Please try again later."
 msgstr "Die E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
 
-#: components/data/data_section.py:614
+#: components/data/data_section.py:671
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -456,12 +464,12 @@ msgstr "Zeitachse"
 msgid "Toggle compact menu"
 msgstr "Kompaktes Menü umschalten"
 
-#: page_templates/app_shell.py:323
+#: page_templates/app_shell.py:325
 msgid "Toggle user menu"
 msgstr "Benutzermenü umschalten"
 
 #. {value} is the text the user has to retype.
-#: components/data/data_section.py:647
+#: components/data/data_section.py:704
 #, python-brace-format
 msgid "Type \"{value}\" to confirm."
 msgstr "Geben Sie «{value}» ein, um zu bestätigen."
@@ -483,8 +491,8 @@ msgstr "Benutzername und Passwort"
 msgid "Value"
 msgstr "Wert"
 
-#: components/data/data_form.py:680 components/data/data_form.py:700
-#: components/data/data_form.py:708
+#: components/data/data_form.py:702 components/data/data_form.py:722
+#: components/data/data_form.py:730
 msgid "Yes"
 msgstr "Ja"
 
@@ -600,7 +608,7 @@ msgid "less than or equal"
 msgstr "kleiner oder gleich"
 
 #. accessible name of the main navigation.
-#: page_templates/app_shell.py:256
+#: page_templates/app_shell.py:257
 msgctxt "navigation"
 msgid "main"
 msgstr "Hauptnavigation"
@@ -611,8 +619,22 @@ msgid "starts with"
 msgstr "beginnt mit"
 
 #. accessible name of the user menu.
-#: page_templates/app_shell.py:265
+#: page_templates/app_shell.py:267
 msgctxt "navigation"
 msgid "user"
 msgstr "Benutzermenü"
+
+#: components/data/data_table.py:648
+#, python-brace-format
+msgid "{n} entry"
+msgid_plural "{n} entries"
+msgstr[0] "{n} Eintrag"
+msgstr[1] "{n} Einträge"
+
+#: components/data/data_table.py:654
+#, python-brace-format
+msgid "{shown} of {total} entry"
+msgid_plural "{shown} of {total} entries"
+msgstr[0] "{shown} von {total} Eintrag"
+msgstr[1] "{shown} von {total} Einträgen"
 

@@ -35,11 +35,13 @@ from ..layouts import (
     page_section,
 )
 from ..primitives import button
+from ..variants import FormSize, LabelPosition
 from ._model_type import ModelType
 from .column import Column
 from .data_form_drawer import DataFormDrawer
 from .data_table import DataTable
 from .hierarchical_data_table import HierarchicalDataTable
+from .quick_filter import QuickFilters, TableFooter, TableSearch
 from .sources import (
     DataSource,
     HierarchicalDataSource,
@@ -122,6 +124,8 @@ class DataSection(Generic[T, TM, EM, CM]):
         delete_confirmation_value: SyncOrAsyncFn[T, str] | None = None,
         cancel_edit_label: str | None = None,
         cancel_create_label: str | None = None,
+        form_size: FormSize | None = None,
+        form_label_position: LabelPosition | None = None,
         type_name: str | None = None,
         table_model_type: ModelType[T, TM] | None = None,
         edit_form_model_type: ModelType[T, EM] | None = None,
@@ -138,6 +142,10 @@ class DataSection(Generic[T, TM, EM, CM]):
         table_initially_expanded: bool = False,
         table_enable_sort_and_filter: bool = True,
         table_scrollable: bool = False,
+        table_quick_filters: QuickFilters | None = None,
+        table_search: TableSearch | None = None,
+        table_url_param_keys: list[str] | None = None,
+        table_footer: TableFooter | None = None,
     ) -> None:
         """Assemble a CRUD section (table + create/edit forms + drawer).
 
@@ -189,6 +197,16 @@ class DataSection(Generic[T, TM, EM, CM]):
             Cancel-button label of the edit form. Defaults to ``"Cancel"``.
         cancel_create_label : str, optional
             Cancel-button label of the create form. Defaults to ``"Cancel"``.
+        form_size : "sm" | "md", optional
+            Size of the fields of the edit and create forms, passed to both
+            drawers (see :class:`DataFormDrawer`). ``None`` (default) sizes
+            them by their place, compact in the canvas design.
+        form_label_position : "top" | "left", optional
+            Label position of the edit and create forms, passed to both
+            drawers: ``"left"`` puts labels left of the fields while a
+            field's cell is at least 360px wide, ``"top"`` keeps them above;
+            both keep the form's columns. ``None`` (default): above, and
+            left in a compact form of the canvas design, one field per row.
         type_name : str, optional
             Human-readable name of the type used to build the default
             titles and labels above. Defaults to ``type.__name__``.
@@ -259,6 +277,24 @@ class DataSection(Generic[T, TM, EM, CM]):
             :class:`DataTable`'s ``scrollable``), so a table wider or taller
             than its area scrolls internally. Forwarded to whichever table
             type is built. Defaults to ``False``.
+        table_quick_filters : QuickFilters, optional
+            Quick filter pills above the table, see :class:`DataTable`'s
+            ``quick_filters``. Flat tables only.
+        table_search : TableSearch, optional
+            Label, placeholder and URL parameter of the table's search field,
+            see :class:`DataTable`'s ``search``. Flat tables only.
+        table_url_param_keys : list[str], optional
+            Filter keys mirrored into the URL, see :class:`DataTable`'s
+            ``url_param_keys``. Forwarded to whichever table type is built.
+        table_footer : TableFooter, optional
+            A row below the table with the number of items and a text, see
+            :class:`DataTable`'s ``footer``. Flat tables only.
+
+        Raises
+        ------
+        TypeError
+            If ``table_quick_filters``, ``table_search`` or ``table_footer``
+            is given for a hierarchical source.
         """
         self.source = source
 
@@ -346,6 +382,8 @@ class DataSection(Generic[T, TM, EM, CM]):
             submit_label=lambda: self.edit_submit_label,
             dialog_title=lambda: self.edit_dialog_title,
             cancel_label=lambda: self.cancel_edit_label,
+            size=form_size,
+            label_position=form_label_position,
         )
 
         self.create_form = DataFormDrawer(
@@ -356,6 +394,8 @@ class DataSection(Generic[T, TM, EM, CM]):
             submit_label=lambda: self.create_submit_label,
             dialog_title=lambda: self.create_dialog_title,
             cancel_label=lambda: self.cancel_create_label,
+            size=form_size,
+            label_position=form_label_position,
         )
 
         #
@@ -380,8 +420,21 @@ class DataSection(Generic[T, TM, EM, CM]):
                     if self.enable_sort_and_filter
                     else None
                 ),
+                url_param_keys=table_url_param_keys,
+                quick_filters=table_quick_filters,
+                search=table_search,
+                footer=table_footer,
             )
         elif isinstance(self.table_source, ReadOnlyHierarchicalDataSource):
+            if (
+                table_quick_filters is not None
+                or table_search is not None
+                or table_footer is not None
+            ):
+                raise TypeError(
+                    "table_quick_filters, table_search and table_footer are only "
+                    "supported for flat (non-hierarchical) sources"
+                )
             self.table = HierarchicalDataTable(
                 routes=routes,
                 name=f"{self.name}_table",
@@ -399,6 +452,7 @@ class DataSection(Generic[T, TM, EM, CM]):
                     if self.enable_sort_and_filter
                     else None
                 ),
+                url_param_keys=table_url_param_keys,
             )
         else:
             raise TypeError(f"Unexpected type of table_source {self.table_source}")
@@ -503,12 +557,15 @@ class DataSection(Generic[T, TM, EM, CM]):
         ``enable_sort_and_filter`` is ``True``) followed by the create
         button (only when ``can_create``).
 
-        The trigger's initial highlight always starts from an empty
-        ``Query``. A page reloaded with an active filter/sort will show the trigger un-highlighted until the next interaction.
+        The trigger's initial highlight follows the flat table's starting
+        query (e.g. a page opened filtered through its URL). A hierarchical
+        table starts from an empty ``Query``.
         """
-
+        query = (
+            await self.table.query() if isinstance(self.table, DataTable) else Query()
+        )
         return y.fragment[
-            await self._render_filter_sort_button(Query())
+            await self._render_filter_sort_button(query)
             if self.enable_sort_and_filter
             else None,
             button(

@@ -54,6 +54,10 @@ class Column[T]:
         ``filter_type=None`` hides a column from the "Add filter" dropdown).
         This only gates the drawer UI — a column can still be sorted
         programmatically via a ``Query``.
+    searchable : bool, default False
+        Whether the table's search field looks in this column (the value
+        contains the term, ignoring case). The field is shown when at least
+        one column is searchable and the source supports search.
     """
 
     key: str
@@ -65,3 +69,4 @@ class Column[T]:
     visible: bool = True
     kind: ColumnKind | None = None
     sortable: bool = True
+    searchable: bool = False

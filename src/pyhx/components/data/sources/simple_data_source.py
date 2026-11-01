@@ -1,6 +1,6 @@
 """In-memory :class:`DataSource` implementation."""
 
-from ._query import apply_query, value_of
+from ._query import apply_query, count_matches, value_of
 from .query import Query
 from .source import DataSource, Page
 
@@ -21,7 +21,11 @@ class SimpleDataSource[T](DataSource[T]):
     / :meth:`update`. Mutations are applied to the underlying list in
     place, so callers that retain a reference to the original list will
     see the same changes.
+
+    Supports search (:attr:`Query.search`) and counts in memory.
     """
+
+    supports_search = True
 
     def __init__(self, data: list[T], *, id_field: str = "id") -> None:
         """Wrap ``data`` as a queryable source.
@@ -59,6 +63,10 @@ class SimpleDataSource[T](DataSource[T]):
         """
         items, total = apply_query(self._data, query)
         return Page(items=items, total=total)
+
+    async def count(self, query: Query) -> int:
+        """Count the items matching ``query``'s filter and search, in memory."""
+        return count_matches(self._data, query)
 
     async def get_id(self, item: T) -> str:
         """Return the value of ``item.<id_field>`` coerced to ``str``."""

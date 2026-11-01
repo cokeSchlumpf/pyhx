@@ -7,10 +7,11 @@ Run with::
 One page per ``CanvasShell`` mode (``centered``, ``wide``, ``full``), each with
 breadcrumbs and placeholder content, plus a dossier page built from
 ``card``s in a ``split_layout`` (main column and sticky aside below the
-breadcrumbs); its extracted values are editable in place (``InlineEdit``,
-see :mod:`samples.canvas_layout.extracted_values`). The panes of the
-``full`` page are plain Pico ``<article>`` placeholders, since a document
-viewer has panes, not cards.
+breadcrumbs) and two ``DataPage``s, see :mod:`samples.canvas_layout.data_page`.
+The dossier's extracted values are editable in place (``InlineEdit``, see
+:mod:`samples.canvas_layout.extracted_values`). The panes of the ``full``
+page are plain Pico ``<article>`` placeholders, since a document viewer has
+panes, not cards.
 
 Pages without navigation (all of the above) sit next to pages with a main
 navigation: tabs below the top bar and an admin sidebar, see
@@ -31,7 +32,7 @@ from pyhx.core.primitives import IconName
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
 
-from . import extracted_values, forms, navigation
+from . import data_page, extracted_values, forms, navigation
 from .header import header_content
 
 hx = WebApp(
@@ -41,6 +42,7 @@ hx = WebApp(
 
 hx.include_router(navigation.router)
 hx.include_router(extracted_values.router)
+hx.include_router(data_page.router)
 hx.include_router(forms.router)
 navigation.register_navigation(hx)
 
@@ -53,6 +55,14 @@ def _modes() -> y.Node:
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
         y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
         y.li[y.a(href="/forms")["forms"], " — form controls in every state"],
+        y.li[
+            y.a(href="/data-page")["data page"],
+            " — DataPage with the built-in create/edit drawer",
+        ],
+        y.li[
+            y.a(href="/data-page-detail")["data page (detail)"],
+            " — DataPage whose row click opens the detail page (can_edit callable)",
+        ],
         y.li[
             y.a(href="/cases")["tabs"],
             ' — main navigation as tabs (main_navigation="tabs")',
@@ -201,6 +211,15 @@ def _action_needed() -> y.Node:
                 item("check-2", "success", "Beginn AU geprüft", "20.03.2026"),
                 item("check-2", "success", "Fragebogen erhalten", "02.04.2026"),
             ],
+        ],
+        # Deep link into the case list, opened with the quick filter
+        # "Eingabe erforderlich" active (see data_page.REQUIRES_INPUT_URL).
+        c.card.footer[
+            c.button(
+                "Alle Fälle mit Eingabe erforderlich",
+                href=data_page.REQUIRES_INPUT_URL,
+                variant="ghost",
+            )
         ],
     ]
 

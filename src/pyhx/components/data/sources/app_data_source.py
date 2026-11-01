@@ -101,6 +101,16 @@ class AppReadOnlyDataSourceBase[R, T](ReadOnlyDataSource[T], ABC):
         """Read the id off ``item``. Defaults to the ``"id"`` field — override if needed."""
         return _default_get_id(item)
 
+    async def do_count(self, registry: R, user: User, query: Query) -> int | None:
+        """Count the items matching ``query``, or ``None`` (the default) for no number.
+
+        Override to show counts on a data table's quick filters. To support
+        the table's search, also set ``supports_search = True`` on the
+        subclass and apply :attr:`Query.search` in :meth:`do_fetch` and here
+        (e.g. through :func:`~.sql_query.apply_sql_query`).
+        """
+        return None
+
     # --- Dispatch core -------------------------------------------------------
 
     def _resolve_deps(self) -> tuple[R, User]:
@@ -146,6 +156,9 @@ class AppReadOnlyDataSourceBase[R, T](ReadOnlyDataSource[T], ABC):
             return Page(items=result, total=len(result))
         return result
 
+    async def count(self, query: Query) -> int | None:
+        return await self._dispatch(self.do_count, query)
+
     async def get_id(self, item: T) -> str:
         return await self.do_get_id(item)
 
@@ -164,7 +177,10 @@ class AppReadOnlyDataSource[R, T](AppReadOnlyDataSourceBase[R, T]):
     are accepted; async results are awaited at call time.
 
     ``get_id`` defaults to reading the ``"id"`` field on the item;
-    override when the id lives elsewhere or needs computation.
+    override when the id lives elsewhere or needs computation. ``count``
+    (optional, ``(registry, user, query)``) gives the numbers on a data
+    table's quick filters; ``supports_search=True`` declares that ``fetch``
+    and ``count`` apply :attr:`Query.search`.
     """
 
     def __init__(
@@ -177,8 +193,13 @@ class AppReadOnlyDataSource[R, T](AppReadOnlyDataSourceBase[R, T]):
         find_by_id: Callable[[R, User, str], T | None | Awaitable[T | None]],
         get_by_id: Callable[[R, User, str], T | Awaitable[T]],
         get_id: Callable[[T], str | Awaitable[str]] = _default_get_id,
+        count: Callable[[R, User, Query], int | None | Awaitable[int | None]]
+        | None = None,
+        supports_search: bool = False,
     ) -> None:
         super().__init__(registry_type)
+        self._count = count
+        self.supports_search = supports_search
         self._fetch = fetch
         self._find_by_id = find_by_id
         self._get_by_id = get_by_id
@@ -194,6 +215,11 @@ class AppReadOnlyDataSource[R, T](AppReadOnlyDataSourceBase[R, T]):
 
     async def do_get_by_id(self, registry: R, user: User, id: str) -> T:
         return await self._await_if_needed(self._get_by_id(registry, user, id))
+
+    async def do_count(self, registry: R, user: User, query: Query) -> int | None:
+        if self._count is None:
+            return None
+        return await self._await_if_needed(self._count(registry, user, query))
 
     async def do_get_id(self, item: T) -> str:
         return await self._await_if_needed(self._get_id(item))
@@ -267,7 +293,10 @@ class AppDataSource[R, T](AppDataSourceBase[R, T]):
     are accepted; async results are awaited at call time.
 
     ``get_id`` defaults to reading the ``"id"`` field on the item;
-    override when the id lives elsewhere or needs computation.
+    override when the id lives elsewhere or needs computation. ``count``
+    (optional, ``(registry, user, query)``) gives the numbers on a data
+    table's quick filters; ``supports_search=True`` declares that ``fetch``
+    and ``count`` apply :attr:`Query.search`.
     """
 
     def __init__(
@@ -284,8 +313,13 @@ class AppDataSource[R, T](AppDataSourceBase[R, T]):
         delete: Callable[[R, User, T], None | Awaitable[None]],
         delete_by_id: Callable[[R, User, str], None | Awaitable[None]],
         get_id: Callable[[T], str | Awaitable[str]] = _default_get_id,
+        count: Callable[[R, User, Query], int | None | Awaitable[int | None]]
+        | None = None,
+        supports_search: bool = False,
     ) -> None:
         super().__init__(registry_type)
+        self._count = count
+        self.supports_search = supports_search
         self._fetch = fetch
         self._get_id = get_id
         self._find_by_id = find_by_id
@@ -317,6 +351,11 @@ class AppDataSource[R, T](AppDataSourceBase[R, T]):
 
     async def do_delete_by_id(self, registry: R, user: User, id: str) -> None:
         await self._await_if_needed(self._delete_by_id(registry, user, id))
+
+    async def do_count(self, registry: R, user: User, query: Query) -> int | None:
+        if self._count is None:
+            return None
+        return await self._await_if_needed(self._count(registry, user, query))
 
     async def do_get_id(self, item: T) -> str:
         return await self._await_if_needed(self._get_id(item))

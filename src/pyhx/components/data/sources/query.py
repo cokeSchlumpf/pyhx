@@ -40,6 +40,14 @@ class Query(BaseModel):
         Root combinator for the per-field conditions in ``filter``.
     filter : list[Condition]
         Active filter conditions, one per filtered field.
+    search : str | None, default None
+        Search term. An item matches when the value of at least one of
+        ``search_keys`` contains the term, ignoring case. The search is
+        AND-combined with ``filter`` whatever ``filter_mode`` is. ``None``
+        means no search.
+    search_keys : list[str]
+        The fields ``search`` looks in. A data table fills them from its
+        searchable columns on every render.
     """
 
     offset: int = 0
@@ -47,12 +55,15 @@ class Query(BaseModel):
     sort: list[SortOrder] = Field(default_factory=list)
     filter_mode: FilterMode = "all"
     filter: list[Condition] = Field(default_factory=list)
+    search: str | None = None
+    search_keys: list[str] = Field(default_factory=list)
 
     def clear(self) -> None:
-        """Resets sort and filter configurations. Does not reset offset and limit."""
+        """Resets sort, filter and search. Does not reset offset, limit and search keys."""
         self.sort = []
         self.filter = []
         self.filter_mode = "all"
+        self.search = None
 
     def is_asc(self, key: str) -> bool:
         """Return ``True`` if the field ``key`` is currently sorted ascending."""
@@ -67,8 +78,8 @@ class Query(BaseModel):
         return any(c.key == key for c in self.filter)
 
     def is_active_filter_or_sort(self) -> bool:
-        """Return ``True`` if any filter or sort configuratin is set."""
-        return bool(self.sort or self.filter)
+        """Return ``True`` if any filter, sort or search term is set."""
+        return bool(self.sort or self.filter or self.search)
 
     def toggle_sort(self, key: str) -> None:
         """Cycle the sort state for ``key`` through asc → desc → asc.
@@ -100,8 +111,10 @@ class Query(BaseModel):
 
         ``remaining`` keeps this query's ``offset`` / ``limit`` (paging happens
         on the repository side); ``extracted`` resets them to ``0`` / ``None``.
-        ``filter_mode`` is copied to both. All sort / filter entries are
-        deep-copied, so neither result aliases this query's sub-objects.
+        ``filter_mode`` is copied to both. The search (``search`` /
+        ``search_keys``) stays on ``remaining`` only: it is one OR across its
+        keys and can't be split. All sort / filter entries are deep-copied,
+        so neither result aliases this query's sub-objects.
         """
         keyset = set(keys)
 
@@ -118,6 +131,8 @@ class Query(BaseModel):
             filter_mode=self.filter_mode,
             sort=rem_sort,
             filter=rem_filter,
+            search=self.search,
+            search_keys=list(self.search_keys),
         )
         extracted = Query(
             offset=0,

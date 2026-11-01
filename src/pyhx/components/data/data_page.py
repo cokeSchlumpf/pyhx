@@ -10,9 +10,11 @@ from pyhx.core.request_context import RequestContext
 from pyhx.core.webapp_routes import WebAppRoutes
 
 from ..layouts import page_header
+from ..variants import FormSize, LabelPosition
 from ._model_type import ModelType
 from .column import Column
 from .data_section import CM, EM, TM, CanEdit, DataSection, ExtraOobFn, T
+from .quick_filter import QuickFilters, TableFooter, TableSearch
 from .sources import (
     DataSource,
     HierarchicalDataSource,
@@ -41,6 +43,8 @@ class DataPage(Generic[T, TM, EM, CM]):
         delete_confirmation_value: SyncOrAsyncFn[T, str] | None = None,
         cancel_edit_label: str | None = None,
         cancel_create_label: str | None = None,
+        form_size: FormSize | None = None,
+        form_label_position: LabelPosition | None = None,
         type_name: str | None = None,
         table_model_type: ModelType[T, TM] | None = None,
         edit_form_model_type: ModelType[T, EM] | None = None,
@@ -57,6 +61,10 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_columns_order: SyncOrAsyncValue[list[str] | None] = None,
         table_initially_expanded: bool = False,
         table_enable_sort_and_filter: bool = True,
+        table_quick_filters: QuickFilters | None = None,
+        table_search: TableSearch | None = None,
+        table_url_param_keys: list[str] | None = None,
+        table_footer: TableFooter | None = None,
         fragments_path: Path | None = None,
         hidden_params: dict[str, str] | None = None,
     ) -> None:
@@ -123,6 +131,16 @@ class DataPage(Generic[T, TM, EM, CM]):
             Cancel-button label of the edit form. Defaults to ``"Cancel"``.
         cancel_create_label : str, optional
             Cancel-button label of the create form. Defaults to ``"Cancel"``.
+        form_size : "sm" | "md", optional
+            Size of the fields of the edit and create forms, passed to both
+            drawers (see :class:`DataFormDrawer`). ``None`` (default) sizes
+            them by their place, compact in the canvas design.
+        form_label_position : "top" | "left", optional
+            Label position of the edit and create forms, passed to both
+            drawers: ``"left"`` puts labels left of the fields while a
+            field's cell is at least 360px wide, ``"top"`` keeps them above;
+            both keep the form's columns. ``None`` (default): above, and
+            left in a compact form of the canvas design, one field per row.
         type_name : str, optional
             Human-readable name of the type used to build the default
             titles and labels above. Defaults to ``type.__name__``.
@@ -171,6 +189,19 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_enable_sort_and_filter : bool, optional
             Show the sort/filter toolbar and enable per-column sorting and
             filtering. Defaults to ``True``.
+        table_quick_filters : QuickFilters, optional
+            Quick filter pills above the table (flat tables only), see
+            :class:`DataTable`'s ``quick_filters``. The active pill is kept in
+            the URL, so other pages can link to a filtered list.
+        table_search : TableSearch, optional
+            Label, placeholder and URL parameter of the table's search field
+            (flat tables only), see :class:`DataTable`'s ``search``.
+        table_url_param_keys : list[str], optional
+            Filter keys mirrored into the URL, see :class:`DataTable`'s
+            ``url_param_keys``.
+        table_footer : TableFooter, optional
+            A row below the table with the number of items and a text (flat
+            tables only), see :class:`DataTable`'s ``footer``.
         fragments_path : Path, optional
             Static base path under which the section's HTMX fragment
             endpoints are registered. When omitted it is ``Path(path)``
@@ -219,6 +250,8 @@ class DataPage(Generic[T, TM, EM, CM]):
             delete_confirmation_value=delete_confirmation_value,
             cancel_edit_label=cancel_edit_label,
             cancel_create_label=cancel_create_label,
+            form_size=form_size,
+            form_label_position=form_label_position,
             type_name=type_name,
             table_model_type=table_model_type,
             edit_form_model_type=edit_form_model_type,
@@ -232,6 +265,10 @@ class DataPage(Generic[T, TM, EM, CM]):
             table_columns_order=table_columns_order,
             table_initially_expanded=table_initially_expanded,
             table_enable_sort_and_filter=table_enable_sort_and_filter,
+            table_quick_filters=table_quick_filters,
+            table_search=table_search,
+            table_url_param_keys=table_url_param_keys,
+            table_footer=table_footer,
             # A DataPage renders a full-page table, which always gets its own
             # scroll container (paired with the app-shell full-height layout).
             table_scrollable=True,

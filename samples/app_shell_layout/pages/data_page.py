@@ -5,6 +5,11 @@ a page header (title + create action) above a full-width, scrollable table,
 picked up by the app-shell "table-only app page" layout so the table fills the
 viewport and scrolls internally. The create/edit/delete actions are real —
 they mutate an in-memory ``SimpleDataSource`` list, so no backend is needed.
+
+Quick filters (All / Active / On hold / Done, with counts) and a search over
+name, code and owner sit above the table; both are kept in the URL, e.g.
+``/data-page?view=active&q=anna``. The footer counts the projects ("5 of 10
+projects" while filtered) and says what a row click does.
 """
 
 from datetime import date
@@ -17,6 +22,7 @@ import pyhx.components.data.annotations as a
 from commons.id_operators import new_id
 from pydantic import BaseModel, Field
 
+from pyhx.components.data.sources.filter import Condition, TextChoiceEquals
 from pyhx.components.data.sources.simple_data_source import SimpleDataSource
 from pyhx.core import WebAppRouter
 
@@ -50,10 +56,10 @@ class Project(BaseModel):
     id: Annotated[str, a.HiddenColumn(), a.HiddenField()] = Field(
         default_factory=new_id
     )
-    name: Annotated[str, a.TextColumn(label="Name")]
-    code: Annotated[str, a.TextColumn(label="Code")]
+    name: Annotated[str, a.TextColumn(label="Name", searchable=True)]
+    code: Annotated[str, a.TextColumn(label="Code", searchable=True)]
     status: Annotated[Status, a.TextColumn(label="Status")]
-    owner: Annotated[str, a.TextColumn(label="Owner")]
+    owner: Annotated[str, a.TextColumn(label="Owner", searchable=True)]
     priority: Annotated[Priority, a.TextColumn(label="Priority")]
     budget: Annotated[
         float,
@@ -191,6 +197,11 @@ PROJECTS: list[Project] = [
 ]
 
 
+def _status(status: Status) -> c.QuickFilter:
+    condition = Condition(key="status", values=[TextChoiceEquals(value=status.value)])
+    return c.QuickFilter(key=status.name, label=status.value, filter=[condition])
+
+
 projects = c.DataPage(
     routes=router,
     path="/data-page",
@@ -198,6 +209,21 @@ projects = c.DataPage(
     type=Project,
     type_name="Project",
     page_title="Projects",
+    table_quick_filters=c.QuickFilters(
+        presets=[
+            c.QuickFilter(key="all", label="All"),
+            _status(Status.active),
+            _status(Status.on_hold),
+            _status(Status.done),
+        ],
+        counts=True,
+    ),
+    table_search=c.TableSearch(placeholder="Name, code, owner"),
+    table_footer=c.TableFooter(
+        label=("{n} project", "{n} projects"),
+        filtered_label=("{shown} of {total} project", "{shown} of {total} projects"),
+        text="Click a row to edit it",
+    ),
 )
 
 # Convenience handle for the app's navigation wiring.

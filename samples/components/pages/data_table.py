@@ -11,6 +11,8 @@ from pyhx.utils import lorem_ipsum
 from pydantic import BaseModel
 
 from pyhx.core import WebAppRouter
+from pyhx.components.data.sources.filter import Condition, NumericGreaterThan
+from pyhx.components.data.sources.simple_data_source import SimpleDataSource
 from pyhx.components.data.sources.source import Query
 from pyhx.components.data.sources.simple_hierarchical_data_source import (
     SimpleHierarchicalDataSource,
@@ -140,6 +142,51 @@ _table_multi = c.DataTable[Team](
     select_mode="multi",
 )
 # docs:end table_multi
+# --- Footer ----------------------------------------------------------------
+#
+# A row below the table with the number of teams and a hint. While the query
+# filters, a source that can count shows "x of y"; one that can't shows the
+# number of rows only.
+
+# docs:start table_footer
+_table_footer = c.DataTable[Team](
+    routes=router,
+    name="bundesliga-footer",
+    source=TEAMS,  # a SimpleDataSource, which counts in memory
+    columns=COLUMNS,
+    footer=c.TableFooter(
+        label=("{n} team", "{n} teams"),
+        filtered_label=("{shown} of {total} team", "{shown} of {total} teams"),
+        text="Click a column header to sort",
+    ),
+)
+# docs:end table_footer
+
+
+# docs:start table_footer_no_count
+class TeamsWithoutCount(SimpleDataSource[Team]):
+    """A source that can't count cheaply: ``count`` returns ``None``, as the default does."""
+
+    async def count(self, query: Query) -> int | None:
+        return None
+
+
+_table_footer_no_count = c.DataTable[Team](
+    routes=router,
+    name="bundesliga-footer-no-count",
+    source=TeamsWithoutCount(TEAMS),
+    columns=COLUMNS,
+    footer=c.TableFooter(label=("{n} team", "{n} teams")),
+)
+# docs:end table_footer_no_count
+
+# Both footer demos open filtered (more than 60 points), so the first shows
+# "5 of 18 teams" and the second "5 teams".
+_TOP_TEAMS = Query(
+    filter=[Condition(key="points", values=[NumericGreaterThan(value=60)])]
+)
+
+
 _TEAMS_SINGLE_SELECTED: list[str] = ["3"]
 _TEAMS_MULTI_SELECTED: list[str] = ["1", "5", "9"]
 
@@ -753,6 +800,30 @@ async def data_table_page() -> y.Node:
                 [
                     ("single", src.text("table_single"), "python"),
                     ("multi", src.text("table_multi"), "python"),
+                ]
+            ),
+            c.markdown("""
+                ### Footer
+
+                `footer=c.TableFooter(...)` adds a row below the table: the
+                number of items on the left and an optional text on the
+                right. Both tables open filtered (more than 60 points): the
+                first source counts, so the footer reads "5 of 18 teams"; the
+                second can't count (`count` returns `None`) and shows the
+                number of rows only. Without `label` the count is the
+                translated "5 of 18 entries".
+            """),
+            await _table_footer.render(query=_TOP_TEAMS.model_copy(deep=True)),
+            c.markdown("""
+                The same filter on a source without `count`:
+            """),
+            await _table_footer_no_count.render(
+                query=_TOP_TEAMS.model_copy(deep=True)
+            ),
+            c.code(
+                [
+                    ("footer", src.text("table_footer"), "python"),
+                    ("source without count", src.text("table_footer_no_count"), "python"),
                 ]
             ),
             c.markdown("""
