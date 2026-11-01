@@ -140,6 +140,12 @@ class TestCanvasShellNavigation:
         assert '<details name="hx-canvas-nav">' in html
         assert '<summary class="active"><span>Admin</span>' in html
 
+    def test_tabs_load_the_dropdown_script(self):
+        script = "/static/js/pyhx.canvas-shell.js"
+        assert script in _get_with_nav(CanvasShell(main_navigation="tabs"))
+        assert script not in _get_with_nav(CanvasShell(main_navigation="sidebar"))
+        assert script not in _get_with_nav(CanvasShell())
+
     def test_sidebar_sits_left_of_the_page(self):
         html = _get_with_nav(CanvasShell(main_navigation="sidebar"))
         assert 'data-hx-navigation="sidebar"' in html

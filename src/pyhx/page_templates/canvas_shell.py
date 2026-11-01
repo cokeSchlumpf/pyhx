@@ -172,7 +172,15 @@ class CanvasShell(PageTemplate):
                 "/static/css/page-templates/canvas-shell.css",
                 *self.stylesheets,
             ),
-            scripts=("/static/js/pyhx.notifications.js", *self.scripts),
+            scripts=(
+                "/static/js/pyhx.notifications.js",
+                *(
+                    ("/static/js/pyhx.canvas-shell.js",)
+                    if self.main_navigation == "tabs"
+                    else ()
+                ),
+                *self.scripts,
+            ),
         )
 
         return await skeleton(
