@@ -18,6 +18,8 @@ application-shell header.
 
 import htpy as y
 
+from pyhx.i18n import _
+
 from .container import ContainerWidth, container
 
 
@@ -112,20 +114,20 @@ class _PageHeader:
         ...     "Current page",
         ... )
         """
-        return y.nav(aria_label="Breadcrumb")[
+        return y.nav(aria_label=_("Breadcrumb"))[
             y.ul(class_="hx-page-header__breadcrumbs")[*[y.li[item] for item in items]]
         ]
 
     def navigation(
         self,
         *items: y.Node,
-        aria_label: str = "Page navigation",
+        aria_label: str | None = None,
     ) -> y.Node:
         """Render the page header's secondary navigation."""
 
         return y.nav(
             class_="hx-page-header__navigation",
-            aria_label=aria_label,
+            aria_label=aria_label if aria_label is not None else _("Page navigation"),
         )[y.ul(class_="hx-page-header__navigation-list")[*items,]]
 
     def nav_item(

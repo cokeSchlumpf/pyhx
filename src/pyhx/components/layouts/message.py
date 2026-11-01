@@ -2,6 +2,7 @@ import htpy as y
 
 from pyhx.core import component
 from pyhx.core.primitives import IconName, classnames
+from pyhx.i18n import _
 
 from ..primitives.button import button
 from ..primitives.icon import icon as render_icon
@@ -58,7 +59,7 @@ def message(
     close_btn: y.Node = (
         button(
             icon="x",
-            aria_label="Dismiss",
+            aria_label=_("Dismiss"),
             appearance="neutral",
             variant="ghost",
             size="md",

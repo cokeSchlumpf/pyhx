@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Any, Literal, cast
 
 import htpy as y
@@ -15,6 +16,7 @@ from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
 from ..core.templates.page_template import Design, PageTemplate
 from ..core.templates.skeleton import Skeleton
+from .settings_menu import DEFAULT_SETTINGS, SettingsEntry, settings_menu
 
 CanvasShellMode = Literal["centered", "wide", "full"]
 """Width of the content area.
@@ -119,6 +121,13 @@ class CanvasShell(PageTemplate):
                 main_navigation="sidebar", navigation_slot="admin"
             ),
         )
+
+    ``settings`` fills the settings menu, a gear right of ``header_content``
+    opening a dropdown with one section per entry. The default is the
+    language of the app (:class:`~pyhx.page_templates.LanguageSetting`),
+    shown when the app offers several languages; ``settings=()`` removes the
+    gear. An entry is any callable returning a section (see
+    :class:`~pyhx.page_templates.SettingsEntry`).
     """
 
     design: Design = "canvas"
@@ -134,6 +143,7 @@ class CanvasShell(PageTemplate):
         navigation_slot: str = "main",
         mode: CanvasShellMode = "centered",
         stylesheets: tuple[str, ...] = (),
+        settings: Sequence[SettingsEntry] = DEFAULT_SETTINGS,
         scripts: tuple[str, ...] = (),
     ) -> None:
         self.brand_image_alt = brand_img_alt
@@ -144,6 +154,7 @@ class CanvasShell(PageTemplate):
         self.navigation_slot = navigation_slot
         self.mode = mode
         self.stylesheets = stylesheets
+        self.settings = tuple(settings)
         self.scripts = scripts
 
     async def __call__(
@@ -222,7 +233,10 @@ class CanvasShell(PageTemplate):
                         y.img(src=self.brand_image_src, alt=self.brand_image_alt),
                         y.span(class_="hx-brand__title")[title],
                     ],
-                    y.div(class_="hx-canvas-shell__header-content")[header_content],
+                    y.div(class_="hx-canvas-shell__header-end")[
+                        y.div(class_="hx-canvas-shell__header-content")[header_content],
+                        settings_menu(self.settings),
+                    ],
                 ],
                 nav if placement == "tabs" else None,
             ],

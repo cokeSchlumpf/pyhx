@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames, htmx
+from pyhx.i18n import _
 
 from ..view_model import Option
 from .pill import pill
@@ -30,7 +31,7 @@ class TaglistState(BaseModel):
     initial_tags: tuple[Option, ...] = ()
     selected: list[Option] = []
     allow_new_tags: bool = True
-    suggestions_label: str = "Suggested Tags"
+    suggestions_label: str | None = None
     disabled: bool = False
 
 
@@ -56,7 +57,7 @@ class _Taglist:
         initial_tags: Sequence[Option] | None = None,
         value: Sequence[str | Option] | None = None,
         allow_new_tags: bool = True,
-        suggestions_label: str = "Suggested Tags",
+        suggestions_label: str | None = None,
         disabled: bool = False,
         **kwargs,
     ) -> y.Node:
@@ -170,7 +171,7 @@ class _Taglist:
         self,
         name: str,
         values: Sequence[Option] | None = None,
-        label: str = "Suggested Tags",
+        label: str | None = None,
         oob: bool = False,
     ) -> y.Node:
         values = values or []
@@ -184,13 +185,13 @@ class _Taglist:
         if not values:
             return y.div(**div_attrs)
         return y.div(**div_attrs)[
-            y.small[label],
+            y.small[label or _("Suggested Tags")],
             pill.container(
                 [
                     pill(
                         opt.label,
                         button=pill.button(
-                            aria_label="Add tag",
+                            aria_label=_("Add tag"),
                             icon="plus",
                             hx_post=add_tag.url(),
                             hx_vals=(
@@ -224,7 +225,7 @@ class _Taglist:
             pill(
                 v.label,
                 button=pill.button(
-                    aria_label="Remove tag",
+                    aria_label=_("Remove tag"),
                     tabindex="-1",
                     hx_post=delete_tag.url(),
                     hx_vals=(

@@ -9,6 +9,7 @@ from htpy.starlette import HtpyResponse
 from starlette.background import BackgroundTask
 
 from .primitives import IconName, Omit, PathTemplate, encode_query, omit
+from .primitives.lazy_text import Text
 from .templates import PageTemplate
 
 
@@ -81,7 +82,7 @@ PageResult = PageResponse | Node
 
 class Page(Protocol):
     path: PathTemplate
-    title: str
+    title: Text
     render: Callable[..., Awaitable[PageResult]]
     url: Callable[..., str]
     icon: IconName | None
@@ -91,7 +92,7 @@ class PageDefinition(Page):
     def __init__(
         self,
         path: PathTemplate,
-        title: str,
+        title: Text,
         render: Callable[..., Awaitable[PageResult]],
         icon: IconName | None = None,
     ) -> None:
@@ -123,7 +124,7 @@ class PageDecoratorFactory:
         self._pages = pages
 
     def __call__(
-        self, path: str, *, title: str, icon: IconName | None = None
+        self, path: str, *, title: Text, icon: IconName | None = None
     ) -> Callable[[Callable[..., Awaitable[PageResult]]], Page]:
         def __call__(fn: Callable[..., Awaitable[PageResult]]) -> Page:
             page = PageDefinition(PathTemplate(path), title, fn, icon=icon)

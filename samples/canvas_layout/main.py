@@ -15,6 +15,9 @@ viewer has panes, not cards.
 Pages without navigation (all of the above) sit next to pages with a main
 navigation: tabs below the top bar and an admin sidebar, see
 :mod:`samples.canvas_layout.navigation`.
+
+``/forms`` shows the form controls of the design in every state, see
+:mod:`samples.canvas_layout.forms`.
 """
 
 from typing import get_args
@@ -28,7 +31,7 @@ from pyhx.core.primitives import IconName
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
 
-from . import extracted_values, navigation
+from . import extracted_values, forms, navigation
 from .header import header_content
 
 hx = WebApp(
@@ -38,6 +41,7 @@ hx = WebApp(
 
 hx.include_router(navigation.router)
 hx.include_router(extracted_values.router)
+hx.include_router(forms.router)
 navigation.register_navigation(hx)
 
 
@@ -48,6 +52,7 @@ def _modes() -> y.Node:
         y.li[y.a(href="/full")["full"], " — full width, no padding"],
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
         y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
+        y.li[y.a(href="/forms")["forms"], " — form controls in every state"],
         y.li[
             y.a(href="/cases")["tabs"],
             ' — main navigation as tabs (main_navigation="tabs")',

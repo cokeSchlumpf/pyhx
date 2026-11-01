@@ -2,13 +2,14 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from ..primitives import IconName, Path
+from ..primitives.lazy_text import Text
 from ..reflection_operators import inject_parameters
 from ..request_context import RequestContext
 
 
 @dataclass
 class NavItem:
-    label: str
+    label: Text
     to: str | Path
     full_match: bool = True
     icon: IconName | None = None

@@ -9,6 +9,7 @@ from pydantic import Field
 from pyhx.core import WebAppRoutes
 from pyhx.core.fragment import FragmentResponse
 from pyhx.core.primitives import SyncOrAsyncValue, htmx, resolve_value
+from pyhx.i18n import _
 
 from ..primitives import button, table
 from ._table_helpers import (
@@ -304,7 +305,7 @@ class HierarchicalDataTable[T]:
             button(
                 icon="chevrons-down",
                 variant="ghost",
-                title="Expand All",
+                title=_("Expand All"),
                 **htmx(
                     hx_post=render_table_url,
                     hx_swap="none",
@@ -315,7 +316,7 @@ class HierarchicalDataTable[T]:
             button(
                 icon="chevrons-up",
                 variant="ghost",
-                title="Collapse All",
+                title=_("Collapse All"),
                 **htmx(
                     hx_post=render_table_url,
                     hx_swap="none",

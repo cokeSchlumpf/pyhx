@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from pyhx.core import RequestContext, component
 from pyhx.core.primitives import classnames, htmx
+from pyhx.i18n import _
 
 from ..view_model import Option, Options
 
@@ -29,7 +30,7 @@ def dropdown(
     *,
     input_type: InputType,
     value: str | Sequence[str] | None = None,
-    placeholder: str = "Select ...",
+    placeholder: str | None = None,
     disabled: bool = False,
     **kwargs,
 ) -> y.Node:
@@ -59,6 +60,8 @@ def dropdown(
     # suffix nor ``name`` is guaranteed to start with a letter (callers may prefix
     # the field name with a record uuid, e.g. ``<uuid>-client-domicile``).
     summary_id = f"hx-{to_kebabcase(name)}--summary--{uuid4().hex}"
+    if placeholder is None:
+        placeholder = _("Select ...")
     cfg = DropdownConfig(
         target_id=summary_id,
         options=Options(options=list(options)),
@@ -121,7 +124,7 @@ def dropdown_radio(
     name: str,
     options: Sequence[Option],
     value: str | None = None,
-    placeholder: str = "Select ...",
+    placeholder: str | None = None,
     disabled: bool = False,
     **kwargs,
 ) -> y.Node:
@@ -141,7 +144,7 @@ def dropdown_checkbox(
     name: str,
     options: Sequence[Option],
     value: Sequence[str] | None = None,
-    placeholder: str = "Select ...",
+    placeholder: str | None = None,
     disabled: bool = False,
     **kwargs,
 ) -> y.Node:

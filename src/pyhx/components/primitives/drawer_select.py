@@ -8,7 +8,7 @@ driven by htmx fragments; component state round-trips as JSON in hidden inputs
 """
 
 from collections.abc import Sequence
-from typing import Annotated
+from typing import Annotated, Any, ClassVar
 from uuid import uuid4
 
 import htpy as y
@@ -19,8 +19,10 @@ from pydantic import BaseModel, Field
 import pyhx.components as c
 from pyhx.core import component
 from pyhx.core.primitives import htmx, styles
+from pyhx.i18n import _l
 
 from ..view_model import Option
+from ._labels import TranslatedLabels
 
 CONFIG_JSON_FIELD = "drawer_select_config_json"
 DRAWER_CONFIG_JSON_FIELD = "drawer_select_drawer_content_config_json"
@@ -29,7 +31,7 @@ DRAWER_CONTENT_CLASSNAME = "hx-drawer-select__drawer-content"
 DRAWER_TO_BE_ADDED_ITEMS_CLASSNAME = "hx-drawer-select__to-be-added"
 
 
-class DrawerSelectLabels(BaseModel):
+class DrawerSelectLabels(TranslatedLabels):
     """User-facing text for every part of a ``drawer_select``.
 
     A single instance is configured on the public ``drawer_select(...)`` call
@@ -39,21 +41,35 @@ class DrawerSelectLabels(BaseModel):
     """
 
     # --- Main control (on-page) ---
-    value_column: str = "Value"
-    select_items_button: str = "Select items"
+    value_column: str | None = None
+    select_items_button: str | None = None
 
     # --- Drawer ---
-    drawer_title: str = "Select items"
-    query_label: str = "Filter items"
-    available_items_column: str = "Available items"
-    selected_items_column: str = "Selected items"
-    cancel_button: str = "Cancel"
-    select_button: str = "Select"
+    drawer_title: str | None = None
+    query_label: str | None = None
+    available_items_column: str | None = None
+    selected_items_column: str | None = None
+    cancel_button: str | None = None
+    select_button: str | None = None
 
     # --- Shared ---
-    remove_item: str = "Remove"
-    no_items_available: str = "No available items."
-    no_items_selected: str = "No items selected."
+    remove_item: str | None = None
+    no_items_available: str | None = None
+    no_items_selected: str | None = None
+
+    _defaults: ClassVar[dict[str, Any]] = {
+        "value_column": _l("Value"),
+        "select_items_button": _l("Select items"),
+        "drawer_title": _l("Select items"),
+        "query_label": _l("Filter items"),
+        "available_items_column": _l("Available items"),
+        "selected_items_column": _l("Selected items"),
+        "cancel_button": _l("Cancel"),
+        "select_button": _l("Select"),
+        "remove_item": _l("Remove"),
+        "no_items_available": _l("No available items."),
+        "no_items_selected": _l("No items selected."),
+    }
 
 
 class DrawerSelectConfig(BaseModel):
@@ -186,7 +202,7 @@ class _DrawerContent:
                     as_dict=True,
                 )[
                     self.config_input(config),
-                    c.form_field("query", config.labels.query_label, y.input()),
+                    c.form_field("query", config.labels.query_label or "", y.input()),
                 ],
                 self.available_items(config.get_available_options(), config.labels),
                 self.to_be_added_items(config.get_selected_options(), config.labels),

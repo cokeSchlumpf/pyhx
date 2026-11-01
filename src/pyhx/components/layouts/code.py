@@ -22,6 +22,7 @@ from pygments.util import ClassNotFound
 from pyhx.components.primitives.button import button
 from pyhx.core import RequestContext, component
 from pyhx.core.primitives import classnames, htmx
+from pyhx.i18n import _
 
 CodePartArg = tuple[str, str] | tuple[str, str, str | None]
 
@@ -105,7 +106,7 @@ def _panel(part: CodePart) -> y.Node:
 def _copy_button() -> y.Node:
     return button(
         icon="copy",
-        aria_label="Copy code",
+        aria_label=_("Copy code"),
         class_="hx-code__copy",
         appearance="neutral",
         variant="glass",
