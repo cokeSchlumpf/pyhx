@@ -28,6 +28,7 @@ Examples
 
 from pyhx.core.primitives.lazy_text import LazyText, Text
 from pyhx.core.primitives.negotiate_locale import (
+    LOCALE_SWITCH_PATH,
     LocaleSettings,
     negotiate_locale,
     resolve_locale,
@@ -43,11 +44,15 @@ from ._format import (
     format_relative_time,
     format_time,
 )
+from ._switch import LocaleOption, LocaleSwitch, locale_switch
 from ._translate import _, _l, _n, _p, t
 
 __all__ = [
+    "LOCALE_SWITCH_PATH",
     "LazyText",
+    "LocaleOption",
     "LocaleSettings",
+    "LocaleSwitch",
     "Text",
     "_",
     "_l",
@@ -60,6 +65,7 @@ __all__ = [
     "format_percent",
     "format_relative_time",
     "format_time",
+    "locale_switch",
     "negotiate_locale",
     "resolve_locale",
     "t",

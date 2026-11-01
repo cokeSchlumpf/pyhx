@@ -14,7 +14,7 @@ Requirements are numbered for this change; the number in brackets is the require
 
 ### Switching
 
-- **R6** `c.locale_switcher()` lists the offered languages by their own name and marks the current one. (T-003 R6)
+- **R6** `locale_switch()` returns the data of a language switcher (headless): the endpoint, the page to return to, the offered languages by their own name and the current one; the app renders it. (T-003 R6; see Outcome D5)
 - **R7** Choosing a language stores it in the session and, for a signed-in registered user, on the user; HTMX requests get `HX-Refresh`, others a redirect to a relative `next` on the same origin (else `/`); a language not offered is rejected with 400 and nothing stored. (T-003 R7)
 - **R8** Signing in and out keeps the session language. (T-003 R8)
 
@@ -48,7 +48,7 @@ As designed in the spec of T-003 (section "pyhx"), with its deviation D1:
 - Catalogs: `.po` read at runtime with `babel.messages.pofile.read_po`, cached per language; app catalog `locale/<lang>/LC_MESSAGES/messages.po` under the project root (as `commons.settings` finds it) or `WebApp(locale_dir=…)`; pyhx catalog `src/pyhx/locale/<lang>/LC_MESSAGES/pyhx.po` as fallback.
 - `*Labels`: fields `str | None = None`, `resolved()` at render time; `CalendarLabels` fields `None` by default and filled from `babel.dates`.
 - Relative time with `babel.dates.format_timedelta(add_direction=True)`; `humanize` removed from the dependencies.
-- Switch endpoint `POST /_pyhx/locale` registered by `configure_user_session` (D1 of T-003: it owns the session and the users repository); `c.locale_switcher()` renders nothing without a session.
+- Switch endpoint `POST /_pyhx/locale` registered by `configure_user_session` (D1 of T-003: it owns the session and the users repository); `locale_switch()` returns `None` without a session (D5).
 - `skeleton.py` sets `lang`.
 - The placeholder check compares `string.Formatter().parse` fields (Babel 2.18 checks only `%` formats).
 
@@ -86,6 +86,7 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **D2** In `samples/user_auth/main.py` the switcher sits at the top of the page (`AppShell` has no header slot); `samples/user_auth/canvas.py` shows it in the header of `CanvasShell`.
 - **D3** Component parameters with English defaults default to `None` and get the translated default at render time (Boolean controls, taglist, dropdown and file dropzone placeholders, `drawer_action_table` title, `page_header` navigation label); `DataForm.submit_label` and the `DataFormDrawer` labels also accept a callable; the internal option tuples of `filter_options.py` became functions. Explicit values behave as before.
 - **D4** `safe_next` (now in `_session.py`, shared by login and switcher) also rejects `/\…`, which browsers read as a protocol-relative URL; this also closes it for the login redirect.
+- **D5** No switcher component: in the developer's review, a ready-made button row (`c.locale_switcher()`) was replaced by the headless `pyhx.i18n.locale_switch()`, since apps render the switcher in their own design; the sample builds its own buttons on it.
 - **F1** The change was started as T-004; the parallel change "login secondary links" was merged as T-004 first, so this one is T-005.
 - **F2** pyhx's texts: about 160 marked in 27 files, 123 entries per catalog (de, it, fr), translated with an LLM; "Sign in" and "Sign In" both exist as source texts (different buttons, same translations).
 - **F3** Catalog files are part of the wheel (checked with `poetry build`); `poe check` runs the catalog check for pyhx and for the sample.

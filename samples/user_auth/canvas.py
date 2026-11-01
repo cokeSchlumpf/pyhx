@@ -27,11 +27,11 @@ from pyhx.addons.user_authentication import (
 from pyhx.core import WebApp
 from pyhx.i18n import _, _l, t
 from pyhx.page_templates import CanvasShell
-from samples.user_auth.main import LOCALE_DIR, _build_users_repo
+from samples.user_auth.main import LOCALE_DIR, _build_users_repo, language_switcher
 
 
 def header_content() -> y.Node:
-    return c.locale_switcher()
+    return language_switcher()
 
 
 hx = WebApp(

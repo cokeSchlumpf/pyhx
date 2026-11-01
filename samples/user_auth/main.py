@@ -24,7 +24,8 @@ Languages (:mod:`pyhx.i18n`): the app offers en, de, it and fr. The language
 of a request is the one chosen in the session, else the signed-in user's,
 else the browser's, else English. Try it:
 
-- As an anonymous visitor, switch the language at the top of the page: it is
+- As an anonymous visitor, switch the language at the top of the page (the
+  sample's own switcher, built on ``pyhx.i18n.locale_switch()``): it is
   kept in the session only (open a private window: English or your browser's
   language again).
 - Sign in as ``jane`` and switch: the language is also stored on the user, so
@@ -65,6 +66,7 @@ from pyhx.i18n import (
     format_date,
     format_number,
     format_relative_time,
+    locale_switch,
     t,
 )
 from pyhx.page_templates import AppShell
@@ -120,6 +122,35 @@ configure_user_authentication(
 )
 
 
+def language_switcher() -> y.Node:
+    """The sample's own language switcher: one button per language.
+
+    pyhx provides the data (``locale_switch()``) and the endpoint; the look is
+    the app's — here a row of buttons, elsewhere a dropdown or a user menu.
+    """
+    switch = locale_switch()
+    if switch is None:
+        return None
+    return y.form(method="post", action=switch.action, hx_post=switch.action)[
+        y.input(type="hidden", name="next", value=switch.next),
+        c.button_group(
+            *(
+                c.button(
+                    option.name,
+                    type="submit",
+                    name="locale",
+                    value=option.locale,
+                    lang=option.locale,
+                    size="sm",
+                    variant="outline" if option.current else "ghost",
+                    aria_pressed="true" if option.current else "false",
+                )
+                for option in switch.options
+            )
+        ),
+    ]
+
+
 # Example data for the formatting table: (case, amount in EUR, opened how long ago).
 _CASES = [
     ("A-1042", 1234.5, timedelta(hours=3)),
@@ -159,7 +190,7 @@ async def home() -> y.Node:
     is_anonymous = user is None or isinstance(user, AnonymousUser)
     return y.main[
         y.article[
-            c.locale_switcher(),
+            language_switcher(),
             y.h1[_("User authentication sample")],
             y.p[
                 t(
@@ -197,7 +228,7 @@ async def protected() -> y.Node:
     user = require_authenticated_user()
     return y.main[
         y.article[
-            c.locale_switcher(),
+            language_switcher(),
             y.h1[_("Protected")],
             y.p[t("You're signed in as {name}.", name=y.strong[user.display_name])],
             y.p[

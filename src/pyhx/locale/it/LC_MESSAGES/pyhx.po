@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:33+0100\n"
+"POT-Creation-Date: 2026-11-01 20:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -56,7 +56,7 @@ msgstr "Crescente"
 msgid "Available items"
 msgstr "Elementi disponibili"
 
-#: addons/user_authentication/_pages.py:414
+#: addons/user_authentication/_pages.py:416
 msgid "Back to sign in"
 msgstr "Torna all'accesso"
 
@@ -88,7 +88,7 @@ msgid "Cannot delete {type}"
 msgstr "Impossibile eliminare {type}"
 
 #: addons/user_authentication/_pages.py:384
-#: addons/user_authentication/_pages.py:444
+#: addons/user_authentication/_pages.py:446
 msgid "Check your email"
 msgstr "Controlla la tua e-mail"
 
@@ -118,7 +118,7 @@ msgstr "Codice"
 msgid "Collapse All"
 msgstr "Comprimi tutto"
 
-#: addons/user_authentication/_pages.py:482
+#: addons/user_authentication/_pages.py:484
 msgid "Continue to sign in on this device."
 msgstr "Continua per accedere su questo dispositivo."
 
@@ -238,19 +238,15 @@ msgstr "Nome utente o password non validi."
 msgid "Italic"
 msgstr "Corsivo"
 
-#: components/primitives/locale_switcher.py:76
-msgid "Language"
-msgstr "Lingua"
-
 #: addons/user_authentication/_pages.py:222
 #: addons/user_authentication/_pages.py:279
 #: addons/user_authentication/_pages.py:310
 msgid "Login failed."
 msgstr "Accesso non riuscito."
 
-#: addons/user_authentication/_pages.py:459
-#: addons/user_authentication/_pages.py:473
-#: addons/user_authentication/_pages.py:505
+#: addons/user_authentication/_pages.py:461
+#: addons/user_authentication/_pages.py:475
+#: addons/user_authentication/_pages.py:507
 msgid "Login link not valid"
 msgstr "Link di accesso non valido"
 
@@ -308,8 +304,8 @@ msgstr "Rimuovi"
 msgid "Remove tag"
 msgstr "Rimuovi tag"
 
-#: addons/user_authentication/_pages.py:396
-#: addons/user_authentication/_pages.py:409
+#: addons/user_authentication/_pages.py:397
+#: addons/user_authentication/_pages.py:411
 msgid "Request a new link"
 msgstr "Richiedi un nuovo link"
 
@@ -384,7 +380,7 @@ msgstr "Mostra tabella a schermo intero"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:484 page_templates/app_shell.py:304
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:304
 #: page_templates/app_shell.py:305 page_templates/app_shell.py:306
 msgid "Sign In"
 msgstr "Accedi"
@@ -392,11 +388,11 @@ msgstr "Accedi"
 #: addons/user_authentication/_pages.py:328
 #: addons/user_authentication/_pages.py:339
 #: addons/user_authentication/_pages.py:355
-#: addons/user_authentication/_pages.py:432
-#: addons/user_authentication/_pages.py:461
-#: addons/user_authentication/_pages.py:475
-#: addons/user_authentication/_pages.py:481
-#: addons/user_authentication/_pages.py:491
+#: addons/user_authentication/_pages.py:434
+#: addons/user_authentication/_pages.py:463
+#: addons/user_authentication/_pages.py:477
+#: addons/user_authentication/_pages.py:483
+#: addons/user_authentication/_pages.py:493
 msgid "Sign in"
 msgstr "Accedi"
 

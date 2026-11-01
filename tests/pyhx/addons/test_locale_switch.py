@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.pool import StaticPool
 
-import pyhx.components as c
 from pyhx.addons.user_authentication import (
     configure_user_session,
     login_user,
@@ -15,6 +14,7 @@ from pyhx.addons.user_authentication._session import safe_next
 from pyhx.core.primitives import negotiate_locale
 from pyhx.core.request_context import RequestContext
 from pyhx.core.webapp import WebApp
+from pyhx.i18n import locale_switch
 
 from .test_email_login import _app as _email_app
 from .test_email_login import _request_link
@@ -72,7 +72,12 @@ def _app(repo: SQLUsersRepository) -> WebApp:
 
     @hx.fragment.get("/switcher")
     async def switcher() -> y.Node:
-        return c.locale_switcher()
+        switch = locale_switch()
+        assert switch is not None
+        options = " ".join(
+            f"{o.locale}={o.name}{'*' if o.current else ''}" for o in switch.options
+        )
+        return y.span[f"{switch.action}|{switch.next}|{options}"]
 
     configure_user_session(hx, users=repo, secret_key=SECRET, https_only=False)
     return hx
@@ -153,30 +158,29 @@ class TestSwitching:
         assert "en" in browser.locale()
 
 
-class TestSwitcher:
-    def test_lists_languages_by_their_own_name_and_marks_the_current(self, hx):
+class TestLocaleSwitch:
+    def test_options_by_their_own_name_with_the_current_one(self, hx):
         browser = Browser(hx)
         browser.switch("de")
 
-        html = browser.client.get(
+        text = browser.client.get(
             "/switcher", headers={"HX-Current-URL": "http://test/cases?page=2"}
         ).text
 
-        for name in ("English", "Deutsch", "Italiano", "Français"):
-            assert name in html
-        assert 'value="de" lang="de"' in html or 'lang="de"' in html
-        assert 'name="next" value="/cases?page=2"' in html
-        assert html.count('aria-pressed="true"') == 1
-        assert 'aria-label="Sprache"' in html or 'aria-label="Language"' in html
+        assert "/_pyhx/locale|/cases?page=2|" in text
+        assert "en=English de=Deutsch* it=Italiano fr=Français" in text
 
-    def test_renders_nothing_without_a_session(self):
+    def test_next_is_the_requested_page_without_htmx(self, hx):
+        assert "|/switcher|" in Browser(hx).client.get("/switcher").text
+
+    def test_none_without_a_session(self):
         hx = WebApp()
 
         @hx.fragment.get("/switcher")
         async def switcher() -> y.Node:
-            return y.div[c.locale_switcher()]
+            return y.span[str(locale_switch())]
 
-        assert TestClient(hx.create_app()).get("/switcher").text.endswith("<div></div>")
+        assert "None" in TestClient(hx.create_app()).get("/switcher").text
 
 
 class TestSafeNext:
