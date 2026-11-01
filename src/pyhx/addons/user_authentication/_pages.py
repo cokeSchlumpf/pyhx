@@ -24,6 +24,7 @@ from typing import Annotated
 from urllib.parse import urlencode
 
 import htpy as y
+from commons.settings import AppSettings
 from commons.users import RegisteredUser, UsersRepository
 from commons.users.login_tokens import InMemoryLoginTokenStore, LoginTokenService
 from fastapi import Query, Request
@@ -240,7 +241,11 @@ def register_default_auth_pages(
     async def submit_email_form(form: EmailLoginForm) -> y.Node | FragmentResponse:
         assert service is not None and email_login is not None
         request = _request()
-        base_url = (email_login.base_url or str(request.base_url)).rstrip("/")
+        base_url = (
+            email_login.base_url
+            or AppSettings.read().public_url
+            or str(request.base_url)
+        ).rstrip("/")
 
         def link_for(token: str) -> str:
             return f"{base_url}{token_path}?t={token}"
