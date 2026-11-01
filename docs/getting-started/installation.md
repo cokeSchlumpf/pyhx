@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python **3.12** or newer
+- Python **3.14** or newer
 - An ASGI server such as [uvicorn](https://www.uvicorn.org/) (any FastAPI-compatible server works)
 
 ## Install

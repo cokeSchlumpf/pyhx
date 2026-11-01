@@ -10,11 +10,11 @@ they mutate an in-memory ``SimpleDataSource`` list, so no backend is needed.
 from datetime import date
 from enum import Enum
 from typing import Annotated
-from uuid import uuid4
 
 import pyhx.components as c
 import pyhx.components.data.annotations as a
 
+from commons.id_operators import new_id
 from pydantic import BaseModel, Field
 
 from pyhx.components.data.sources.simple_data_source import SimpleDataSource
@@ -42,12 +42,13 @@ class Project(BaseModel):
     """One model used for the table, the create form and the edit form alike.
 
     ``id`` is hidden from the table (``HiddenColumn``) and rendered as a hidden
-    form input (``HiddenField``) that round-trips on edit; a fresh ``uuid4`` is
-    assigned by ``default_factory`` so every create gets a unique id.
+    form input (``HiddenField``) that round-trips on edit; ``default_factory``
+    assigns a fresh ``new_id()`` (a time-ordered UUID v7) so every create gets
+    a unique id.
     """
 
     id: Annotated[str, a.HiddenColumn(), a.HiddenField()] = Field(
-        default_factory=lambda: str(uuid4())
+        default_factory=new_id
     )
     name: Annotated[str, a.TextColumn(label="Name")]
     code: Annotated[str, a.TextColumn(label="Code")]
