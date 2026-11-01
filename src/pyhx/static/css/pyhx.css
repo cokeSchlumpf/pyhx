@@ -12,6 +12,7 @@
 
 @import "./pyhx/elements/a.css" layer(pyhx);
 @import "./pyhx/elements/code.css" layer(pyhx);
+@import "./pyhx/elements/form.css" layer(pyhx);
 
 @import "./pyhx/components/data/data_form.css" layer(pyhx);
 @import "./pyhx/components/data/filter_drawer.css" layer(pyhx);
