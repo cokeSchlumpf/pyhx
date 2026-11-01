@@ -108,7 +108,8 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **F2** CI had to move to 3.14 before the floor was raised: pushed the other way round, the check on 3.12 would have failed.
 - **F3** `poe fix` reformatted 5 files, not 4: besides the 4 `except` rewrites, `components/primitives/conditional_select.py` put a signature on one line once its return annotation lost its quotes.
 - **F4** The app shell sample had no tests; `tests/samples/app_shell_layout/test_data_page.py` is the first, checking that new record ids are UUID v7.
+- **F5** The version prediction in Design ("0.4.0, still on `versions/0`") was wrong: `release-please-config.json` doesn't set `bump-minor-pre-major`, so a `feat!` below 1.0.0 bumps the major version. The developer accepted 1.0.0, as in commons.
 
-Rollout: PR #10 (`feat!: Upgrade to Python 3.14 and commons 1.x`), released with the next Release PR as PyHX 0.4.0 on `versions/0`. The check ran on CPython 3.14.9 and passed.
+Rollout: PR #10 (`feat!: Upgrade to Python 3.14 and commons 1.x`), released as PyHX 1.0.0 (Release PR #11) on the new `versions/1`; `versions/0` stays at 0.3.0. A follow-up PR pointed the installation guide to `versions/1`. The check ran on CPython 3.14.9 and passed.
 
 Open after this change: the platform note `core--docs/notes/2026-10-30-1905--python-libraries-on-github.md` of core--platform (and presumably the skill `scaffold-python-library`) still names `requires-python = ">=3.12, <4.0"`, and core--devops-workflows still defaults to Python 3.12. Owner: Michael Wellner.

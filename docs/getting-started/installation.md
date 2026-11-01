@@ -7,28 +7,28 @@
 
 ## Install
 
-PyHX is installed directly from GitHub. Pin it to a release tag (e.g. `v0.2.0`) or follow a major version with its
-branch (e.g. `versions/0`, always the latest `0.x` release). All releases are listed in the
+PyHX is installed directly from GitHub. Pin it to a release tag (e.g. `v1.0.0`) or follow a major version with its
+branch (e.g. `versions/1`, always the latest `1.x` release). All releases are listed in the
 [changelog](../changelog.md).
 
 === "Poetry"
 
     ```bash
     # exact release
-    poetry add "git+https://github.com/cokeSchlumpf/pyhx.git#v0.2.0"
+    poetry add "git+https://github.com/cokeSchlumpf/pyhx.git#v1.0.0"
 
-    # latest 0.x release (update with `poetry update pyhx`)
-    poetry add "git+https://github.com/cokeSchlumpf/pyhx.git#versions/0"
+    # latest 1.x release (update with `poetry update pyhx`)
+    poetry add "git+https://github.com/cokeSchlumpf/pyhx.git#versions/1"
     ```
 
 === "pip"
 
     ```bash
     # exact release
-    pip install "pyhx @ git+https://github.com/cokeSchlumpf/pyhx.git@v0.2.0"
+    pip install "pyhx @ git+https://github.com/cokeSchlumpf/pyhx.git@v1.0.0"
 
-    # latest 0.x release
-    pip install "pyhx @ git+https://github.com/cokeSchlumpf/pyhx.git@versions/0"
+    # latest 1.x release
+    pip install "pyhx @ git+https://github.com/cokeSchlumpf/pyhx.git@versions/1"
     ```
 
 That pulls in PyHX itself along with its required runtime dependencies (FastAPI, htpy, python-multipart).
