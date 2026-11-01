@@ -59,6 +59,16 @@ class MappedReadOnlyDataSource[A, B](ReadOnlyDataSource[B]):
         items_b = [await self._map_forward(item) for item in page_a.items]
         return Page(items=items_b, total=page_a.total)
 
+    @property
+    def supports_search(self) -> bool:  # type: ignore[override]
+        """The inner source's :attr:`~.source.ReadOnlyDataSource.supports_search`."""
+        return self._source.supports_search
+
+    async def count(self, query: Query) -> int | None:
+        """The inner source's count for the mapped ``query``."""
+        inner_query = await self._map_query(query) if self._map_query else query
+        return await self._source.count(inner_query)
+
     async def get_id(self, item: B) -> str:
         return await self._source.get_id(await self._map_reverse(item))
 

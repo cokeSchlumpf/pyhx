@@ -14,6 +14,8 @@ evaluator:
   (``"all"`` → AND, ``"any"`` → OR).
 * Sort applies stably in priority order (first key dominates).
 * Paging applies ``offset`` and ``limit`` last.
+* ``search`` matches when one of ``search_keys`` contains it, ignoring case,
+  and narrows the filter result (AND).
 
 Each :data:`FilterValue` variant maps to the SQLAlchemy operator that
 matches its semantics — see :func:`_value_to_clause` for the exhaustive
@@ -137,10 +139,12 @@ def apply_sql_filters(
     query: Query,
     columns: ColumnMap,
 ) -> _S:
-    """Append ``WHERE`` clauses for every condition in ``query.filter``."""
-    if not query.filter:
-        return stmt
+    """Append ``WHERE`` clauses for ``query.filter`` and ``query.search``.
 
+    The search becomes a case-insensitive ``LIKE`` (``%`` and ``_`` in the
+    term match literally) over the mapped ``search_keys``, OR-combined,
+    and AND-combined with the filter whatever ``filter_mode`` is.
+    """
     per_field_clauses: list[ColumnElement[bool]] = []
     for cond in query.filter:
         column = columns.get(cond.key)
@@ -153,12 +157,19 @@ def apply_sql_filters(
         ]
         if value_clauses:
             per_field_clauses.append(or_(*value_clauses))
+    if per_field_clauses:
+        combinator = and_ if query.filter_mode == "all" else or_
+        stmt = stmt.where(combinator(*per_field_clauses))
 
-    if not per_field_clauses:
-        return stmt
-
-    combinator = and_ if query.filter_mode == "all" else or_
-    return stmt.where(combinator(*per_field_clauses))
+    if query.search:
+        search_clauses = [
+            column.icontains(query.search, autoescape=True)
+            for key in query.search_keys
+            if (column := columns.get(key)) is not None
+        ]
+        if search_clauses:
+            stmt = stmt.where(or_(*search_clauses))
+    return stmt
 
 
 def apply_sql_sort(

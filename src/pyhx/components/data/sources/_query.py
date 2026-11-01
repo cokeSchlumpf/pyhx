@@ -7,6 +7,7 @@ same way. The logic lives here once, with both classes calling :func:`apply_quer
 
 from collections.abc import Callable, Sequence
 from datetime import datetime
+from enum import Enum
 from typing import Any
 
 from .filter import (
@@ -65,7 +66,7 @@ def count_matches(
     *,
     value_of: Callable[[Any, str], Any] = value_of,
 ) -> int:
-    """Count how many ``items`` would match ``query.filter``.
+    """Count how many ``items`` would match ``query.filter`` and ``query.search``.
 
     Ignores ``query.sort`` (irrelevant to a count) and ``query.offset`` /
     ``query.limit`` (the count is the *matching total*, not the current
@@ -73,7 +74,7 @@ def count_matches(
     how many children would survive the filter without materialising
     the full result.
     """
-    if not query.filter:
+    if not query.filter and not _has_search(query):
         return len(items)
     return sum(1 for item in items if _matches_query(item, query, value_of))
 
@@ -134,12 +135,46 @@ def _sort_key_for(
 def _matches_query(
     item: Any, query: Query, value_of: Callable[[Any, str], Any]
 ) -> bool:
+    return _matches_filter(item, query, value_of) and _matches_search(
+        item, query, value_of
+    )
+
+
+def _matches_filter(
+    item: Any, query: Query, value_of: Callable[[Any, str], Any]
+) -> bool:
     if not query.filter:
         return True
     per_field = [_matches_condition(item, c, value_of) for c in query.filter]
     if query.filter_mode == "all":
         return all(per_field)
     return any(per_field)
+
+
+def _has_search(query: Query) -> bool:
+    return bool(query.search and query.search_keys)
+
+
+def _matches_search(
+    item: Any, query: Query, value_of: Callable[[Any, str], Any]
+) -> bool:
+    """``True`` when a search key's value contains ``query.search``, ignoring case.
+
+    Independent of ``filter_mode``: the search always narrows (AND).
+    """
+    if not _has_search(query):
+        return True
+    assert query.search is not None
+    term = query.search.casefold()
+    for key in query.search_keys:
+        value = value_of(item, key)
+        if value is None:
+            continue
+        if isinstance(value, Enum):
+            value = value.value
+        if term in str(value).casefold():
+            return True
+    return False
 
 
 def _matches_condition(
