@@ -53,7 +53,7 @@ class FormRenderContext[T: BaseModel]:
     visible_errors: dict[str, str]
     touched: set[str]
     disabled: bool
-    form: "HeadlessForm[T]"
+    form: HeadlessForm[T]
     oob: bool = False
 
 

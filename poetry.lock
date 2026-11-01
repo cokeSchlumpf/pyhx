@@ -38,7 +38,6 @@ files = [
 
 [package.dependencies]
 idna = ">=2.8"
-typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
 trio = ["trio (>=0.32.0)"]
@@ -591,10 +590,10 @@ test = ["pytest"]
 
 [[package]]
 name = "commons"
-version = "0.2.1"
+version = "1.1.0"
 description = "This library contains common functionalities which are used across a broad range of apps and other libs."
 optional = false
-python-versions = ">=3.12, <4.0"
+python-versions = ">=3.14, <4.0"
 groups = ["main"]
 files = []
 develop = false
@@ -613,8 +612,8 @@ azure = ["azure-identity (>=1.25.3,<2.0.0)", "azure-storage-blob (>=12.28.0,<13.
 [package.source]
 type = "git"
 url = "https://github.com/cokeSchlumpf/lib--python-commons.git"
-reference = "versions/0"
-resolved_reference = "c997166e430a5fe84857309c92a6f25991c788e8"
+reference = "versions/1"
+resolved_reference = "f346318b883833a1aadb6a6346bced83a250d89b"
 
 [[package]]
 name = "coverage"
@@ -926,11 +925,7 @@ files = [
 detect-installer = ">=0.1.0"
 fastar = ">=0.10.0"
 httpx = ">=0.27.0"
-pydantic = [
-    {version = ">=2.7.4", extras = ["email"], markers = "python_version < \"3.13\""},
-    {version = ">=2.8.0", extras = ["email"], markers = "python_version == \"3.13\""},
-    {version = ">=2.12.0", extras = ["email"], markers = "python_version >= \"3.14\""},
-]
+pydantic = {version = ">=2.12.0", extras = ["email"], markers = "python_version >= \"3.14\""}
 rich-toolkit = ">=0.20.3"
 rignore = ">=0.5.1"
 sentry-sdk = ">=2.20.0"
@@ -1227,7 +1222,6 @@ files = [
 
 [package.dependencies]
 markupsafe = ">=2.0.0"
-typing_extensions = {version = ">=4.13.2", markers = "python_version < \"3.13\""}
 
 [[package]]
 name = "httpcore"
@@ -3636,7 +3630,6 @@ files = [
 
 [package.dependencies]
 anyio = ">=3.6.2,<5"
-typing-extensions = {version = ">=4.10.0", markers = "python_version < \"3.13\""}
 
 [package.extras]
 full = ["httpx (>=0.27.0,<0.29.0)", "httpx2 (>=2.0.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.18)", "pyyaml"]
@@ -3800,7 +3793,7 @@ description = "Fast implementation of asyncio event loop on top of libuv"
 optional = false
 python-versions = ">=3.8.1"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\" and sys_platform != \"win32\" and sys_platform != \"cygwin\""
+markers = "sys_platform != \"win32\" and sys_platform != \"cygwin\" and platform_python_implementation != \"PyPy\""
 files = [
     {file = "uvloop-0.22.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ef6f0d4cc8a9fa1f6a910230cd53545d9a14479311e87e3cb225495952eb672c"},
     {file = "uvloop-0.22.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7cd375a12b71d33d46af85a3343b35d98e8116134ba404bd657b3b1d15988792"},
@@ -4165,5 +4158,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12, <4.0"
-content-hash = "6a63ec233649b69bb34860ba4b3baff2cb21420bfe98dc1f6806ad20e41da9e7"
+python-versions = ">=3.14, <4.0"
+content-hash = "e778e047a0f96df58c06fba8d591b8724445ff7431d20446d130a94e9f4cfe90"

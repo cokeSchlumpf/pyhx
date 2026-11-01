@@ -48,7 +48,7 @@ ConfigureAppFn = Callable[[FastAPI], None]
 
 class WebApp:
     @staticmethod
-    def get() -> "WebApp":
+    def get() -> WebApp:
         return _current_webapp.get()
 
     def __init__(

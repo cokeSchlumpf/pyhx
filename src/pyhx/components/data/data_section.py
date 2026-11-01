@@ -1,6 +1,6 @@
 from collections.abc import Awaitable, Callable
 from inspect import Parameter, signature
-from typing import Annotated, Any, Generic, cast
+from typing import Annotated, Any, Generic, TypeVar, cast
 
 import htpy as y
 from commons.string_operators import (
@@ -12,10 +12,6 @@ from commons.string_operators import (
 from fastapi import Form
 from fastapi import Query as QueryParam
 from pydantic import BaseModel
-
-# PEP 696 TypeVar defaults land in `typing` only in 3.13; import from
-# typing_extensions so the library stays importable on 3.12.
-from typing_extensions import TypeVar
 
 from pyhx.core.fragment import FragmentResponse
 from pyhx.core.primitives import (
@@ -93,7 +89,7 @@ def _takes_an_item(fn: object) -> bool:
 
     try:
         params = signature(fn).parameters.values()
-    except (TypeError, ValueError):  # builtins and other unintrospectables
+    except TypeError, ValueError:  # builtins and other unintrospectables
         return False
 
     return any(

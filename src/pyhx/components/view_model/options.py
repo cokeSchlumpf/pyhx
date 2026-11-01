@@ -19,14 +19,14 @@ class Option(BaseModel):
     value: str
 
     @staticmethod
-    def of(label: str, value: str | None = None) -> "Option":
+    def of(label: str, value: str | None = None) -> Option:
         if value is None:
             value = label
 
         return Option(label=label, value=value)
 
     @staticmethod
-    def from_literal(literal: Any) -> list["Option"]:
+    def from_literal(literal: Any) -> list[Option]:
         values = get_args(literal)
         return [Option.of(to_title_case(o), o) for o in values]
 

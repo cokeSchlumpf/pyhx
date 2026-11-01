@@ -384,7 +384,7 @@ async def resolve_empty_state(
                 and p.default is Parameter.empty
                 for p in sig.parameters.values()
             )
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             takes_query = False
         if takes_query:
             producer = cast(Callable[[Query], y.Node | Awaitable[y.Node]], provider)

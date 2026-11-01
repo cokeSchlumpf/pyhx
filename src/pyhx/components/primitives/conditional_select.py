@@ -80,9 +80,7 @@ class ConditionalSelectProps(BaseModel):
     disabled: bool = False
 
     @staticmethod
-    async def from_request(
-        request: Request, element_id: str
-    ) -> "ConditionalSelectProps":
+    async def from_request(request: Request, element_id: str) -> ConditionalSelectProps:
         """Rebuild the props from the serialized hidden field in the request.
 
         ``element_id`` selects this control's config among any others in the same

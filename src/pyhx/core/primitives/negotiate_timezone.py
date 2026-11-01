@@ -49,7 +49,7 @@ class TimezoneSettings:
         self.default_timezone = default_timezone
 
     @staticmethod
-    def read() -> "TimezoneSettings":
+    def read() -> TimezoneSettings:
         return read_settings_object("pyhx.core", TimezoneSettings)
 
 
@@ -57,7 +57,7 @@ def _is_valid_timezone(name: str) -> bool:
     try:
         ZoneInfo(name)
         return True
-    except (ZoneInfoNotFoundError, ValueError, KeyError):
+    except ZoneInfoNotFoundError, ValueError, KeyError:
         return False
 
 

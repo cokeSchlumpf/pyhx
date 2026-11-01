@@ -31,7 +31,7 @@ class ModelType(Generic[T, M]):
     def from_models[A: BaseModel, B: BaseModel](
         source_type: type[A],
         target_type: type[B],
-    ) -> "ModelType[A, B]":
+    ) -> ModelType[A, B]:
         """Build a ``ModelType`` that round-trips two Pydantic models.
 
         Both directions go through ``model_dump`` → ``model_validate``:

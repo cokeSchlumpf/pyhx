@@ -170,7 +170,7 @@ class PathTemplate:
             pattern = "/"
         self._match_pattern = re.compile(f"^{pattern}$")
 
-    def expand(self, **values: object) -> "Path":
+    def expand(self, **values: object) -> Path:
         """Substitute variable values into the template.
 
         Parameters
@@ -206,7 +206,7 @@ class PathTemplate:
                 parts.append(segment.value)
         return Path("/" + "/".join(parts))
 
-    def format(self, **values: object) -> "Path":
+    def format(self, **values: object) -> Path:
         """Alias for :meth:`expand`."""
         return self.expand(**values)
 
@@ -241,7 +241,7 @@ class PathTemplate:
             return None
         return m.groupdict()
 
-    def join(self, other: "PathTemplate | Path") -> "PathTemplate":
+    def join(self, other: PathTemplate | Path) -> PathTemplate:
         """Concatenate ``other`` onto this template, returning a new template.
 
         Adding a static :class:`Path` to a template keeps it a template, so
@@ -251,7 +251,7 @@ class PathTemplate:
         """
         return PathTemplate(_concat_path_strings(str(self), str(other)))
 
-    def __truediv__(self, other: "PathTemplate | Path") -> "PathTemplate":
+    def __truediv__(self, other: PathTemplate | Path) -> PathTemplate:
         return self.join(other)
 
     def __str__(self) -> str:
@@ -291,7 +291,7 @@ class Path:
             raise ValueError(f"Invalid path: `{value}`")
         self._value = value
 
-    def is_prefix_of(self, other: "Path") -> bool:
+    def is_prefix_of(self, other: Path) -> bool:
         """Return True if this path is a path-element prefix of ``other``.
 
         A path is considered a prefix when each of its ``/``-delimited
@@ -329,10 +329,10 @@ class Path:
         return self_segments == other_segments[: len(self_segments)]
 
     @overload
-    def join(self, other: "Path") -> "Path": ...
+    def join(self, other: Path) -> Path: ...
     @overload
-    def join(self, other: "PathTemplate") -> "PathTemplate": ...
-    def join(self, other: "Path | PathTemplate") -> "Path | PathTemplate":
+    def join(self, other: PathTemplate) -> PathTemplate: ...
+    def join(self, other: Path | PathTemplate) -> Path | PathTemplate:
         """Concatenate ``other`` onto this path, returning a new path.
 
         Joining with a :class:`Path` keeps the result concrete; joining with
@@ -345,10 +345,10 @@ class Path:
         return Path(combined)
 
     @overload
-    def __truediv__(self, other: "Path") -> "Path": ...
+    def __truediv__(self, other: Path) -> Path: ...
     @overload
-    def __truediv__(self, other: "PathTemplate") -> "PathTemplate": ...
-    def __truediv__(self, other: "Path | PathTemplate") -> "Path | PathTemplate":
+    def __truediv__(self, other: PathTemplate) -> PathTemplate: ...
+    def __truediv__(self, other: Path | PathTemplate) -> Path | PathTemplate:
         return self.join(other)
 
     def __str__(self) -> str:

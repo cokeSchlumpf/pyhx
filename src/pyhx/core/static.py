@@ -91,6 +91,6 @@ class MultiStaticFiles(StaticFiles):
             full_path = directory / path
             try:
                 return str(full_path), full_path.stat()
-            except (FileNotFoundError, OSError):
+            except FileNotFoundError, OSError:
                 continue
         return "", None

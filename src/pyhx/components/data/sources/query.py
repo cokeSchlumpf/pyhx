@@ -90,7 +90,7 @@ class Query(BaseModel):
         else:
             self.sort = [SortOrder(key=key, order="asc")]
 
-    def extract(self, *keys: str) -> tuple["Query", "Query"]:
+    def extract(self, *keys: str) -> tuple[Query, Query]:
         """Split this query by field key into ``(remaining, extracted)``.
 
         ``extracted`` carries the sort and filter entries whose ``key`` is in

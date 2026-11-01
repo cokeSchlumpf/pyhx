@@ -35,9 +35,9 @@ class Omit:
     ``__reduce__``.
     """
 
-    _instance: "Omit | None" = None
+    _instance: Omit | None = None
 
-    def __new__(cls) -> "Omit":  # noqa: PYI034 — singleton returns the cached Omit, not Self
+    def __new__(cls) -> Omit:  # noqa: PYI034 — singleton returns the cached Omit, not Self
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -48,7 +48,7 @@ class Omit:
     def __bool__(self) -> Literal[False]:
         return False
 
-    def __reduce__(self) -> tuple[type["Omit"], tuple]:
+    def __reduce__(self) -> tuple[type[Omit], tuple]:
         return (Omit, ())
 
 

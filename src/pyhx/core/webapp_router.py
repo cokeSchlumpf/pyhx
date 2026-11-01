@@ -35,10 +35,10 @@ class WebAppRouter:
         self.fragment = FragmentFactory(self._fragments)
         self.api = ApiFactory(self._api_endpoints)
 
-    def add_websocket(self, ws: "WebSocket") -> None:
+    def add_websocket(self, ws: WebSocket) -> None:
         self._websockets.append(ws)
 
-    def include_router(self, router: "WebAppRouter", *, prefix: str = "") -> None:
+    def include_router(self, router: WebAppRouter, *, prefix: str = "") -> None:
         """Merge another :class:`WebAppRouter`'s pages, fragments, and websockets
         into this one. ``prefix`` is prepended to every captured path.
 
