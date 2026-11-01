@@ -38,8 +38,8 @@ hx = WebApp(
 )
 
 hx.include_router(navigation.router)
-hx.include_router(forms.router)
 hx.include_router(data_page.router)
+hx.include_router(forms.router)
 navigation.register_navigation(hx)
 
 
@@ -207,6 +207,15 @@ def _action_needed() -> y.Node:
                 item("check-2", "success", "Beginn AU geprüft", "20.03.2026"),
                 item("check-2", "success", "Fragebogen erhalten", "02.04.2026"),
             ],
+        ],
+        # Deep link into the case list, opened with the quick filter
+        # "Eingabe erforderlich" active (see data_page.REQUIRES_INPUT_URL).
+        c.card.footer[
+            c.button(
+                "Alle Fälle mit Eingabe erforderlich",
+                href=data_page.REQUIRES_INPUT_URL,
+                variant="ghost",
+            )
         ],
     ]
 

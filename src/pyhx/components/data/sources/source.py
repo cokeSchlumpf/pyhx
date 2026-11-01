@@ -36,11 +36,29 @@ class ReadOnlyDataSource[T](ABC):
     Implementations decide how to evaluate the query — e.g. an in-memory
     pass (:class:`SimpleDataSource`) or a database round-trip — but the
     contract is the same: take a :class:`Query`, return a :class:`Page`.
+
+    Search and counts are optional: a source that applies
+    :attr:`Query.search` sets :attr:`supports_search`, and one that can
+    count cheaply overrides :meth:`count`.
     """
+
+    supports_search: bool = False
+    """Whether :meth:`fetch` and :meth:`count` apply :attr:`Query.search`.
+
+    A data table shows its search field only for a source that does."""
 
     @abstractmethod
     async def fetch(self, query: Query) -> Page[T]:
         """Return the page matching ``query``."""
+
+    async def count(self, query: Query) -> int | None:
+        """Return how many items match ``query`` (ignoring paging), or ``None``.
+
+        Used for the numbers on a data table's quick filters. The default
+        returns ``None``: the table then shows no number. Override it when
+        the source can count without loading the items.
+        """
+        return None
 
     @abstractmethod
     async def get_id(self, item: T) -> str:

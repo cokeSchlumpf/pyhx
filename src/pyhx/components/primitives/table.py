@@ -61,6 +61,7 @@ class _KxTable(_HxElement):
         is_tree: bool = False,
         scrollable: bool = False,
         controls: y.Node | None = None,
+        footer: y.Node | None = None,
         children: y.Node | None = None,
         table_kwargs: Mapping[str, y.Attribute] | None = None,
         **kwargs: y.Attribute,
@@ -87,6 +88,9 @@ class _KxTable(_HxElement):
                 own top (``--hx-table--sticky-top: 0``).
             controls: Optional node rendered above the table inside the wrapper
                 (typically a ``table.toolbar[...]``).
+            footer: Optional node rendered below the table (and below its
+                scroll container) inside the wrapper, e.g. a row with the
+                number of items.
             children: Table body content; normally supplied via ``table[...]``
                 rather than passed here.
             table_kwargs: Extra attributes forwarded to the inner ``<table>``
@@ -108,6 +112,7 @@ class _KxTable(_HxElement):
         self._is_tree = is_tree
         self._scrollable = scrollable
         self._controls = controls
+        self._footer = footer
 
         self._children = children
         self._table_kwargs = table_kwargs or {}
@@ -150,6 +155,7 @@ class _KxTable(_HxElement):
         )[
             self._controls,
             table_el,
+            self._footer,
         ]
 
 
@@ -408,6 +414,7 @@ class _KxTableFactory:
         is_tree: bool = False,
         scrollable: bool = False,
         controls: y.Node | None = None,
+        footer: y.Node | None = None,
         table_kwargs: Mapping[str, y.Attribute] | None = None,
         **kwargs: y.Attribute,
     ) -> _KxTable:
@@ -418,6 +425,7 @@ class _KxTableFactory:
             is_tree=is_tree,
             scrollable=scrollable,
             controls=controls,
+            footer=footer,
             children=None,
             table_kwargs=table_kwargs,
             **kwargs,

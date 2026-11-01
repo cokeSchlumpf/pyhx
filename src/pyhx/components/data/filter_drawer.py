@@ -411,6 +411,13 @@ class FilterDrawer[T]:
                     ),
                 )[
                     y.input(type="hidden", name="origin", value="drawer"),
+                    y.input(
+                        type="hidden",
+                        name="search",
+                        value=filter_drawer_value.search,
+                    )
+                    if filter_drawer_value.search
+                    else None,
                     segment_control(
                         "view",
                         [
@@ -433,6 +440,7 @@ class FilterDrawer[T]:
                         resolved_filter_types,
                         columns_by_key,
                         all_fields_options,
+                        search=filter_drawer_value.search,
                     ),
                 ],
                 title=_("Sort & Filter"),
@@ -587,10 +595,22 @@ class FilterDrawer[T]:
         resolved_filter_types: dict[str, FilterType],
         columns_by_key: dict[str, Column[T]],
         all_fields_options: tuple[Option, ...],
+        *,
+        search: str | None = None,
     ) -> y.Node:
         return y.div(
             **classnames("hx-filter-drawer__filter", **styles("ml-lg", "mr-lg"))
         )[
+            # The table's search term is part of the query: shown here so the
+            # drawer tells the whole story, kept by Apply (hidden input on the
+            # form), removed by Clear.
+            [
+                y.p(**styles("font-bold", "mb-md", "mt-md"))[_("Search")],
+                y.p(class_="hx-filter-drawer__search")[f"“{search}”"],
+                y.hr,
+            ]
+            if search
+            else None,
             y.p(**styles("font-bold", "mb-md", "mt-md"))[_("Filter Mode")],
             dropdown_radio(
                 "filter_mode",

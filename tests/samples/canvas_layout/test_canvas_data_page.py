@@ -28,6 +28,29 @@ class TestCanvasDataPage:
         assert 'href="/data-page"' in response.text
         assert 'href="/data-page-detail"' in response.text
 
+    def test_list_has_quick_filters_with_counts_and_search(self):
+        response = TestClient(app).get("/data-page")
+
+        assert 'aria-label="Ansichten"' in response.text
+        assert "Alle 8" in response.text
+        assert "Eingabe erforderlich 2" in response.text
+        assert 'placeholder="Fallnummer, Name, AHV-Nr."' in response.text
+
+    def test_dossier_links_to_the_cases_that_require_input(self):
+        dossier = TestClient(app).get("/dossier").text
+        assert 'href="/data-page?view=requires-input"' in dossier
+
+        cases = TestClient(app).get("/data-page?view=requires-input").text
+        assert "IV-2026-0131" in cases and "IV-2026-0104" in cases
+        assert "IV-2026-0142" not in cases
+        assert "2 von 8 Fällen" in cases
+
+    def test_list_has_a_footer(self):
+        text = TestClient(app).get("/data-page").text
+
+        assert "8 Fälle" in text
+        assert "Zeile anklicken zum Bearbeiten" in text
+
     def test_edit_drawer_has_footer_slots(self):
         # A row click renders the edit drawer: the form, cancel and the delete
         # action in the slots the canvas design lays out as a fixed footer.
@@ -44,3 +67,9 @@ class TestCanvasDataPage:
         assert 'class="hx-data-form-drawer__cancel"' in html
         assert 'class="hx-data-form-drawer__delete"' in html
         assert "Fall löschen" in html
+
+    def test_detail_page_footer_counts_only(self):
+        text = TestClient(app).get("/data-page-detail?view=open").text
+
+        assert "4 von 8 Fällen" in text
+        assert "Zeile anklicken" not in text

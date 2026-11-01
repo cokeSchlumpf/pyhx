@@ -2,16 +2,19 @@
 
 from collections.abc import Awaitable, Callable
 from typing import Annotated, Any, Literal
+from urllib.parse import urlencode
 
 import htpy as y
 from commons.string_operators import to_kebabcase, to_snake_case
-from fastapi import Form
+from fastapi import Form, Request
 
-from pyhx.core import WebAppRoutes
+from pyhx.core import RequestContext, WebAppRoutes
 from pyhx.core.fragment import FragmentResponse
 from pyhx.core.primitives import SyncOrAsyncValue, htmx, resolve_value
+from pyhx.i18n import _n
 
-from ..primitives import table
+from ..primitives import segment_control, table
+from ..view_model import Option
 from ._table_helpers import (
     TOGGLE_FULLSCREEN_ACTION,
     TOGGLE_SELECT_ACTION,
@@ -33,9 +36,24 @@ from ._table_helpers import (
 from .column import Column
 from .column_resolution import resolve_columns
 from .filter_drawer import FilterDrawer
+from .quick_filter import (
+    QuickFilters,
+    TableFooter,
+    TableSearch,
+    active_quick_filter,
+    apply_quick_filter,
+)
+from .sources.filter import Condition, TextChoiceEquals, TextChoiceIn
+from .sources.filter_type import ChoiceFilter
 from .sources.query import Query
 from .sources.simple_data_source import SimpleDataSource
 from .sources.source import ReadOnlyDataSource
+
+QUICK_FILTER_ACTION = "quick_filter"
+"""``action`` posted when the user chooses a quick filter pill."""
+
+SEARCH_ACTION = "search"
+"""``action`` posted by the search field while the user types."""
 
 FlatSelectMode = Literal["none", "single", "multi"]
 """Selection modes available on the flat :class:`DataTable`.
@@ -75,6 +93,9 @@ class DataTable[T]:
         scrollable: bool = False,
         update_query_fragment: Callable[[Query], Awaitable[y.Node]] | None = None,
         url_param_keys: list[str] | None = None,
+        quick_filters: QuickFilters | None = None,
+        search: TableSearch | None = None,
+        footer: TableFooter | None = None,
     ) -> None:
         """Bind a table to ``source`` and register its htmx fragments.
 
@@ -154,8 +175,32 @@ class DataTable[T]:
             element living outside the table (e.g. a page-header button
             that mirrors whether a filter/sort is active).
         url_param_keys : list[str] | None, default None
-            Forwarded to the table's internal :class:`FilterDrawer` (see ``url_param_keys`` for what it does.) ``None`` (the default) leaves the drawer's Apply/Clear behaviour
-            exactly as it was before this option existed.
+            Filter ``Condition`` keys mirrored into same-named URL query
+            parameters, e.g. ``["status"]`` keeps ``?status=draft`` in sync
+            with the table's ``status`` filter after every change of the
+            query, and a page opened with ``?status=draft`` starts filtered.
+            Only single values are representable: a ``TextChoiceEquals``, or a
+            ``TextChoiceIn`` with one value (read back as ``TextChoiceIn`` for
+            a multi-select choice column, as ``TextChoiceEquals`` otherwise);
+            any other condition on a tracked key removes the parameter.
+        quick_filters : QuickFilters | None, default None
+            Presets shown as pills above the header (see
+            :class:`~.quick_filter.QuickFilters`). Choosing one replaces the
+            conditions on the preset columns; the active pill is derived from
+            the query, so a drawer change on a preset column that matches no
+            preset leaves none active. The active preset is kept in the URL
+            (``?view=<key>``) and read back on a page load.
+        search : TableSearch | None, default None
+            Label, placeholder and URL parameter of the search field. The
+            field is shown when at least one column is ``searchable`` and the
+            source :attr:`~.sources.source.ReadOnlyDataSource.supports_search`;
+            ``None`` uses the defaults of :class:`~.quick_filter.TableSearch`.
+            The term is kept in the URL (``?q=<term>``).
+        footer : TableFooter | None, default None
+            A row below the table with the number of items (and of all items
+            while the query filters) and an optional text, see
+            :class:`~.quick_filter.TableFooter`. Re-rendered with the table.
+            ``None`` renders no footer.
         """
         if isinstance(source, list):
             source = SimpleDataSource(source)
@@ -168,6 +213,10 @@ class DataTable[T]:
         self.enable_sort_and_filter = enable_sort_and_filter
         self.scrollable = scrollable
         self.update_query_fragment = update_query_fragment
+        self.url_param_keys = url_param_keys or []
+        self.quick_filters = quick_filters
+        self.search = search or TableSearch()
+        self.footer = footer
 
         self.type = type
         self.columns = columns
@@ -176,6 +225,8 @@ class DataTable[T]:
         self.wrapper_div_id = to_snake_case(f"{self.name}--wrapper")
         self.state_div_id = to_snake_case(f"{self.name}--hx-table--state")
         self.state_input_name = to_snake_case(f"{self.name}--hx-table--state")
+        self.quick_filter_input_name = to_snake_case(f"{self.name}--quick-filter")
+        self.search_input_name = to_snake_case(f"{self.name}--search")
 
         self.filter_drawer = FilterDrawer[T](
             routes,
@@ -186,7 +237,8 @@ class DataTable[T]:
             columns=columns,
             columns_order=columns_order,
             hx_include=["[data-hx-include='always']"],
-            url_param_keys=url_param_keys,
+            # The table writes ``url_param_keys`` to the URL itself, on every
+            # change of the query (see ``_url_params``), not only on Apply.
         )
 
         async def clear_sort_and_filter() -> y.Node:
@@ -195,6 +247,7 @@ class DataTable[T]:
             return await self._render_from_state(state)
 
         async def render_table(
+            request: Request,
             action: Annotated[str, Form()] = "",
             item_id: Annotated[str, Form()] = "",
             column_widths: Annotated[str | None, Form()] = None,
@@ -204,7 +257,21 @@ class DataTable[T]:
 
             if column_widths:
                 state.column_widths = column_widths
-            if action == TOGGLE_FULLSCREEN_ACTION:
+            if action == QUICK_FILTER_ACTION and self.quick_filters is not None:
+                form = await request.form()
+                key = str(form.get(self.quick_filter_input_name, ""))
+                if (preset := self.quick_filters.find(key)) is not None:
+                    state.query = apply_quick_filter(
+                        state.query, preset, self.quick_filters
+                    )
+            elif action == SEARCH_ACTION:
+                form = await request.form()
+                term = str(form.get(self.search_input_name, "")).strip()
+                state.query.search = term or None
+                # Keep the field the user is typing in (value, focus, caret)
+                # instead of swapping in the server's copy of it.
+                return await self._render_from_state(state, preserve_search=True)
+            elif action == TOGGLE_FULLSCREEN_ACTION:
                 state.fullscreen = not state.fullscreen
             elif action == TOGGLE_SELECT_ACTION and item_id:
                 state.is_selected = apply_select_toggle(
@@ -304,7 +371,82 @@ class DataTable[T]:
         page first-paint, ad-hoc render outside a request, etc.
         """
         state = await read_state_from_request(self.state_input_name, TableState)
-        return state if state is not None else TableState(query=Query())
+        if state is not None:
+            return state
+        return TableState(query=await self._initial_query())
+
+    async def query(self) -> Query:
+        """The query the table renders for the current request.
+
+        From the table state of a fragment request, or, on a page's first
+        paint, from the URL (see ``url_param_keys``, ``quick_filters`` and
+        ``search``). Use it for controls outside the table that reflect
+        whether it is filtered.
+        """
+        return (await self._read_state()).query
+
+    async def _initial_query(self) -> Query:
+        """The query of a first paint: the URL's preset, conditions and search.
+
+        Only the parameters this table is configured for are read; an
+        unknown preset key is ignored.
+        """
+        query = Query()
+        columns = await self._resolve_columns()
+        search_enabled = self._search_enabled(columns)
+        has_url_params = bool(
+            self.url_param_keys
+            or (search_enabled and self.search.url_param)
+            or (self.quick_filters is not None and self.quick_filters.url_param)
+        )
+        if not has_url_params:
+            return query
+        try:
+            request = RequestContext.get().request
+        except LookupError:
+            request = None
+        if request is None:
+            return query
+        params = request.query_params
+
+        if (
+            self.quick_filters is not None
+            and self.quick_filters.url_param is not None
+            and (key := params.get(self.quick_filters.url_param)) is not None
+            and (preset := self.quick_filters.find(key)) is not None
+        ):
+            query = apply_quick_filter(query, preset, self.quick_filters)
+
+        if self.url_param_keys:
+            columns_by_key = {c.key: c for c in columns}
+            for key in self.url_param_keys:
+                value = params.get(key)
+                if not value:
+                    continue
+                column = columns_by_key.get(key)
+                multiple = (
+                    column is not None
+                    and isinstance(column.filter_type, ChoiceFilter)
+                    and column.filter_type.multiple
+                )
+                condition = Condition(
+                    key=key,
+                    values=[
+                        TextChoiceIn(values=[value])
+                        if multiple
+                        else TextChoiceEquals(value=value)
+                    ],
+                )
+                query.filter = [c for c in query.filter if c.key != key]
+                query.filter.append(condition)
+
+        if (
+            search_enabled
+            and self.search.url_param is not None
+            and (term := params.get(self.search.url_param, "").strip())
+        ):
+            query.search = term
+        return query
 
     async def _resolve_columns(self) -> tuple[Column[T], ...]:
         """Resolve the table's column set for the current render.
@@ -324,16 +466,32 @@ class DataTable[T]:
             columns_order=resolved_columns_order,
         )
 
-    async def _render_from_state(self, state: TableState) -> y.Node:
+    def _search_enabled(self, columns: tuple[Column[T], ...]) -> bool:
+        """Whether the search field is shown: a searchable column and a source that searches."""
+        return self.source.supports_search and any(c.searchable for c in columns)
+
+    async def _render_from_state(
+        self, state: TableState, *, preserve_search: bool = False
+    ) -> y.Node:
         """Render the table for ``state`` — the single source of truth.
 
         Used directly by the fragment handlers. Fills in
         ``state.column_widths`` from the column specs when missing and
         normalises ``state.is_selected`` against ``self.select_mode``
-        before any markup is emitted.
+        before any markup is emitted. ``search_keys`` always come from the
+        searchable columns, never from the round-tripped state.
+        ``preserve_search`` marks the search field ``hx-preserve`` (for the
+        response to a search request).
         """
         columns = await self._resolve_columns()
         visible_columns = tuple(c for c in columns if c.visible)
+
+        search_enabled = self._search_enabled(columns)
+        if search_enabled:
+            state.query.search_keys = [c.key for c in columns if c.searchable]
+        else:
+            state.query.search_keys = []
+            state.query.search = None
 
         if state.column_widths is None:
             state.column_widths = column_widths_to_css_cols(visible_columns)
@@ -357,6 +515,11 @@ class DataTable[T]:
             scrollable=self.scrollable,
             controls=y.fragment[
                 render_state_input(self.state_div_id, self.state_input_name, state),
+                await self._render_filter_bar(
+                    state.query,
+                    search_enabled=search_enabled,
+                    preserve_search=preserve_search,
+                ),
                 render_toolbar(
                     render_table_url=self.render_table_fragment.url(),
                     clear_sort_and_filter_url=self.clear_sort_and_filter_fragment.url(),
@@ -366,9 +529,11 @@ class DataTable[T]:
                     enable_sort_and_filter=self.enable_sort_and_filter,
                 ),
             ],
+            footer=await self._render_footer(state.query, rows.total),
             table_kwargs=table_kwargs,
             is_tree=False,
             **htmx(hx_swap_oob="outerHTML", as_dict=True),
+            **self._url_params(state.query, search_enabled=search_enabled),
         )[
             table.thead[
                 table.tr[
@@ -405,6 +570,165 @@ class DataTable[T]:
             return table_node
 
         return y.fragment[table_node, await self.update_query_fragment(state.query)]
+
+    def _url_params(self, query: Query, *, search_enabled: bool) -> dict[str, str]:
+        """The wrapper attributes ``pyhx.table.js`` mirrors into the address bar.
+
+        ``data-hx-url-param-keys`` lists every parameter the table owns (a
+        listed key without value is removed from the URL),
+        ``data-hx-url-params`` holds the current values as a query string.
+        Empty when the table owns no parameter.
+        """
+        keys: list[str] = []
+        pairs: list[tuple[str, str]] = []
+
+        if self.quick_filters is not None and self.quick_filters.url_param:
+            keys.append(self.quick_filters.url_param)
+            active = active_quick_filter(query, self.quick_filters)
+            if active is not None and active.filter:
+                pairs.append((self.quick_filters.url_param, active.key))
+
+        for key in self.url_param_keys:
+            keys.append(key)
+            condition = next((c for c in query.filter if c.key == key), None)
+            if condition is None or len(condition.values) != 1:
+                continue
+            value = condition.values[0]
+            if isinstance(value, TextChoiceEquals):
+                pairs.append((key, value.value))
+            elif isinstance(value, TextChoiceIn) and len(value.values) == 1:
+                pairs.append((key, value.values[0]))
+
+        if search_enabled and self.search.url_param:
+            keys.append(self.search.url_param)
+            if query.search:
+                pairs.append((self.search.url_param, query.search))
+
+        if not keys:
+            return {}
+        return {
+            "data-hx-url-param-keys": ",".join(keys),
+            "data-hx-url-params": urlencode(pairs),
+        }
+
+    async def _render_footer(self, query: Query, shown: int) -> y.Node:
+        """The row below the table: count left, ``footer.text`` right.
+
+        ``shown`` is the number of matching items (the page's ``total``).
+        While the query filters and the source counts, the count reads
+        "{shown} of {total}", the total from ``source.count(Query())``.
+        """
+        if self.footer is None:
+            return None
+        count: y.Node = None
+        if self.footer.count:
+            total = None
+            if query.filter or query.search:
+                total = await self.source.count(Query())
+            count = self._count_text(shown, total)
+        return y.div(class_="hx-table__footer")[
+            y.span(class_="hx-table__footer-count")[count],
+            y.span(class_="hx-table__footer-text")[self.footer.text]
+            if self.footer.text is not None
+            else None,
+        ]
+
+    def _count_text(self, shown: int, total: int | None) -> str:
+        """The count of the footer in the language of the request."""
+        assert self.footer is not None
+        label = self.footer.label
+        filtered = self.footer.filtered_label
+
+        def pick(pair: tuple[Any, Any], n: int) -> str:
+            return str(pair[0] if n == 1 else pair[1])
+
+        if total is None:
+            if label is not None:
+                return pick(label, shown).format(n=shown)
+            return _n("{n} entry", "{n} entries", shown)
+        if filtered is not None:
+            return pick(filtered, total).format(shown=shown, total=total)
+        if label is not None:
+            return f"{shown} / {pick(label, total).format(n=total)}"
+        return _n(
+            "{shown} of {total} entry",
+            "{shown} of {total} entries",
+            total,
+            shown=shown,
+            total=total,
+        )
+
+    async def _render_filter_bar(
+        self, query: Query, *, search_enabled: bool, preserve_search: bool
+    ) -> y.Node:
+        """The bar above the header: quick filter pills left, search right.
+
+        ``None`` when the table has neither. The pills are the radio group
+        of :func:`segment_control` (one checked, or none for "custom"); a
+        change posts ``action=quick_filter`` with the checked radio. The
+        search field posts ``action=search`` after a short pause.
+        """
+        if self.quick_filters is None and not search_enabled:
+            return None
+
+        pills: y.Node = None
+        if self.quick_filters is not None:
+            active = active_quick_filter(query, self.quick_filters)
+            options = []
+            for preset in self.quick_filters.presets:
+                label = str(preset.label)
+                if self.quick_filters.counts:
+                    count = await self.source.count(
+                        apply_quick_filter(query, preset, self.quick_filters)
+                    )
+                    if count is not None:
+                        label = f"{label} {count}"
+                options.append(Option(label=label, value=preset.key))
+            pill_attrs: dict[str, Any] = htmx(
+                hx_post=self.render_table_fragment.url(),
+                hx_trigger="change",
+                hx_swap="none",
+                hx_include="[data-hx-include='always'], find input:checked",
+                hx_vals={"action": QUICK_FILTER_ACTION},
+                as_dict=True,
+            )
+            pills = segment_control(
+                self.quick_filter_input_name,
+                options,
+                value=active.key if active is not None else None,
+                input_id_prefix=self.quick_filter_input_name,
+                aria_label=str(self.quick_filters.label),
+                class_="hx-table__quick-filters",
+                **pill_attrs,
+            )
+
+        search_field: y.Node = None
+        if search_enabled:
+            search_field = y.label(class_="hx-table__search")[
+                y.span[self.search.label],
+                y.input(
+                    type="search",
+                    id=self.search_input_name,
+                    name=self.search_input_name,
+                    value=query.search or "",
+                    placeholder=str(self.search.placeholder)
+                    if self.search.placeholder is not None
+                    else None,
+                    autocomplete="off",
+                    hx_preserve=preserve_search or None,
+                    **htmx(
+                        hx_post=self.render_table_fragment.url(),
+                        hx_trigger="input changed delay:300ms, search",
+                        hx_swap="none",
+                        hx_sync="this:replace",
+                        hx_include="[data-hx-include='always']",
+                        hx_vals={"action": SEARCH_ACTION},
+                        as_dict=True,
+                    ),
+                ),
+            ]
+
+        return y.div(class_="hx-table__filter-bar")[pills, search_field]
 
     async def _render_row(
         self,
