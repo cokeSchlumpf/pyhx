@@ -274,8 +274,8 @@
 
         /* --- Nav menu (shared by main + user) --- */
 
-        nav[aria-label="main"],
-        nav[aria-label="user"] {
+        nav.hx-main-nav,
+        nav.hx-user-nav {
             ul {
                 /* Layout */
                 display: block;
@@ -364,7 +364,7 @@
 
         /* --- Main nav layout (sidebar column flex) --- */
 
-        nav[aria-label="main"] {
+        nav.hx-main-nav {
             /* Layout */
             display: flex;
             flex-direction: column;
@@ -385,7 +385,7 @@
 
         /* --- User menu (dropdown chrome) --- */
 
-        nav[aria-label="user"] {
+        nav.hx-user-nav {
             /* Position */
             position: fixed;
             top: var(--header--height);
@@ -408,7 +408,7 @@
             box-shadow: var(--hx-shadow-elevated);
         }
 
-        &:has(#hx-user-menu__toggle:checked) nav[aria-label="user"] {
+        &:has(#hx-user-menu__toggle:checked) nav.hx-user-nav {
             /* Layout */
             display: block;
         }
@@ -452,7 +452,7 @@
             &:has(#hx-menu__compact:checked) {
                 --sidepanel--width: 4rem;
 
-                nav[aria-label="main"] {
+                nav.hx-main-nav {
                     h3 {
                         /* Layout */
                         display: none;
@@ -550,7 +550,7 @@
             }
 
             /* User nav becomes inline within the sidepanel flow on mobile. */
-            nav[aria-label="user"] {
+            nav.hx-user-nav {
                 /* Position */
                 position: static;
                 z-index: auto;
