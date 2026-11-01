@@ -632,9 +632,7 @@ class ReleaseTimestamps(BaseModel):
     auto: datetime
     iso: Annotated[
         datetime,
-        c.annotations.DateTimeColumn(
-            label="ISO", format=c.annotations.IsoDateFormat()
-        ),
+        c.annotations.DateTimeColumn(label="ISO", format=c.annotations.IsoDateFormat()),
     ]
     pattern: Annotated[
         datetime,
@@ -817,13 +815,15 @@ async def data_table_page() -> y.Node:
             c.markdown("""
                 The same filter on a source without `count`:
             """),
-            await _table_footer_no_count.render(
-                query=_TOP_TEAMS.model_copy(deep=True)
-            ),
+            await _table_footer_no_count.render(query=_TOP_TEAMS.model_copy(deep=True)),
             c.code(
                 [
                     ("footer", src.text("table_footer"), "python"),
-                    ("source without count", src.text("table_footer_no_count"), "python"),
+                    (
+                        "source without count",
+                        src.text("table_footer_no_count"),
+                        "python",
+                    ),
                 ]
             ),
             c.markdown("""
@@ -966,8 +966,9 @@ async def data_table_page() -> y.Node:
                   picked from the request's `Accept-Language` header via
                   `pyhx.core.primitives.negotiate_locale`. Default supported
                   set is `en / de / it / fr` (override in `[app.pyhx.core]`).
-                * `RelativeDateFormat()` — server-rendered relative time via
-                  `humanize` (frozen at render, not ticking).
+                * `RelativeDateFormat()` — server-rendered relative time in
+                  the request's language via Babel (frozen at render, not
+                  ticking).
 
                 Each row below shows the same `released` date rendered four
                 ways. Reload with a different browser language (or set
