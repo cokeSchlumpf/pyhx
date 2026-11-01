@@ -99,3 +99,16 @@ None.
 - UUID v7 for DOM element ids in the components; they stay `uuid4`.
 - Ruff findings in `samples/` and `tests/`, and further modernisation (`from __future__ import annotations`, PEP 695 generics, which stay ignored as UP046/UP047).
 - `release.yml`, which runs no Python.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **F1** Moving commons from `versions/0` to `versions/1` changed exactly one locked package, commons 0.2.1 → 1.1.0; none of its dependencies moved, and no commons signature PyHX uses changed.
+- **F2** CI had to move to 3.14 before the floor was raised: pushed the other way round, the check on 3.12 would have failed.
+- **F3** `poe fix` reformatted 5 files, not 4: besides the 4 `except` rewrites, `components/primitives/conditional_select.py` put a signature on one line once its return annotation lost its quotes.
+- **F4** The app shell sample had no tests; `tests/samples/app_shell_layout/test_data_page.py` is the first, checking that new record ids are UUID v7.
+
+Rollout: PR #10 (`feat!: Upgrade to Python 3.14 and commons 1.x`), released with the next Release PR as PyHX 0.4.0 on `versions/0`. The check ran on CPython 3.14.9 and passed.
+
+Open after this change: the platform note `core--docs/notes/2026-10-30-1905--python-libraries-on-github.md` of core--platform (and presumably the skill `scaffold-python-library`) still names `requires-python = ">=3.12, <4.0"`, and core--devops-workflows still defaults to Python 3.12. Owner: Michael Wellner.
