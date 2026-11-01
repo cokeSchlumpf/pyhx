@@ -211,3 +211,20 @@ The developer asked for the change to be implemented without stops; these decisi
 - Quick filters and search on `HierarchicalDataTable` (and `count` on hierarchical sources); `url_param_keys` bootstrap there.
 - The canvas look of the page header and table card (T-006).
 - Translating the built-in defaults ("Quick filters", "Search", the drawer's labels); that is the i18n stream.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** `segment_control` got an optional `input_id_prefix` (ids on the radios), so htmx gives the focus back to the chosen pill after the table re-renders; not named in the spec.
+- **D2** After merging `main` (i18n, #20) the built-in defaults are translated: `QuickFilters.label` ("Quick filters") and `TableSearch.label` ("Search") are `Text` (`_l(...)`), with de/it/fr catalog entries; `QuickFilter.label` and `TableSearch.placeholder` accept `Text` too. The drawer's "Search" heading is translated as well.
+- **D3** The table reads the URL on first paint only for the parameters it uses (search only when the search field is shown), so pages with their own `?q=` or `?view=` are not affected.
+- **D4** The filter bar sits above the table's bordered scroll container, lined up with the cells' text; the draft's card around bar and table is the table card look of T-006.
+- **F1** htmx 2.0.4 keeps an `hx-preserve` element in out-of-band swaps, so the search field keeps typed characters, focus and caret while requests run (checked in the browser: "mei" + "er" typed across a request gives "meier", focus kept).
+- **F2** `str()` of a `str` enum is `"Status.new"`, so the search reads `Enum.value`.
+- **F3** Pre-existing, not part of this change: in the canvas DataPage the sticky page header and table header paint over the open drawer, and the page header breaks at phone width (T-006); on `main` the app shell sidebar loses its layout when the browser language is German (found while taking screenshots, so the app shell screenshots are in English).
+- **F4** `main` needs `commons` 1.4.0; the shared virtualenv had 1.2.0, so checks ran with commons 1.4.0 on `PYTHONPATH`.
+
+Rollout: pull request from `feature/quick-filters` (not yet opened), released with the next minor version of pyhx. The apps adopt it by passing `table_quick_filters` / `table_search` and marking columns searchable; nothing changes for them otherwise.
+
+Open after this change: quick filters and search on `HierarchicalDataTable` (if needed, app developers); `count` and search in the apps' SQL sources (case-sight first); the pre-existing issues of F3 (T-006 for the canvas ones, the i18n stream for the app shell sidebar).
