@@ -292,12 +292,15 @@ class BooleanFilter:
 
 @dataclass(frozen=True, kw_only=True)
 class TextColumn:
+    """A text column. ``searchable=True`` lets the table's search field look in it."""
+
     label: str | None = None
     tooltip: str | None = None
     width: ColumnWidth = Flex()
     kind: ColumnKind | None = None
     sortable: bool = True
     filter: TextFilter | TextChoiceFilter | MultipleChoiceFilter | None = TextFilter()
+    searchable: bool = False
 
 
 @dataclass(frozen=True, kw_only=True)

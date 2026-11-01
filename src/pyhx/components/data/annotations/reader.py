@@ -397,6 +397,7 @@ def _build_column[T](
         visible=visible,
         kind=kind,
         sortable=getattr(marker, "sortable", True),
+        searchable=getattr(marker, "searchable", False),
     )
 
 
