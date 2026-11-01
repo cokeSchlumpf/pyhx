@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/cokeSchlumpf/pyhx/compare/v0.3.0...v1.0.0) (2026-11-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to Python 3.14 and commons 1.x ([#10](https://github.com/cokeSchlumpf/pyhx/issues/10))
+
+### Features
+
+* Upgrade to Python 3.14 and commons 1.x ([#10](https://github.com/cokeSchlumpf/pyhx/issues/10)) ([4062892](https://github.com/cokeSchlumpf/pyhx/commit/406289263024a70bd223374607f3619847833a2e))
+
 ## [0.3.0](https://github.com/cokeSchlumpf/pyhx/compare/v0.2.0...v0.3.0) (2026-10-25)
 
 
