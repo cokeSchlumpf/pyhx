@@ -44,7 +44,7 @@ class LocaleSettings:
         self.default_locale = default_locale
 
     @staticmethod
-    def read() -> "LocaleSettings":
+    def read() -> LocaleSettings:
         return read_settings_object("pyhx.core", LocaleSettings)
 
 

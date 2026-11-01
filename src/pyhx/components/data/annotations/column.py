@@ -27,15 +27,15 @@ class PatternDateFormat:
     pattern: str
 
     @classmethod
-    def short(cls) -> "PatternDateFormat":
+    def short(cls) -> PatternDateFormat:
         return cls(pattern="%d %b %Y")
 
     @classmethod
-    def long(cls) -> "PatternDateFormat":
+    def long(cls) -> PatternDateFormat:
         return cls(pattern="%d %B %Y")
 
     @classmethod
-    def numeric(cls) -> "PatternDateFormat":
+    def numeric(cls) -> PatternDateFormat:
         return cls(pattern="%d.%m.%Y")
 
 
@@ -159,19 +159,19 @@ class PatternNumberFormat:
     spec: str
 
     @classmethod
-    def thousands(cls) -> "PatternNumberFormat":
+    def thousands(cls) -> PatternNumberFormat:
         return cls(spec=",.0f")
 
     @classmethod
-    def thousands_decimals(cls, decimals: int = 2) -> "PatternNumberFormat":
+    def thousands_decimals(cls, decimals: int = 2) -> PatternNumberFormat:
         return cls(spec=f",.{decimals}f")
 
     @classmethod
-    def scientific(cls, decimals: int = 2) -> "PatternNumberFormat":
+    def scientific(cls, decimals: int = 2) -> PatternNumberFormat:
         return cls(spec=f".{decimals}e")
 
     @classmethod
-    def percent(cls, decimals: int = 0) -> "PatternNumberFormat":
+    def percent(cls, decimals: int = 0) -> PatternNumberFormat:
         return cls(spec=f".{decimals}%")
 
 

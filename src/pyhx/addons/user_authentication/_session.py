@@ -104,7 +104,7 @@ class UserSessionSettings:
         return self._sessions_secret_key
 
     @staticmethod
-    def read() -> "UserSessionSettings":
+    def read() -> UserSessionSettings:
         return read_settings_object("pyhx", UserSessionSettings)
 
 

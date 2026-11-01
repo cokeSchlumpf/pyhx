@@ -43,7 +43,7 @@ class FragmentResponse:
     background: BackgroundTask | None = None
 
     @classmethod
-    def redirect(cls, location: str) -> "FragmentResponse":
+    def redirect(cls, location: str) -> FragmentResponse:
         """Trigger a full-page browser navigation from an htmx-driven response.
 
         htmx intercepts the response and swaps the body into the element that

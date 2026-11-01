@@ -43,7 +43,7 @@ class Pct:
 
     # --- constructors ---------------------------------------------------
     @classmethod
-    def of(cls, percent: float) -> "Pct":
+    def of(cls, percent: float) -> Pct:
         """A percentage on the 0–100 scale, e.g. ``Pct.of(50)`` → ``0.5``.
 
         Raises :class:`ValueError` if ``percent`` falls outside ``0–100``.
@@ -51,7 +51,7 @@ class Pct:
         return cls(percent / 100.0)
 
     @classmethod
-    def clamp(cls, value: float) -> "Pct":
+    def clamp(cls, value: float) -> Pct:
         """A fraction folded into ``[0, 1]`` — values below ``0`` become ``0``
         and values above ``1`` become ``1``.
 

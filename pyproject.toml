@@ -5,7 +5,7 @@ description = "Web apps with Python and HTMX"
 authors = [
     {name = "Michael Wellner", email = "michael.wellner@gmail.com"}
 ]
-requires-python = ">=3.12, <4.0"
+requires-python = ">=3.14, <4.0"
 
 [tool.poetry]
 packages = [{ include = "pyhx", from = "src" }]
@@ -21,8 +21,7 @@ nh3 = "^0.3.5"
 pygments = "^2.19"
 python-multipart = "^0.0.32"
 
-commons = { git = "https://github.com/cokeSchlumpf/lib--python-commons.git", branch = "versions/0" }
-typing-extensions = "^4.16.0"
+commons = { git = "https://github.com/cokeSchlumpf/lib--python-commons.git", branch = "versions/1" }
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

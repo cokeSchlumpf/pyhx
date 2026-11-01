@@ -46,7 +46,7 @@ class Color:
 
     # --- literal constructors -------------------------------------------
     @classmethod
-    def hex(cls, value: str) -> "Color":
+    def hex(cls, value: str) -> Color:
         """A hex literal, e.g. ``Color.hex("#ff00aa")``.
 
         Accepts 3- or 6-digit hex, with or without the leading ``#``, in any
@@ -62,13 +62,13 @@ class Color:
         return cls(f"#{digits}")
 
     @classmethod
-    def rgb(cls, r: int, g: int, b: int) -> "Color":
+    def rgb(cls, r: int, g: int, b: int) -> Color:
         """An ``rgb(r, g, b)`` literal from 0–255 channels."""
         cls._check_channels(r, g, b)
         return cls(f"rgb({r}, {g}, {b})")
 
     @classmethod
-    def rgba(cls, r: int, g: int, b: int, a: float) -> "Color":
+    def rgba(cls, r: int, g: int, b: int, a: float) -> Color:
         """An ``rgba(r, g, b, a)`` literal — channels 0–255, alpha 0–1."""
         cls._check_channels(r, g, b)
         if not 0.0 <= a <= 1.0:
@@ -77,7 +77,7 @@ class Color:
 
     # --- semantic / appearance factories --------------------------------
     @classmethod
-    def appearance(cls, appearance: Appearance, shade: int = DEFAULT_SHADE) -> "Color":
+    def appearance(cls, appearance: Appearance, shade: int = DEFAULT_SHADE) -> Color:
         """A theme token for a semantic ``appearance``.
 
         Resolves to ``var(--hx-color-{appearance}-{shade})`` (shade zero-padded
@@ -90,32 +90,32 @@ class Color:
         return cls(f"var(--hx-color-{appearance}-{shade:03d})")
 
     @classmethod
-    def neutral(cls, shade: int = DEFAULT_SHADE) -> "Color":
+    def neutral(cls, shade: int = DEFAULT_SHADE) -> Color:
         return cls.appearance("neutral", shade)
 
     @classmethod
-    def info(cls, shade: int = DEFAULT_SHADE) -> "Color":
+    def info(cls, shade: int = DEFAULT_SHADE) -> Color:
         return cls.appearance("info", shade)
 
     @classmethod
-    def success(cls, shade: int = DEFAULT_SHADE) -> "Color":
+    def success(cls, shade: int = DEFAULT_SHADE) -> Color:
         return cls.appearance("success", shade)
 
     @classmethod
-    def warning(cls, shade: int = DEFAULT_SHADE) -> "Color":
+    def warning(cls, shade: int = DEFAULT_SHADE) -> Color:
         return cls.appearance("warning", shade)
 
     @classmethod
-    def danger(cls, shade: int = DEFAULT_SHADE) -> "Color":
+    def danger(cls, shade: int = DEFAULT_SHADE) -> Color:
         return cls.appearance("danger", shade)
 
     @classmethod
-    def primary(cls) -> "Color":
+    def primary(cls) -> Color:
         return cls.appearance("primary")
 
     # --- escape hatch ---------------------------------------------------
     @classmethod
-    def css(cls, value: str) -> "Color":
+    def css(cls, value: str) -> Color:
         """Wrap any other CSS colour value verbatim (``currentColor``, a bespoke
         ``var(--…)``, a named colour). No validation — you own the string."""
         return cls(value)

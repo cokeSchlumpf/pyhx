@@ -47,7 +47,7 @@ class PageResponse:
     page_title: str | Omit | None = None
 
     @classmethod
-    def redirect(cls, location: str) -> "PageResponse":
+    def redirect(cls, location: str) -> PageResponse:
         """Plain HTTP 303 redirect from a top-level page handler.
 
         The response body is empty and the browser only reads the ``Location``

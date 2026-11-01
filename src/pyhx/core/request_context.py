@@ -23,10 +23,10 @@ class RequestContext:
     websocket: WebSocket | None = None
     user: User = field(default_factory=AnonymousUser)
     app_context: AppContext = field(default_factory=_empty_app_context)
-    page_template: "PageTemplate | None" = None
+    page_template: PageTemplate | None = None
 
     @staticmethod
-    def get() -> "RequestContext":
+    def get() -> RequestContext:
         return _current_request_context.get()
 
     @staticmethod
@@ -40,7 +40,7 @@ class RequestContext:
         return req
 
     @staticmethod
-    def get_design() -> "Design":
+    def get_design() -> Design:
         """The design of the app's default page template, e.g. ``"canvas"``.
 
         The same in page and fragment requests, so a fragment re-rendered by
@@ -174,7 +174,7 @@ def set_request_context(ctx: RequestContext) -> None:
 def build_from_request(
     request: Request,
     app_context: AppContext | None = None,
-    page_template: "PageTemplate | None" = None,
+    page_template: PageTemplate | None = None,
 ) -> RequestContext:
     """Build a ``RequestContext`` from a Starlette ``Request``.
 
@@ -205,7 +205,7 @@ def build_from_request(
 def build_from_websocket(
     websocket: WebSocket,
     app_context: AppContext | None = None,
-    page_template: "PageTemplate | None" = None,
+    page_template: PageTemplate | None = None,
 ) -> RequestContext:
     """Build a ``RequestContext`` from a Starlette ``WebSocket``.
 
