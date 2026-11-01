@@ -17,6 +17,12 @@ Variant = Literal["solid", "outline", "ghost", "link", "glass"]
 
 
 Size = Literal["sm", "md", "lg"]
+
+FormSize = Literal["sm", "md"]
+"""Size of form fields: ``sm`` is compact (32px controls, label left where
+there is room), ``md`` the full size. Only the canvas design has a compact
+size; there, fields in a drawer or in the aside of ``split_layout`` are
+compact unless a size says otherwise."""
 """Physical size. Drives padding, font-size, and icon scale."""
 
 

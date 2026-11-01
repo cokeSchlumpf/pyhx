@@ -9,6 +9,7 @@ from pyhx.core.webapp_routes import WebAppRoutes
 
 from ..layouts import DRAWER_CONTENT_ID, close_drawer, drawer_content
 from ..primitives import button
+from ..variants import FormSize
 from .data_form import DataForm
 
 
@@ -24,7 +25,14 @@ class DataFormDrawer[T: BaseModel]:
         field_order: list[str] | None = None,
         cancel_label: str | None = None,
         dialog_title: str | None = None,
+        size: FormSize | None = None,
     ) -> None:
+        """A :class:`DataForm` in a drawer, with cancel and a delete slot.
+
+        ``size`` is passed to the :class:`DataForm`: ``None`` (default) makes
+        the form compact in the canvas design, as every form in a drawer;
+        ``"md"`` keeps the full size.
+        """
         self.cancel_label = cancel_label or "Cancel"
         self.dialog_title = dialog_title or "Edit"
 
@@ -35,6 +43,7 @@ class DataFormDrawer[T: BaseModel]:
             handle_submit=handle_submit,
             submit_label=submit_label,
             field_order=field_order,
+            size=size,
         )
 
     async def render_drawer(

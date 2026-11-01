@@ -187,3 +187,23 @@
         box-shadow: none;
     }
 }
+
+
+/* --- Canvas design: compact form ---
+   A compact DataForm (in a drawer or an aside, or `size="sm"`) shows one
+   field per row with 12px between them: a narrow place has no room for
+   columns next to a label column. Forms with grid template areas keep their
+   layout. */
+
+[data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, form[data-hx-size="sm"]) .hx-data-form:not(:has(> .hx-data-form__cell), [data-hx-size="md"] .hx-data-form) {
+    /* Tokens */
+    --hx-grid-gap: 0.75rem;
+
+    /* Layout */
+    grid-template-columns: minmax(0, 1fr);
+
+    & > * {
+        /* Layout */
+        grid-column: 1 / -1;
+    }
+}
