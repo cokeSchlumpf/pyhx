@@ -79,6 +79,8 @@ def drawer_content(
     return y.aside(
         id=id,
         aria_label=title or "Details",
+        # Focusable, so pyhx.drawer.js can move focus into the panel on open.
+        tabindex="-1",
         hx_ext="morph",
         hx_swap_oob="morph",
         **kwargs,

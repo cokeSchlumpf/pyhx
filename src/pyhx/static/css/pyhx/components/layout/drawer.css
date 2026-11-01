@@ -12,10 +12,15 @@
     --hx--drawer-bottom: 50px;
 }
 
+/* The backdrop covers the area between the template's bars (the drawer's own
+   top and bottom), so the top bar and a footer stay undimmed. */
 .hx-drawer__backdrop {
     /* Position */
     position: fixed;
-    inset: 0;
+    top: var(--hx--drawer--top);
+    right: 0;
+    bottom: var(--hx--drawer-bottom);
+    left: 0;
     z-index: var(--hx-z-backdrop);
 
     /* Visual */
@@ -50,7 +55,9 @@
     box-shadow: var(--hx-shadow-panel-left);
 
     /* Motion */
-    transform: translateX(100%);
+    /* Out by its width plus its shadow, or the shadow shows at the right
+       edge of the viewport while the drawer is closed. */
+    transform: translateX(calc(100% + 3rem));
     transition: transform var(--hx-transition-slow);
 
     > header {
@@ -84,17 +91,33 @@
         overflow-y: auto;
         margin-bottom: 0;
     }
+
+    /* Focused on open (pyhx.drawer.js), as the start of the tab order; the
+       panel itself shows no focus ring. */
+    &:focus {
+        /* Box */
+        outline: none;
+    }
 }
 
 
 /* --- Open state: triggered when the section has element children.
    Close action returns a drawer with an empty <section>, which collapses
-   this :has() match and slides everything back out. --- */
+   this :has() match and slides everything back out.
+
+   `position: fixed` makes the open drawer a stacking context: the z-indices
+   of backdrop and panel only count inside it. The drawer itself needs a
+   z-index, or every positioned element of the page with a positive one
+   (sticky page header, sticky table header, top bar) is drawn above it. --- */
 
 .hx-drawer:has(> aside > section > *) {
+    /* Position */
     position: fixed;
     top: 0;
     left: 0;
+    z-index: var(--hx-z-sidepanel);
+
+    /* Box */
     width: 100vw;
     height: 100vh;
 
@@ -116,15 +139,22 @@
    Used by drawer-based pickers (`drawer_select` / `drawer_radio`) so they open
    on top of a form rendered in the primary drawer instead of replacing it.
    Only the stacking differs; all open/close behaviour is inherited from the
-   base `.hx-drawer` rules above. Stays below `--hx-z-dropdown` (200) so
-   dropdowns inside the picker still layer correctly. --- */
+   base `.hx-drawer` rules above. Stays below `--hx-z-dropdown` (300) so
+   dropdowns of the page still layer correctly. --- */
 
 .hx-drawer--popup > .hx-drawer__backdrop {
-    z-index: calc(var(--hx-z-sidepanel) + 10); /* 110 */
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 10); /* 210 */
 }
 
 .hx-drawer--popup > aside {
-    z-index: calc(var(--hx-z-sidepanel) + 20); /* 120 */
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 20); /* 220 */
+}
+
+.hx-drawer--popup:has(> aside > section > *) {
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 10);
 }
 
 
