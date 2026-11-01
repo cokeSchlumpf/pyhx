@@ -16,7 +16,9 @@ class TestDrawer:
         # Without it, the open (fixed) drawer is a stacking context at level 0
         # and the sticky page header and table header are drawn above it.
         open_rule = re.search(
-            r"\.hx-drawer:has\(> aside > section > \*\) \{(.*?)\n\}", DRAWER_CSS, re.S
+            r"\.hx-drawer:has\(> aside > section > \*\) \{(.*?)\n\}",
+            DRAWER_CSS,
+            re.DOTALL,
         )
 
         assert open_rule is not None
