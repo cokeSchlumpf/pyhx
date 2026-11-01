@@ -555,18 +555,28 @@
     /* Layout */
     flex: 0 0 auto;
 
-    /* Box */
-    height: 22px;
-    padding: 0 var(--hx-spacing-sm);
+    /* Box — as high as a small button of the design */
+    min-height: calc(var(--hx-text-control) * 0.875 + 2 * var(--hx-spacing-xs) + 2px);
+    padding: 0 var(--hx-spacing-md);
     border-radius: var(--hx-radius-full);
 
     /* Typography */
     color: var(--hx-color-neutral-700);
-    font-size: var(--hx-text-xs);
+    font-size: calc(var(--hx-text-control) * 0.875);
     font-weight: var(--hx-font-medium);
 
     /* Visual */
     background-color: var(--hx-color-neutral-100);
+}
+
+/* Canvas design: the draft's 22px pills with 12px text. */
+[data-hx-design="canvas"] .hx-segment-control.hx-table__quick-filters .hx-segment-control__option {
+    /* Box */
+    min-height: 22px;
+    padding: 0 var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-xs);
 }
 
 .hx-segment-control.hx-table__quick-filters .hx-segment-control__option:has(:checked) {
@@ -586,9 +596,10 @@
 }
 
 .hx-table__search {
-    /* Layout */
+    /* Layout: the label sits on the baseline of the field's text, not on its
+       box centre (a smaller label next to the field's text would look raised). */
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: var(--hx-spacing-sm);
 
     /* Box */
@@ -596,26 +607,50 @@
 
     /* Typography */
     color: var(--hx-color-neutral-700);
-    font-size: 0.8125rem;  /* 13px */
+    font-size: var(--hx-text-control);
 }
 
+/* Default design: a field as high as the page header's buttons, with the
+   border and radius of the design's form fields. */
 .hx-table__search input[type="search"] {
     /* Box */
     box-sizing: border-box;
-    width: 260px;
-    height: 32px;
+    width: 18rem;
+    height: calc(var(--hx-text-control) + 2 * var(--hx-spacing-sm) + 2px);
     margin: 0;
-    padding: 0 10px;
-    border: 1px solid var(--hx-color-neutral-500);
-    border-radius: var(--hx-radius-lg);
+    padding: 0 var(--hx-spacing-sm);
+    border: 1px solid var(--pico-form-element-border-color);
+    /* Not --pico-border-radius: Pico sets it to 5rem on search fields. */
+    border-radius: var(--hx-radius-md);
 
     /* Typography */
     color: var(--hx-color-text);
+    font-size: var(--hx-text-control);
+
+    /* Visual */
+    background-color: var(--pico-form-element-background-color);
+    background-image: none;
+}
+
+/* Canvas design: the draft's 13px label and 32px field. */
+[data-hx-design="canvas"] .hx-table__search {
+    /* Typography */
+    font-size: 0.8125rem;  /* 13px */
+}
+
+[data-hx-design="canvas"] .hx-table__search input[type="search"] {
+    /* Box */
+    width: 260px;
+    height: 32px;
+    padding: 0 10px;
+    border-color: var(--hx-color-neutral-500);
+    border-radius: var(--hx-radius-lg);
+
+    /* Typography */
     font-size: var(--hx-text-sm);
 
     /* Visual */
     background-color: var(--hx-color-background);
-    background-image: none;
 }
 
 /* Phone width: the search takes the full row below the pills. */
@@ -625,7 +660,8 @@
         flex: 1 1 100%;
     }
 
-    .hx-table__search input[type="search"] {
+    .hx-table__search input[type="search"],
+    [data-hx-design="canvas"] .hx-table__search input[type="search"] {
         /* Layout */
         flex: 1 1 auto;
 
