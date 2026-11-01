@@ -169,6 +169,28 @@
                 background-color: var(--hx-color-background);
             }
 
+            /* A DataTable's quick filters and search (T-008) are the top row
+               of the card, as in the draft: the bar takes the card's top
+               edge and draws the line above the header; the scroll
+               container continues the card below it. */
+            &:has(> .hx-table__filter-bar) {
+                .hx-table__filter-bar {
+                    /* Box */
+                    padding: 0.75rem var(--table-card--padding-inline);
+                    border: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+                    border-radius: var(--table-card--radius) var(--table-card--radius) 0 0;
+
+                    /* Visual */
+                    background-color: var(--hx-color-background);
+                }
+
+                .hx-table__scroll-container {
+                    /* Box */
+                    border-top: 0;
+                    border-radius: 0 0 var(--table-card--radius) var(--table-card--radius);
+                }
+            }
+
             .hx-table thead tr th {
                 /* Box */
                 padding: 0.625rem var(--table-card--padding-inline);
