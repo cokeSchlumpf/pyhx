@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.3.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.0...v1.3.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **i18n:** extract texts from directories starting with an underscore ([a464b9e](https://github.com/cokeSchlumpf/pyhx/commit/a464b9ebcd4081b92186bb9b30b746362c3a51ba))
+
 ## [1.3.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.2.0...v1.3.0) (2026-11-01)
 
 
