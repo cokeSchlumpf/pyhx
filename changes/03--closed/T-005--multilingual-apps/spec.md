@@ -77,3 +77,20 @@ None.
 ## Out of scope
 
 - Validation errors and error pages, right-to-left languages, the user's timezone, `Vary` and cache headers, language-specific mail templates.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** `_l` returns pyhx's own `LazyText` (`pyhx.core.primitives.lazy_text`) instead of Babel's `LazyProxy`, which htpy rejects as a child and as an attribute; `LazyText` renders as escaped text and translates on `str()`/`format()`. Page titles and navigation labels accept it (`Text = str | LazyText`) and become `str` when the page is rendered.
+- **D2** In `samples/user_auth/main.py` the switcher sits at the top of the page (`AppShell` has no header slot); `samples/user_auth/canvas.py` shows it in the header of `CanvasShell`.
+- **D3** Component parameters with English defaults default to `None` and get the translated default at render time (Boolean controls, taglist, dropdown and file dropzone placeholders, `drawer_action_table` title, `page_header` navigation label); `DataForm.submit_label` and the `DataFormDrawer` labels also accept a callable; the internal option tuples of `filter_options.py` became functions. Explicit values behave as before.
+- **D4** `safe_next` (now in `_session.py`, shared by login and switcher) also rejects `/\…`, which browsers read as a protocol-relative URL; this also closes it for the login redirect.
+- **F1** The change was started as T-004; the parallel change "login secondary links" was merged as T-004 first, so this one is T-005.
+- **F2** pyhx's texts: about 160 marked in 27 files, 123 entries per catalog (de, it, fr), translated with an LLM; "Sign in" and "Sign In" both exist as source texts (different buttons, same translations).
+- **F3** Catalog files are part of the wheel (checked with `poetry build`); `poe check` runs the catalog check for pyhx and for the sample.
+- **F4** `humanize` is no longer a dependency; relative times are worded by Babel ("1 minute ago" instead of "a minute ago").
+
+Rollout: PR #20, released as pyhx 1.3.0 on `versions/1` after the developer's review and merge; requires commons 1.4.0 (T-007 of `lib--python-commons`).
+
+Open after this change: translated validation errors and error pages (T-004 of `app--casesight`); CaseSight adopts it in T-003 of `app--casesight`.
