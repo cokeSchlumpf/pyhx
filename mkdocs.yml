@@ -61,6 +61,7 @@ nav:
       - Routing & Paths: guides/routing.md
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
+      - Editing Patterns: guides/editing.md
       - Sidepanel: guides/sidepanel.md
   - Decisions:
       - NumPy-style docstrings: decisions/2026-05-14-1714--python-docstrings-style.md
