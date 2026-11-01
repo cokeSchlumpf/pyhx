@@ -146,7 +146,8 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **F3** Checkbox and radio option labels are `<label>`s with an input inside, and so are the options of `segment_control`; the rule for option labels excludes `.hx-segment-control__option`.
 - **F4** The `AppShell` forms page of `samples/components` renders pixel-identical before and after (R14); the only differing rows are the footer, which shows the commit hash.
 - **F5** Not part of this change, seen while testing: Pico stretches `button(..., type="submit")` to full width outside `DataForm` (the sample sets `width: auto`); the outline and ghost variants of neutral buttons have a `neutral-400` border (2.58:1), which 1.4.11 doesn't require for buttons with a text label; the header of `samples/canvas_layout` overflows at phone width on every page.
+- **F6** The screenshots of the forms page of `samples/canvas_layout` are kept in `screenshots/` next to this spec: [before](screenshots/canvas-shell--forms--before.png) (Pico defaults), [desktop](screenshots/canvas-shell--forms--desktop.png) and [phone](screenshots/canvas-shell--forms--phone.png) after the change, and the [segment control next to a dropdown](screenshots/canvas-shell--segment-and-dropdown.png) after the review (D2, D3). The `AppShell` comparison of F4 is not kept: a full-page image of the components sample adds nothing to the statement.
 
-Rollout: pull request #23, released with the next minor version of `pyhx` (`feat:`); screenshots on branch `design/canvas-form-controls-screenshots`. Apps on the canvas design (case-sight) get the new look when they update `pyhx`.
+Rollout: pull request #23, released with the next minor version of `pyhx` (`feat:`). Apps on the canvas design (case-sight) get the new look when they update `pyhx`.
 
 Open after this change: the points of F5, if wanted as their own changes (owner: developer); checking case-sight's login forms after its `pyhx` update (owner: developer).
