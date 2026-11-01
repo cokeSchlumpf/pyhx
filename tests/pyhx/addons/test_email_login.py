@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 import htpy as y
 import pytest
+from commons.settings import AppSettings
 from commons.users import AnonymousUser, RegisteredUser, SQLUsersRepository
 from commons.users.login_tokens import (
     InMemoryLoginTokenStore,
@@ -285,6 +286,42 @@ class TestRequestLink:
         _request_link(app)
 
         assert sender.last.link.startswith("http://testserver/login/token?t=")
+
+    def test_link_uses_public_url_of_the_app_without_base_url(self, monkeypatch):
+        monkeypatch.setattr(
+            AppSettings,
+            "read",
+            staticmethod(lambda: AppSettings(public_url="https://demo.example.org/")),
+        )
+        sender = CollectingSender()
+        app = _app(
+            login_methods=[
+                EmailTokenLogin(sender=sender, settings=LoginTokenSettings())
+            ]
+        )
+        _request_link(app)
+
+        assert sender.last.link.startswith("https://demo.example.org/login/token?t=")
+
+    def test_base_url_wins_over_public_url_of_the_app(self, monkeypatch):
+        monkeypatch.setattr(
+            AppSettings,
+            "read",
+            staticmethod(lambda: AppSettings(public_url="https://demo.example.org")),
+        )
+        sender = CollectingSender()
+        app = _app(
+            login_methods=[
+                EmailTokenLogin(
+                    sender=sender,
+                    settings=LoginTokenSettings(),
+                    base_url="https://app.example.com",
+                )
+            ]
+        )
+        _request_link(app)
+
+        assert sender.last.link.startswith("https://app.example.com/login/token?t=")
 
 
 class TestCode:

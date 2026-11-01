@@ -67,9 +67,11 @@ class EmailTokenLogin(LoginMethod):
         settings: Validity, code length and rate limit. Defaults to
             ``LoginTokenSettings.read()`` (``app.login_tokens.*``).
         base_url: Absolute base URL for the links in the email, e.g.
-            ``"https://app.example.com"``. Defaults to the URL the request
-            came in on, which is wrong behind a proxy that rewrites the
-            host — set it there.
+            ``"https://app.example.com"``. Defaults to the public URL of the
+            app (``app.public_url`` of ``commons.settings.AppSettings``, set
+            by the deployment as ``APP__PUBLIC_URL``), else to the URL the
+            request came in on, which is wrong behind a proxy that rewrites
+            the host.
     """
 
     key: ClassVar[str] = "email"
