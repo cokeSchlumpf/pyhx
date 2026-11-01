@@ -52,7 +52,9 @@ async def live(
     start, end = window
     return y.ul[
         y.li["Brightness: ", y.strong[f"{brightness:g}%"]],
-        y.li["Window: ", y.strong[f"{start:g}:00 – {end:g}:00"], f" ({end - start:g} h)"],
+        y.li[
+            "Window: ", y.strong[f"{start:g}:00 – {end:g}:00"], f" ({end - start:g} h)"
+        ],
     ]
 
 
@@ -175,9 +177,7 @@ async def slider_page() -> y.Node:
             ],
             c.example(
                 # docs:start form
-                y.form(
-                    **htmx(hx_post=submit.url(), hx_swap="none", as_dict=True)
-                )[
+                y.form(**htmx(hx_post=submit.url(), hx_swap="none", as_dict=True))[
                     c.form_field(
                         "opacity",
                         "Opacity",

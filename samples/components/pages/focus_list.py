@@ -126,6 +126,8 @@ def render_cards(selected: str | None = None) -> y.Node:
         for it in ITEMS
     ]
     return c.focus_list.cards(items, backdrop=_backdrop("cards", selected))
+
+
 # docs:end cards_demo
 
 
@@ -140,6 +142,8 @@ def render_plain(selected: str | None = None) -> y.Node:
         for it in ITEMS
     ]
     return c.focus_list.plain(items, backdrop=_backdrop("plain", selected))
+
+
 # docs:end plain_demo
 
 
@@ -207,6 +211,8 @@ def render_table(selected: str | None = None) -> y.Node:
     return c.focus_list.table(
         COLUMNS, rows, id="table-main", backdrop=_backdrop("table", selected)
     )
+
+
 # docs:end table_demo
 
 
@@ -260,10 +266,14 @@ def render_click_table(selected: str | None = None) -> y.Node:
             # the clickable hover affordance.
             row_attrs = {"aria_selected": "false", **_open_row(it.id)}
         rows.append(
-            c.focus_list.table_row(cells, id=f"click-{it.id}", active=active, **row_attrs)
+            c.focus_list.table_row(
+                cells, id=f"click-{it.id}", active=active, **row_attrs
+            )
         )
     backdrop = c.focus_list.backdrop(**_close_row()) if selected else None
     return c.focus_list.table(CLICK_COLUMNS, rows, id="table-click", backdrop=backdrop)
+
+
 # docs:end click_table_demo
 
 
@@ -345,10 +355,12 @@ async def focus_list_page() -> y.Node:
                 "card lifts with a stronger shadow; the rest fade back.",
             ],
             y.div(style="margin-block: 1rem;")[render_cards(),],
-            c.code([
-                ("code", src.text("cards_demo"), "python"),
-                ("imports", src.text("imports"), "python"),
-            ]),
+            c.code(
+                [
+                    ("code", src.text("cards_demo"), "python"),
+                    ("imports", src.text("imports"), "python"),
+                ]
+            ),
             y.h2["Plain variant"],
             y.p[
                 "Flush rows divided by a single 1px rule (the same neutral the ",

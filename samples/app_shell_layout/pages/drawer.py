@@ -71,7 +71,9 @@ async def drawer() -> y.Node:
                 y.code["drawer_content(...)"],
                 ".",
             ],
-            y.pre[y.code["""\
+            y.pre[
+                y.code[
+                    """\
 import htpy as y
 import pyhx.components as c
 
@@ -90,11 +92,14 @@ async def item_details() -> y.Node:
         y.p["Hello World"],
         title="Details",
     )
-"""]],
+"""
+                ]
+            ],
             y.h2["Basic"],
             y.p["Minimal example — no title, single paragraph of content."],
             c.button(
-                "Open basic drawer", **c.open_drawer_htmx_attributes(drawer_basic.url()),
+                "Open basic drawer",
+                **c.open_drawer_htmx_attributes(drawer_basic.url()),
             ),
             y.h2["With a title"],
             y.p[

@@ -585,9 +585,7 @@ class ReleaseTimestamps(BaseModel):
     auto: datetime
     iso: Annotated[
         datetime,
-        c.annotations.DateTimeColumn(
-            label="ISO", format=c.annotations.IsoDateFormat()
-        ),
+        c.annotations.DateTimeColumn(label="ISO", format=c.annotations.IsoDateFormat()),
     ]
     pattern: Annotated[
         datetime,

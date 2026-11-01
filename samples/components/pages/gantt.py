@@ -212,7 +212,7 @@ async def gantt_page() -> y.Node:
                 y.code["c.gantt"],
                 " primitive is a skeleton scaffold for the Gantt-chart "
                 "component. It renders an empty ",
-                y.code["<div class=\"hx-gantt\">"],
+                y.code['<div class="hx-gantt">'],
                 " container today — no timeline, bars or axis yet. This page "
                 "reserves the route; add demos here as the component grows.",
             ],

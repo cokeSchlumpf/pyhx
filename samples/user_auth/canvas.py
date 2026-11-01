@@ -10,6 +10,9 @@ the user signs in on the canvas. ``/login`` starts with the list of login
 methods (``default_login_method=None``); ``main.py`` starts with the first
 method. The login link and code appear in the
 console (``LoggingLoginTokenSender``).
+
+The language switcher sits in the header of ``CanvasShell``, also on the
+login pages; texts and catalogs are shared with ``main.py``.
 """
 
 import htpy as y
@@ -22,10 +25,20 @@ from pyhx.addons.user_authentication import (
     require_authenticated_user,
 )
 from pyhx.core import WebApp
+from pyhx.i18n import _, _l, t
 from pyhx.page_templates import CanvasShell
-from samples.user_auth.main import _build_users_repo
+from samples.user_auth.main import LOCALE_DIR, _build_users_repo
 
-hx = WebApp(title="User Auth Canvas", default_page_template=CanvasShell())
+
+def header_content() -> y.Node:
+    return c.locale_switcher()
+
+
+hx = WebApp(
+    title="User Auth Canvas",
+    default_page_template=CanvasShell(header_content=header_content),
+    locale_dir=LOCALE_DIR,
+)
 
 configure_user_authentication(
     hx,
@@ -37,14 +50,14 @@ configure_user_authentication(
 )
 
 
-@hx.page("/", title="Home")
+@hx.page("/", title=_l("Home"))
 async def home() -> y.Node:
     user = require_authenticated_user()
     return c.card[
-        c.card.header[c.card.title[y.h1["Signed in"]]],
+        c.card.header[c.card.title[y.h1[_("Signed in")]]],
         c.card.section[
-            y.p["You're signed in as ", y.strong[user.display_name], "."],
-            y.p[y.a(href="/logout")["Sign out"]],
+            y.p[t("You're signed in as {name}.", name=y.strong[user.display_name])],
+            y.p[y.a(href="/logout")[_("Sign out")]],
         ],
     ]
 

@@ -6,7 +6,7 @@ from samples.components._snippets import Snippets, extract_region
 
 
 SOURCE = textwrap.dedent(
-    '''\
+    """\
     y.article[
         y.h2["All appearances"],
         # docs:start all_appearances
@@ -20,17 +20,17 @@ SOURCE = textwrap.dedent(
         pill("Version", value="1.2.0", appearance="neutral"),
         # docs:end with_value
     ]
-    '''
+    """
 )
 
 
 def test_extracts_region_dedented_flush_left():
     result = extract_region(SOURCE, "all_appearances")
     assert result == (
-        'pill.container(\n'
-        '    *[pill(a, appearance=a) for a in APPEARANCES],\n'
+        "pill.container(\n"
+        "    *[pill(a, appearance=a) for a in APPEARANCES],\n"
         '    style="margin-block: 1rem;",\n'
-        '),'
+        "),"
     )
 
 
@@ -57,10 +57,7 @@ def test_unbalanced_fence_raises():
 
 
 def test_duplicate_name_raises():
-    dup = (
-        "# docs:start dup\na\n# docs:end dup\n"
-        "# docs:start dup\nb\n# docs:end dup\n"
-    )
+    dup = "# docs:start dup\na\n# docs:end dup\n# docs:start dup\nb\n# docs:end dup\n"
     with pytest.raises(ValueError, match="dup"):
         extract_region(dup, "dup")
 
@@ -68,11 +65,7 @@ def test_duplicate_name_raises():
 def test_getitem_renders_pre_code(tmp_path):
     f = tmp_path / "page.py"
     f.write_text(
-        "x = [\n"
-        "    # docs:start demo\n"
-        "    pill('<ok>'),\n"
-        "    # docs:end demo\n"
-        "]\n",
+        "x = [\n    # docs:start demo\n    pill('<ok>'),\n    # docs:end demo\n]\n",
         encoding="utf-8",
     )
     node = Snippets(str(f))["demo"]

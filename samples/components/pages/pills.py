@@ -44,7 +44,10 @@ async def pills_page() -> y.Node:
             c.example(
                 # docs:start all_appearances
                 c.pill.container(
-                    *[c.pill(appearance, appearance=appearance) for appearance in APPEARANCES],
+                    *[
+                        c.pill(appearance, appearance=appearance)
+                        for appearance in APPEARANCES
+                    ],
                     style="margin-block: 1rem;",
                 ),
                 # docs:end all_appearances

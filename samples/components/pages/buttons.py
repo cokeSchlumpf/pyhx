@@ -63,7 +63,9 @@ async def buttons_page() -> y.Node:
                             y.tr[
                                 y.th(style=CELL)[a],
                                 [
-                                    y.td(style=CELL)[c.button(a, appearance=a, variant=v)]
+                                    y.td(style=CELL)[
+                                        c.button(a, appearance=a, variant=v)
+                                    ]
                                     for v in VARIANTS
                                 ],
                             ]

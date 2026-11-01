@@ -136,9 +136,7 @@ async def bubble_page() -> y.Node:
                 code=[("code", src.text("sizes"), "python")],
             ),
             y.h2["With nested components"],
-            y.p[
-                "Bubbles are plain containers — drop any components inside.",
-            ],
+            y.p["Bubbles are plain containers — drop any components inside.",],
             c.example(
                 # docs:start nested
                 c.bubble(appearance="success")[

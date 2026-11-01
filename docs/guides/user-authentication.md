@@ -173,6 +173,12 @@ The login pages use the app's own `default_page_template`, so they match the app
 | `settings` | `LoginTokenSettings.read()` | Validity, code length and rate limit from `app.login_tokens.*`. |
 | `base_url` | URL of the request | Absolute base for the links in the email; set it behind a proxy that rewrites the host. |
 
+The email is written in the language of the person who asked for it: the language chosen in the session (the one the login page is shown in), else the user's stored language (`RegisteredUser.locale`), else the browser's, else the app's default. The addon passes it to `LoginTokenService.request_login(locale=…)`; `SMTPLoginTokenSender` of commons has built-in texts for en, de, it and fr.
+
+## Language
+
+The session also carries the language a visitor chose (see [Multilingual apps](i18n.md)). The addon registers `POST /_pyhx/locale`, the endpoint of `c.locale_switcher()`: it stores the language in the session and, for a signed-in registered user, on the user, so it holds on the next sign-in. Signing in and out keeps the session language. The login pages are translated (de, it, fr) like all texts of pyhx.
+
 ## Customising paths and redirects
 
 ```python

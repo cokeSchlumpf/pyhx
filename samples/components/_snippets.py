@@ -51,8 +51,7 @@ def extract_region(source: str, name: str) -> str:
         if start:
             if open_name is not None:
                 raise ValueError(
-                    f"docs:start {start.group(1)!r} inside open region "
-                    f"{open_name!r}"
+                    f"docs:start {start.group(1)!r} inside open region {open_name!r}"
                 )
             open_name = start.group(1)
             if open_name in regions:

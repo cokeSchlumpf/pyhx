@@ -11,7 +11,10 @@
 
 Deviations from the spec:
 
-- None.
+- **D1** `_l` returns pyhx's own `LazyText` (`pyhx.core.primitives.lazy_text`) instead of Babel's `LazyProxy`: htpy rejects `LazyProxy` as a child and as an attribute; `LazyText` renders as escaped text (`__html__`) and translates on `str()`/`format()`. Page titles and navigation labels accept it (`Text = str | LazyText`) and are turned into `str` when the page is rendered.
+- **D2** In `samples/user_auth/main.py` the switcher is at the top of the page, as `AppShell` has no header slot; `samples/user_auth/canvas.py` shows it in the header of `CanvasShell`.
+- **D3** Some component parameters with English defaults now default to `None` and get the translated default at render time (Boolean controls, taglist, dropdown and file dropzone placeholders, `drawer_action_table` title, `page_header` navigation label); `DataForm.submit_label` and the `DataFormDrawer` labels also accept a callable; the module-level option tuples of `filter_options.py` became functions. Explicit values behave as before.
+- **D4** `safe_next` (moved from `_pages.py` to `_session.py`, shared by login and switcher) also rejects `/\…`, which browsers read as a protocol-relative URL.
 
 ## Branching
 

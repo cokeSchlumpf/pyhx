@@ -23,8 +23,7 @@ async def upload(file: UploadFile = File(...)) -> y.Node:
     return y.article(id="file-dropzone-result", **{"hx-swap-oob": "outerHTML"})[
         y.h3["Received"],
         y.p[
-            f"{file.filename} - {file.content_type} - "
-            f"{humanize.naturalsize(len(data))}"
+            f"{file.filename} - {file.content_type} - {humanize.naturalsize(len(data))}"
         ],
     ]
 
@@ -37,7 +36,7 @@ async def file_dropzone_page() -> y.Node:
             y.p[
                 "A bordered drag-and-drop file picker with a click-to-browse "
                 "fallback. Renders only the picker surface - a real "
-                "`<input type=\"file\">` under the hood - so it composes into "
+                '`<input type="file">` under the hood - so it composes into '
                 "any form the same way a plain file input would; it doesn't "
                 "render its own submit button or own the surrounding form."
             ],

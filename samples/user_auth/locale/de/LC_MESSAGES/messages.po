@@ -1,0 +1,91 @@
+# German translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-01 20:14+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: main.py:137
+msgid "Amount"
+msgstr "Betrag"
+
+#: main.py:136
+msgid "Case"
+msgstr "Fall"
+
+#: canvas.py:53 main.py:156 main.py:204
+msgid "Home"
+msgstr "Startseite"
+
+#: main.py:138
+msgid "Opened"
+msgstr "Eröffnet"
+
+#: main.py:195 main.py:201
+msgid "Protected"
+msgstr "Geschützt"
+
+#: main.py:187
+msgid "Sign in"
+msgstr "Einloggen"
+
+#: main.py:166
+#, python-brace-format
+msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
+msgstr "Melden Sie sich als {jane} oder {marco} an (Passwort {password}) oder mit {email} – Link und Code erscheinen in der Konsole."
+
+#: canvas.py:60 main.py:189 main.py:206
+msgid "Sign out"
+msgstr "Abmelden"
+
+#: canvas.py:57
+msgid "Signed in"
+msgstr "Angemeldet"
+
+#: main.py:175
+#, python-brace-format
+msgid "Signed in as {name}."
+msgstr "Angemeldet als {name}."
+
+#: main.py:139
+msgid "Since"
+msgstr "Seit"
+
+#: main.py:178
+#, python-brace-format
+msgid "There is {n} open case worth {total}."
+msgid_plural "There are {n} open cases worth {total}."
+msgstr[0] "Es gibt {n} offenen Fall im Wert von {total}."
+msgstr[1] "Es gibt {n} offene Fälle im Wert von {total}."
+
+#: main.py:163
+msgid "User authentication sample"
+msgstr "Beispiel: Benutzeranmeldung"
+
+#: main.py:186
+msgid "Visit the protected page"
+msgstr "Zur geschützten Seite"
+
+#: main.py:173
+msgid "You are not signed in."
+msgstr "Sie sind nicht angemeldet."
+
+#: canvas.py:59 main.py:202
+#, python-brace-format
+msgid "You're signed in as {name}."
+msgstr "Sie sind angemeldet als {name}."
+

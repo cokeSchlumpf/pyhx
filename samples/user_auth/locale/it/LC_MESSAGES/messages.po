@@ -1,0 +1,91 @@
+# Italian translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-01 20:14+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: main.py:137
+msgid "Amount"
+msgstr "Importo"
+
+#: main.py:136
+msgid "Case"
+msgstr "Pratica"
+
+#: canvas.py:53 main.py:156 main.py:204
+msgid "Home"
+msgstr "Home"
+
+#: main.py:138
+msgid "Opened"
+msgstr "Aperta il"
+
+#: main.py:195 main.py:201
+msgid "Protected"
+msgstr "Protetta"
+
+#: main.py:187
+msgid "Sign in"
+msgstr "Accedi"
+
+#: main.py:166
+#, python-brace-format
+msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
+msgstr "Accedi come {jane} o {marco} (password {password}) oppure con {email}: il link e il codice compaiono nella console."
+
+#: canvas.py:60 main.py:189 main.py:206
+msgid "Sign out"
+msgstr "Esci"
+
+#: canvas.py:57
+msgid "Signed in"
+msgstr "Accesso effettuato"
+
+#: main.py:175
+#, python-brace-format
+msgid "Signed in as {name}."
+msgstr "Accesso effettuato come {name}."
+
+#: main.py:139
+msgid "Since"
+msgstr "Da"
+
+#: main.py:178
+#, python-brace-format
+msgid "There is {n} open case worth {total}."
+msgid_plural "There are {n} open cases worth {total}."
+msgstr[0] "C'è {n} pratica aperta per un valore di {total}."
+msgstr[1] "Ci sono {n} pratiche aperte per un valore di {total}."
+
+#: main.py:163
+msgid "User authentication sample"
+msgstr "Esempio: accesso utente"
+
+#: main.py:186
+msgid "Visit the protected page"
+msgstr "Vai alla pagina protetta"
+
+#: main.py:173
+msgid "You are not signed in."
+msgstr "Non hai effettuato l'accesso."
+
+#: canvas.py:59 main.py:202
+#, python-brace-format
+msgid "You're signed in as {name}."
+msgstr "Hai effettuato l'accesso come {name}."
+

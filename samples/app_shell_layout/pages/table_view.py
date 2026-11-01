@@ -58,12 +58,8 @@ class Employee(BaseModel):
     department: Annotated[
         str, c.annotations.TextColumn(label="Department", width=c.Fixed("150px"))
     ]
-    team: Annotated[
-        str, c.annotations.TextColumn(label="Team", width=c.Fixed("150px"))
-    ]
-    role: Annotated[
-        str, c.annotations.TextColumn(label="Role", width=c.Fixed("180px"))
-    ]
+    team: Annotated[str, c.annotations.TextColumn(label="Team", width=c.Fixed("150px"))]
+    role: Annotated[str, c.annotations.TextColumn(label="Role", width=c.Fixed("180px"))]
     level: Annotated[
         Level, c.annotations.TextColumn(label="Level", width=c.Fixed("120px"))
     ]

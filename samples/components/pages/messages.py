@@ -35,10 +35,17 @@ async def messages_page() -> y.Node:
             c.example(
                 # docs:start appearances_demo
                 y.div(style="display: flex; flex-direction: column; gap: 0.75rem;")[
-                    c.message("Here's some information you might find useful.", appearance="info"),
+                    c.message(
+                        "Here's some information you might find useful.",
+                        appearance="info",
+                    ),
                     c.message("Your changes were saved.", appearance="success"),
-                    c.message("You're approaching your monthly quota.", appearance="warning"),
-                    c.message("Something went wrong while saving.", appearance="danger"),
+                    c.message(
+                        "You're approaching your monthly quota.", appearance="warning"
+                    ),
+                    c.message(
+                        "Something went wrong while saving.", appearance="danger"
+                    ),
                     c.message("A neutral, low-emphasis note.", appearance="neutral"),
                     c.message("A brand-primary highlight.", appearance="primary"),
                 ],
@@ -59,9 +66,19 @@ async def messages_page() -> y.Node:
             c.example(
                 # docs:start icon_demo
                 y.div(style="display: flex; flex-direction: column; gap: 0.75rem;")[
-                    c.message("Heads up — something to note.", appearance="info", icon="info"),
-                    c.message("Your changes were saved.", appearance="success", icon="check-circle"),
-                    c.message("Something went wrong.", appearance="danger", icon="alert-octagon"),
+                    c.message(
+                        "Heads up — something to note.", appearance="info", icon="info"
+                    ),
+                    c.message(
+                        "Your changes were saved.",
+                        appearance="success",
+                        icon="check-circle",
+                    ),
+                    c.message(
+                        "Something went wrong.",
+                        appearance="danger",
+                        icon="alert-octagon",
+                    ),
                 ],
                 # docs:end icon_demo
                 code=[("code", src.text("icon_demo"), "python")],
@@ -166,7 +183,9 @@ async def messages_page() -> y.Node:
                                 # Default button → adopts the danger colour.
                                 c.button("Delete"),
                                 # Explicit appearance → keeps its own (primary) colour.
-                                c.button("Keep", appearance="primary", variant="outline"),
+                                c.button(
+                                    "Keep", appearance="primary", variant="outline"
+                                ),
                                 style="margin-top: 0.75rem;",
                             ),
                         ],
@@ -224,10 +243,12 @@ async def messages_page() -> y.Node:
                 code=[("code", src.text("links_demo"), "python")],
             ),
             y.h2["Example calls"],
-            c.code([
-                ("code", src.text("example_calls"), "python"),
-                ("imports", src.text("imports"), "python"),
-            ]),
+            c.code(
+                [
+                    ("code", src.text("example_calls"), "python"),
+                    ("imports", src.text("imports"), "python"),
+                ]
+            ),
         ]
     )
 
