@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.2.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.1.0...v1.2.0) (2026-11-01)
+
+
+### Features
+
+* add an optional main navigation to CanvasShell ([69d8fa1](https://github.com/cokeSchlumpf/pyhx/commit/69d8fa15cf968acd86932f826b14a8b31382a8b2))
+
 ## [1.1.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.0.0...v1.1.0) (2026-11-01)
 
 
