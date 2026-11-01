@@ -2,6 +2,20 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.4.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.2...v1.4.0) (2026-11-01)
+
+
+### Features
+
+* add InlineEdit for editing single values in place ([#31](https://github.com/cokeSchlumpf/pyhx/issues/31)) ([2fc4ec3](https://github.com/cokeSchlumpf/pyhx/commit/2fc4ec3f5c51e7869e5c0195cc376c64dd4d81e0))
+* add quick filters and search to data tables ([#30](https://github.com/cokeSchlumpf/pyhx/issues/30)) ([5fce17d](https://github.com/cokeSchlumpf/pyhx/commit/5fce17d139139f3f74aa9b90ada627c3654e5f0c))
+* show DataPage and its drawers in the canvas design, with compact forms and label positions ([#29](https://github.com/cokeSchlumpf/pyhx/issues/29)) ([e39f771](https://github.com/cokeSchlumpf/pyhx/commit/e39f7716f7e723c2073288993b88eafe0cc10bdb))
+
+
+### Bug Fixes
+
+* **app-shell:** style the navigations by class, not by their translated names ([#34](https://github.com/cokeSchlumpf/pyhx/issues/34)) ([28bc8cf](https://github.com/cokeSchlumpf/pyhx/commit/28bc8cfc26491dc3e7c15a3443c24832412e7f96))
+
 ## [1.3.2](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.1...v1.3.2) (2026-11-01)
 
 
