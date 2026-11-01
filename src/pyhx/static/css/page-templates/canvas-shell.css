@@ -10,12 +10,16 @@
         --content--max-width: 72rem;
         --content--padding-inline: var(--hx-spacing-lg);
         --content--padding-block: var(--hx-spacing-xl);
+        /* Main navigation (data-hx-navigation): tab row and sidebar. */
+        --tabs--height: 0px;
+        --sidebar--width: 14rem;
+        --sidebar--gap: var(--hx-spacing-xl);
 
-        /* Login column (login.css): centred on the canvas below the top bar. */
-        --hx-login--min-height: calc(100dvh - var(--header--height) - 2 * var(--content--padding-block));
+        /* Pinned: the top bar, plus the tab row when there is one. */
+        --hx-sticky-top: calc(var(--header--height) + var(--tabs--height));
 
-        /* Pinned: the top bar. */
-        --hx-sticky-top: var(--header--height);
+        /* Login column (login.css): centred on the canvas below the bars. */
+        --hx-login--min-height: calc(100dvh - var(--hx-sticky-top) - 2 * var(--content--padding-block));
         --hx-table--sticky-top: var(--hx-sticky-top);
 
 
@@ -24,6 +28,9 @@
         /* Layout */
         display: grid;
         grid-template-rows: auto 1fr;
+        /* Without it the column is `auto` and a wide top bar (nowrap header
+           content on a phone) widens the whole page past the viewport. */
+        grid-template-columns: minmax(0, 1fr);
 
         /* Box */
         /* dvh tracks the dynamic viewport (mobile address bar); vh is the fallback. */
@@ -85,6 +92,7 @@
 
             /* Box */
             min-width: 0;
+            overflow: hidden;
 
             /* Typography */
             font-size: var(--hx-text-sm);
@@ -157,6 +165,299 @@
         }
 
 
+        /* --- Main navigation --- */
+
+        /* Shared by both placements: plain links on the canvas, the active
+           one marked; `aria-current` comes from the renderer. */
+        .hx-canvas-nav {
+            /* Typography */
+            font-size: var(--hx-text-sm);
+            line-height: 1.25rem;
+
+            ul {
+                /* Box */
+                padding: 0;
+                margin: 0;
+
+                /* Visual */
+                list-style: none;
+            }
+
+            li {
+                /* Box */
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Pico gives `nav a` negative margins and padding; each
+               placement sets its own box. */
+            a,
+            summary {
+                /* Layout */
+                display: flex;
+                align-items: center;
+                gap: var(--hx-spacing-sm);
+
+                /* Box */
+                padding: 0;
+                margin: 0;
+
+                /* Typography */
+                font-weight: var(--hx-font-medium);
+                text-decoration: none;
+                white-space: nowrap;
+                color: var(--hx-color-neutral-600);
+
+                /* Motion */
+                transition: color var(--hx-transition-fast), background-color var(--hx-transition-fast);
+            }
+
+            a:hover,
+            summary:hover {
+                /* Typography */
+                color: var(--hx-color-text);
+            }
+
+            a.active,
+            summary.active {
+                /* Typography */
+                color: var(--hx-color-text);
+            }
+
+            /* Icons follow the text colour at text size. */
+            .hx-icon,
+            svg {
+                /* Box */
+                flex: none;
+                width: 1rem;
+                height: 1rem;
+            }
+        }
+
+        /* Tabs: a row below the top bar, inside the sticky header, aligned
+           with the content column. Active tab: dark underline on the
+           header's bottom border. */
+        .hx-canvas-nav[data-hx-placement="tabs"] {
+            & > ul {
+                /* Layout */
+                display: flex;
+                align-items: stretch;
+                gap: var(--hx-spacing-lg);
+
+                /* Box */
+                width: 100%;
+                max-width: var(--content--max-width);
+                height: var(--tabs--height);
+                padding-inline: var(--header--padding-inline);
+                margin-inline: auto;
+                /* Many tabs on a narrow screen: scroll the row, not the page. */
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            & > ul > li {
+                /* Layout */
+                display: flex;
+            }
+
+            & > ul > li > a,
+            summary {
+                /* Box */
+                height: 100%;
+                /* The underline sits on the header's border. */
+                margin-bottom: calc(-1 * var(--hx-border-width-sm));
+                border-bottom: 2px solid transparent;
+                /* Pico rounds `nav a`; the underline must stay square. */
+                border-radius: 0;
+            }
+
+            & > ul > li > a.active,
+            summary.active {
+                /* Box */
+                border-bottom-color: var(--hx-color-text);
+            }
+
+            /* Group: native <details> dropdown. `name` on the <details>
+               keeps at most one open. */
+            details {
+                /* Position */
+                position: relative;
+
+                /* Box */
+                margin: 0;
+                border: 0;
+                padding: 0;
+            }
+
+            summary {
+                /* Box */
+                padding: 0;
+
+                /* Interaction */
+                cursor: pointer;
+                list-style: none;
+
+                &::-webkit-details-marker,
+                &::after {
+                    /* Box */
+                    display: none;
+                }
+            }
+
+            details[open] summary svg {
+                /* Visual */
+                transform: rotate(180deg);
+            }
+
+            /* `fixed` without offsets keeps the menu at its static place below
+               the summary, but takes it out of the tab row's `overflow-x`
+               clip: the header's `backdrop-filter` makes the header, not the
+               viewport, its containing block. */
+            details > ul {
+                /* Position */
+                position: fixed;
+                z-index: var(--hx-z-dropdown);
+
+                /* Layout */
+                /* Pico lays out every `nav ul` as a centred row. */
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.125rem;
+
+                /* Box */
+                min-width: 12rem;
+                padding: var(--hx-spacing-xs);
+                margin-top: var(--hx-spacing-xs);
+                border: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+                border-radius: var(--hx-radius-lg);
+
+                /* Visual */
+                background-color: var(--hx-color-background);
+                box-shadow: var(--hx-shadow-md);
+            }
+
+            details > ul a {
+                /* Box */
+                padding: 0.375rem 0.625rem;
+                border-radius: var(--hx-radius-md);
+            }
+
+            details > ul a:hover,
+            details > ul a.active {
+                /* Visual */
+                background-color: var(--hx-color-neutral-100);
+            }
+        }
+
+        /* Sidebar: a column on the canvas, no box of its own; the active
+           item is a white pill like a card. Sticks below the top bar. */
+        .hx-canvas-nav[data-hx-placement="sidebar"] {
+            /* Position */
+            position: sticky;
+            top: calc(var(--hx-sticky-top) + var(--content--padding-block));
+
+            /* Box */
+            max-height: calc(100dvh - var(--hx-sticky-top) - 2 * var(--content--padding-block));
+            overflow-y: auto;
+
+            & > ul {
+                /* Layout */
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.125rem;
+            }
+
+            a {
+                /* Box */
+                padding: 0.4375rem 0.75rem;
+                border-radius: var(--hx-radius-lg);
+            }
+
+            a:hover {
+                /* Visual */
+                background-color: color-mix(in srgb, var(--hx-color-background) 50%, transparent);
+            }
+
+            a.active {
+                /* Visual */
+                background-color: var(--hx-color-background);
+                box-shadow: var(--hx-shadow-sm);
+            }
+
+            .hx-canvas-nav__group {
+                /* Box */
+                margin-top: var(--hx-spacing-lg);
+            }
+
+            .hx-canvas-nav__group:first-child {
+                /* Box */
+                margin-top: 0;
+            }
+
+            h3 {
+                /* Box */
+                padding: 0 0.75rem;
+                margin: 0 0 0.375rem;
+
+                /* Typography */
+                font-family: inherit;
+                font-size: var(--hx-text-meta);
+                font-weight: var(--hx-font-semibold);
+                line-height: 1rem;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: var(--hx-color-neutral-500);
+            }
+
+            .hx-canvas-nav__group > ul {
+                /* Layout */
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.125rem;
+            }
+        }
+
+
+        /* --- Navigation variants --- */
+
+        &[data-hx-navigation="tabs"] {
+            --tabs--height: 2.75rem;
+        }
+
+        &[data-hx-navigation="sidebar"] .hx-canvas-shell__content {
+            /* Layout */
+            display: grid;
+            /* minmax(0, 1fr): wide content can't push the sidebar away. */
+            grid-template-columns: var(--sidebar--width) minmax(0, 1fr);
+            align-items: start;
+            gap: var(--sidebar--gap);
+        }
+
+        .hx-canvas-shell__page {
+            /* Box */
+            min-width: 0;
+        }
+
+        /* Full mode has no padding: the sidebar gets its own, on the canvas. */
+        &[data-hx-mode="full"][data-hx-navigation="sidebar"] {
+            --sidebar--gap: 0;
+
+            .hx-canvas-nav[data-hx-placement="sidebar"] {
+                /* Position */
+                top: var(--hx-sticky-top);
+
+                /* Box */
+                height: calc(100dvh - var(--hx-sticky-top));
+                max-height: none;
+                padding: var(--hx-spacing-lg) var(--hx-spacing-md);
+                border-right: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+            }
+        }
+
+
         /* --- Mode variants --- */
 
         &[data-hx-mode="wide"] {
@@ -178,6 +479,56 @@
             &:not([data-hx-mode="full"]) {
                 --content--padding-inline: var(--hx-spacing-md);
                 --content--padding-block: var(--hx-spacing-md);
+            }
+
+            /* Sidebar: becomes a horizontally scrolling row of pills above
+               the content; group labels are dropped, the items stay in
+               order. */
+            &[data-hx-navigation="sidebar"] .hx-canvas-shell__content {
+                /* Layout */
+                grid-template-columns: minmax(0, 1fr);
+                gap: var(--hx-spacing-md);
+            }
+
+            .hx-canvas-nav[data-hx-placement="sidebar"],
+            &[data-hx-mode="full"] .hx-canvas-nav[data-hx-placement="sidebar"] {
+                /* Position */
+                position: static;
+
+                /* Box */
+                height: auto;
+                max-height: none;
+                padding: 0;
+                margin-inline: calc(-1 * var(--content--padding-inline));
+                padding-inline: var(--content--padding-inline);
+                border-right: 0;
+                overflow-x: auto;
+                overflow-y: visible;
+                scrollbar-width: none;
+
+                & > ul,
+                .hx-canvas-nav__group,
+                .hx-canvas-nav__group > ul {
+                    /* Layout */
+                    display: flex;
+                    flex-direction: row;
+                    gap: 0.25rem;
+                }
+
+                .hx-canvas-nav__group {
+                    /* Box */
+                    margin-top: 0;
+                }
+
+                h3 {
+                    /* Box */
+                    display: none;
+                }
+            }
+
+            &[data-hx-mode="full"] .hx-canvas-nav[data-hx-placement="sidebar"] {
+                /* Box */
+                padding-block: var(--hx-spacing-sm);
             }
         }
     }
