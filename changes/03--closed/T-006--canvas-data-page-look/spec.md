@@ -123,3 +123,20 @@ The developer asked to take the change to the final pull request without stoppin
 - A subtitle in the drawer header and the Esc hint (Q4).
 - A focus trap in the drawer.
 - The look of the default design, except R1–R3.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** R5's sticky header: a `DataPage` table has its own scroll container (`table_scrollable=True`), so its header sticks inside that container, not below the top bar; on the canvas the container isn't height-limited, so the header scrolls with the page. Unchanged from before; not part of the look.
+- **D2** The hidden table toolbar sits above the table, and with the page header tighter on the canvas it covered the create button and took its clicks. In the canvas card it takes pointer events only while the pointer is on the table.
+- **D3** The canvas theme sets the drawer backdrop to the text colour at 32 % (`--hx-color-overlay-dark`), as the draft; the default theme keeps its value.
+- **D4** Compact labels wrap balanced (`text-wrap: balance`) with the first line centred on the control, so a long label ("Versicherte Person *") wraps to two even lines instead of leaving the marker alone.
+- **F1** Root cause of the stacking bug: the open drawer is `position: fixed` without a `z-index`, a stacking context at level 0, so the sticky page header (90), table header (70) and top bar (70) were drawn above it. `AppShell` hid it only because its `main > .hx-sticky` wrapper is a sticky stacking context at level 0, earlier in the DOM.
+- **F2** The 360 px of R11 are measured on the place (the drawer panel), so a drawer on a 390 px phone keeps the label on the left (342 px for the form, enough for the 128 px column).
+- **F3** `AppShell` renders as before: screenshots of the DataPage and its drawer differ only by the removed shadow strip at the right edge (R2) and by compositing noise of at most 3/255 in the header gradient.
+- **F4** Not part of this change, seen while testing: `DataForm` renders a `DateField` only for `datetime` values, so the sample's `date` field "Eingang" is missing from the form; dates in the table show as `3/15/26` in a `de-CH` browser (the i18n stream).
+
+Rollout: pull request from `feature/canvas-data-page-look`, stacked on #23 (T-005), released with the next minor version of `pyhx` (`feat:`); screenshots on branch `design/canvas-data-page-look-screenshots`. Apps on the canvas design (case-sight) get the new look when they update `pyhx`; apps on the default design get the stacking fix, the closed-drawer fix and the focus handling.
+
+Open after this change: F4 (owner: developer); the drawer subtitle and Esc hint of the draft (Q4) if wanted; checking case-sight's DataPages after its `pyhx` update (owner: developer).
