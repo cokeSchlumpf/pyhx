@@ -639,7 +639,6 @@ class DataTable[T]:
                 self.quick_filter_input_name,
                 options,
                 value=active.key if active is not None else None,
-                size="sm",
                 input_id_prefix=self.quick_filter_input_name,
                 aria_label=str(self.quick_filters.label),
                 class_="hx-table__quick-filters",

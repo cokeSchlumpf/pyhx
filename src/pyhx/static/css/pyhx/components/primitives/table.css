@@ -521,7 +521,9 @@
    Rendered by `DataTable` when it has quick filters or a search field. The
    pills are a `segment_control` (radio group) restyled as separate pills;
    colours come from neutral tokens, so the canvas theme's values give the
-   draft's look without a canvas-specific rule. */
+   draft's look. The pill selectors double the block class
+   (`.hx-segment-control.hx-table__quick-filters`) to outrank the segment
+   control's own design rules (`[data-hx-design="canvas"] .hx-segment-control`). */
 
 .hx-table__filter-bar {
     /* Layout */
@@ -531,24 +533,25 @@
     justify-content: space-between;
     gap: var(--hx-spacing-sm) var(--hx-spacing-md);
 
-    /* Box */
+    /* Box — inline padding lines the pills up with the cells' text */
     padding: calc(var(--hx-spacing-sm) + var(--hx-spacing-xs)) var(--hx-spacing-md);
-    border-bottom: 1px solid var(--hx-color-neutral-200);
 }
 
-.hx-table__quick-filters {
+.hx-table__filter-bar .hx-segment-control.hx-table__quick-filters {
     /* Layout */
     flex-wrap: wrap;
     gap: var(--hx-spacing-sm);
 
     /* Box */
     padding: 0;
+    border: none;
+    border-radius: 0;
 
     /* Visual */
     background-color: transparent;
 }
 
-.hx-table__quick-filters .hx-segment-control__option {
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option {
     /* Layout */
     flex: 0 0 auto;
 
@@ -566,7 +569,7 @@
     background-color: var(--hx-color-neutral-100);
 }
 
-.hx-table__quick-filters .hx-segment-control__option:has(:checked) {
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option:has(:checked) {
     /* Typography */
     color: var(--hx-color-background);
 
@@ -574,7 +577,7 @@
     background-color: var(--hx-color-neutral-900);
 }
 
-.hx-table__quick-filters .hx-segment-control__option:hover:not(:has(:checked)) {
+.hx-segment-control.hx-table__quick-filters .hx-segment-control__option:hover:not(:has(:checked)) {
     /* Typography */
     color: var(--hx-color-neutral-900);
 
