@@ -27,6 +27,9 @@ from ..request_context import RequestContext
 SESSION_LOCALE_KEY = "pyhx.locale"
 """Session key of the language a visitor chose."""
 
+LOCALE_SWITCH_PATH = "/_pyhx/locale"
+"""Endpoint of the language switcher (registered by the user authentication addon)."""
+
 
 class LocaleSettings:
     """The languages an app offers and its default.

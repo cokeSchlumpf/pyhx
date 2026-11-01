@@ -33,6 +33,7 @@ from .gantt import (
     gantt,
 )
 from .icon import icon
+from .locale_switcher import locale_switcher
 from .markdown import markdown
 from .meta import meta
 from .metric_tile import metric_tile
@@ -88,6 +89,7 @@ __all__ = [
     "form_field",
     "gantt",
     "icon",
+    "locale_switcher",
     "markdown",
     "meta",
     "metric_tile",

@@ -39,10 +39,11 @@ from pyhx.core import (
     WebApp,
 )
 from pyhx.core.primitives import htmx
+from pyhx.core.primitives.negotiate_locale import LocaleSettings, resolve_locale
 from pyhx.page_templates import AppShell
 
 from ._methods import EmailTokenLogin, LoginMethod
-from ._session import login_user, logout_user
+from ._session import login_user, logout_user, safe_next
 
 LOG = logging.getLogger(__package__)
 
@@ -99,19 +100,6 @@ class LoginCodeForm(BaseModel):
             label="Code",
         ),
     ]
-
-
-def _safe_next(value: str | None) -> str | None:
-    """Return ``value`` only when it's safe to use as a post-login
-    redirect target — a same-origin path starting with a single ``/``.
-
-    Rejects protocol-relative URLs (``//evil.example``) and absolute
-    URLs (``https://evil.example/...``) which would let an attacker
-    bounce a freshly authenticated user off-site.
-    """
-    if not value or not value.startswith("/") or value.startswith("//"):
-        return None
-    return value
 
 
 def _request() -> Request:
@@ -195,7 +183,7 @@ def register_default_auth_pages(
         request = _request()
         request.session.pop(SESSION_LOGIN_REQUEST_KEY, None)
         login_user(request, user)
-        return _safe_next(next_) or post_login_redirect
+        return safe_next(next_) or post_login_redirect
 
     # --- Password ---------------------------------------------------------
 
@@ -250,12 +238,20 @@ def register_default_auth_pages(
         def link_for(token: str) -> str:
             return f"{base_url}{token_path}?t={token}"
 
+        # The mail is in the language the visitor sees (session), else the
+        # one the user chose, else the browser's, else the default.
+        target = await asyncio.to_thread(users.find_user_by_email, form.email.strip())
+        locale = (
+            resolve_locale(user=target) if target is not None else resolve_locale()
+        ) or LocaleSettings.read().default_locale
+
         try:
             result = await asyncio.to_thread(
                 service.request_login,
                 form.email,
                 link_for=link_for,
-                redirect_to=_safe_next(form.next),
+                redirect_to=safe_next(form.next),
+                locale=locale,
             )
         except Exception:
             LOG.exception("Sending the login token failed.")
