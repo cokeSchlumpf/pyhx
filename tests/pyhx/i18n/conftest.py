@@ -11,3 +11,15 @@ def locale_settings(monkeypatch):
     )
     monkeypatch.setattr(LocaleSettings, "read", staticmethod(lambda: settings))
     return settings
+
+
+@pytest.fixture(autouse=True)
+def set_context():
+    """Set the request context for a test; it is reset afterwards, so tests don't leak into each other."""
+    from pyhx.core.request_context import RequestContext, _current_request_context
+
+    # Start without a request, whatever earlier tests (of other modules) left behind.
+    tokens = [_current_request_context.set(RequestContext())]
+    yield lambda ctx: tokens.append(_current_request_context.set(ctx))
+    for token in reversed(tokens):
+        _current_request_context.reset(token)

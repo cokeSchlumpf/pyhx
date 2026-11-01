@@ -8,7 +8,8 @@ placeholders are named (``{name}``) and filled after the translation.
 Texts are looked up in the app's catalog
 (``<project root>/locale/<lang>/LC_MESSAGES/messages.po``, or
 ``WebApp(locale_dir=…)``), then in pyhx's catalog (de, it, fr), then the
-source text is used. ``python -m pyhx.i18n update`` extracts the marked texts
+source text is used. The ``format_*`` helpers format numbers, dates and
+times in the language and timezone of the request. ``python -m pyhx.i18n update`` extracts the marked texts
 into the catalogs, ``python -m pyhx.i18n check`` finds missing translations.
 
 The language of a request comes from the session, the signed-in user, the
@@ -32,6 +33,15 @@ from pyhx.core.primitives.negotiate_locale import (
     use_locale,
 )
 
+from ._format import (
+    format_currency,
+    format_date,
+    format_datetime,
+    format_number,
+    format_percent,
+    format_relative_time,
+    format_time,
+)
 from ._translate import _, _l, _n, _p, t
 
 __all__ = [
@@ -40,6 +50,13 @@ __all__ = [
     "_l",
     "_n",
     "_p",
+    "format_currency",
+    "format_date",
+    "format_datetime",
+    "format_number",
+    "format_percent",
+    "format_relative_time",
+    "format_time",
     "negotiate_locale",
     "resolve_locale",
     "t",

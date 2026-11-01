@@ -16,7 +16,7 @@ from pyhx.core.primitives.negotiate_locale import (
     resolve_locale,
     use_locale,
 )
-from pyhx.core.request_context import RequestContext, set_request_context
+from pyhx.core.request_context import RequestContext
 from pyhx.core.webapp import WebApp
 
 
@@ -118,24 +118,24 @@ class TestNegotiateLocale:
         assert negotiate_locale() == "en"
         assert negotiate_locale(fallback="de") == "de"
 
-    def test_default_when_nothing_matches(self, locale_settings):
-        set_request_context(_context(accept_language="es"))
+    def test_default_when_nothing_matches(self, locale_settings, set_context):
+        set_context(_context(accept_language="es"))
         assert negotiate_locale() == "en"
         assert negotiate_locale(fallback="fr") == "fr"
 
-    def test_resolved_once_per_request(self, monkeypatch):
+    def test_resolved_once_per_request(self, monkeypatch, set_context):
         calls = []
         settings = LocaleSettings(supported_locales=["en", "de"])
         monkeypatch.setattr(
             LocaleSettings, "read", staticmethod(lambda: calls.append(1) or settings)
         )
-        set_request_context(_context(accept_language="de"))
+        set_context(_context(accept_language="de"))
 
         assert [negotiate_locale() for _ in range(5)] == ["de"] * 5
         assert len(calls) == 1
 
-    def test_use_locale_wins_and_is_reset(self):
-        set_request_context(_context(accept_language="de"))
+    def test_use_locale_wins_and_is_reset(self, set_context):
+        set_context(_context(accept_language="de"))
         with use_locale("it"):
             assert negotiate_locale() == "it"
             with use_locale("es"):

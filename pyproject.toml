@@ -14,7 +14,6 @@ packages = [{ include = "pyhx", from = "src" }]
 babel = "^2.18"
 fastapi = {extras = ["standard"], version = "^0.141.1"}
 htpy = "^26.5.1"
-humanize = "^4.15.0"
 itsdangerous = "^2.2.0"
 markdown-it-py = "^4.2.0"
 nh3 = "^0.3.5"
