@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.1.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.0.0...v1.1.0) (2026-11-01)
+
+
+### Features
+
+* Default the base URL of login links to the public URL of the app (T-007) ([#14](https://github.com/cokeSchlumpf/pyhx/issues/14)) ([d572f24](https://github.com/cokeSchlumpf/pyhx/commit/d572f2445b5a3b40dfb27f7e27b3e7c41d25be53))
+
 ## [1.0.0](https://github.com/cokeSchlumpf/pyhx/compare/v0.3.0...v1.0.0) (2026-11-01)
 
 
