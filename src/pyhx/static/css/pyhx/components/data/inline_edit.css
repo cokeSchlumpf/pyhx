@@ -100,25 +100,28 @@
     flex-direction: column;
     grid-column: 1 / -1;
     grid-row: 2;
-    gap: var(--hx-spacing-sm);
+    gap: var(--hx-spacing-md);
 
     /* Box */
     margin: var(--hx-spacing-xs) 0 var(--hx-spacing-sm);
 }
 
-/* Pico spaces form controls for stacked forms; here the actions follow
-   directly. */
-.hx-inline-edit__fields > .hx-form-field,
-.hx-inline-edit__fields input,
-.hx-inline-edit__fields select,
-.hx-inline-edit__fields textarea {
-    /* Box */
-    margin-bottom: 0;
+.hx-inline-edit__fields {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-md);
 }
 
-.hx-inline-edit__fields > .hx-form-field + .hx-form-field {
+/* Pico (and the canvas design's form fields) space controls for stacked
+   forms; here the fields sit in a column with a gap and the actions follow
+   directly. The canvas rule is repeated with its scope to win over
+   `[data-hx-design="canvas"] .hx-form-field`. */
+.hx-inline-edit__fields > .hx-form-field,
+[data-hx-design="canvas"] .hx-inline-edit__fields > .hx-form-field,
+.hx-inline-edit__fields > .hx-form-field > :is(input, select, textarea) {
     /* Box */
-    margin-top: var(--hx-spacing-sm);
+    margin-bottom: 0;
 }
 
 .hx-inline-edit__fields small {
