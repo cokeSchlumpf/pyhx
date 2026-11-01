@@ -8,6 +8,7 @@ Shared rules, written by `core-tools update-claude-md` (plugin `core-agent-skill
 - Every change goes through `changes/` (see `changes/README.md`): intent, spec, plan, each accepted by the developer before the next one is written. Use the skills `start-change`, `specify-change`, `plan-change` and `close-change`.
 - No code before the plan is accepted. Implement one step at a time and stop for a review after each step.
 - Only an explicit "yes" is acceptance; a hedged answer ("yes, but I need to look into it") is not. Ask.
+- A change that changes what users see keeps its screenshots (before and after, desktop and phone width) in `screenshots/` of its change folder, committed with the change, linked from the Outcome of its spec and shown in the pull request by raw URLs on `main`; never on a separate branch, whose images break when it is deleted.
 
 ### Git and pull requests
 
@@ -51,4 +52,4 @@ Details: `core--docs/notes/2026-10-30-1905--python-libraries-on-github.md` of co
 - Decisions of the project are in `docs/decisions/` (new ones from `0000-00-00--template.md`): NumPy-style docstrings, CSS authoring conventions.
 - Checks: `poetry run poe check` (lint, types, tests) and `poetry run poe docs-build`; `poetry run poe fix` formats.
 - Texts users see are marked for translation (`_`, `_n`, `_p`, `_l`, `t` of `pyhx.i18n`; English source text, named placeholders, whole sentences). A change that adds or changes such texts runs `poetry run python -m pyhx.i18n update --package src/pyhx --catalogs src/pyhx/locale --domain pyhx --locales de,it,fr` and translates the new entries of `src/pyhx/locale/{de,it,fr}` in the same change, so the check in `poe check` passes. Guide: `docs/guides/i18n.md`.
-- Screenshots of a change (before and after, desktop and phone width, taken from the samples) are committed with the change to `changes/<state>/T-<n>--<slug>/screenshots/`, named `<template>--<page or state>--<desktop|phone|before>.png` (e.g. `canvas-shell--forms--desktop.png`), linked from the Outcome of its spec and shown in the pull request by raw URLs on `main`. No separate screenshot branches: their images break when the branch is deleted. Leave out large full-page images that show nothing a sentence can't say.
+- Screenshots in `screenshots/` of a change folder (shared rule above) are taken from the samples and named `<template>--<page or state>--<desktop|phone|before>.png`, e.g. `canvas-shell--forms--desktop.png`. Leave out large full-page images that show nothing a sentence can't say.
