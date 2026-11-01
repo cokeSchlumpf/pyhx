@@ -158,6 +158,10 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **F5** The form gets the focus once htmx has settled the swap (about 20 ms after the response); keys typed in that moment go to the page.
 - **D1** The card "Extrahierte Angaben" of the dossier sample starts expanded (`open=True`) instead of collapsed, so the editable values are visible; it stays collapsible.
 - **D2** The label and the hint share a heading line (`hx-inline-edit__heading`), so the hint follows the label as in the design instead of sitting at the right edge.
+- **D3** After merging `main` (T-005 multilingual apps, canvas form controls): the default texts are `pyhx.i18n` texts with de/it/fr catalog entries ("Save", "Cancel", "Esc cancels · ↵ saves", and "Edit {label}" as the edit button's accessible name). `edit_label` is now the whole accessible name (default "Edit <label>", translated) instead of a prefix joined with the label, so translations can order the words; the dossier sample passes only its own save label ("Korrektur speichern").
+- **D4** The canvas form controls give `.hx-form-field` a bottom margin; the inline form's fields sit in a column with a gap instead, with the margin reset in the canvas scope too. Fields and buttons keep the default (36 px) size, as the spec decided (R15); `samples/canvas_layout` → `/forms` uses `sm` buttons in its aside correction form.
+- **F6** `form_field` derives the ids of its label and help text from the field name only, so two open forms with the same field name in two groups share ids. Fixing it needs an id prefix on `form_field` (a primitive outside this component), so it is left open below.
+- **F7** The AppShell sidebar of `samples/components` renders its items in a row on `main` too (seen while taking the screenshots); not caused by this change, so the AppShell screenshots show the example only.
 
 Checked in Chromium with a Playwright script against both samples (Enter saves, Esc and the cancel button cancel without a request, opening a second item of a group closes the first, focus into the field and back to the edit button, focus to the invalid field, no horizontal overflow at 390px, no console errors). Screenshots: branch `design/inline-edit-screenshots`, folder `inline-edit/`.
 
@@ -165,6 +169,6 @@ Rollout: with the pull request of `feature/inline-edit`, released as a `feat` of
 
 Open after this change:
 
-- `main` moved on while this change was built (T-005 "multilingual apps", canvas form controls); `samples/canvas_layout/main.py` conflicts (both add a router and a docstring paragraph), and the default texts of `InlineEdit` (`Save`, `Cancel`, `Edit`, the keyboard hint) should become `pyhx.i18n` texts with catalog entries like the other components'. Owner: Michael Wellner.
-- The compact look of the design (label left, 32px field, 28px buttons) follows when T-006 is merged; the component sets no sizes of its own. Owner: Michael Wellner.
-- Duplicate `form_field` help-text ids when two forms with the same field name are open in two groups (concern 1). Owner: Michael Wellner.
+- The compact look of the design (label left, 32px field, 28px buttons) follows with the compact size of the canvas design; the component sets no sizes of its own. Owner: Michael Wellner.
+- Duplicate `form_field` ids when two forms with the same field name are open in two groups (F6): an id prefix for `form_field`. Owner: Michael Wellner.
+- The AppShell sidebar of `samples/components` (F7). Owner: Michael Wellner.
