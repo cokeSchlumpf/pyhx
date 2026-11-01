@@ -13,7 +13,7 @@ a database round-trip and the chosen set survives switching back and forth.
 """
 
 from collections.abc import Sequence
-from typing import Annotated, Literal, cast
+from typing import Annotated, Any, ClassVar, Literal, cast
 from uuid import uuid4
 
 import htpy as y
@@ -22,8 +22,10 @@ from pydantic import BaseModel, Field
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames, htmx
+from pyhx.i18n import _l
 
 from ..view_model import Option
+from ._labels import TranslatedLabels
 from .drawer_select import DrawerSelectLabels, drawer_select
 from .dropdown import dropdown_checkbox
 from .segment_control import segment_control
@@ -38,7 +40,7 @@ SelectControl = Literal["drawer", "dropdown", "checkbox"]
 """Which multi-select to reveal in ``"specific"`` mode."""
 
 
-class ConditionalSelectLabels(BaseModel):
+class ConditionalSelectLabels(TranslatedLabels):
     """User-facing text for a ``conditional_select``.
 
     A single instance is configured on the public call and stored on the props,
@@ -47,16 +49,22 @@ class ConditionalSelectLabels(BaseModel):
     """
 
     # --- Mode toggle ---
-    all_option: str = "All"
-    specific_option: str = "Selected"
+    all_option: str | None = None
+    specific_option: str | None = None
 
     # --- Forwarded to the revealed control ---
     drawer: DrawerSelectLabels = Field(default_factory=DrawerSelectLabels)
     """Labels for the ``drawer_select`` (``control="drawer"``)."""
-    placeholder: str = "Select ..."
+    placeholder: str | None = None
     """Summary placeholder for the ``dropdown_checkbox`` (``control="dropdown"``)."""
     fieldset_legend: str = ""
     """``<legend>`` text for the ``checkbox_fieldset`` (``control="checkbox"``)."""
+
+    _defaults: ClassVar[dict[str, Any]] = {
+        "all_option": _l("All"),
+        "specific_option": _l("Selected"),
+        "placeholder": _l("Select ..."),
+    }
 
 
 class ConditionalSelectProps(BaseModel):
@@ -203,8 +211,8 @@ def _render(props: ConditionalSelectProps, **kwargs) -> y.Node:
             segment_control(
                 props.mode_name,
                 options=[
-                    Option.of(props.labels.all_option, "all"),
-                    Option.of(props.labels.specific_option, "specific"),
+                    Option.of(props.labels.all_option or "", "all"),
+                    Option.of(props.labels.specific_option or "", "specific"),
                 ],
                 value=str(props.mode),
                 disabled=props.disabled,
@@ -228,7 +236,7 @@ def _revealed_control(props: ConditionalSelectProps) -> y.Node:
             props.name,
             props.options,
             value=props.value,
-            placeholder=props.labels.placeholder,
+            placeholder=props.labels.placeholder or "",
             disabled=props.disabled,
         )
     return checkbox_fieldset(

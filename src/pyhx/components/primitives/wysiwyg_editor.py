@@ -7,6 +7,7 @@ from markupsafe import Markup
 from pyhx.core import component
 from pyhx.core.primitives import classnames, htmx
 from pyhx.core.primitives.icon_name import IconName
+from pyhx.i18n import _l
 
 from .button import button
 
@@ -22,10 +23,11 @@ _COMMAND_ICONS: dict[str, IconName] = {
 
 
 _COMMAND_TITLES = {
-    "bold": "Bold",
-    "italic": "Italic",
-    "underline": "Underline",
-    "insertUnorderedList": "Bullet list",
+    # Translators: toolbar buttons of the rich text editor.
+    "bold": _l("Bold"),
+    "italic": _l("Italic"),
+    "underline": _l("Underline"),
+    "insertUnorderedList": _l("Bullet list"),
 }
 
 
@@ -82,8 +84,8 @@ def wysiwyg_editor(
     toolbar_buttons = [
         button(
             icon=_COMMAND_ICONS.get(command, "edit"),
-            aria_label=_COMMAND_TITLES.get(command, command),
-            title=_COMMAND_TITLES.get(command, command),
+            aria_label=str(_COMMAND_TITLES.get(command, command)),
+            title=str(_COMMAND_TITLES.get(command, command)),
             type="button",
             appearance="neutral",
             variant="ghost",

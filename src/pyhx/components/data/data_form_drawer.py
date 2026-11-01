@@ -6,11 +6,16 @@ from pydantic import BaseModel
 from pyhx.core.fragment import FragmentResult
 from pyhx.core.primitives import htmx
 from pyhx.core.webapp_routes import WebAppRoutes
+from pyhx.i18n import _
 
 from ..layouts import DRAWER_CONTENT_ID, close_drawer, drawer_content
 from ..primitives import button
 from ..variants import FormSize
 from .data_form import DataForm
+
+
+def _resolve(label: str | Callable[[], str] | None) -> str | None:
+    return label() if callable(label) else label
 
 
 class DataFormDrawer[T: BaseModel]:
@@ -21,20 +26,22 @@ class DataFormDrawer[T: BaseModel]:
         name: str,
         type: type[T],
         handle_submit: Callable[[T], Awaitable[FragmentResult]],
-        submit_label: str | None = None,
+        submit_label: str | Callable[[], str] | None = None,
         field_order: list[str] | None = None,
-        cancel_label: str | None = None,
-        dialog_title: str | None = None,
+        cancel_label: str | Callable[[], str] | None = None,
+        dialog_title: str | Callable[[], str] | None = None,
         size: FormSize | None = None,
     ) -> None:
         """A :class:`DataForm` in a drawer, with cancel and a delete slot.
 
-        ``size`` is passed to the :class:`DataForm`: ``None`` (default) makes
-        the form compact in the canvas design, as every form in a drawer;
-        ``"md"`` keeps the full size.
+        ``size`` is passed to the :class:`DataForm`: ``None`` (default) sizes
+        it by its place, which in the canvas design makes it compact like
+        every form in a drawer; ``"md"`` keeps the full size.
         """
-        self.cancel_label = cancel_label or "Cancel"
-        self.dialog_title = dialog_title or "Edit"
+        # Kept unresolved: a callable or a default is resolved at render time,
+        # in the language of the request.
+        self.cancel_label = cancel_label
+        self.dialog_title = dialog_title
 
         self.form = DataForm[T](
             routes=routes,
@@ -60,8 +67,9 @@ class DataFormDrawer[T: BaseModel]:
         only places it, the same way ``DataForm.render``'s own ``actions``
         slot works. ``None`` (default) omits the divider and the slot entirely.
         """
-        cancel_label = cancel_label or self.cancel_label
-        dialog_title = dialog_title or self.dialog_title
+        cancel_label = cancel_label or _resolve(self.cancel_label) or _("Cancel")
+        # Translators: default title of the drawer with the edit form.
+        dialog_title = dialog_title or _resolve(self.dialog_title) or _("Edit")
 
         # The classes let the canvas design lay the form out as a scrolling
         # body above a fixed footer (data_form.css); the submit button stays

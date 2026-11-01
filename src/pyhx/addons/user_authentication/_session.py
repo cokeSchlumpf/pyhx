@@ -13,13 +13,20 @@ import time
 from typing import Any, Literal, cast
 
 from commons.settings import read_settings_object
-from commons.users import User, UsersRepository
+from commons.users import RegisteredUser, User, UsersRepository
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.requests import HTTPConnection
+from starlette.requests import HTTPConnection, Request
+from starlette.responses import PlainTextResponse, RedirectResponse, Response
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from pyhx.core import WebApp
+from pyhx.core.primitives.negotiate_locale import (
+    LOCALE_SWITCH_PATH,
+    SESSION_LOCALE_KEY,
+    LocaleSettings,
+    match_locale,
+)
 
 LOG = logging.getLogger(__package__)
 
@@ -160,6 +167,46 @@ def _renew(session: dict[str, Any]) -> None:
         session[SESSION_LAST_SEEN_KEY] = now
 
 
+def safe_next(value: object) -> str | None:
+    """Return ``value`` only when it's safe as a redirect target — a
+    same-origin path starting with a single ``/``.
+
+    Rejects protocol-relative URLs (``//evil.example``, also written
+    ``/\\evil.example``, which browsers read the same way) and absolute
+    URLs (``https://evil.example/...``) which would bounce the user off-site.
+    """
+    if not isinstance(value, str) or not value.startswith("/"):
+        return None
+    if value.startswith(("//", "/\\")):
+        return None
+    return value
+
+
+def _locale_switch_endpoint(users: UsersRepository):
+    """The handler of ``POST /_pyhx/locale``: store the chosen language and go back."""
+
+    async def switch_locale(request: Request) -> Response:
+        form = await request.form()
+        locale = match_locale(
+            str(form.get("locale") or ""), LocaleSettings.read().supported_locales
+        )
+        if locale is None:
+            return PlainTextResponse("Unknown language.", status_code=400)
+
+        request.session[SESSION_LOCALE_KEY] = locale
+        user = getattr(request.state, "user", None)
+        if isinstance(user, RegisteredUser) and user.locale != locale:
+            user.locale = locale
+            await asyncio.to_thread(users.upsert_user, user)
+
+        if request.headers.get("hx-request") == "true":
+            # Reload the whole page, so nothing stays in the old language.
+            return Response(status_code=200, headers={"HX-Refresh": "true"})
+        return RedirectResponse(safe_next(form.get("next")) or "/", status_code=303)
+
+    return switch_locale
+
+
 def login_user(connection: HTTPConnection, user: User) -> None:
     """Mark this session as belonging to ``user``. Call from a login
     handler after verifying credentials. Works with both ``Request`` and
@@ -255,6 +302,12 @@ def configure_user_session(
         path = settings.sessions_path
 
     def configure_middleware(app: FastAPI) -> None:
+        app.add_api_route(
+            LOCALE_SWITCH_PATH,
+            _locale_switch_endpoint(users),
+            methods=["POST"],
+            include_in_schema=False,
+        )
         app.add_middleware(CookieUserSession, users=users)
         app.add_middleware(
             SessionMiddleware,

@@ -84,6 +84,21 @@
             margin-inline: auto;
         }
 
+        /* `header_content` and the settings menu; the menu stays outside the
+           content's `overflow: hidden`, which would clip its dropdown. */
+        .hx-canvas-shell__header-end {
+            /* Layout */
+            display: flex;
+            align-items: center;
+            gap: var(--header--gap);
+
+            /* Box */
+            min-width: 0;
+
+            /* Typography */
+            color: var(--hx-color-neutral-600);
+        }
+
         .hx-canvas-shell__header-content {
             /* Layout */
             display: flex;

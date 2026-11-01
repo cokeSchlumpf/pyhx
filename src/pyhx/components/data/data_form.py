@@ -11,6 +11,7 @@ from pydantic import BaseModel, ValidationError
 from pyhx.core.fragment import FragmentResult
 from pyhx.core.primitives import htmx
 from pyhx.core.webapp_routes import WebAppRoutes
+from pyhx.i18n import _
 
 from ..primitives import (
     button,
@@ -95,7 +96,7 @@ class DataForm[T: BaseModel]:
         name: str,
         type: type[T],
         handle_submit: Callable[[T], Awaitable[FragmentResult]],
-        submit_label: str | None = None,
+        submit_label: str | Callable[[], str] | None = None,
         field_order: list[str] | None = None,
         size: FormSize | None = None,
     ) -> None:
@@ -200,6 +201,13 @@ class DataForm[T: BaseModel]:
             "POST",
             validate_form,
         )
+
+    def _submit_label(self) -> str:
+        """The submit button's text: ``submit_label`` (a callable is called at
+        render time, so it can translate), else the model's ``@form`` label."""
+        if callable(self.submit_label):
+            return self.submit_label()
+        return self.submit_label or self.form_config.submit_label()
 
     async def render(
         self,
@@ -328,7 +336,7 @@ class DataForm[T: BaseModel]:
                         y.div[
                             actions,
                             button(
-                                self.submit_label or self.form_config.submit_label(),
+                                self._submit_label(),
                                 appearance="primary",
                                 type="submit",
                                 disabled=disabled or bool(errors),
@@ -470,8 +478,9 @@ class DataForm[T: BaseModel]:
         if isinstance(annotation, HiddenField):
             return y.input(type="hidden", name=field, value=current_value_str)
 
-        label = annotation.label or to_title_case(field)
-        help_text = annotation.help_text
+        # ``str()`` resolves labels marked with ``_l`` in the request language.
+        label = str(annotation.label) if annotation.label else to_title_case(field)
+        help_text = str(annotation.help_text) if annotation.help_text else None
         required = self.type.model_fields[field].is_required()
         span_class = _span_class(annotation)
 
@@ -678,8 +687,8 @@ class DataForm[T: BaseModel]:
     ) -> y.Node:
         if isinstance(control, BooleanSegmentControl):
             options = [
-                Option(label=control.true_label, value="true"),
-                Option(label=control.false_label, value="false"),
+                Option(label=control.true_label or _("Yes"), value="true"),
+                Option(label=control.false_label or _("No"), value="false"),
             ]
 
             return form_field(
@@ -698,7 +707,7 @@ class DataForm[T: BaseModel]:
             return checkbox_fieldset(
                 label,
                 field,
-                (Option(label=control.label, value="true"),),
+                (Option(label=control.label or _("Yes"), value="true"),),
                 value=("true",) if current_value else (),
                 disabled=disabled,
                 class_=class_,
@@ -706,8 +715,8 @@ class DataForm[T: BaseModel]:
 
         if isinstance(control, BooleanRadioFieldsetControl):
             boolean_options = (
-                Option(label=control.true_label, value="true"),
-                Option(label=control.false_label, value="false"),
+                Option(label=control.true_label or _("Yes"), value="true"),
+                Option(label=control.false_label or _("No"), value="false"),
             )
             return radio_fieldset(
                 label,

@@ -2,6 +2,26 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.3.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.0...v1.3.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **i18n:** extract texts from directories starting with an underscore ([a464b9e](https://github.com/cokeSchlumpf/pyhx/commit/a464b9ebcd4081b92186bb9b30b746362c3a51ba))
+
+## [1.3.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.2.0...v1.3.0) (2026-11-01)
+
+
+### Features
+
+* make apps multilingual (T-005) ([b7a6f0d](https://github.com/cokeSchlumpf/pyhx/commit/b7a6f0dddc2d9ab9a7767a04968e6f573038fa29))
+* style form controls of the canvas design ([#23](https://github.com/cokeSchlumpf/pyhx/issues/23)) ([975d53f](https://github.com/cokeSchlumpf/pyhx/commit/975d53fb7d6deaad3193eebcdb12549fb4bd4b48))
+
+
+### Bug Fixes
+
+* **user-authentication:** show the secondary links of the login pages below the card ([#21](https://github.com/cokeSchlumpf/pyhx/issues/21)) ([ec8696b](https://github.com/cokeSchlumpf/pyhx/commit/ec8696b81a9cf151487cab659efe1eeb5a4404e6))
+
 ## [1.2.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.1.0...v1.2.0) (2026-11-01)
 
 
