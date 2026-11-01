@@ -1,0 +1,87 @@
+/* --- Form controls of the canvas design ---
+
+   Colours, radius and padding come from Pico's tokens, set in
+   themes/canvas.css. These rules cover what Pico has no token for, or sets
+   on the element itself (where a :root token can't reach). They only apply
+   in the canvas design.
+
+   The pyhx layer beats Pico whatever the specificity, so a rule that sets a
+   border colour leaves out the error state (aria-invalid="true") and focus,
+   or Pico's colours for them would be lost. */
+
+[data-hx-design="canvas"] :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]), select, textarea) {
+    /* Tokens */
+    --pico-outline-width: 0.1875rem; /* focus ring, 3px */
+
+    /* Typography */
+    font-size: var(--hx-text-control);
+}
+
+/* Pico gives text inputs this height, but not selects. */
+[data-hx-design="canvas"] select:not([multiple], [size]) {
+    /* Box */
+    height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2);
+}
+
+[data-hx-design="canvas"] textarea {
+    /* Box */
+    padding-block: 0.4375rem;
+}
+
+[data-hx-design="canvas"] :where(input:not([type="range"], [type="file"]), select, textarea):hover:not(:focus, :disabled, [readonly], [aria-invalid="true"], :checked) {
+    /* Tokens */
+    --pico-border-color: var(--hx-color-neutral-500);
+}
+
+
+/* --- Read-only and disabled ---
+   Read-only stays a control (its border keeps 3:1), dashed so it reads as
+   not editable. Disabled text controls get their own colours instead of
+   Pico's opacity; checkboxes, radios and switches keep the opacity, which
+   keeps a checked one recognisable. */
+
+[data-hx-design="canvas"] :where(input, textarea)[readonly] {
+    /* Tokens */
+    --pico-background-color: var(--hx-color-neutral-050);
+
+    /* Box */
+    border-style: dashed;
+}
+
+[data-hx-design="canvas"] :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]), select, textarea):disabled {
+    /* Tokens */
+    --pico-background-color: var(--hx-color-neutral-100);
+    --pico-border-color: var(--hx-color-neutral-200);
+    --pico-color: var(--hx-color-neutral-500);
+
+    /* Visual */
+    opacity: 1;
+}
+
+
+/* --- Checkbox and radio --- */
+
+[data-hx-design="canvas"] :where([type="checkbox"]:not([role="switch"]), [type="radio"]) {
+    /* Tokens */
+    --pico-border-width: 1px;
+
+    /* Box */
+    width: var(--hx-control-size);
+    height: var(--hx-control-size);
+}
+
+[data-hx-design="canvas"] [type="checkbox"]:not([role="switch"]) {
+    /* Box */
+    border-radius: var(--hx-radius-md);
+}
+
+/* Pico's focus ring uses the faint focus colour of text controls; small
+   controls get an outline in the text colour instead (1.4.11). */
+[data-hx-design="canvas"] :where([type="checkbox"], [type="radio"]):focus-visible {
+    /* Tokens */
+    --pico-box-shadow: none;
+
+    /* Box */
+    outline: 2px solid var(--hx-color-text);
+    outline-offset: 2px;
+}

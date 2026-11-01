@@ -51,7 +51,8 @@
     --hx-color-danger-050: #FFF7ED;   /* orange-50 */
     --hx-color-danger-100: #FFEDD4;   /* orange-100 */
     --hx-color-danger-500: #FF6900;   /* orange-500 */
-    --hx-color-danger-600: #F54A00;   /* orange-600 */
+    --hx-color-danger-600: #F54A00;   /* orange-600, 3.58:1 on white: borders, not text */
+    --hx-color-danger-700: #CA3500;   /* orange-700, 5.22:1 on white: error text */
 
     /* Warning: amber */
     --hx-color-warning-050: #FFFBEB;  /* amber-50 */
@@ -69,4 +70,36 @@
     /* Info: sky */
     --hx-color-info-050: #F0F9FF;     /* sky-50 */
     --hx-color-info-600: #0084D1;     /* sky-600 */
+
+    /* Form controls (Pico's tokens; element rules: pyhx/elements/form.css).
+       Accent is the text colour, not blue. Contrast (WCAG 2.2 AA):
+       control borders >= 3:1 against white, #FAFAFA and the canvas #EEEEEE
+       (1.4.11); neutral-300 (1.48:1) and neutral-400 (2.58:1) are too light. */
+    --pico-border-radius: var(--hx-radius-lg);                        /* 8px */
+    --pico-form-element-spacing-vertical: 0.3125rem;                  /* 36px controls */
+    --pico-form-element-spacing-horizontal: 0.625rem;
+    --pico-form-element-background-color: var(--hx-color-background);
+    --pico-form-element-border-color: #878787;                        /* 3.59:1 white, 3.10:1 #EEEEEE */
+    --pico-form-element-color: var(--hx-color-text);
+    --pico-form-element-placeholder-color: var(--hx-color-neutral-500); /* 4.74:1 */
+    --pico-form-element-active-border-color: var(--hx-color-text);
+    --pico-form-element-focus-color: rgb(23 23 23 / 0.10);
+    --pico-form-element-invalid-border-color: var(--hx-color-danger-600);
+    --pico-form-element-invalid-active-border-color: var(--hx-color-danger-600);
+    --pico-form-element-invalid-focus-color: rgb(245 74 0 / 0.15);
+    --pico-form-element-valid-border-color: #878787;
+    --pico-form-element-valid-active-border-color: var(--hx-color-text);
+    --pico-form-element-valid-focus-color: rgb(23 23 23 / 0.10);
+    --pico-form-element-disabled-opacity: 0.5;
+    --pico-primary-background: var(--hx-color-text);                  /* checked controls, Pico buttons */
+    --pico-primary-border: var(--hx-color-text);
+    --pico-primary-hover-background: var(--hx-color-neutral-700);
+    --pico-primary-hover-border: var(--hx-color-neutral-700);
+    --pico-primary-focus: rgb(23 23 23 / 0.25);
+    --pico-primary-inverse: var(--hx-color-background);
+    --pico-switch-background-color: #878787;
+    --pico-switch-checked-background-color: var(--hx-color-text);
+    --pico-muted-color: var(--hx-color-neutral-500);
+    --hx-control-size: 1rem;     /* checkbox/radio, 16px */
+    --hx-control-indent: 1.5rem; /* control-size + control-gap */
 }
