@@ -13,6 +13,7 @@ from ..layouts import page_header
 from ._model_type import ModelType
 from .column import Column
 from .data_section import CM, EM, TM, CanEdit, DataSection, ExtraOobFn, T
+from .quick_filter import QuickFilters, TableSearch
 from .sources import (
     DataSource,
     HierarchicalDataSource,
@@ -57,6 +58,9 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_columns_order: SyncOrAsyncValue[list[str] | None] = None,
         table_initially_expanded: bool = False,
         table_enable_sort_and_filter: bool = True,
+        table_quick_filters: QuickFilters | None = None,
+        table_search: TableSearch | None = None,
+        table_url_param_keys: list[str] | None = None,
         fragments_path: Path | None = None,
         hidden_params: dict[str, str] | None = None,
     ) -> None:
@@ -171,6 +175,16 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_enable_sort_and_filter : bool, optional
             Show the sort/filter toolbar and enable per-column sorting and
             filtering. Defaults to ``True``.
+        table_quick_filters : QuickFilters, optional
+            Quick filter pills above the table (flat tables only), see
+            :class:`DataTable`'s ``quick_filters``. The active pill is kept in
+            the URL, so other pages can link to a filtered list.
+        table_search : TableSearch, optional
+            Label, placeholder and URL parameter of the table's search field
+            (flat tables only), see :class:`DataTable`'s ``search``.
+        table_url_param_keys : list[str], optional
+            Filter keys mirrored into the URL, see :class:`DataTable`'s
+            ``url_param_keys``.
         fragments_path : Path, optional
             Static base path under which the section's HTMX fragment
             endpoints are registered. When omitted it is ``Path(path)``
@@ -232,6 +246,9 @@ class DataPage(Generic[T, TM, EM, CM]):
             table_columns_order=table_columns_order,
             table_initially_expanded=table_initially_expanded,
             table_enable_sort_and_filter=table_enable_sort_and_filter,
+            table_quick_filters=table_quick_filters,
+            table_search=table_search,
+            table_url_param_keys=table_url_param_keys,
             # A DataPage renders a full-page table, which always gets its own
             # scroll container (paired with the app-shell full-height layout).
             table_scrollable=True,
