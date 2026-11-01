@@ -63,9 +63,8 @@ class TestAnonymous:
     def test_switcher_is_on_the_page(self):
         page = browser().get("/").text
 
-        assert all(
-            name in page for name in ("English", "Deutsch", "Italiano", "Français")
-        )
+        assert all(f"<span>{code}</span>" in page for code in ("EN", "DE", "IT", "FR"))
+        assert "Profile settings" in page
 
 
 class TestSignedIn:

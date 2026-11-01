@@ -72,7 +72,7 @@
     flex-direction: column;
 
     /* Box */
-    width: 15rem;
+    width: 16rem;
     border: var(--hx-border-width-sm) solid var(--hx-color-neutral-300);
     border-radius: var(--hx-radius-lg);
 
@@ -184,68 +184,6 @@
     }
 }
 
-/* The choices: a segmented row, one equal column per option. */
-.hx-settings-menu__choices {
-    /* Layout */
-    display: grid;
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-flow: column;
-
-    /* Box */
-    margin: 0;
-    border: var(--hx-border-width-sm) solid var(--hx-color-neutral-400);
-    border-radius: var(--hx-radius-md);
-    overflow: hidden;
-
-    & > button {
-        /* Box */
-        width: auto;
-        height: 2rem;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        border-left: var(--hx-border-width-sm) solid var(--hx-color-neutral-400);
-        border-radius: 0;
-
-        /* Typography */
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.04em;
-        color: var(--hx-color-text);
-
-        /* Visual */
-        background-color: var(--hx-color-background);
-        box-shadow: none;
-
-        /* Interaction */
-        cursor: pointer;
-
-        &:first-of-type {
-            /* Box */
-            border-left: 0;
-        }
-
-        &:hover {
-            /* Visual */
-            background-color: var(--hx-color-neutral-100);
-        }
-
-        &:focus-visible {
-            /* Visual */
-            outline: 2px solid var(--hx-color-primary-focus);
-            outline-offset: -2px;
-        }
-
-        &[aria-pressed="true"] {
-            /* Typography */
-            color: var(--hx-color-white);
-
-            /* Visual */
-            background-color: var(--hx-color-primary);
-        }
-    }
-}
-
 /* --- Responsive --- */
 
 /* On a phone the dropdown spans the width below the header. */
@@ -261,18 +199,5 @@
         width: auto;
         border-width: 0 0 var(--hx-border-width-sm);
         border-radius: 0;
-    }
-
-    .hx-settings-menu__choices > button {
-        /* Box */
-        height: 2.75rem;
-    }
-}
-
-/* Touch input: targets of at least 44px, also on larger screens. */
-@media (pointer: coarse) {
-    .hx-settings-menu__choices > button {
-        /* Box */
-        height: 2.75rem;
     }
 }

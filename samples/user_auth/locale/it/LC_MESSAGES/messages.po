@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 21:15+0100\n"
+"POT-Creation-Date: 2026-11-01 21:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -19,44 +19,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: main.py:153
+#: main.py:151
 msgid "Amount"
 msgstr "Importo"
 
-#: main.py:152
+#: main.py:150
 msgid "Case"
 msgstr "Pratica"
 
-#: canvas.py:48 main.py:172 main.py:218 main.py:239
+#: canvas.py:48 canvas.py:68 main.py:170 main.py:216 main.py:237
 msgid "Home"
 msgstr "Home"
 
-#: main.py:234
+#: main.py:232
 msgid "Name"
 msgstr "Nome"
 
-#: main.py:154
+#: main.py:152
 msgid "Opened"
 msgstr "Aperta il"
 
-#: main.py:113 main.py:226 main.py:232
+#: canvas.py:60 canvas.py:64 main.py:224 main.py:230
 msgid "Profile"
 msgstr "Profilo"
 
-#: main.py:210 main.py:215
+#: main.py:111
+msgid "Profile settings"
+msgstr "Impostazioni del profilo"
+
+#: main.py:208 main.py:213
 msgid "Protected"
 msgstr "Protetta"
 
-#: main.py:202
+#: main.py:200
 msgid "Sign in"
 msgstr "Accedi"
 
-#: main.py:181
+#: main.py:179
 #, python-brace-format
 msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
 msgstr "Accedi come {jane} o {marco} (password {password}) oppure con {email}: il link e il codice compaiono nella console."
 
-#: canvas.py:55 main.py:114 main.py:204 main.py:220
+#: canvas.py:55 main.py:112 main.py:202 main.py:218
 msgid "Sign out"
 msgstr "Esci"
 
@@ -64,44 +68,44 @@ msgstr "Esci"
 msgid "Signed in"
 msgstr "Accesso effettuato"
 
-#: main.py:190
+#: main.py:188
 #, python-brace-format
 msgid "Signed in as {name}."
 msgstr "Accesso effettuato come {name}."
 
-#: main.py:155
+#: main.py:153
 msgid "Since"
 msgstr "Da"
 
-#: main.py:236
+#: canvas.py:67 main.py:234
 msgid "Stored language"
 msgstr "Lingua salvata"
 
-#: main.py:193
+#: main.py:191
 #, python-brace-format
 msgid "There is {n} open case worth {total}."
 msgid_plural "There are {n} open cases worth {total}."
 msgstr[0] "C'è {n} pratica aperta per un valore di {total}."
 msgstr[1] "Ci sono {n} pratiche aperte per un valore di {total}."
 
-#: main.py:178
+#: main.py:176
 msgid "User authentication sample"
 msgstr "Esempio: accesso utente"
 
-#: main.py:201
+#: main.py:199
 msgid "Visit the protected page"
 msgstr "Vai alla pagina protetta"
 
-#: main.py:188
+#: main.py:186
 msgid "You are not signed in."
 msgstr "Non hai effettuato l'accesso."
 
-#: canvas.py:54 main.py:216
+#: canvas.py:54 canvas.py:66 main.py:214
 #, python-brace-format
 msgid "You're signed in as {name}."
 msgstr "Hai effettuato l'accesso come {name}."
 
-#: main.py:237
+#: main.py:235
 msgid "none (the browser's language applies)"
 msgstr "nessuna (vale la lingua del browser)"
 

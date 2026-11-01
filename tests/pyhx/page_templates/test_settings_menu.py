@@ -63,15 +63,13 @@ class TestSettingsMenu:
         assert 'aria-label="Einstellungen"' in page
         assert '<h2 id="hx-settings-language">Sprache</h2><span>Deutsch</span>' in page
         assert 'action="/_pyhx/locale"' in page and 'name="next" value="/"' in page
-        for code, name in (
-            ("en", "English"),
-            ("de", "Deutsch"),
-            ("it", "Italiano"),
-            ("fr", "Français"),
-        ):
-            assert f'value="{code}" lang="{code}" title="{name}"' in page
-        assert page.count('aria-pressed="true"') == 1
-        assert 'aria-pressed="true">DE</button>' in page
+        assert 'hx-trigger="change"' in page
+        assert "hx-segment-control--md" in page
+        assert 'aria-labelledby="hx-settings-language"' in page
+        for code in ("en", "de", "it", "fr"):
+            assert f'name="locale" value="{code}"' in page
+        assert page.count(" checked") == 1
+        assert 'value="de" checked><span>DE</span>' in page
 
     @pytest.mark.parametrize("make", TEMPLATES)
     def test_no_gear_without_settings(self, make):

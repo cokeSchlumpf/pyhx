@@ -7,6 +7,8 @@ from typing import Protocol
 import htpy as y
 
 from pyhx.components.primitives.icon import icon
+from pyhx.components.primitives.segment_control import segment_control
+from pyhx.components.view_model import Option
 from pyhx.core.primitives import IconName
 from pyhx.core.primitives.lazy_text import Text
 from pyhx.i18n import _, locale_switch
@@ -78,8 +80,9 @@ class LanguageSetting:
     """Settings entry: the language of the app.
 
     Shows the offered languages (``[app.pyhx.core] supported_locales``) as
-    codes (EN | DE | IT | FR), the current one highlighted and written out
-    above. Choosing one posts to ``/_pyhx/locale`` (see
+    codes (EN | DE | IT | FR) in a ``segment_control``, the current one
+    selected and written out above. Choosing one posts to ``/_pyhx/locale``
+    (htmx, on change) (see
     :func:`pyhx.i18n.locale_switch`), which stores it in the session and, for
     a signed-in registered user, on the user, then reloads the page.
 
@@ -99,23 +102,21 @@ class LanguageSetting:
                 y.span[current],
             ],
             y.form(
-                ".hx-settings-menu__choices",
                 method="post",
                 action=switch.action,
                 hx_post=switch.action,
+                hx_trigger="change",
             )[
                 y.input(type="hidden", name="next", value=switch.next),
-                [
-                    y.button(
-                        type="submit",
-                        name="locale",
-                        value=option.locale,
-                        lang=option.locale,
-                        title=option.name,
-                        aria_pressed="true" if option.current else "false",
-                    )[option.locale.split("-")[0].upper()]
-                    for option in switch.options
-                ],
+                segment_control(
+                    "locale",
+                    [
+                        Option(label=o.locale.split("-")[0].upper(), value=o.locale)
+                        for o in switch.options
+                    ],
+                    value=next((o.locale for o in switch.options if o.current), None),
+                    aria_labelledby="hx-settings-language",
+                ),
             ],
         ]
 

@@ -99,12 +99,6 @@
             color: var(--hx-color-neutral-600);
         }
 
-        /* The current language like the active tab: near-black. */
-        .hx-settings-menu__choices > button[aria-pressed="true"] {
-            /* Visual */
-            background-color: var(--hx-color-neutral-900);
-        }
-
         .hx-canvas-shell__header-content {
             /* Layout */
             display: flex;

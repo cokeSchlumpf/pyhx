@@ -184,7 +184,7 @@
         /* --- Menu button --- */
 
         /* Not the buttons inside the settings menu's dropdown: they are
-           styled by the menu itself. */
+           styled by their own components. */
         .hx-menu-button,
         & > header button:not(.hx-settings-menu__panel *),
         & > header a[role="button"] {

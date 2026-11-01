@@ -25,8 +25,8 @@ of a request is the one chosen in the session, else the signed-in user's,
 else the browser's, else English. Try it:
 
 - As an anonymous visitor, switch the language in the settings menu (the gear
-  in the header: ``settings=[account_links, LanguageSetting()]``; the account
-  links, Profile and Sign out, appear once signed in): it is
+  in the header: ``settings=[ACCOUNT_LINKS, LanguageSetting()]``, with plain
+  link entries above the language): it is
   kept in the session only (open a private window: English or your browser's
   language again).
 - Sign in as ``jane`` and switch: the language is also stored on the user, so
@@ -105,18 +105,16 @@ def _build_users_repo() -> SQLUsersRepository:
 users = _build_users_repo()
 
 
-def account_links() -> y.Node:
-    """Settings entry of the sample: profile and sign-out, for signed-in users only."""
-    if isinstance(require_user(), AnonymousUser):
-        return None
-    return SettingsLinks(
-        SettingsLink(_l("Profile"), "/profile", icon="user"),
-        SettingsLink(_l("Sign out"), "/logout", icon="log-out"),
-    )()
+# Plain menu entries above the language (no functionality of their own:
+# "Profile settings" opens the profile page, "Sign out" signs out).
+ACCOUNT_LINKS = SettingsLinks(
+    SettingsLink(_l("Profile settings"), "/profile", icon="user"),
+    SettingsLink(_l("Sign out"), "/logout", icon="log-out"),
+)
 
 
 # The settings menu (gear in the header): account links above the language.
-SETTINGS = [account_links, LanguageSetting()]
+SETTINGS = [ACCOUNT_LINKS, LanguageSetting()]
 
 hx = WebApp(
     title="User Auth Sample",
