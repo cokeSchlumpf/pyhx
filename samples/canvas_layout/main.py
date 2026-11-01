@@ -7,7 +7,7 @@ Run with::
 One page per ``CanvasShell`` mode (``centered``, ``wide``, ``full``), each with
 breadcrumbs and placeholder content, plus a dossier page built from
 ``card``s in a ``split_layout`` (main column and sticky aside below the
-breadcrumbs). The panes of the ``full`` page are plain Pico ``<article>``
+breadcrumbs) and two ``DataPage``s, see :mod:`samples.canvas_layout.data_page`. The panes of the ``full`` page are plain Pico ``<article>``
 placeholders, since a document viewer has panes, not cards.
 
 Pages without navigation (all of the above) sit next to pages with a main
@@ -26,7 +26,7 @@ from pyhx.core.primitives import IconName
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
 
-from . import navigation
+from . import data_page, navigation
 from .header import header_content
 
 hx = WebApp(
@@ -35,6 +35,7 @@ hx = WebApp(
 )
 
 hx.include_router(navigation.router)
+hx.include_router(data_page.router)
 navigation.register_navigation(hx)
 
 
@@ -45,6 +46,14 @@ def _modes() -> y.Node:
         y.li[y.a(href="/full")["full"], " — full width, no padding"],
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
         y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
+        y.li[
+            y.a(href="/data-page")["data page"],
+            " — DataPage with the built-in create/edit drawer",
+        ],
+        y.li[
+            y.a(href="/data-page-detail")["data page (detail)"],
+            " — DataPage whose row click opens the detail page (can_edit callable)",
+        ],
         y.li[
             y.a(href="/cases")["tabs"],
             ' — main navigation as tabs (main_navigation="tabs")',
