@@ -98,6 +98,7 @@ Findings:
 
 - **F1** Pico's `nav` styles (row layout, centred items, negative margins, radius on links) leaked into both placements and had to be reset.
 - **F2** On a phone the page was wider than the viewport, also without navigation: the body grid column was `auto` (fixed, see Design). A raw `<table>` in the sample widened it as well; the sample wraps it in a scrolling container.
+- **F3** The screenshots of `samples/canvas_layout`, first kept on a separate branch for the PR description, are kept in `screenshots/` next to this spec: [tabs](screenshots/canvas-shell--tabs--desktop.png), [sidebar](screenshots/canvas-shell--sidebar--desktop.png), [sidebar in mode full](screenshots/canvas-shell--sidebar-full--desktop.png), [no navigation](screenshots/canvas-shell--no-navigation--desktop.png), and at phone width [tabs](screenshots/canvas-shell--tabs--phone.png) and [sidebar](screenshots/canvas-shell--sidebar--phone.png).
 
 Rollout: PR #17 (`feat: add an optional main navigation to CanvasShell`), squash-merged; the release (presumably 1.2.0) follows with the next Release PR. The screenshots in the PR description live on the branch `design/canvas-main-navigation-screenshots`, kept so they stay visible.
 
