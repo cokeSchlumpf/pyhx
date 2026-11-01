@@ -9,35 +9,33 @@ breadcrumbs and placeholder content, plus a dossier page built from
 ``card``s in a ``split_layout`` (main column and sticky aside below the
 breadcrumbs). The panes of the ``full`` page are plain Pico ``<article>``
 placeholders, since a document viewer has panes, not cards.
+
+Pages without navigation (all of the above) sit next to pages with a main
+navigation: tabs below the top bar and an admin sidebar, see
+:mod:`samples.canvas_layout.navigation`.
 """
 
 from typing import get_args
 
 import htpy as y
-import pyhx.components as c
 
+import pyhx.components as c
 from pyhx.components.variants import Appearance
+from pyhx.core import PageResponse, WebApp
 from pyhx.core.primitives import IconName
-from pyhx.core import PageResponse, RequestContext, WebApp
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
 
-
-def header_content() -> y.Node:
-    """Evaluated per request: shows the current user next to a static label.
-
-    The shell draws the separator line between the direct children.
-    """
-    return [
-        y.span["Muster AG"],
-        y.span[RequestContext.get().user.display_name],
-    ]
-
+from . import navigation
+from .header import header_content
 
 hx = WebApp(
     title="Canvas Layout",
     default_page_template=CanvasShell(header_content=header_content),
 )
+
+hx.include_router(navigation.router)
+navigation.register_navigation(hx)
 
 
 def _modes() -> y.Node:
@@ -47,6 +45,14 @@ def _modes() -> y.Node:
         y.li[y.a(href="/full")["full"], " — full width, no padding"],
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
         y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
+        y.li[
+            y.a(href="/cases")["tabs"],
+            ' — main navigation as tabs (main_navigation="tabs")',
+        ],
+        y.li[
+            y.a(href="/admin")["sidebar"],
+            ' — admin pages with a sidebar (main_navigation="sidebar", slot "admin")',
+        ],
     ]
 
 
@@ -217,9 +223,7 @@ def _documents() -> y.Node:
             ],
             c.chronicle.entry(date="05.04.2026", color="#7EA16B")[
                 c.chronicle.title[y.a(href="#")["Arztbericht Dr. Keller"], new],
-                c.meta(
-                    "Arztbericht", "Dr. med. Daniel Keller, Hausarzt", "4 Seiten"
-                ),
+                c.meta("Arztbericht", "Dr. med. Daniel Keller, Hausarzt", "4 Seiten"),
                 c.chronicle.text[
                     "Bisherige Tätigkeit weiterhin AU 100%, angepasste Tätigkeit ",
                     "50% zumutbar ab 01.04.2026 (S. 3)",
@@ -307,9 +311,7 @@ async def dossier() -> y.Node:
                             c.card.item[
                                 c.card.label[label],
                                 y.span[value],
-                                c.card.subtle[
-                                    y.a(href="#")[source],
-                                ],
+                                c.card.subtle[y.a(href="#")[source],],
                             ]
                             for label, value, source in (
                                 ("Tätigkeit", "Bauleiter", "Anmeldung S. 9"),
@@ -353,10 +355,7 @@ async def colors() -> y.Node:
                     style="margin-bottom: 0.75rem;",
                 ),
                 c.pill.container(
-                    *[
-                        c.pill(a, appearance=a, variant="outline")
-                        for a in appearances
-                    ],
+                    *[c.pill(a, appearance=a, variant="outline") for a in appearances],
                     style="margin-bottom: 0.75rem;",
                 ),
                 c.pill.container(

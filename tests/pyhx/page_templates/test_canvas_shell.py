@@ -100,6 +100,87 @@ class TestCanvasShell:
         assert "/static/js/pyhx.notifications.js" in html
 
 
+def _get_with_nav(page_template, path: str = "/") -> str:
+    hx = WebApp(title="App", default_page_template=page_template)
+
+    @hx.page("/", title="Home")
+    async def home() -> y.Node:
+        return y.p(id="body")["content"]
+
+    @hx.page("/users", title="Users")
+    async def users() -> y.Node:
+        return y.p["users"]
+
+    hx.navigation.set(
+        {"": [hx.nav_item(home, full_match=True)], "Admin": [hx.nav_item(users)]}
+    )
+    hx.navigation.set([hx.nav_item(users, label="Admin users")], slot="admin")
+
+    return TestClient(hx.create_app()).get(path).text
+
+
+class TestCanvasShellNavigation:
+    def test_no_navigation_by_default(self):
+        html = _get_with_nav(CanvasShell())
+        assert "hx-canvas-nav" not in html
+        assert "data-hx-navigation" not in html
+
+    def test_tabs_sit_in_the_header(self):
+        html = _get_with_nav(CanvasShell(main_navigation="tabs"))
+        assert 'data-hx-navigation="tabs"' in html
+        header = html[html.index("<header>") : html.index("</header>")]
+        assert '<nav class="hx-canvas-nav" data-hx-placement="tabs"' in header
+        assert (
+            '<div class="hx-canvas-shell__content"><p id="body">content</p></div>'
+            in html
+        )
+
+    def test_tab_groups_are_dropdowns(self):
+        html = _get_with_nav(CanvasShell(main_navigation="tabs"), "/users")
+        assert '<details name="hx-canvas-nav">' in html
+        assert '<summary class="active"><span>Admin</span>' in html
+
+    def test_tabs_load_the_dropdown_script(self):
+        script = "/static/js/pyhx.canvas-shell.js"
+        assert script in _get_with_nav(CanvasShell(main_navigation="tabs"))
+        assert script not in _get_with_nav(CanvasShell(main_navigation="sidebar"))
+        assert script not in _get_with_nav(CanvasShell())
+
+    def test_sidebar_sits_left_of_the_page(self):
+        html = _get_with_nav(CanvasShell(main_navigation="sidebar"))
+        assert 'data-hx-navigation="sidebar"' in html
+        assert (
+            '<div class="hx-canvas-shell__content">'
+            '<nav class="hx-canvas-nav" data-hx-placement="sidebar"'
+        ) in html
+        assert (
+            '<div class="hx-canvas-shell__page"><p id="body">content</p></div>' in html
+        )
+        assert "<h3>Admin</h3>" in html
+
+    def test_marks_the_active_item(self):
+        html = _get_with_nav(CanvasShell(main_navigation="sidebar"))
+        assert '<a href="/" aria-current="page" class="active">' in html
+
+    def test_navigation_slot(self):
+        html = _get_with_nav(
+            CanvasShell(main_navigation="sidebar", navigation_slot="admin")
+        )
+        assert "<span>Admin users</span>" in html
+        assert "<h3>Admin</h3>" not in html
+
+    def test_missing_slot_renders_no_navigation(self):
+        html = _get_with_nav(
+            CanvasShell(main_navigation="sidebar", navigation_slot="missing")
+        )
+        assert "hx-canvas-nav" not in html
+        assert "data-hx-navigation" not in html
+        assert (
+            '<div class="hx-canvas-shell__content"><p id="body">content</p></div>'
+            in html
+        )
+
+
 class TestAppShellErrorToasts:
     def test_app_shell_still_loads_error_toasts(self):
         html = _get(AppShell())

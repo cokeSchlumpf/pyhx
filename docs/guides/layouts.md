@@ -104,7 +104,7 @@ Branch only on designs that render differently and let all others fall through t
 
 ## `CanvasShell`
 
-`CanvasShell` is the page template of the `canvas` design: a white top bar above a grey canvas, without sidebar or footer. Pages place their own breadcrumbs and content on the canvas.
+`CanvasShell` is the page template of the `canvas` design: a white top bar above a grey canvas, without footer and — by default — without navigation. Pages place their own breadcrumbs and content on the canvas.
 
 ```python
 import htpy as y
@@ -132,6 +132,33 @@ async def dossier(id: str) -> y.Node:
 - `mode` — width of the content area: `"centered"` (at most 72rem, default), `"wide"` (at most `--hx-container-width-wide`) or `"full"` (full width, no padding). Change it per page with `page_template=CanvasShell(mode="full")`.
 - `brand_img_src` / `brand_img_alt` — logo and title on the left, as in `AppShell`. Defaults to the PyHX mark (`/static/images/pyhx_mark.svg`).
 - `favicon` — defaults to the PyHX mark as well.
+- `main_navigation` — `None` (default, no navigation), `"tabs"` or `"sidebar"`; see below.
+- `navigation_slot` — the navigation slot to show, `"main"` by default.
+
+### Main navigation
+
+The menus come from `hx.navigation`, as in `AppShell`: each slot is a named menu, a list of items or a dict of labelled groups (`""` for items without a group). The template decides whether and where a slot appears:
+
+- `main_navigation="tabs"` — a row of tabs below the top bar, part of the sticky header; for a handful of top-level areas. Groups open as a dropdown.
+- `main_navigation="sidebar"` — a column on the canvas left of the content, sticky below the top bar; for many items in labelled groups, e.g. admin pages. On a phone it becomes a horizontally scrolling row above the content.
+
+Choose it for the whole app with `default_page_template`, or per page with `PageResponse(page_template=...)`. With `navigation_slot`, one app can show tabs on its pages and a separate sidebar on its admin pages:
+
+```python
+app.navigation.set([app.nav_item(dossiers), app.nav_item(inbox)])          # slot "main"
+app.navigation.set(
+    {"": [app.nav_item(admin, full_match=True)], "Benutzer": [app.nav_item(users)]},
+    slot="admin",
+)
+
+ADMIN = CanvasShell(main_navigation="sidebar", navigation_slot="admin")
+
+@app.page("/admin/users", title="Benutzer")
+async def users() -> PageResponse:
+    return PageResponse(node=..., page_template=ADMIN)
+```
+
+The active item is marked from the URL (`full_match=False` also marks sub-pages). A slot without a menu renders no navigation.
 
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
@@ -140,7 +167,7 @@ Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so 
 Page templates publish the height of what they pin to the top of the viewport as `--hx-sticky-top`, so sticky elements in the page know where to stop:
 
 - `AppShell`: the top bar, plus the page header when the page has one.
-- `CanvasShell`: the top bar.
+- `CanvasShell`: the top bar, plus the tab row with `main_navigation="tabs"`.
 - Without a shell it is `0px` (default in `theme.css`).
 
 Use it for your own sticky elements: `position: sticky; top: var(--hx-sticky-top);`. Table headers (`--hx-table--sticky-top`), page-section headers and the aside of `split_layout` derive their offsets from it.
