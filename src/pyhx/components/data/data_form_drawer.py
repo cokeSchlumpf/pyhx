@@ -4,7 +4,7 @@ import htpy as y
 from pydantic import BaseModel
 
 from pyhx.core.fragment import FragmentResult
-from pyhx.core.primitives import htmx, styles
+from pyhx.core.primitives import htmx
 from pyhx.core.webapp_routes import WebAppRoutes
 
 from ..layouts import DRAWER_CONTENT_ID, close_drawer, drawer_content
@@ -54,11 +54,14 @@ class DataFormDrawer[T: BaseModel]:
         cancel_label = cancel_label or self.cancel_label
         dialog_title = dialog_title or self.dialog_title
 
+        # The classes let the canvas design lay the form out as a scrolling
+        # body above a fixed footer (data_form.css); the submit button stays
+        # inside the form, so validation keeps its disabled state current.
         return drawer_content(
-            y.div(**styles("px-md", "items-stretch", "flex-col"))[
+            y.div(class_="hx-data-form-drawer")[
                 await self.form.render(value),
-                y.div(class_="hx-data-form__actions")[
-                    y.div(**styles("mt-sm"))[
+                y.div(class_="hx-data-form__actions hx-data-form-drawer__actions")[
+                    y.div(class_="hx-data-form-drawer__cancel")[
                         button(
                             cancel_label,
                             **htmx(
@@ -71,7 +74,7 @@ class DataFormDrawer[T: BaseModel]:
                     ],
                     y.fragment[
                         y.hr,
-                        y.div(**styles("mt-sm"))[delete_button],
+                        y.div(class_="hx-data-form-drawer__delete")[delete_button],
                     ]
                     if delete_button is not None
                     else None,

@@ -181,6 +181,15 @@
                 display: none;
             }
 
+            /* The hidden toolbar sits above the card, over the page
+               header's actions: it takes clicks only while the pointer is
+               on the table (or the toolbar), else the create button below
+               it can't be clicked. */
+            &:not(:hover) .hx-table__toolbar {
+                /* Interaction */
+                pointer-events: none;
+            }
+
             .hx-table__col-resizer:not(:hover) {
                 /* Visual */
                 background-color: transparent;

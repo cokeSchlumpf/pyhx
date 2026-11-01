@@ -176,3 +176,61 @@
         width: unset;
     }
 }
+
+
+/* --- Canvas design ---
+   Header with a 17px title and a 32px square close button; neutral buttons
+   in a drawer (cancel, the close button) are the white secondary buttons of
+   the design: the 3:1 control border, the close button a lighter one as in
+   the draft. The form layout of DataFormDrawer is in data_form.css. */
+
+[data-hx-design="canvas"] .hx-drawer > aside {
+    > header {
+        /* Box */
+        padding: 1.25rem 1.5rem 1rem;
+        border-bottom-color: var(--hx-color-neutral-200);
+
+        h3 {
+            /* Typography */
+            font-family: inherit;
+            font-size: 1.0625rem; /* 17px, as the draft */
+            font-weight: var(--hx-font-semibold);
+            line-height: 1.5rem;
+            color: var(--hx-color-text);
+        }
+    }
+
+    .hx-button--neutral.hx-button--solid {
+        /* Box */
+        border-color: var(--pico-form-element-border-color);
+
+        /* Typography */
+        color: var(--hx-color-text);
+
+        /* Visual */
+        background-color: var(--hx-color-background);
+    }
+
+    .hx-button--neutral.hx-button--solid:hover {
+        /* Box */
+        border-color: var(--hx-color-neutral-500);
+
+        /* Visual */
+        background-color: var(--hx-color-neutral-050);
+    }
+
+    [data-hx-drawer-close] {
+        /* Box */
+        width: 2rem;
+        height: 2rem;
+        min-height: 2rem;
+        padding: 0;
+        border-color: var(--hx-color-neutral-200);
+
+        svg {
+            /* Box */
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+    }
+}

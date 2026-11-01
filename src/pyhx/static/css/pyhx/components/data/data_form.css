@@ -27,3 +27,163 @@
         margin-bottom: 0;
     }
 }
+
+/* --- Form in a drawer (DataFormDrawer) ---
+   Below the form: cancel, then (when given) a divider and the delete slot;
+   the drawer stacks them (drawer.css). */
+
+.hx-data-form-drawer {
+    /* Box */
+    padding-inline: var(--hx-spacing-md);
+}
+
+:is(.hx-data-form-drawer__cancel, .hx-data-form-drawer__delete) {
+    /* Box */
+    margin-top: var(--hx-spacing-sm);
+}
+
+
+/* --- Form in a drawer, canvas design ---
+   A scrolling body above a footer fixed at the bottom of the panel: delete
+   on the left, cancel and submit on the right. The submit button lives in
+   the <form> and cancel and delete outside it, so the form, the action
+   containers and their wrappers drop their boxes (`display: contents`) and
+   the buttons become items of one grid; the field grid is the body. The
+   ::before box draws the footer's background and top line. Tab order stays
+   the DOM order: fields, submit, cancel, delete. */
+
+[data-hx-design="canvas"] .hx-drawer > aside > section:has(> .hx-data-form-drawer) {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Box */
+    padding: 0;
+    overflow: hidden;
+}
+
+[data-hx-design="canvas"] .hx-data-form-drawer {
+    /* Tokens */
+    --data-form-drawer--padding-inline: 1.5rem;
+    --data-form-drawer--footer-padding-block: 0.75rem;
+
+    /* Layout */
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "body   body   body   body"
+        "delete .      cancel submit";
+    column-gap: 0.75rem;
+    align-items: center;
+
+    /* Box */
+    min-height: 0;
+    padding: 0;
+
+    &::before {
+        /* Layout */
+        grid-row: 2;
+        grid-column: 1 / -1;
+        align-self: stretch;
+
+        /* Box */
+        border-top: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+
+        /* Visual */
+        content: "";
+        background-color: var(--hx-color-background);
+    }
+
+    form,
+    .hx-data-form__actions,
+    .hx-data-form__actions > div,
+    .hx-data-form-drawer__cancel,
+    .hx-data-form-drawer__delete {
+        /* Layout */
+        display: contents;
+    }
+
+    hr {
+        /* Layout */
+        display: none;
+    }
+
+    .hx-data-form {
+        /* Layout */
+        grid-area: body;
+        align-content: start;
+
+        /* Box */
+        align-self: stretch;
+        padding: 1.25rem var(--data-form-drawer--padding-inline);
+        overflow-y: auto;
+    }
+
+    .hx-data-form__actions .hx-button {
+        /* Box */
+        width: auto;
+        min-height: 1.75rem;
+        padding-block: 0;
+        padding-inline: 0.625rem;
+        margin-block: var(--data-form-drawer--footer-padding-block);
+
+        /* Typography */
+        font-size: calc(var(--hx-text-control) * 0.875);
+    }
+
+    .hx-data-form__actions [type="submit"] {
+        /* Layout */
+        grid-area: submit;
+
+        /* Box */
+        margin-inline-end: var(--data-form-drawer--padding-inline);
+    }
+
+    .hx-data-form-drawer__cancel > * {
+        /* Layout */
+        grid-area: cancel;
+    }
+
+    .hx-data-form-drawer__delete > * {
+        /* Layout */
+        grid-area: delete;
+
+        /* Box */
+        margin-inline-start: var(--data-form-drawer--padding-inline);
+    }
+
+    /* Delete: a quiet danger action, an underlined text button in danger-700
+       (5.22:1 on white), whatever button the caller put into the slot. */
+    .hx-data-form-drawer__delete .hx-button {
+        /* Box */
+        padding-inline: 0.125rem;
+        border: 0;
+
+        /* Typography */
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        color: var(--hx-color-danger-700);
+
+        /* Visual */
+        background-color: transparent;
+    }
+
+    .hx-data-form-drawer__delete .hx-button:hover {
+        /* Typography */
+        text-decoration-thickness: 2px;
+
+        /* Visual */
+        background-color: transparent;
+    }
+
+    .hx-data-form-drawer__delete .hx-button:focus-visible {
+        /* Box */
+        outline: 2px solid var(--hx-color-text);
+        outline-offset: 2px;
+
+        /* Visual */
+        box-shadow: none;
+    }
+}
