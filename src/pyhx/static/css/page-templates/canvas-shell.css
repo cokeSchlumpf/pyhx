@@ -145,6 +145,101 @@
         }
 
 
+        /* --- Table on the canvas ---
+           A table standing directly in the content column (the table of a
+           DataPage) is a white card, like every other content of the
+           canvas; tables inside cards keep their look. The scroll container
+           is the card: it already clips the table, so the radius holds. */
+
+        :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-container:has(> .hx-table__wrapper) {
+            /* Tokens */
+            --hx-container-padding-inline: 0;
+        }
+
+        :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-container > .hx-table__wrapper {
+            --table-card--radius: 0.75rem; /* 12px, as the draft; between radius-lg and -xl */
+            --table-card--padding-inline: var(--hx-spacing-md);
+
+            .hx-table__scroll-container {
+                /* Box */
+                border: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+                border-radius: var(--table-card--radius);
+
+                /* Visual */
+                background-color: var(--hx-color-background);
+            }
+
+            .hx-table thead tr th {
+                /* Box */
+                padding: 0.625rem var(--table-card--padding-inline);
+                border-bottom: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+
+                /* Typography */
+                font-size: var(--hx-text-meta);
+                font-weight: var(--hx-font-medium);
+                line-height: 1rem;
+                color: var(--hx-color-neutral-600);
+
+                /* Visual */
+                background-color: var(--hx-color-background);
+                backdrop-filter: none;
+            }
+
+            .hx-table {
+                /* Box */
+                margin-bottom: 0;
+            }
+
+            /* No column dividers; the resize handles show on hover only. */
+            .hx-table thead tr th::after {
+                /* Layout */
+                display: none;
+            }
+
+            /* The hidden toolbar sits above the card, over the page
+               header's actions: it takes clicks only while the pointer is
+               on the table (or the toolbar), else the create button below
+               it can't be clicked. */
+            &:not(:hover) .hx-table__toolbar {
+                /* Interaction */
+                pointer-events: none;
+            }
+
+            .hx-table__col-resizer:not(:hover) {
+                /* Visual */
+                background-color: transparent;
+            }
+
+            .hx-table tbody td {
+                /* Box */
+                padding: 0.75rem var(--table-card--padding-inline);
+                border-bottom: var(--hx-border-width-sm) solid var(--hx-color-neutral-150);
+
+                /* Typography */
+                font-size: var(--hx-text-item);
+                line-height: 1.25rem;
+            }
+
+            .hx-table tbody tr:last-child td {
+                /* Box */
+                border-bottom: 0;
+            }
+
+            /* Selected and hovered rows: neutral tints, as the draft (the
+               default tints are the primary colour). */
+            .hx-table tr[aria-selected]:hover td {
+                /* Visual */
+                background-color: var(--hx-color-neutral-050);
+            }
+
+            .hx-table tr[aria-selected="true"] td,
+            .hx-table tr[aria-selected="true"]:hover td {
+                /* Visual */
+                background-color: var(--hx-color-neutral-100);
+            }
+        }
+
+
         /* --- Brand --- */
 
         .hx-brand {

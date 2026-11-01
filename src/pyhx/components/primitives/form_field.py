@@ -5,6 +5,8 @@ import htpy as y
 from pyhx.core import component
 from pyhx.core.primitives import classnames
 
+from ..variants import FormSize, LabelPosition
+
 
 class InputFactory(Protocol):
     """Callable shape that :func:`form_field` accepts as its ``input``.
@@ -42,6 +44,8 @@ def form_field(
     success_text: str | None = None,
     class_: str | None = None,
     wrapper: Literal["label", "div"] = "label",
+    size: FormSize | None = None,
+    label_position: LabelPosition | None = None,
     **kwargs,
 ) -> y.Node:
     """A labelled form control with help / error / success affordances.
@@ -95,6 +99,18 @@ def form_field(
         descendant, so wrapping such a control makes every in-label click also
         fire that first button — clicking anything would trigger the first
         remove button.
+    size : "sm" | "md" | None, default None
+        Size of the field in the canvas design. ``None`` sizes it by its
+        place: compact in a drawer or in the aside of ``split_layout``, full
+        size elsewhere. ``"sm"`` makes it compact anywhere, ``"md"`` keeps
+        the full size in a compact place. Rendered as ``data-hx-size``; no
+        visible effect in the default design.
+    label_position : "top" | "left" | None, default None
+        ``"left"`` puts the label in a column left of the control while the
+        field is at least 360px wide (above it in a narrower cell); ``"top"``
+        keeps it above. ``None``: above, except in a compact field of the
+        canvas design, which puts it left where there is room. Works in both
+        designs; rendered as ``data-hx-label-position``.
     **kwargs
         Forwarded to the input factory as HTML attributes (``type``,
         ``value``, ``placeholder``, ``aria_*``, …).
@@ -127,15 +143,24 @@ def form_field(
         # click would fire it). Render the label text in a non-associated
         # <label> and link it via aria-labelledby instead.
         attrs["aria_labelledby"] = label_id
-        return y.div(**classnames("hx-form-field", class_=class_ or ""))[
+        return y.div(
+            data_hx_size=size,
+            data_hx_label_position=label_position,
+            **classnames("hx-form-field", class_=class_ or ""),
+        )[
             y.label(id=label_id, class_="hx-form-field__label")[label, required_marker],
             input(**attrs),
             y.small(id=help_text_id)[help_text] if help_text else None,
         ]
 
-    return y.label(**classnames("hx-form-field", class_=class_ or ""))[
-        label,
-        required_marker,
+    # The label text is wrapped, so a compact field can place it left of the
+    # control (form_field.css).
+    return y.label(
+        data_hx_size=size,
+        data_hx_label_position=label_position,
+        **classnames("hx-form-field", class_=class_ or ""),
+    )[
+        y.span(class_="hx-form-field__label")[label, required_marker],
         input(**attrs),
         y.small(id=help_text_id)[help_text] if help_text else None,
     ]

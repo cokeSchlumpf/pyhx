@@ -35,6 +35,7 @@ from ..layouts import (
     page_section,
 )
 from ..primitives import button
+from ..variants import FormSize, LabelPosition
 from ._model_type import ModelType
 from .column import Column
 from .data_form_drawer import DataFormDrawer
@@ -123,6 +124,8 @@ class DataSection(Generic[T, TM, EM, CM]):
         delete_confirmation_value: SyncOrAsyncFn[T, str] | None = None,
         cancel_edit_label: str | None = None,
         cancel_create_label: str | None = None,
+        form_size: FormSize | None = None,
+        form_label_position: LabelPosition | None = None,
         type_name: str | None = None,
         table_model_type: ModelType[T, TM] | None = None,
         edit_form_model_type: ModelType[T, EM] | None = None,
@@ -193,6 +196,16 @@ class DataSection(Generic[T, TM, EM, CM]):
             Cancel-button label of the edit form. Defaults to ``"Cancel"``.
         cancel_create_label : str, optional
             Cancel-button label of the create form. Defaults to ``"Cancel"``.
+        form_size : "sm" | "md", optional
+            Size of the fields of the edit and create forms, passed to both
+            drawers (see :class:`DataFormDrawer`). ``None`` (default) sizes
+            them by their place, compact in the canvas design.
+        form_label_position : "top" | "left", optional
+            Label position of the edit and create forms, passed to both
+            drawers: ``"left"`` puts labels left of the fields while a
+            field's cell is at least 360px wide, ``"top"`` keeps them above;
+            both keep the form's columns. ``None`` (default): above, and
+            left in a compact form of the canvas design, one field per row.
         type_name : str, optional
             Human-readable name of the type used to build the default
             titles and labels above. Defaults to ``type.__name__``.
@@ -365,6 +378,8 @@ class DataSection(Generic[T, TM, EM, CM]):
             submit_label=lambda: self.edit_submit_label,
             dialog_title=lambda: self.edit_dialog_title,
             cancel_label=lambda: self.cancel_edit_label,
+            size=form_size,
+            label_position=form_label_position,
         )
 
         self.create_form = DataFormDrawer(
@@ -375,6 +390,8 @@ class DataSection(Generic[T, TM, EM, CM]):
             submit_label=lambda: self.create_submit_label,
             dialog_title=lambda: self.create_dialog_title,
             cancel_label=lambda: self.cancel_create_label,
+            size=form_size,
+            label_position=form_label_position,
         )
 
         #
