@@ -124,7 +124,7 @@ class FilterDrawerValue(Query):
             )
 
     def clear(self) -> None:
-        """Reset all filter and sort state to defaults.
+        """Reset all filter, sort and search state to defaults.
 
         Wired to the drawer's "Clear" button. Leaves the UI state fields
         (``view``, ``action`` …) untouched — only the data is cleared.
@@ -132,6 +132,7 @@ class FilterDrawerValue(Query):
         self.filter = []
         self.sort = []
         self.filter_mode = "all"
+        self.search = None
 
     def remove_sort_key(self, key: str) -> None:
         """Drop any sort entries targeting ``key``."""

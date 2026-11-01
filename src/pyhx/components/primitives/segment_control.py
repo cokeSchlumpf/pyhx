@@ -17,6 +17,7 @@ def segment_control(
     value: str | None = None,
     size: Size = "md",
     disabled: bool = False,
+    input_id_prefix: str | None = None,
     **kwargs,
 ) -> y.Node:
     """A segmented control: a row of buttons acting as a radio group.
@@ -45,6 +46,10 @@ def segment_control(
         added alongside — otherwise the field would arrive server-side as
         missing rather than unchanged, which fails validation outright for
         a required/closed-choice field instead of just leaving it alone.
+    input_id_prefix
+        When set, each radio gets the id ``<prefix>-<value>``, so htmx can
+        give the focus back to the chosen radio after a swap that re-renders
+        the control.
 
     Examples
     --------
@@ -70,6 +75,7 @@ def segment_control(
                     value=option.value,
                     checked=option.value == value,
                     disabled=disabled,
+                    id=f"{input_id_prefix}-{option.value}" if input_id_prefix else None,
                 ),
                 y.span[option.label],
             ]

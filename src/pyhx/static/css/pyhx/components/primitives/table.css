@@ -517,6 +517,122 @@
 }
 
 
+/* --- Filter bar (quick filter pills and search, above the header) ---
+   Rendered by `DataTable` when it has quick filters or a search field. The
+   pills are a `segment_control` (radio group) restyled as separate pills;
+   colours come from neutral tokens, so the canvas theme's values give the
+   draft's look without a canvas-specific rule. */
+
+.hx-table__filter-bar {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--hx-spacing-sm) var(--hx-spacing-md);
+
+    /* Box */
+    padding: calc(var(--hx-spacing-sm) + var(--hx-spacing-xs)) var(--hx-spacing-md);
+    border-bottom: 1px solid var(--hx-color-neutral-200);
+}
+
+.hx-table__quick-filters {
+    /* Layout */
+    flex-wrap: wrap;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    padding: 0;
+
+    /* Visual */
+    background-color: transparent;
+}
+
+.hx-table__quick-filters .hx-segment-control__option {
+    /* Layout */
+    flex: 0 0 auto;
+
+    /* Box */
+    height: 22px;
+    padding: 0 var(--hx-spacing-sm);
+    border-radius: var(--hx-radius-full);
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: var(--hx-text-xs);
+    font-weight: var(--hx-font-medium);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-100);
+}
+
+.hx-table__quick-filters .hx-segment-control__option:has(:checked) {
+    /* Typography */
+    color: var(--hx-color-background);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-900);
+}
+
+.hx-table__quick-filters .hx-segment-control__option:hover:not(:has(:checked)) {
+    /* Typography */
+    color: var(--hx-color-neutral-900);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-200);
+}
+
+.hx-table__search {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin: 0 0 0 auto;
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-size: 0.8125rem;  /* 13px */
+}
+
+.hx-table__search input[type="search"] {
+    /* Box */
+    box-sizing: border-box;
+    width: 260px;
+    height: 32px;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid var(--hx-color-neutral-500);
+    border-radius: var(--hx-radius-lg);
+
+    /* Typography */
+    color: var(--hx-color-text);
+    font-size: var(--hx-text-sm);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    background-image: none;
+}
+
+/* Phone width: the search takes the full row below the pills. */
+@media (max-width: 600px) {
+    .hx-table__search {
+        /* Layout */
+        flex: 1 1 100%;
+    }
+
+    .hx-table__search input[type="search"] {
+        /* Layout */
+        flex: 1 1 auto;
+
+        /* Box */
+        width: auto;
+        min-width: 0;
+    }
+}
+
+
 /* --- Scroll container --- */
 
 .hx-table__scroll-container {

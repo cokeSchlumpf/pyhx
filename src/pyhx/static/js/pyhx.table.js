@@ -53,3 +53,36 @@ document.addEventListener("pointerup", () => {
 
     drag = null;
 });
+
+/*
+ * Data table URL sync
+ *
+ * A DataTable that owns URL parameters (quick filter, search, url_param_keys)
+ * renders them on its wrapper: `data-hx-url-param-keys` (every owned key) and
+ * `data-hx-url-params` (the current values as a query string). After each
+ * htmx swap the address bar is brought in line with them via
+ * `history.replaceState`: no reload, no history entry, other parameters
+ * untouched. Idempotent, so swaps that don't concern the table do no harm.
+ */
+function syncTableUrlParams() {
+    const tables = document.querySelectorAll("[data-hx-url-param-keys]");
+    if (tables.length === 0) return;
+
+    const url = new URL(window.location.href);
+    for (const table of tables) {
+        const values = new URLSearchParams(table.dataset.hxUrlParams || "");
+        for (const key of table.dataset.hxUrlParamKeys.split(",")) {
+            if (values.has(key)) {
+                url.searchParams.set(key, values.get(key));
+            } else {
+                url.searchParams.delete(key);
+            }
+        }
+    }
+    if (url.href !== window.location.href) {
+        history.replaceState(history.state, "", url);
+    }
+}
+
+document.addEventListener("htmx:afterSwap", syncTableUrlParams);
+document.addEventListener("htmx:oobAfterSwap", syncTableUrlParams);
