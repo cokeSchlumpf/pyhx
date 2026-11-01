@@ -16,6 +16,7 @@
 
 @import "./pyhx/components/data/data_form.css" layer(pyhx);
 @import "./pyhx/components/data/filter_drawer.css" layer(pyhx);
+@import "./pyhx/components/data/inline_edit.css" layer(pyhx);
 
 @import "./pyhx/components/layout/breadcrumbs.css" layer(pyhx);
 @import "./pyhx/components/layout/card.css" layer(pyhx);

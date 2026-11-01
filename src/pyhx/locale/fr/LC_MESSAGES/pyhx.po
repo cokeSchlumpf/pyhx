@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 22:25+0100\n"
+"POT-Creation-Date: 2026-11-01 22:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -70,7 +70,7 @@ msgid "Bullet list"
 msgstr "Liste à puces"
 
 #: components/data/data_form_drawer.py:73 components/data/data_section.py:529
-#: components/data/data_section.py:533
+#: components/data/data_section.py:533 components/data/inline_edit.py:46
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -168,6 +168,13 @@ msgstr "Glissez-déposez un fichier ici ou cliquez pour parcourir"
 msgid "Edit"
 msgstr "Modifier"
 
+#. accessible name of the edit button; {label} is
+#. the label of the value, e.g. "Start of incapacity".
+#: components/data/inline_edit.py:251
+#, python-brace-format
+msgid "Edit {label}"
+msgstr "Modifier {label}"
+
 #. {type} is the name of the item's type, e.g. "Case".
 #: components/data/data_section.py:504
 #, python-brace-format
@@ -182,6 +189,10 @@ msgstr "E-mail"
 #: addons/user_authentication/_pages.py:342
 msgid "Enter your email address and we'll send you a login link and a code."
 msgstr "Saisissez votre adresse e-mail et nous vous enverrons un lien de connexion et un code."
+
+#: components/data/inline_edit.py:47
+msgid "Esc cancels · ↵ saves"
+msgstr "Échap annule · ↵ enregistre"
 
 #: components/data/hierarchical_data_table.py:308
 msgid "Expand All"
@@ -324,7 +335,7 @@ msgid "Resize label column"
 msgstr "Redimensionner la colonne des libellés"
 
 #: components/data/annotations/form.py:96
-#: components/data/annotations/form.py:106
+#: components/data/annotations/form.py:106 components/data/inline_edit.py:45
 msgid "Save"
 msgstr "Enregistrer"
 

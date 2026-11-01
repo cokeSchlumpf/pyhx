@@ -1,0 +1,189 @@
+/* --- Inline edit ---
+
+   One value with an edit button (`InlineEdit`), edited in place. The item
+   is a grid: label and hint on the first line, then the value, then the
+   source; the edit button sits on the right. In edit mode the form takes
+   the value's place across both columns; the value and the edit button
+   are hidden while the item `:has()` a form (state via `:has`, no class
+   toggled by the script).
+
+   Size follows the place as for other forms: in the canvas design the
+   form is compact in a drawer or the aside of split_layout (32px fields
+   from form_field.css, 28px buttons below), or anywhere with
+   `size="sm"` (data-hx-size); `size="md"` keeps the full size. */
+
+
+/* --- Item --- */
+
+.hx-inline-edit {
+    /* Layout */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--hx-spacing-sm);
+}
+
+/* Label and hint share the first line. */
+.hx-inline-edit__heading {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    grid-column: 1;
+    grid-row: 1;
+    gap: 0 var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    line-height: 1rem;
+}
+
+.hx-inline-edit__label {
+    /* Typography */
+    font-weight: var(--hx-font-medium);
+    color: var(--hx-color-neutral-500);
+}
+
+.hx-inline-edit__hint {
+    /* Typography */
+    font-weight: var(--hx-font-semibold);
+    color: var(--hx-color-warning-800);
+}
+
+.hx-inline-edit__value {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 2;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    font-size: var(--hx-text-item);
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+    color: var(--hx-color-text);
+}
+
+.hx-inline-edit__source {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 3;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-inline-edit__edit {
+    /* Layout */
+    grid-column: 2;
+    grid-row: 1 / span 3;
+
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Edit mode --- */
+
+.hx-inline-edit:has(> .hx-inline-edit__form) > :is(.hx-inline-edit__value, .hx-inline-edit__edit) {
+    /* Layout */
+    display: none;
+}
+
+.hx-inline-edit__form {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    gap: var(--hx-spacing-md);
+
+    /* Box */
+    margin: var(--hx-spacing-xs) 0 var(--hx-spacing-sm);
+}
+
+/* The fields are a one-column `hx-grid`: its gap spaces them, and the
+   canvas design drops a field's own margin in a grid (form_field.css).
+   Scoped to the form to win over `.hx-grid`'s 12 columns. */
+.hx-inline-edit__form > .hx-inline-edit__fields {
+    /* Layout */
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* Pico spaces controls for stacked forms; here the actions follow
+   directly. */
+.hx-inline-edit__fields > .hx-form-field,
+.hx-inline-edit__fields > .hx-form-field > :is(input, select, textarea) {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-inline-edit__fields small {
+    /* Box */
+    margin: var(--hx-spacing-xs) 0 0;
+}
+
+/* A single field is named by the item's label and renders an empty label
+   of its own. */
+.hx-inline-edit__fields .hx-form-field__label:empty {
+    /* Layout */
+    display: none;
+}
+
+.hx-inline-edit__actions {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-sm) var(--hx-spacing-md);
+}
+
+.hx-inline-edit__actions > .hx-button {
+    /* Box */
+    width: auto;
+    margin: 0;
+}
+
+.hx-inline-edit__shortcuts {
+    /* Box */
+    margin-left: auto;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    color: var(--hx-color-neutral-500);
+}
+
+
+/* --- Canvas design: compact form ---
+   12px between fields and 28px buttons, as a compact DataForm's. */
+
+[data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside) .hx-inline-edit__form:not([data-hx-size="md"]),
+[data-hx-design="canvas"] .hx-inline-edit__form[data-hx-size="sm"] {
+    /* Layout */
+    gap: 0.75rem;
+
+    .hx-inline-edit__fields {
+        /* Tokens */
+        --hx-grid-gap: 0.75rem;
+    }
+
+    .hx-inline-edit__actions .hx-button {
+        /* Box */
+        min-height: 1.75rem;
+        padding-block: 0;
+
+        /* Typography */
+        font-size: calc(var(--hx-text-control) * 0.875);
+    }
+
+    .hx-inline-edit__actions .hx-button--solid {
+        /* Box */
+        padding-inline: 0.625rem;
+    }
+}

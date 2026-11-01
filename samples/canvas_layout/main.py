@@ -7,8 +7,11 @@ Run with::
 One page per ``CanvasShell`` mode (``centered``, ``wide``, ``full``), each with
 breadcrumbs and placeholder content, plus a dossier page built from
 ``card``s in a ``split_layout`` (main column and sticky aside below the
-breadcrumbs) and two ``DataPage``s, see :mod:`samples.canvas_layout.data_page`. The panes of the ``full`` page are plain Pico ``<article>``
-placeholders, since a document viewer has panes, not cards.
+breadcrumbs) and two ``DataPage``s, see :mod:`samples.canvas_layout.data_page`.
+The dossier's extracted values are editable in place (``InlineEdit``, see
+:mod:`samples.canvas_layout.extracted_values`). The panes of the ``full``
+page are plain Pico ``<article>`` placeholders, since a document viewer has
+panes, not cards.
 
 Pages without navigation (all of the above) sit next to pages with a main
 navigation: tabs below the top bar and an admin sidebar, see
@@ -29,7 +32,7 @@ from pyhx.core.primitives import IconName
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
 
-from . import data_page, forms, navigation
+from . import data_page, extracted_values, forms, navigation
 from .header import header_content
 
 hx = WebApp(
@@ -38,6 +41,7 @@ hx = WebApp(
 )
 
 hx.include_router(navigation.router)
+hx.include_router(extracted_values.router)
 hx.include_router(data_page.router)
 hx.include_router(forms.router)
 navigation.register_navigation(hx)
@@ -320,38 +324,14 @@ async def dossier() -> y.Node:
                         c.button("Übernehmen", appearance="primary"),
                     ],
                 ],
-                c.card(open=False)[
-                    c.card.header[
-                        c.card.title[y.h2["Extrahierte Angaben"]],
-                        c.pill("4", appearance="neutral", size="sm"),
-                        c.card.subtle[
-                            "Im Dokument attestiert oder angegeben, ",
-                            "je mit Quelle und Seite",
-                        ],
-                    ],
-                    c.card.list[
-                        [
-                            c.card.item[
-                                c.card.label[label],
-                                y.span[value],
-                                c.card.subtle[y.a(href="#")[source],],
-                            ]
-                            for label, value, source in (
-                                ("Tätigkeit", "Bauleiter", "Anmeldung S. 9"),
-                                ("Pensum", "100%", "Anmeldung S. 9"),
-                                ("Beginn AU", "20.01.2026", "Anmeldung S. 6"),
-                                ("Grad AU", "100%", "Anmeldung S. 6"),
-                            )
-                        ]
-                    ],
-                ],
+                await extracted_values.extracted_values_card(),
                 _documents(),
                 c.card[
                     c.card.header[c.card.title[y.h2["Notizen"]]],
                     c.card.section[lorem_ipsum(paragraphs=6)],
                 ],
             ],
-            aside=_action_needed(),
+            aside=y.fragment[await extracted_values.review_card(), _action_needed()],
         ),
     ]
 

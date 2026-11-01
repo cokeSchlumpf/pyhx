@@ -5,10 +5,10 @@ import htpy as y
 import pyhx.components as c
 # docs:end imports
 
-import humanize
 from fastapi import File, UploadFile
 from pyhx.core import WebAppRouter
 from pyhx.core.primitives import htmx
+from pyhx.i18n import format_number
 from samples.components._snippets import snippets
 
 src = snippets(__file__)
@@ -17,15 +17,20 @@ src = snippets(__file__)
 router = WebAppRouter()
 
 
+def _file_size(size: int) -> str:
+    """Decimal units, numbers in the request's language (e.g. "1,2 MB")."""
+    for unit, factor in (("GB", 10**9), ("MB", 10**6), ("kB", 10**3)):
+        if size >= factor:
+            return f"{format_number(size / factor, '#,##0.#')} {unit}"
+    return f"{format_number(size)} Bytes" if size != 1 else "1 Byte"
+
+
 @router.fragment.post("/file-dropzone/upload")
 async def upload(file: UploadFile = File(...)) -> y.Node:
     data = await file.read()
     return y.article(id="file-dropzone-result", **{"hx-swap-oob": "outerHTML"})[
         y.h3["Received"],
-        y.p[
-            f"{file.filename} - {file.content_type} - "
-            f"{humanize.naturalsize(len(data))}"
-        ],
+        y.p[f"{file.filename} - {file.content_type} - {_file_size(len(data))}"],
     ]
 
 
@@ -37,7 +42,7 @@ async def file_dropzone_page() -> y.Node:
             y.p[
                 "A bordered drag-and-drop file picker with a click-to-browse "
                 "fallback. Renders only the picker surface - a real "
-                "`<input type=\"file\">` under the hood - so it composes into "
+                '`<input type="file">` under the hood - so it composes into '
                 "any form the same way a plain file input would; it doesn't "
                 "render its own submit button or own the surrounding form."
             ],

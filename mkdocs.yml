@@ -61,6 +61,7 @@ nav:
       - Routing & Paths: guides/routing.md
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
+      - Editing Patterns: guides/editing.md
       - Data Tables: guides/data-tables.md
       - Sidepanel: guides/sidepanel.md
       - User Authentication: guides/user-authentication.md
