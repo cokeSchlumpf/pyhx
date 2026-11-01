@@ -187,10 +187,14 @@
         /* Box */
         min-height: 1.75rem;
         padding-block: 0;
-        padding-inline: 0.625rem;
 
         /* Typography */
         font-size: calc(var(--hx-text-control) * 0.875);
+    }
+
+    .hx-data-form__actions .hx-button:not(.hx-data-form-drawer__delete *) {
+        /* Box */
+        padding-inline: 0.625rem;
     }
 }
 

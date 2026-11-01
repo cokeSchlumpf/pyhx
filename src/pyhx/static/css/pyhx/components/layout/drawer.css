@@ -178,7 +178,8 @@ html:has(.hx-drawer > aside > section > *) {
    stack below it in reverse DOM order, so the rightmost extra from
    the page layout sits closest to the submit in the drawer too. */
 
-.hx-drawer .hx-data-form__actions div {
+/* Not for DataFormDrawer, which has its own footer (data_form.css). */
+.hx-drawer .hx-data-form__actions:not(.hx-data-form-drawer *) div {
     display: flex;
     flex-direction: column-reverse;
     align-items: stretch;
