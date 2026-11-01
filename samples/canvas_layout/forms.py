@@ -3,7 +3,8 @@
 Included by :mod:`samples.canvas_layout.main`. ``/forms`` shows
 
 - a case form built with ``DataForm`` in the main column of a split layout,
-- a compact correction form in its aside, and
+- a compact correction form in its aside,
+- the same case form with ``label_position="left"`` across the page, and
 - a grid of the controls in every state below (default, error, success,
   read-only, disabled; hover and focus with mouse and keyboard).
 """
@@ -103,6 +104,16 @@ _case_form = c.DataForm[CaseForm](
     routes=router,
     type=CaseForm,
     handle_submit=_handle_case_submit,
+)
+
+# The same form with the labels left of the fields: per field, while the
+# field's cell is at least 360px wide; the form keeps its two columns.
+_case_form_left = c.DataForm[CaseForm](
+    name="case-left",
+    routes=router,
+    type=CaseForm,
+    handle_submit=_handle_case_submit,
+    label_position="left",
 )
 
 
@@ -315,5 +326,9 @@ async def forms_page() -> y.Node:
             ],
             aside=_correction(),
         ),
+        c.card[
+            c.card.header[c.card.title['Labels links (label_position="left")']],
+            c.card.section[await _case_form_left.render()],
+        ],
         _states(),
     ]

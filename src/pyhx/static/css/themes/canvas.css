@@ -30,6 +30,9 @@
     --hx-text-body:       0.9375rem;         /* 15px */
     --hx-text-control:    var(--hx-text-sm); /* 14px */
 
+    /* Backdrop of drawers: the text colour at 32 %, as the draft */
+    --hx-color-overlay-dark: rgb(23 23 23 / 0.32);
+
     /* Neutral (Gray) */
     --hx-color-neutral-050: #FAFAFA;
     --hx-color-neutral-100: #F3F3F3;

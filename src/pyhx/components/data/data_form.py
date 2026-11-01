@@ -26,6 +26,7 @@ from ..primitives import (
     taglist,
     wysiwyg_editor,
 )
+from ..variants import FormSize, LabelPosition
 from ..view_model import Option, resolve_options
 from .annotations.form import FormConfig
 from .annotations.form_field import (
@@ -97,6 +98,8 @@ class DataForm[T: BaseModel]:
         handle_submit: Callable[[T], Awaitable[FragmentResult]],
         submit_label: str | Callable[[], str] | None = None,
         field_order: list[str] | None = None,
+        size: FormSize | None = None,
+        label_position: LabelPosition | None = None,
     ) -> None:
         """``field_order`` is the authoritative whitelist and order when set:
         any field whose name is absent is dropped from the rendered form
@@ -107,6 +110,21 @@ class DataForm[T: BaseModel]:
         ``None``, the value falls back to :attr:`FormConfig.field_order` from
         the model's ``@form`` decoration; if that is also ``None``, fields
         render in model field order.
+
+        ``size`` sets the size of the form's fields in the canvas design (see
+        :data:`~pyhx.components.variants.FormSize`): ``None`` (default) sizes
+        them by the form's place (compact in a drawer or an aside), ``"sm"``
+        makes the form compact anywhere, ``"md"`` keeps the full size in a
+        compact place. Rendered as ``data-hx-size`` on the ``<form>``.
+
+        ``label_position`` places the labels of all fields (see
+        :data:`~pyhx.components.variants.LabelPosition`), per field: ``"left"``
+        puts a label left of its control while the field's cell is at least
+        360px wide, above it in a narrower cell; ``"top"`` keeps them above.
+        Both keep the form's ``columns`` and template areas. ``None``
+        (default): above, except in a compact form of the canvas design, which
+        shows one field per row with the labels left where there is room.
+        Rendered as ``data-hx-label-position`` on the ``<form>``.
         """
         self.name = to_kebabcase(name)
         self.type = type
@@ -129,6 +147,8 @@ class DataForm[T: BaseModel]:
             form_fields = {**ordered, **hidden_extras}
         self.form_fields: dict[str, FormField] = form_fields
         self.submit_label = submit_label
+        self.size = size
+        self.label_position = label_position
 
         self.wrapper_div_id = f"hx-data-form__{self.name}"
 
@@ -274,6 +294,8 @@ class DataForm[T: BaseModel]:
 
         return y.form(
             id=self.wrapper_div_id,
+            data_hx_size=self.size,
+            data_hx_label_position=self.label_position,
             **htmx(
                 hx_post=self.submit_form_fragment.url(),
                 hx_swap="none",

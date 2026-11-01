@@ -253,3 +253,88 @@
     /* Typography */
     color: var(--hx-color-neutral-500);
 }
+
+/* --- Canvas design ---
+   Breadcrumbs, title and actions sit on the canvas: no band, no border, not
+   sticky (the top bar is the only pinned bar); the title is the page title
+   role, actions line up with its bottom. Neutral buttons of the actions are
+   the white secondary buttons of the design, with the 3:1 control border. */
+
+[data-hx-design="canvas"] .hx-page-header {
+    /* Position */
+    position: static;
+
+    /* Box */
+    height: auto;
+    padding: 0;
+    margin-bottom: var(--hx-spacing-md);
+    border-bottom: 0;
+
+    /* Visual */
+    background-color: transparent;
+    backdrop-filter: none;
+}
+
+[data-hx-design="canvas"] .hx-page-header .hx-container {
+    /* Tokens */
+    --hx-container-padding-inline: 0;
+
+    /* Layout */
+    align-items: end;
+}
+
+[data-hx-design="canvas"] .hx-page-header__header {
+    /* Layout */
+    gap: var(--hx-spacing-xs);
+}
+
+[data-hx-design="canvas"] .hx-page-header__header h1 {
+    /* Typography */
+    font-size: var(--hx-text-page-title);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-page-header__breadcrumbs {
+    /* Typography */
+    font-size: 0.8125rem; /* 13px, as the draft */
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+}
+
+[data-hx-design="canvas"] .hx-page-header__breadcrumbs li:not(:last-child)::after {
+    /* Typography */
+    color: var(--hx-color-neutral-300);
+}
+
+[data-hx-design="canvas"] .hx-page-header__breadcrumbs a {
+    /* Typography */
+    text-decoration: none;
+    color: inherit;
+}
+
+[data-hx-design="canvas"] .hx-page-header__breadcrumbs a:hover {
+    /* Typography */
+    color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-page-header__actions .hx-button--neutral.hx-button--solid {
+    /* Box */
+    border-color: var(--pico-form-element-border-color);
+
+    /* Typography */
+    color: var(--hx-color-text);
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+}
+
+[data-hx-design="canvas"] .hx-page-header__actions .hx-button--neutral.hx-button--solid:hover {
+    /* Box */
+    border-color: var(--hx-color-neutral-500);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-050);
+}

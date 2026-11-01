@@ -12,10 +12,15 @@
     --hx--drawer-bottom: 50px;
 }
 
+/* The backdrop covers the area between the template's bars (the drawer's own
+   top and bottom), so the top bar and a footer stay undimmed. */
 .hx-drawer__backdrop {
     /* Position */
     position: fixed;
-    inset: 0;
+    top: var(--hx--drawer--top);
+    right: 0;
+    bottom: var(--hx--drawer-bottom);
+    left: 0;
     z-index: var(--hx-z-backdrop);
 
     /* Visual */
@@ -50,7 +55,9 @@
     box-shadow: var(--hx-shadow-panel-left);
 
     /* Motion */
-    transform: translateX(100%);
+    /* Out by its width plus its shadow, or the shadow shows at the right
+       edge of the viewport while the drawer is closed. */
+    transform: translateX(calc(100% + 3rem));
     transition: transform var(--hx-transition-slow);
 
     > header {
@@ -83,18 +90,38 @@
         padding: var(--hx-spacing-md);
         overflow-y: auto;
         margin-bottom: 0;
+
+        /* Interaction */
+        /* The end of the content doesn't scroll the page behind the drawer. */
+        overscroll-behavior: contain;
+    }
+
+    /* Focused on open (pyhx.drawer.js), as the start of the tab order; the
+       panel itself shows no focus ring. */
+    &:focus {
+        /* Box */
+        outline: none;
     }
 }
 
 
 /* --- Open state: triggered when the section has element children.
    Close action returns a drawer with an empty <section>, which collapses
-   this :has() match and slides everything back out. --- */
+   this :has() match and slides everything back out.
+
+   `position: fixed` makes the open drawer a stacking context: the z-indices
+   of backdrop and panel only count inside it. The drawer itself needs a
+   z-index, or every positioned element of the page with a positive one
+   (sticky page header, sticky table header, top bar) is drawn above it. --- */
 
 .hx-drawer:has(> aside > section > *) {
+    /* Position */
     position: fixed;
     top: 0;
     left: 0;
+    z-index: var(--hx-z-sidepanel);
+
+    /* Box */
     width: 100vw;
     height: 100vh;
 
@@ -112,19 +139,36 @@
     }
 }
 
+/* While a drawer is open the page behind it doesn't scroll, not even when
+   the drawer's content fits (then there's nothing to contain the wheel).
+   The gutter stays, so a page with a scrollbar doesn't shift sideways. */
+
+html:has(.hx-drawer > aside > section > *) {
+    /* Box */
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+
 /* --- Popup drawer: a second drawer instance stacked above the primary one.
    Used by drawer-based pickers (`drawer_select` / `drawer_radio`) so they open
    on top of a form rendered in the primary drawer instead of replacing it.
    Only the stacking differs; all open/close behaviour is inherited from the
-   base `.hx-drawer` rules above. Stays below `--hx-z-dropdown` (200) so
-   dropdowns inside the picker still layer correctly. --- */
+   base `.hx-drawer` rules above. Stays below `--hx-z-dropdown` (300) so
+   dropdowns of the page still layer correctly. --- */
 
 .hx-drawer--popup > .hx-drawer__backdrop {
-    z-index: calc(var(--hx-z-sidepanel) + 10); /* 110 */
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 10); /* 210 */
 }
 
 .hx-drawer--popup > aside {
-    z-index: calc(var(--hx-z-sidepanel) + 20); /* 120 */
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 20); /* 220 */
+}
+
+.hx-drawer--popup:has(> aside > section > *) {
+    /* Position */
+    z-index: calc(var(--hx-z-sidepanel) + 10);
 }
 
 
@@ -134,7 +178,8 @@
    stack below it in reverse DOM order, so the rightmost extra from
    the page layout sits closest to the submit in the drawer too. */
 
-.hx-drawer .hx-data-form__actions div {
+/* Not for DataFormDrawer, which has its own footer (data_form.css). */
+.hx-drawer .hx-data-form__actions:not(.hx-data-form-drawer *) div {
     display: flex;
     flex-direction: column-reverse;
     align-items: stretch;
@@ -144,5 +189,63 @@
 
     .hx-button {
         width: unset;
+    }
+}
+
+
+/* --- Canvas design ---
+   Header with a 17px title and a 32px square close button; neutral buttons
+   in a drawer (cancel, the close button) are the white secondary buttons of
+   the design: the 3:1 control border, the close button a lighter one as in
+   the draft. The form layout of DataFormDrawer is in data_form.css. */
+
+[data-hx-design="canvas"] .hx-drawer > aside {
+    > header {
+        /* Box */
+        padding: 1.25rem 1.5rem 1rem;
+        border-bottom-color: var(--hx-color-neutral-200);
+
+        h3 {
+            /* Typography */
+            font-family: inherit;
+            font-size: 1.0625rem; /* 17px, as the draft */
+            font-weight: var(--hx-font-semibold);
+            line-height: 1.5rem;
+            color: var(--hx-color-text);
+        }
+    }
+
+    .hx-button--neutral.hx-button--solid {
+        /* Box */
+        border-color: var(--pico-form-element-border-color);
+
+        /* Typography */
+        color: var(--hx-color-text);
+
+        /* Visual */
+        background-color: var(--hx-color-background);
+    }
+
+    .hx-button--neutral.hx-button--solid:hover {
+        /* Box */
+        border-color: var(--hx-color-neutral-500);
+
+        /* Visual */
+        background-color: var(--hx-color-neutral-050);
+    }
+
+    [data-hx-drawer-close] {
+        /* Box */
+        width: 2rem;
+        height: 2rem;
+        min-height: 2rem;
+        padding: 0;
+        border-color: var(--hx-color-neutral-200);
+
+        svg {
+            /* Box */
+            width: 0.875rem;
+            height: 0.875rem;
+        }
     }
 }
