@@ -7,6 +7,9 @@
 - **F3** Raising the floor alone makes `poe check` fail (ruff's 63 findings and 4 files to reformat, spec Design), so the floor, the dependencies and the lint fixes go into one step. CI comes first: pushed with the floor raised while CI still runs 3.12, the check would fail.
 - **F4** The tests don't check the version or format of sample record ids (no `uuid` in `tests/samples`), so R7 is proven by the sample tests passing and by a test that `Project().id` is a UUID v7.
 
+- **F5** (during step 3) The app shell sample had no tests: `tests/samples` only covered `samples/components`. The UUID v7 test is the first one in `tests/samples/app_shell_layout/test_data_page.py`; it checks the `id` field's `default_factory` directly, as building a `Project` needs every field.
+- **F6** (during step 2) `poe fix` reformatted 5 files, not 4: besides the 4 `except` rewrites, `components/primitives/conditional_select.py` puts a signature on one line once its return annotation lost its quotes.
+
 Deviations from the spec:
 
 - None.
