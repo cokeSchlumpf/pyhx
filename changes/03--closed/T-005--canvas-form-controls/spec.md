@@ -133,3 +133,20 @@ The developer asked to take the change to the final pull request without stoppin
 - File dropzone, WYSIWYG editor, slider and tag inputs: own components with their own styles.
 - Dark mode of the canvas design (it has none).
 - Changes in case-sight.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** The canvas theme also lowers `--pico-form-element-disabled-opacity` to 0.5 (pyhx default 0.8): disabled checkboxes, radios, switches, fieldsets and buttons keep Pico's opacity, and at 0.8 they were hardly distinguishable from enabled ones (R5).
+- **D2** After review, `segment_control` also takes the look of the other controls in the canvas design (beyond R12): white, the 3:1 field border, 8px radius, the same 6px below its label; before, its grey track (#EEEEEE, 1.16:1 on white) had no visible edge and an older rule placed it 2px higher than a field next to it.
+- **D3** After review, a `dropdown` with a chosen value shows it in the text colour (Pico shows the summary in the placeholder colour either way), detected with `:has(:checked)`.
+- **F1** Pico sets `--pico-outline-width` (text controls) and `--pico-border-width` (checkboxes, radios, switches) on the element, and gives selects no height formula; `pyhx/elements/form.css` sets them in the canvas scope.
+- **F2** The solid button's hover darkens by 12 %, which shows no change on near-black; the canvas primary button lightens to `neutral-700` on hover instead.
+- **F3** Checkbox and radio option labels are `<label>`s with an input inside, and so are the options of `segment_control`; the rule for option labels excludes `.hx-segment-control__option`.
+- **F4** The `AppShell` forms page of `samples/components` renders pixel-identical before and after (R14); the only differing rows are the footer, which shows the commit hash.
+- **F5** Not part of this change, seen while testing: Pico stretches `button(..., type="submit")` to full width outside `DataForm` (the sample sets `width: auto`); the outline and ghost variants of neutral buttons have a `neutral-400` border (2.58:1), which 1.4.11 doesn't require for buttons with a text label; the header of `samples/canvas_layout` overflows at phone width on every page.
+
+Rollout: pull request #23, released with the next minor version of `pyhx` (`feat:`); screenshots on branch `design/canvas-form-controls-screenshots`. Apps on the canvas design (case-sight) get the new look when they update `pyhx`.
+
+Open after this change: the points of F5, if wanted as their own changes (owner: developer); checking case-sight's login forms after its `pyhx` update (owner: developer).
