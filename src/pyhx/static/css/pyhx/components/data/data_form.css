@@ -29,30 +29,16 @@
 }
 
 /* --- Form in a drawer (DataFormDrawer) ---
-   Below the form: cancel, then (when given) a divider and the delete slot;
-   the drawer stacks them (drawer.css). */
-
-.hx-data-form-drawer {
-    /* Box */
-    padding-inline: var(--hx-spacing-md);
-}
-
-:is(.hx-data-form-drawer__cancel, .hx-data-form-drawer__delete) {
-    /* Box */
-    margin-top: var(--hx-spacing-sm);
-}
-
-
-/* --- Form in a drawer, canvas design ---
    A scrolling body above a footer fixed at the bottom of the panel: delete
-   on the left, cancel and submit on the right. The submit button lives in
-   the <form> and cancel and delete outside it, so the form, the action
-   containers and their wrappers drop their boxes (`display: contents`) and
-   the buttons become items of one grid; the field grid is the body. The
-   ::before box draws the footer's background and top line. Tab order stays
-   the DOM order: fields, submit, cancel, delete. */
+   on the left, cancel and submit on the right; the drawer header stays on
+   top. The submit button lives in the <form> and cancel and delete outside
+   it, so the form, the action containers and their wrappers drop their boxes
+   (`display: contents`) and the buttons become items of one grid; the field
+   grid is the body. The ::before box draws the footer's background and top
+   line. Tab order stays the DOM order: fields, submit, cancel, delete.
+   Both designs; the canvas design sets its own spacing and button size. */
 
-[data-hx-design="canvas"] .hx-drawer > aside > section:has(> .hx-data-form-drawer) {
+.hx-drawer > aside > section:has(> .hx-data-form-drawer) {
     /* Layout */
     display: flex;
     flex-direction: column;
@@ -62,10 +48,11 @@
     overflow: hidden;
 }
 
-[data-hx-design="canvas"] .hx-data-form-drawer {
+.hx-data-form-drawer {
     /* Tokens */
-    --data-form-drawer--padding-inline: 1.5rem;
-    --data-form-drawer--footer-padding-block: 0.75rem;
+    --data-form-drawer--padding-inline: var(--hx-spacing-md);
+    --data-form-drawer--padding-block: var(--hx-spacing-md);
+    --data-form-drawer--footer-padding-block: var(--hx-spacing-sm);
 
     /* Layout */
     display: grid;
@@ -75,7 +62,7 @@
     grid-template-areas:
         "body   body   body   body"
         "delete .      cancel submit";
-    column-gap: 0.75rem;
+    column-gap: var(--hx-spacing-sm);
     align-items: center;
 
     /* Box */
@@ -117,20 +104,18 @@
 
         /* Box */
         align-self: stretch;
-        padding: 1.25rem var(--data-form-drawer--padding-inline);
+        padding: var(--data-form-drawer--padding-block) var(--data-form-drawer--padding-inline);
         overflow-y: auto;
+
+        /* Interaction */
+        /* The end of the body doesn't scroll the page behind the drawer. */
+        overscroll-behavior: contain;
     }
 
     .hx-data-form__actions .hx-button {
         /* Box */
         width: auto;
-        min-height: 1.75rem;
-        padding-block: 0;
-        padding-inline: 0.625rem;
         margin-block: var(--data-form-drawer--footer-padding-block);
-
-        /* Typography */
-        font-size: calc(var(--hx-text-control) * 0.875);
     }
 
     .hx-data-form__actions [type="submit"] {
@@ -154,8 +139,9 @@
         margin-inline-start: var(--data-form-drawer--padding-inline);
     }
 
-    /* Delete: a quiet danger action, an underlined text button in danger-700
-       (5.22:1 on white), whatever button the caller put into the slot. */
+    /* Delete: a quiet danger action, an underlined text button in the
+       design's danger-700 (text contrast), whatever button the caller put
+       into the slot. */
     .hx-data-form-drawer__delete .hx-button {
         /* Box */
         padding-inline: 0.125rem;
@@ -188,17 +174,40 @@
     }
 }
 
+/* Canvas design: the draft's spacing and 28px footer buttons. */
+[data-hx-design="canvas"] .hx-data-form-drawer {
+    --data-form-drawer--padding-inline: 1.5rem;
+    --data-form-drawer--padding-block: 1.25rem;
+    --data-form-drawer--footer-padding-block: 0.75rem;
+
+    /* Layout */
+    column-gap: 0.75rem;
+
+    .hx-data-form__actions .hx-button {
+        /* Box */
+        min-height: 1.75rem;
+        padding-block: 0;
+        padding-inline: 0.625rem;
+
+        /* Typography */
+        font-size: calc(var(--hx-text-control) * 0.875);
+    }
+}
+
 
 /* --- Canvas design: compact form ---
-   A compact DataForm (in a drawer or an aside, or `size="sm"`) shows one
-   field per row with 12px between them: a narrow place has no room for
-   columns next to a label column. Forms with grid template areas keep their
-   layout. */
+   A compact DataForm (in a drawer or an aside, or `size="sm"`) without a
+   label position shows one field per row with 12px between them, so its
+   labels can sit left of the fields. With a label position it keeps its
+   columns: "left" moves a label left only where its cell has room. Forms
+   with grid template areas keep their layout. */
 
-[data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, form[data-hx-size="sm"]) .hx-data-form:not(:has(> .hx-data-form__cell), [data-hx-size="md"] .hx-data-form) {
+[data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, form[data-hx-size="sm"]) .hx-data-form {
     /* Tokens */
     --hx-grid-gap: 0.75rem;
+}
 
+[data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, form[data-hx-size="sm"]) .hx-data-form:not(:has(> .hx-data-form__cell), [data-hx-size="md"] .hx-data-form, [data-hx-label-position] .hx-data-form) {
     /* Layout */
     grid-template-columns: minmax(0, 1fr);
 

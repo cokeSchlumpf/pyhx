@@ -7,7 +7,8 @@ Two pages over the same in-memory list of cases, to try ``DataPage`` inside
   (form, cancel, delete), the create button opens the create drawer. Fits
   small records that are edited as a form.
 - ``/data-page-detail`` — a row click opens the case's detail page instead of
-  the drawer (``can_edit`` as a callable). Fits records that are a workspace
+  the drawer (``can_edit`` as a callable); its create drawer keeps the labels
+  above the fields and the model's two columns (``form_label_position="top"``). Fits records that are a workspace
   rather than a form, like a case with documents; the sample links every row
   to the dossier page.
 
@@ -173,5 +174,6 @@ cases_detail: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     create_dialog_title="Fall erfassen",
     create_submit_label="Erfassen",
     cancel_create_label="Abbrechen",
+    form_label_position="top",
     can_edit=_open_case,
 )

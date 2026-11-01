@@ -10,7 +10,7 @@ from pyhx.i18n import _
 
 from ..layouts import DRAWER_CONTENT_ID, close_drawer, drawer_content
 from ..primitives import button
-from ..variants import FormSize
+from ..variants import FormSize, LabelPosition
 from .data_form import DataForm
 
 
@@ -31,12 +31,14 @@ class DataFormDrawer[T: BaseModel]:
         cancel_label: str | Callable[[], str] | None = None,
         dialog_title: str | Callable[[], str] | None = None,
         size: FormSize | None = None,
+        label_position: LabelPosition | None = None,
     ) -> None:
         """A :class:`DataForm` in a drawer, with cancel and a delete slot.
 
         ``size`` is passed to the :class:`DataForm`: ``None`` (default) sizes
         it by its place, which in the canvas design makes it compact like
         every form in a drawer; ``"md"`` keeps the full size.
+        ``label_position`` is passed to the :class:`DataForm` as well.
         """
         # Kept unresolved: a callable or a default is resolved at render time,
         # in the language of the request.
@@ -51,6 +53,7 @@ class DataFormDrawer[T: BaseModel]:
             submit_label=submit_label,
             field_order=field_order,
             size=size,
+            label_position=label_position,
         )
 
     async def render_drawer(

@@ -5,7 +5,7 @@ import htpy as y
 from pyhx.core import component
 from pyhx.core.primitives import classnames
 
-from ..variants import FormSize
+from ..variants import FormSize, LabelPosition
 
 
 class InputFactory(Protocol):
@@ -45,6 +45,7 @@ def form_field(
     class_: str | None = None,
     wrapper: Literal["label", "div"] = "label",
     size: FormSize | None = None,
+    label_position: LabelPosition | None = None,
     **kwargs,
 ) -> y.Node:
     """A labelled form control with help / error / success affordances.
@@ -104,6 +105,12 @@ def form_field(
         size elsewhere. ``"sm"`` makes it compact anywhere, ``"md"`` keeps
         the full size in a compact place. Rendered as ``data-hx-size``; no
         visible effect in the default design.
+    label_position : "top" | "left" | None, default None
+        ``"left"`` puts the label in a column left of the control while the
+        field is at least 360px wide (above it in a narrower cell); ``"top"``
+        keeps it above. ``None``: above, except in a compact field of the
+        canvas design, which puts it left where there is room. Works in both
+        designs; rendered as ``data-hx-label-position``.
     **kwargs
         Forwarded to the input factory as HTML attributes (``type``,
         ``value``, ``placeholder``, ``aria_*``, …).
@@ -137,7 +144,9 @@ def form_field(
         # <label> and link it via aria-labelledby instead.
         attrs["aria_labelledby"] = label_id
         return y.div(
-            data_hx_size=size, **classnames("hx-form-field", class_=class_ or "")
+            data_hx_size=size,
+            data_hx_label_position=label_position,
+            **classnames("hx-form-field", class_=class_ or ""),
         )[
             y.label(id=label_id, class_="hx-form-field__label")[label, required_marker],
             input(**attrs),
@@ -147,7 +156,9 @@ def form_field(
     # The label text is wrapped, so a compact field can place it left of the
     # control (form_field.css).
     return y.label(
-        data_hx_size=size, **classnames("hx-form-field", class_=class_ or "")
+        data_hx_size=size,
+        data_hx_label_position=label_position,
+        **classnames("hx-form-field", class_=class_ or ""),
     )[
         y.span(class_="hx-form-field__label")[label, required_marker],
         input(**attrs),

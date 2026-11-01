@@ -10,6 +10,7 @@ from pyhx.core.request_context import RequestContext
 from pyhx.core.webapp_routes import WebAppRoutes
 
 from ..layouts import page_header
+from ..variants import FormSize, LabelPosition
 from ._model_type import ModelType
 from .column import Column
 from .data_section import CM, EM, TM, CanEdit, DataSection, ExtraOobFn, T
@@ -41,6 +42,8 @@ class DataPage(Generic[T, TM, EM, CM]):
         delete_confirmation_value: SyncOrAsyncFn[T, str] | None = None,
         cancel_edit_label: str | None = None,
         cancel_create_label: str | None = None,
+        form_size: FormSize | None = None,
+        form_label_position: LabelPosition | None = None,
         type_name: str | None = None,
         table_model_type: ModelType[T, TM] | None = None,
         edit_form_model_type: ModelType[T, EM] | None = None,
@@ -123,6 +126,16 @@ class DataPage(Generic[T, TM, EM, CM]):
             Cancel-button label of the edit form. Defaults to ``"Cancel"``.
         cancel_create_label : str, optional
             Cancel-button label of the create form. Defaults to ``"Cancel"``.
+        form_size : "sm" | "md", optional
+            Size of the fields of the edit and create forms, passed to both
+            drawers (see :class:`DataFormDrawer`). ``None`` (default) sizes
+            them by their place, compact in the canvas design.
+        form_label_position : "top" | "left", optional
+            Label position of the edit and create forms, passed to both
+            drawers: ``"left"`` puts labels left of the fields while a
+            field's cell is at least 360px wide, ``"top"`` keeps them above;
+            both keep the form's columns. ``None`` (default): above, and
+            left in a compact form of the canvas design, one field per row.
         type_name : str, optional
             Human-readable name of the type used to build the default
             titles and labels above. Defaults to ``type.__name__``.
@@ -219,6 +232,8 @@ class DataPage(Generic[T, TM, EM, CM]):
             delete_confirmation_value=delete_confirmation_value,
             cancel_edit_label=cancel_edit_label,
             cancel_create_label=cancel_create_label,
+            form_size=form_size,
+            form_label_position=form_label_position,
             type_name=type_name,
             table_model_type=table_model_type,
             edit_form_model_type=edit_form_model_type,

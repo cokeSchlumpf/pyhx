@@ -160,16 +160,8 @@ form.hx-grid>.hx-select-fieldset {
    Fields in a narrow place (a drawer, the aside of split_layout) are compact:
    32px controls, a 13px label, help text 4px below, fields 12px apart. A
    `size` (data-hx-size) overrides the place: "sm" makes a field or form
-   compact anywhere, "md" keeps the full size in a drawer or aside.
-
-   Where the place is at least 360px wide (container `hx-compact`: the drawer
-   panel, the aside, a compact form), the label moves left of the control
-   into a 128px column; the help text stays below the control. */
-
-[data-hx-design="canvas"] :is(.hx-drawer > aside > section, .hx-split-layout__aside, form[data-hx-size="sm"]:not(.hx-drawer *)) {
-    /* Layout */
-    container: hx-compact / inline-size;
-}
+   compact anywhere, "md" keeps the full size in a drawer or aside. Where the
+   label sits is decided below (label position). */
 
 [data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, [data-hx-size="sm"]) .hx-form-field:not([data-hx-size="md"], [data-hx-size="md"] .hx-form-field),
 [data-hx-design="canvas"] .hx-form-field[data-hx-size="sm"] {
@@ -192,24 +184,50 @@ form.hx-grid>.hx-select-fieldset {
         /* Box */
         margin-top: 0.25rem;
     }
+}
 
-    @container hx-compact (min-width: 360px) {
+
+/* --- Label position: left ---
+   The label moves into a 128px column left of the control while the field's
+   own cell is at least 360px wide; in a narrower cell (a column of a
+   two-column form, a phone) it stays above. Measured per field (container
+   query on the field), so it works with columns and grid template areas.
+
+   A field gets this layout with `label_position="left"` on itself or on its
+   form (data-hx-label-position), or, without any position, as a compact
+   field of the canvas design. `label_position="top"` keeps the label above.
+   Layout only: colours and sizes come from the design. */
+
+:is(
+    .hx-form-field[data-hx-label-position="left"],
+    [data-hx-label-position="left"] .hx-form-field:not([data-hx-label-position]),
+    [data-hx-design="canvas"] :is(.hx-drawer, .hx-split-layout__aside, [data-hx-size="sm"]) .hx-form-field:not([data-hx-size="md"], [data-hx-size="md"] .hx-form-field, [data-hx-label-position], [data-hx-label-position] .hx-form-field),
+    [data-hx-design="canvas"] .hx-form-field[data-hx-size="sm"]:not([data-hx-label-position], [data-hx-label-position] .hx-form-field)
+) {
+    /* Tokens */
+    --form-field--label-width: 8rem;
+    --form-field--label-gap: 0.75rem;
+
+    /* Layout */
+    container-type: inline-size;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: var(--form-field--label-gap);
+
+    & > * {
         /* Layout */
-        display: grid;
-        grid-template-columns: 8rem minmax(0, 1fr);
-        grid-template-areas:
-            "label control"
-            "label help";
-        column-gap: 0.75rem;
-        align-items: start;
+        flex: 0 0 100%;
+    }
 
+    @container (min-width: 360px) {
         & > .hx-form-field__label {
             /* Layout */
-            grid-area: label;
+            flex: 0 0 var(--form-field--label-width);
 
             /* Box */
-            /* The first line centred on the 32px control. */
-            padding-top: 0.375rem;
+            /* The first line centred on the control's first line. */
+            padding-top: calc(var(--pico-form-element-spacing-vertical) + var(--pico-border-width) + (1rem * var(--pico-line-height) - 1.25rem) / 2);
             margin: 0;
 
             /* Typography */
@@ -219,24 +237,19 @@ form.hx-grid>.hx-select-fieldset {
 
         & > :not(.hx-form-field__label, small) {
             /* Layout */
-            grid-area: control;
+            flex: 1 1 0;
 
             /* Box */
+            min-width: 0;
             margin-top: 0;
         }
 
         & > small {
             /* Layout */
-            grid-area: help;
-        }
-    }
-}
+            flex-basis: calc(100% - var(--form-field--label-width) - var(--form-field--label-gap));
 
-/* Fields placed by a form's grid template areas keep the label above: the
-   cells of such a layout are too narrow for a label column. */
-@container hx-compact (min-width: 360px) {
-    [data-hx-design="canvas"] .hx-data-form__cell > .hx-form-field {
-        /* Layout */
-        display: block;
+            /* Box */
+            margin-left: calc(var(--form-field--label-width) + var(--form-field--label-gap));
+        }
     }
 }
