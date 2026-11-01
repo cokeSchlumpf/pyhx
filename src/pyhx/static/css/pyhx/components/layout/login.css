@@ -26,9 +26,11 @@
 }
 
 
-/* Subtle link below a method's card to the list of login methods. */
+/* Subtle line below a login card with its secondary links: another
+   method, a new login link, back to sign in. */
 .hx-login__switch {
     /* Typography */
+    color: var(--hx-color-neutral-600);
     font-size: var(--hx-text-meta);
     text-align: center;
 }
