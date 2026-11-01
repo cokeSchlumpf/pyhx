@@ -11,6 +11,11 @@ Two pages over the same in-memory list of cases, to try ``DataPage`` inside
   rather than a form, like a case with documents; the sample links every row
   to the dossier page.
 
+Both pages have quick filters (pills with counts above the table: Alle,
+Offen, Eingabe erforderlich, Abgeschlossen) and a search over Fallnummer,
+Name and AHV-Nr. The active pill and the search term are kept in the URL, so
+the dossier links to ``/data-page?view=requires-input``.
+
 The create/edit/delete actions mutate a ``SimpleDataSource`` list, so no
 backend is needed.
 """
@@ -25,8 +30,10 @@ from pydantic import BaseModel, Field
 
 import pyhx.components as c
 import pyhx.components.data.annotations as a
+from pyhx.components.data.sources.filter import Condition, TextChoiceIn
 from pyhx.components.data.sources.simple_data_source import SimpleDataSource
 from pyhx.core import WebAppRouter
+from pyhx.components.view_model import Option
 from pyhx.core.fragment import FragmentResponse
 
 router = WebAppRouter()
@@ -46,10 +53,22 @@ class Case(BaseModel):
     id: Annotated[str, a.HiddenColumn(), a.HiddenField()] = Field(
         default_factory=new_id
     )
-    case_number: Annotated[str, a.TextColumn(label="Fallnummer")]
-    client_name: Annotated[str, a.TextColumn(label="Versicherte Person")]
-    client_number: Annotated[str, a.TextColumn(label="AHV-Nr.")]
-    status: Annotated[CaseStatus, a.TextColumn(label="Status")]
+    case_number: Annotated[str, a.TextColumn(label="Fallnummer", searchable=True)]
+    client_name: Annotated[
+        str, a.TextColumn(label="Versicherte Person", searchable=True)
+    ]
+    client_number: Annotated[str, a.TextColumn(label="AHV-Nr.", searchable=True)]
+    # A multi-select filter, so a quick filter can hold several statuses
+    # ("Offen") and the drawer shows it as "is any of".
+    status: Annotated[
+        CaseStatus,
+        a.TextColumn(
+            label="Status",
+            filter=a.MultipleChoiceFilter(
+                options=[Option(label=s.value, value=s.value) for s in CaseStatus]
+            ),
+        ),
+    ]
     received: Annotated[date, a.DateColumn(label="Eingang")]
     documents: Annotated[int, a.NumericColumn(label="Dokumente")]
 
@@ -135,6 +154,39 @@ def _cases() -> list[Case]:
 
 breadcrumbs: list[y.Node] = [y.a(href="/")["Canvas Layout"]]
 
+
+def _status(*statuses: CaseStatus) -> list[Condition]:
+    return [
+        Condition(key="status", values=[TextChoiceIn(values=[s.value for s in statuses])])
+    ]
+
+
+quick_filters = c.QuickFilters(
+    presets=[
+        c.QuickFilter(key="all", label="Alle"),
+        c.QuickFilter(
+            key="open",
+            label="Offen",
+            filter=_status(CaseStatus.new, CaseStatus.in_progress),
+        ),
+        c.QuickFilter(
+            key="requires-input",
+            label="Eingabe erforderlich",
+            filter=_status(CaseStatus.requires_input),
+        ),
+        c.QuickFilter(
+            key="closed", label="Abgeschlossen", filter=_status(CaseStatus.closed)
+        ),
+    ],
+    counts=True,
+    label="Ansichten",
+)
+
+search = c.TableSearch(label="Suchen", placeholder="Fallnummer, Name, AHV-Nr.")
+
+REQUIRES_INPUT_URL = "/data-page?view=requires-input"
+"""The case list with the quick filter "Eingabe erforderlich" active."""
+
 cases: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     routes=router,
     path="/data-page",
@@ -152,6 +204,8 @@ cases: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     cancel_create_label="Abbrechen",
     cancel_edit_label="Abbrechen",
     delete_item_label="Fall löschen",
+    table_quick_filters=quick_filters,
+    table_search=search,
 )
 
 
@@ -174,4 +228,6 @@ cases_detail: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     create_submit_label="Erfassen",
     cancel_create_label="Abbrechen",
     can_edit=_open_case,
+    table_quick_filters=quick_filters,
+    table_search=search,
 )
