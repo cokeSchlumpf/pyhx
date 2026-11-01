@@ -31,6 +31,7 @@ from samples.components.pages import (
     gantt,
     grid,
     icons,
+    inline_edit,
     messages,
     meta,
     metric_tile,
@@ -68,6 +69,7 @@ hx.include_router(drawer_radio.router)
 hx.include_router(conditional_select.router)
 hx.include_router(focus_list.router)
 hx.include_router(forms.router)
+hx.include_router(inline_edit.router)
 hx.include_router(gantt.router)
 hx.include_router(taglist.router)
 hx.include_router(messages.router)
@@ -223,6 +225,10 @@ async def home() -> y.Node:
                     " — skeleton page for form-component experiments",
                 ],
                 y.li[
+                    y.a(href=inline_edit.inline_edit_page.url())["Inline Edit"],
+                    " — a single value edited in place: Enter saves, Esc cancels",
+                ],
+                y.li[
                     y.a(href=gantt.gantt_page.url())["Gantt"],
                     " — blank scaffold page for the ",
                     y.code["gantt"],
@@ -296,6 +302,7 @@ hx.navigation.set(
         hx.nav_item(conditional_select.conditional_select_page, icon="filter"),
         hx.nav_item(focus_list.focus_list_page, icon="layers"),
         hx.nav_item(forms.forms_page, icon="edit-3"),
+        hx.nav_item(inline_edit.inline_edit_page, icon="edit-2"),
         hx.nav_item(gantt.gantt_page, icon="bar-chart-2"),
         hx.nav_item(messages.messages_page, icon="message-square"),
         hx.nav_item(metric_tile.metric_tile_page, icon="activity"),

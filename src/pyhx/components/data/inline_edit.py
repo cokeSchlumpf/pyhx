@@ -202,8 +202,14 @@ class InlineEdit[T: BaseModel]:
             id=item_id,
             hx_swap_oob="outerHTML" if oob else None,
         )[
-            y.span(class_="hx-inline-edit__label", id=f"{item_id}__label")[self.label,],
-            y.span(class_="hx-inline-edit__hint")[hint] if hint is not None else None,
+            y.span(class_="hx-inline-edit__heading")[
+                y.span(class_="hx-inline-edit__label", id=f"{item_id}__label")[
+                    self.label
+                ],
+                y.span(class_="hx-inline-edit__hint")[hint]
+                if hint is not None
+                else None,
+            ],
             y.span(class_="hx-inline-edit__value")[self._display_value(value)],
             y.span(class_="hx-inline-edit__source")[source]
             if source is not None
@@ -235,6 +241,9 @@ class InlineEdit[T: BaseModel]:
         item_id = self.item_id(key)
         attrs = ctx.form.form_attrs(oob=ctx.oob)
         attrs["hx_post"] = ctx.form.submit_form_fragment.url(query={"key": key})
+        # The form posts only its own fields; HeadlessForm's include of
+        # page-wide fields (drawer pickers) has nothing to find here.
+        attrs.pop("hx_include", None)
         return y.form(
             class_="hx-inline-edit__form",
             id=f"{item_id}__form",
