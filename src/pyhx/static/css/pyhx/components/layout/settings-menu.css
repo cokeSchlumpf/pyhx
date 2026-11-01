@@ -72,7 +72,7 @@
     flex-direction: column;
 
     /* Box */
-    width: 18rem;
+    width: 15rem;
     border: var(--hx-border-width-sm) solid var(--hx-color-neutral-300);
     border-radius: var(--hx-radius-lg);
 
@@ -158,7 +158,7 @@
         gap: var(--hx-spacing-sm);
 
         /* Box */
-        padding: 0.625rem 0.75rem;
+        padding: 0.5rem 0.625rem;
         border-radius: var(--hx-radius-md);
 
         /* Typography */
@@ -200,7 +200,7 @@
     & > button {
         /* Box */
         width: auto;
-        height: 2.75rem;
+        height: 2rem;
         margin: 0;
         padding: 0;
         border: 0;
@@ -208,7 +208,7 @@
         border-radius: 0;
 
         /* Typography */
-        font-size: var(--hx-text-sm);
+        font-size: 0.8125rem;
         font-weight: 500;
         letter-spacing: 0.04em;
         color: var(--hx-color-text);
@@ -265,6 +265,14 @@
 
     .hx-settings-menu__choices > button {
         /* Box */
-        height: 3rem;
+        height: 2.75rem;
+    }
+}
+
+/* Touch input: targets of at least 44px, also on larger screens. */
+@media (pointer: coarse) {
+    .hx-settings-menu__choices > button {
+        /* Box */
+        height: 2.75rem;
     }
 }
