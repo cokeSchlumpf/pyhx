@@ -215,8 +215,8 @@ class TestEditFragment:
             .get("/_components/inline-edit/grad/edit", params={"key": "x"})
             .text
         )
-        assert ">Grad<input" in html
-        assert ">Seit<input" in html
+        assert '<span class="hx-form-field__label">Grad</span><input' in html
+        assert '<span class="hx-form-field__label">Seit</span><input' in html
         assert 'type="date"' in html
         assert 'value="2026-04-01"' in html
 
@@ -309,7 +309,7 @@ class TestCustomFields:
         client = TestClient(hx.create_app())
         html = client.get("/_components/inline-edit/p/edit", params={"key": "x"}).text
         assert 'type="range"' in html
-        assert ">Prozent<input" in html
+        assert '<span class="hx-form-field__label">Prozent</span><input' in html
         error = client.post(
             "/_components/headless-form/inline-edit-p/submit",
             params={"key": "x"},
@@ -382,3 +382,53 @@ class TestTexts:
         form = client.get("/_components/inline-edit/p/edit", params={"key": "x"}).text
         assert ">Korrektur speichern</button>" in form
         assert "hx-inline-edit__shortcuts" not in form
+
+
+class TestSize:
+    def _form(self, **kwargs) -> str:
+        hx = WebApp()
+
+        async def load(key: str) -> _Grad:
+            return _Grad(degree=50, since=datetime.date(2026, 4, 1))
+
+        async def save(key: str, value: _Grad) -> _Grad:
+            return value
+
+        c.InlineEdit[_Grad](
+            routes=hx,
+            name="grad",
+            type=_Grad,
+            label="Grad AU",
+            load=load,
+            save=save,
+            **kwargs,
+        )
+        return (
+            TestClient(hx.create_app())
+            .get("/_components/inline-edit/grad/edit", params={"key": "x"})
+            .text
+        )
+
+    def test_follows_the_place_by_default(self):
+        html = self._form()
+        form = re.search(r"<form[^>]*>", html)
+        assert form is not None
+        assert "data-hx-size" not in form.group()
+        assert "data-hx-label-position" not in form.group()
+
+    def test_size_and_label_position_on_the_form(self):
+        html = self._form(size="sm", label_position="left")
+        form = re.search(r"<form[^>]*>", html)
+        assert form is not None
+        assert 'data-hx-size="sm"' in form.group()
+        assert 'data-hx-label-position="left"' in form.group()
+
+    def test_fields_are_a_grid(self):
+        assert '<div class="hx-grid hx-inline-edit__fields">' in self._form()
+
+    def test_single_field_keeps_its_label_on_top(self, app):
+        client, _, _ = app
+        html = client.get(
+            "/_components/inline-edit/pensum/edit", params={"key": "case-1"}
+        ).text
+        assert 'data-hx-label-position="top"' in html

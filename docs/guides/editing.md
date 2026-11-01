@@ -12,6 +12,10 @@ pyhx offers three ways to let users change data. Pick by how much is edited at o
 
 `DataPage` and `DataSection` open a `DataForm` for the clicked item in a drawer when `can_edit=True` (the default). The drawer covers part of the page and edits the whole record; the form is generated from the Pydantic model and its `@form` annotations.
 
+- The drawer keeps its header on top and its footer (delete on the left, cancel and submit on the right) at the bottom while the form scrolls, in both designs; the page behind it doesn't scroll.
+- In the canvas design the drawer's form is compact (32px fields, 28px buttons, labels left where a field has room). `form_size` and `form_label_position` on `DataPage` and `DataSection` override that for both the edit and the create drawer, e.g. `form_label_position="top"` for a form that keeps its two columns. See [Layouts: DataPage and drawers](layouts.md#datapage-and-drawers).
+- The list side of the page has quick filters, a search field and a footer with the number of items, see [Data Tables](data-tables.md).
+
 ## Detail page
 
 When a record needs more room than a drawer, pass a callable as `can_edit`: it receives the clicked item and returns what the click renders, typically a redirect to the record's own page:
@@ -73,6 +77,7 @@ async def case(case_id: str) -> y.Node:
 - `hint(key, value)` adds a short remark next to the label (e.g. "unsicher gelesen"), `source(key, value)` a line below the value. Both are called again after a save, so they can change with the value.
 - Only one item of a group is in edit mode: opening one cancels the open one. A group is the nearest element with `data-hx-inline-edit-group`; without one, the page is the group.
 - The edit button is a real button with the accessible name "Edit <label>"; focus moves into the field when the form opens and back to the button when it closes.
+- The form's size follows its place like other forms: in the canvas design it is compact in the aside of a `split_layout` or in a drawer (32px fields, 28px buttons) and full size in the main column. `size="sm"` or `"md"` overrides the place, `label_position` places the labels of a form with several fields (see [Layouts: Compact forms](layouts.md#compact-forms)). A single field has no label of its own: the item's label names it.
 - The default texts ("Save", "Cancel", "Edit <label>", the keyboard hint) come translated from pyhx's catalogs in the language of the request; `save_label`, `cancel_label`, `edit_label` (the button's whole accessible name) and `shortcuts_hint` (`None` hides it) replace them.
 
 The samples show it in both designs: the dossier page of `samples/canvas_layout` (`/dossier`) and the "Inline Edit" page of `samples/components`.

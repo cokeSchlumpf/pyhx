@@ -149,6 +149,9 @@ async def inline_edit_page() -> y.Node:
                   `hint(key, value)` add a source line and a short remark next to the label.
                 - `fields(ctx)` renders other controls than the default text, number
                   or date input, with `form_field(error_text=ctx.visible_errors.get(...))`.
+                - `size` (`"sm"`, `"md"`) and `label_position` (`"top"`, `"left"`) size
+                  the form like a `DataForm`; by default it follows its place (compact in
+                  a drawer or an aside in the canvas design).
                 - The default texts come translated in the language of the request;
                   `save_label`, `cancel_label`, `edit_label` and `shortcuts_hint` replace
                   them.

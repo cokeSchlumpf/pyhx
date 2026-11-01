@@ -39,6 +39,7 @@ from pyhx.i18n import _, _l
 
 from ..primitives.button import button
 from ..primitives.form_field import form_field
+from ..variants import FormSize, LabelPosition
 from .headless_form import FormRenderContext, HeadlessForm
 
 _SAVE = _l("Save")
@@ -128,6 +129,16 @@ class InlineEdit[T: BaseModel]:
     shortcuts_hint : Text | None
         Keyboard hint below the form, translated by default; ``None`` hides
         it.
+    size : "sm" | "md" | None
+        Size of the form in the canvas design, as ``DataForm``'s ``size``.
+        ``None`` sizes it by its place: compact (32px fields, 28px buttons)
+        in a drawer or in the aside of ``split_layout``, full size
+        elsewhere. ``"sm"`` makes it compact anywhere, ``"md"`` keeps the
+        full size in a compact place.
+    label_position : "top" | "left" | None
+        Where the labels of a form with several fields sit, as
+        ``DataForm``'s ``label_position``; ``None`` follows the place. A
+        single field has no label of its own: the item's label names it.
     """
 
     def __init__(
@@ -147,6 +158,8 @@ class InlineEdit[T: BaseModel]:
         cancel_label: Text = _CANCEL,
         edit_label: Text | None = None,
         shortcuts_hint: Text | None = _SHORTCUTS,
+        size: FormSize | None = None,
+        label_position: LabelPosition | None = None,
     ) -> None:
         self.name = to_kebabcase(name)
         self.type = type
@@ -161,6 +174,8 @@ class InlineEdit[T: BaseModel]:
         self.cancel_label = cancel_label
         self.edit_label = edit_label
         self.shortcuts_hint = shortcuts_hint
+        self.size = size
+        self.label_position = label_position
 
         async def handle_submit(value: T) -> FragmentResponse:
             key = self._request_key()
@@ -261,9 +276,13 @@ class InlineEdit[T: BaseModel]:
             class_="hx-inline-edit__form",
             id=f"{item_id}__form",
             aria_labelledby=f"{item_id}__label",
+            data_hx_size=self.size,
+            data_hx_label_position=self.label_position,
             **attrs,
         )[
-            y.div(class_="hx-inline-edit__fields")[
+            # A one-column grid: in the canvas design the grid's gap spaces
+            # the fields instead of their own margins (form_field.css).
+            y.div(class_="hx-grid hx-inline-edit__fields")[
                 self._fields(ctx) if self._fields else self._default_fields(ctx)
             ],
             y.div(class_="hx-inline-edit__actions")[
@@ -300,6 +319,9 @@ class InlineEdit[T: BaseModel]:
                     error_text=ctx.visible_errors.get(name),
                     disabled=ctx.disabled,
                     aria_labelledby=f"{item_id}__label" if single else None,
+                    # The item's label names a single field; "top" keeps a
+                    # compact place from reserving a label column for it.
+                    label_position="top" if single else None,
                 )
             )
         return nodes

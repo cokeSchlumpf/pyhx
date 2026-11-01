@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 22:32+0100\n"
+"POT-Creation-Date: 2026-11-01 22:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -70,7 +70,7 @@ msgid "Bullet list"
 msgstr "Aufzählung"
 
 #: components/data/data_form_drawer.py:73 components/data/data_section.py:529
-#: components/data/data_section.py:533 components/data/inline_edit.py:45
+#: components/data/data_section.py:533 components/data/inline_edit.py:46
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -170,7 +170,7 @@ msgstr "Bearbeiten"
 
 #. accessible name of the edit button; {label} is
 #. the label of the value, e.g. "Start of incapacity".
-#: components/data/inline_edit.py:236
+#: components/data/inline_edit.py:251
 #, python-brace-format
 msgid "Edit {label}"
 msgstr "{label} bearbeiten"
@@ -190,7 +190,7 @@ msgstr "E-Mail"
 msgid "Enter your email address and we'll send you a login link and a code."
 msgstr "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Anmeldelink und einen Code."
 
-#: components/data/inline_edit.py:46
+#: components/data/inline_edit.py:47
 msgid "Esc cancels · ↵ saves"
 msgstr "Esc abbrechen · ↵ speichern"
 
@@ -335,7 +335,7 @@ msgid "Resize label column"
 msgstr "Breite der Beschriftungsspalte ändern"
 
 #: components/data/annotations/form.py:96
-#: components/data/annotations/form.py:106 components/data/inline_edit.py:44
+#: components/data/annotations/form.py:106 components/data/inline_edit.py:45
 msgid "Save"
 msgstr "Speichern"
 
