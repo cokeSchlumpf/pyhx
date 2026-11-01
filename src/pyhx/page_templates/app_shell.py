@@ -253,7 +253,9 @@ class AppShell(PageTemplate):
                 y.div(class_="hx-sidepanel")[
                     y.div(class_="hx-sticky")[
                         # Translators: accessible name of the main navigation.
-                        y.nav(aria_label=_p("navigation", "main"))[
+                        y.nav(
+                            class_="hx-main-nav", aria_label=_p("navigation", "main")
+                        )[
                             await nav_renderer(
                                 slot="main", ctx=request, navigation=navigation
                             ),
@@ -262,7 +264,7 @@ class AppShell(PageTemplate):
                     ],
                     # User menu: fixed dropdown on desktop; flows inside sidepanel on mobile.
                     # Translators: accessible name of the user menu.
-                    y.nav(aria_label=_p("navigation", "user"))[
+                    y.nav(class_="hx-user-nav", aria_label=_p("navigation", "user"))[
                         y.ul[
                             y.li[
                                 y.a(href="#")[

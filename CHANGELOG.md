@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.3.2](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.1...v1.3.2) (2026-11-01)
+
+
+### Dependencies
+
+* update commons to 1.5.0 ([#32](https://github.com/cokeSchlumpf/pyhx/issues/32)) ([053228b](https://github.com/cokeSchlumpf/pyhx/commit/053228b985be46a584274b5bf6b7421b22aa065c))
+
 ## [1.3.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.0...v1.3.1) (2026-11-01)
 
 
