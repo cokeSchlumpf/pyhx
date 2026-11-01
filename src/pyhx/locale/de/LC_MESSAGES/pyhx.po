@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:12+0100\n"
+"POT-Creation-Date: 2026-11-01 20:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -56,7 +56,7 @@ msgstr "Aufsteigend"
 msgid "Available items"
 msgstr "Verfügbare Einträge"
 
-#: addons/user_authentication/_pages.py:385
+#: addons/user_authentication/_pages.py:414
 msgid "Back to sign in"
 msgstr "Zurück zur Anmeldung"
 
@@ -87,12 +87,12 @@ msgstr "Abbrechen"
 msgid "Cannot delete {type}"
 msgstr "{type} kann nicht gelöscht werden"
 
-#: addons/user_authentication/_pages.py:371
-#: addons/user_authentication/_pages.py:415
+#: addons/user_authentication/_pages.py:384
+#: addons/user_authentication/_pages.py:444
 msgid "Check your email"
 msgstr "Prüfen Sie Ihre E-Mails"
 
-#: addons/user_authentication/_pages.py:343
+#: addons/user_authentication/_pages.py:356
 msgid "Choose how you want to sign in."
 msgstr "Wählen Sie, wie Sie sich anmelden möchten."
 
@@ -118,7 +118,7 @@ msgstr "Code"
 msgid "Collapse All"
 msgstr "Alle zuklappen"
 
-#: addons/user_authentication/_pages.py:453
+#: addons/user_authentication/_pages.py:482
 msgid "Continue to sign in on this device."
 msgstr "Fahren Sie fort, um sich auf diesem Gerät anzumelden."
 
@@ -154,6 +154,11 @@ msgstr "Absteigend"
 msgid "Details"
 msgstr "Details"
 
+#: addons/user_authentication/_pages.py:395
+#, python-brace-format
+msgid "Didn't get it? {link}"
+msgstr "Nicht erhalten? {link}"
+
 #: components/layouts/message.py:62 components/layouts/notifications.py:63
 msgid "Dismiss"
 msgstr "Ausblenden"
@@ -178,7 +183,7 @@ msgstr "{type} bearbeiten"
 msgid "Email"
 msgstr "E-Mail"
 
-#: addons/user_authentication/_pages.py:329
+#: addons/user_authentication/_pages.py:342
 msgid "Enter your email address and we'll send you a login link and a code."
 msgstr "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Anmeldelink und einen Code."
 
@@ -221,11 +226,11 @@ msgstr "Erhalten Sie einen Anmeldelink und einen Code per E-Mail."
 msgid "Help"
 msgstr "Hilfe"
 
-#: addons/user_authentication/_pages.py:374
+#: addons/user_authentication/_pages.py:387
 msgid "If an account exists for this address, we've sent you a login link and a code. Open the link, or enter the code here."
 msgstr "Falls ein Konto mit dieser Adresse existiert, haben wir Ihnen einen Anmeldelink und einen Code gesendet. Öffnen Sie den Link oder geben Sie den Code hier ein."
 
-#: addons/user_authentication/_pages.py:207
+#: addons/user_authentication/_pages.py:220
 msgid "Invalid username or password."
 msgstr "Ungültiger Benutzername oder ungültiges Passwort."
 
@@ -237,15 +242,15 @@ msgstr "Kursiv"
 msgid "Language"
 msgstr "Sprache"
 
-#: addons/user_authentication/_pages.py:209
-#: addons/user_authentication/_pages.py:266
-#: addons/user_authentication/_pages.py:297
+#: addons/user_authentication/_pages.py:222
+#: addons/user_authentication/_pages.py:279
+#: addons/user_authentication/_pages.py:310
 msgid "Login failed."
 msgstr "Anmeldung fehlgeschlagen."
 
-#: addons/user_authentication/_pages.py:430
-#: addons/user_authentication/_pages.py:444
-#: addons/user_authentication/_pages.py:476
+#: addons/user_authentication/_pages.py:459
+#: addons/user_authentication/_pages.py:473
+#: addons/user_authentication/_pages.py:505
 msgid "Login link not valid"
 msgstr "Anmeldelink ungültig"
 
@@ -303,7 +308,8 @@ msgstr "Entfernen"
 msgid "Remove tag"
 msgstr "Tag entfernen"
 
-#: addons/user_authentication/_pages.py:379
+#: addons/user_authentication/_pages.py:396
+#: addons/user_authentication/_pages.py:409
 msgid "Request a new link"
 msgstr "Neuen Link anfordern"
 
@@ -378,23 +384,23 @@ msgstr "Tabelle im Vollbild anzeigen"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:455 page_templates/app_shell.py:304
+#: addons/user_authentication/_pages.py:484 page_templates/app_shell.py:304
 #: page_templates/app_shell.py:305 page_templates/app_shell.py:306
 msgid "Sign In"
 msgstr "Anmelden"
 
-#: addons/user_authentication/_pages.py:315
-#: addons/user_authentication/_pages.py:326
-#: addons/user_authentication/_pages.py:342
-#: addons/user_authentication/_pages.py:403
+#: addons/user_authentication/_pages.py:328
+#: addons/user_authentication/_pages.py:339
+#: addons/user_authentication/_pages.py:355
 #: addons/user_authentication/_pages.py:432
-#: addons/user_authentication/_pages.py:446
-#: addons/user_authentication/_pages.py:452
-#: addons/user_authentication/_pages.py:462
+#: addons/user_authentication/_pages.py:461
+#: addons/user_authentication/_pages.py:475
+#: addons/user_authentication/_pages.py:481
+#: addons/user_authentication/_pages.py:491
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: addons/user_authentication/_pages.py:183
+#: addons/user_authentication/_pages.py:196
 msgid "Sign in with another method"
 msgstr "Mit einer anderen Methode anmelden"
 

@@ -128,6 +128,16 @@ def _wrong_code(app: App) -> str:
     return "000000" if app.sender.last.code != "000000" else "111111"
 
 
+def _switch_line(body: str) -> str:
+    """The subtle line below the login card (``.hx-login__switch``)."""
+    return body.split('class="hx-login__switch"', 1)[1].split("</p>", 1)[0]
+
+
+def _card_footer(body: str) -> str:
+    """The footer of the login card, with its buttons."""
+    return body.split('class="hx-card__footer"', 1)[1].split("</footer>", 1)[0]
+
+
 class TestLoginPage:
     def test_default_offers_password_only(self):
         hx = WebApp()
@@ -340,6 +350,17 @@ class TestCode:
         assert 'autocomplete="one-time-code"' in body
         assert 'href="/login?method=email"' in body
 
+    def test_request_a_new_link_is_below_the_card(self):
+        app = _app()
+        _request_link(app)
+        body = app.client.get("/login/code").text
+
+        line = _switch_line(body)
+        assert "Didn&#39;t get it?" in line
+        assert 'href="/login?method=email"' in line
+        assert "Request a new link" in line
+        assert body.count("Request a new link") == 1
+
     def test_right_code_logs_in_and_honours_next(self):
         app = _app()
         _request_link(app, next_="/dossiers")
@@ -449,6 +470,31 @@ class TestLink:
 
         assert resp.status_code == 200
         assert "invalid or has expired" in resp.text
+
+    def test_invalid_link_offers_a_new_link_and_the_way_back(self):
+        body = _app().client.get("/login/token?t=not-a-token").text
+
+        footer = _card_footer(body)
+        assert 'href="/login?method=email"' in footer
+        assert "Request a new link" in footer
+        assert "hx-button--primary" in footer
+        line = _switch_line(body)
+        assert 'href="/login"' in line
+        assert "Back to sign in" in line
+        assert body.count("Back to sign in") == 1
+
+    def test_failed_confirmation_offers_a_new_link_and_the_way_back(self):
+        body = _app().client.post("/login/token", data={"t": "not-a-token"}).text
+
+        assert "Request a new link" in _card_footer(body)
+        assert "Back to sign in" in _switch_line(body)
+
+    def test_confirmation_button_is_in_the_card_footer(self):
+        app = _app()
+        _request_link(app)
+        body = app.new_client().get(f"/login/token?t={_token(app)}").text
+
+        assert 'hx-post="/login/token"' in _card_footer(body)
 
     def test_redeeming_the_link_invalidates_the_code(self):
         app = _app()

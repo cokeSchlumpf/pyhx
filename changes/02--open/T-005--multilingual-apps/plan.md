@@ -1,4 +1,4 @@
-# T-004 Multilingual apps: plan
+# T-005 Multilingual apps: plan
 
 ## Findings while planning
 
@@ -18,7 +18,7 @@ Deviations from the spec:
 
 ## Branching
 
-Branch `feature/i18n`, draft PR `feat: make apps multilingual (T-004)`. Executed by the agent as part of T-003 of `app--casesight` without review pauses per step; the PR is published only after commons 1.4.0 is released and locked; the agent presents the sample running locally, the developer reviews and merges the PR, the agent then merges the Release PR (1.3.0).
+Branch `feature/i18n`, draft PR `feat: make apps multilingual (T-005)`. Executed by the agent as part of T-003 of `app--casesight` without review pauses per step; the PR is published only after commons 1.4.0 is released and locked; the agent presents the sample running locally, the developer reviews and merges the PR, the agent then merges the Release PR (1.3.0).
 
 ## Steps
 

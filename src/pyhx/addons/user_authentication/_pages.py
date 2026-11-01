@@ -40,7 +40,7 @@ from pyhx.core import (
 )
 from pyhx.core.primitives import htmx
 from pyhx.core.primitives.negotiate_locale import LocaleSettings, resolve_locale
-from pyhx.i18n import _, _l
+from pyhx.i18n import _, _l, t
 from pyhx.page_templates import AppShell
 
 from ._methods import EmailTokenLogin, LoginMethod
@@ -134,13 +134,26 @@ def _login_box(*content: y.Node) -> y.Node:
     )[content]
 
 
-def _card(title: y.Node, *body: y.Node, heading: y.Element = y.h1) -> y.Node:
+def _card(
+    title: y.Node,
+    *body: y.Node,
+    heading: y.Element = y.h1,
+    footer: y.Node = None,
+) -> y.Node:
     """One box of the login column. The first box of a page carries the
-    page title (h1), further boxes an h2."""
+    page title (h1), further boxes an h2. ``footer`` holds the box's
+    buttons, right-aligned below a divider like a form's actions."""
     return c.card[
         c.card.header[c.card.title[heading[title]]],
         c.card.section[body],
+        c.card.footer[footer] if footer is not None else None,
     ]
+
+
+def _switch(*content: y.Node) -> y.Node:
+    """Subtle line below a box of the login column, for its secondary
+    links (another method, a new link, back to sign in)."""
+    return y.p(class_="hx-login__switch")[content]
 
 
 def register_default_auth_pages(
@@ -179,9 +192,9 @@ def register_default_auth_pages(
         """Subtle link from a method's page to the list of methods."""
         if not several_methods:
             return None
-        return y.p(class_="hx-login__switch")[
+        return _switch(
             y.a(href=method_url(SELECT_METHOD, next_))[_("Sign in with another method")]
-        ]
+        )
 
     def finish_login(user: RegisteredUser, next_: str | None) -> str:
         """Sign the user in and return where to go next."""
@@ -376,13 +389,31 @@ def register_default_auth_pages(
                     )
                 ],
                 await code_form.render(LoginCodeForm(code="")),
-                y.p[y.a(href=method_url(EmailTokenLogin.key))[_("Request a new link")]],
-            )
+            ),
+            _switch(
+                t(
+                    "Didn't get it? {link}",
+                    link=y.a(href=method_url(EmailTokenLogin.key))[
+                        _("Request a new link")
+                    ],
+                ),
+            ),
         )
 
     def message_box(title: str, text: str) -> y.Node:
+        """A failed email login: the way out is a new link. Only the token
+        pages use it, which exist only with email login."""
         return _login_box(
-            _card(title, y.p[text], y.p[y.a(href=login_path)[_("Back to sign in")]])
+            _card(
+                title,
+                y.p[text],
+                footer=c.button(
+                    _("Request a new link"),
+                    appearance="primary",
+                    href=method_url(EmailTokenLogin.key),
+                ),
+            ),
+            _switch(y.a(href=login_path)[_("Back to sign in")]),
         )
 
     # --- Pages --------------------------------------------------------------
@@ -451,7 +482,7 @@ def register_default_auth_pages(
                     _card(
                         _("Sign in"),
                         y.p[_("Continue to sign in on this device.")],
-                        c.button(
+                        footer=c.button(
                             _("Sign In"),
                             appearance="primary",
                             **htmx(hx_post=token_path, hx_vals={"t": t}),
