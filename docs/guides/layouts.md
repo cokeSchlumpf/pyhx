@@ -160,6 +160,16 @@ async def users() -> PageResponse:
 
 The active item is marked from the URL (`full_match=False` also marks sub-pages). A slot without a menu renders no navigation.
 
+### Form controls
+
+Forms need no extra code on the canvas: text inputs, selects, textareas, checkboxes, radios and switches, and the components built on them (`form_field`, `DataForm`, `dropdown`, `drawer_radio`, `drawer_select`, `select_fieldset`, `segment_control`), take the look of the design:
+
+- Fields and buttons share one height, 36px (`button(..., size="sm")` 28px), with 14px text and an 8px radius; the label sits above the field, help text below it.
+- The accent is the text colour, not blue: focus, checked controls, primary buttons and the checked option of a segment control.
+- States: hover darkens the border; focus shows a dark border and a ring; `aria-invalid="true"` an orange border; `readonly` a dashed border; `disabled` a grey field.
+
+Contrast follows WCAG 2.2 AA: control borders reach 3:1 against white and the canvas (`#878787`, 1.4.11), help text and error text 4.5:1 (`--hx-color-danger-700` for errors, since the design's orange `--hx-color-danger-600` only reaches 3.58:1). The values are Pico's form tokens in `static/css/themes/canvas.css`; the rules Pico has no token for are in `static/css/pyhx/elements/form.css` and the component stylesheets, under `[data-hx-design="canvas"]`. The page `/forms` of `samples/canvas_layout` shows every control in every state.
+
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
 ## Sticky offset

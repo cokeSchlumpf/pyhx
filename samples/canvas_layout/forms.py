@@ -155,7 +155,10 @@ def _states() -> y.Node:
             c.card.subtitle["Hover und Fokus mit Maus und Tastatur ausprobieren."],
         ],
         c.card.section[
-            y.div(**styles("hx-grid"), style="--hx-grid-columns: 5")[
+            y.div(
+                **styles("hx-grid"),
+                style="grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr))",
+            )[
                 _column(
                     "Standard",
                     c.form_field(
@@ -238,7 +241,10 @@ def _states() -> y.Node:
                 ),
             ],
             y.hr,
-            y.div(**styles("hx-grid"), style="--hx-grid-columns: 4")[
+            y.div(
+                **styles("hx-grid"),
+                style="grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr))",
+            )[
                 c.checkbox_fieldset(
                     "Benachrichtigen", "notify", SOURCE_OPTIONS, value=("gp",)
                 ),
@@ -265,7 +271,10 @@ def _states() -> y.Node:
                 ),
             ],
             y.hr,
-            y.div(**styles("hx-grid"), style="--hx-grid-columns: 2")[
+            y.div(
+                **styles("hx-grid"),
+                style="grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr))",
+            )[
                 c.form_field(
                     "view",
                     "Ansicht",
