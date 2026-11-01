@@ -74,8 +74,8 @@ def test_disabled_hides_sort_and_filter_controls():
 
 def test_disabled_keeps_resizer_and_expand_collapse():
     html = _render(enable_sort_and_filter=False)
-    assert "hx-table__col-resizer" in html       # resize handle preserved
-    assert "expand_all" in html                  # expand/collapse buttons remain
+    assert "hx-table__col-resizer" in html  # resize handle preserved
+    assert "expand_all" in html  # expand/collapse buttons remain
 
 
 def _table_with_probe(**kwargs) -> tuple[HierarchicalDataTable, list[Query]]:

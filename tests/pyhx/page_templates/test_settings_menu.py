@@ -1,0 +1,105 @@
+import htpy as y
+import pytest
+from commons.users import SQLUsersRepository
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
+
+from pyhx.addons.user_authentication import configure_user_session
+from pyhx.core.primitives.negotiate_locale import LocaleSettings
+from pyhx.core.webapp import WebApp
+from pyhx.page_templates import AppShell, CanvasShell, LanguageSetting
+
+SECRET = "x" * 32
+
+
+def _client(template, *, session: bool = True) -> TestClient:
+    hx = WebApp(default_page_template=template)
+
+    @hx.page("/", title="Home")
+    async def home() -> y.Node:
+        return y.p["home"]
+
+    if session:
+        engine = create_engine(
+            "sqlite:///:memory:",
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
+        )
+        configure_user_session(
+            hx, users=SQLUsersRepository(engine), secret_key=SECRET, https_only=False
+        )
+    return TestClient(hx.create_app(), follow_redirects=False)
+
+
+@pytest.fixture
+def four_languages(monkeypatch):
+    settings = LocaleSettings(supported_locales=["en", "de", "it", "fr"])
+    monkeypatch.setattr(LocaleSettings, "read", staticmethod(lambda: settings))
+
+
+TEMPLATES = [
+    pytest.param(
+        lambda **kw: AppShell(mode="app", main_navigation=False, **kw), id="AppShell"
+    ),
+    pytest.param(lambda **kw: CanvasShell(**kw), id="CanvasShell"),
+]
+
+
+@pytest.mark.usefixtures("four_languages")
+class TestSettingsMenu:
+    @pytest.mark.parametrize("make", TEMPLATES)
+    def test_gear_with_the_language_section_by_default(self, make):
+        page = _client(make()).get("/", headers={"Accept-Language": "de"}).text
+
+        assert '<details class="hx-settings-menu">' in page
+        assert 'aria-label="Einstellungen"' in page
+        assert '<h2 id="hx-settings-language">Sprache</h2><span>Deutsch</span>' in page
+        assert 'action="/_pyhx/locale"' in page and 'name="next" value="/"' in page
+        for code, name in (
+            ("en", "English"),
+            ("de", "Deutsch"),
+            ("it", "Italiano"),
+            ("fr", "Français"),
+        ):
+            assert f'value="{code}" lang="{code}" title="{name}"' in page
+        assert page.count('aria-pressed="true"') == 1
+        assert 'aria-pressed="true">DE</button>' in page
+
+    @pytest.mark.parametrize("make", TEMPLATES)
+    def test_no_gear_without_settings(self, make):
+        assert "hx-settings-menu" not in _client(make(settings=())).get("/").text
+
+    @pytest.mark.parametrize("make", TEMPLATES)
+    def test_no_gear_without_a_session(self, make):
+        assert "hx-settings-menu" not in _client(make(), session=False).get("/").text
+
+    @pytest.mark.parametrize("make", TEMPLATES)
+    def test_entries_are_sections_and_empty_ones_are_left_out(self, make):
+        def theme() -> y.Node:
+            return y.section(".hx-settings-menu__section")[y.h2["Theme"]]
+
+        def nothing() -> y.Node:
+            return None
+
+        page = _client(make(settings=[LanguageSetting(), nothing, theme])).get("/").text
+
+        assert page.index("hx-settings-language") < page.index("<h2>Theme</h2>")
+
+    def test_the_canvas_menu_is_outside_the_clipped_header_content(self):
+        page = _client(CanvasShell(header_content=y.span["Jane"])).get("/").text
+
+        content = page.index('class="hx-canvas-shell__header-content"')
+        assert (
+            content
+            < page.index("<span>Jane</span>")
+            < page.index('<details class="hx-settings-menu">')
+        )
+        assert page.index('class="hx-canvas-shell__header-end"') < content
+
+
+def test_no_gear_with_one_language(monkeypatch):
+    settings = LocaleSettings(supported_locales=["en"])
+    monkeypatch.setattr(LocaleSettings, "read", staticmethod(lambda: settings))
+
+    assert "hx-settings-menu" not in _client(CanvasShell()).get("/").text

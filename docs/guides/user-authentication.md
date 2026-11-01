@@ -177,7 +177,7 @@ The email is written in the language of the person who asked for it: the languag
 
 ## Language
 
-The session also carries the language a visitor chose (see [Multilingual apps](i18n.md)). The addon registers `POST /_pyhx/locale`, the endpoint of the app's language switcher (see `locale_switch()`): it stores the language in the session and, for a signed-in registered user, on the user, so it holds on the next sign-in. Signing in and out keeps the session language. The login pages are translated (de, it, fr) like all texts of pyhx.
+The session also carries the language a visitor chose (see [Multilingual apps](i18n.md)). The addon registers `POST /_pyhx/locale`, the endpoint of the language entry of the page templates' settings menu (and of an app's own switcher, see `locale_switch()`): it stores the language in the session and, for a signed-in registered user, on the user, so it holds on the next sign-in. Signing in and out keeps the session language. The login pages are translated (de, it, fr) like all texts of pyhx.
 
 ## Customising paths and redirects
 

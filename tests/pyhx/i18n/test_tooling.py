@@ -7,7 +7,7 @@ from pyhx.i18n.__main__ import main
 from pyhx.i18n._catalogs import catalog_path
 from pyhx.i18n._tooling import check, update
 
-CODE = '''
+CODE = """
 from pyhx.i18n import _, _l, _n, _p, t
 
 TITLE = _l("Cases")
@@ -15,7 +15,7 @@ TITLE = _l("Cases")
 def page(n, name):
     # Translators: the button that stores the form
     return [_("Save"), _n("{n} case", "{n} cases", n), _p("verb", "Open"), t("Hello {name}", name=name)]
-'''
+"""
 
 
 @pytest.fixture
@@ -53,11 +53,24 @@ class TestUpdate:
 
         written = update(package, catalogs, "messages", ["en", "de", "fr"])
 
-        assert written == [catalog_path(catalogs, "de", "messages"), catalog_path(catalogs, "fr", "messages")]
+        assert written == [
+            catalog_path(catalogs, "de", "messages"),
+            catalog_path(catalogs, "fr", "messages"),
+        ]
         with written[0].open("rb") as file:
             catalog = read_po(file, locale="de")
-        ids = {(m.id if isinstance(m.id, str) else m.id[0], m.context) for m in catalog if m.id}
-        assert ids == {("Cases", None), ("Save", None), ("{n} case", None), ("Open", "verb"), ("Hello {name}", None)}
+        ids = {
+            (m.id if isinstance(m.id, str) else m.id[0], m.context)
+            for m in catalog
+            if m.id
+        }
+        assert ids == {
+            ("Cases", None),
+            ("Save", None),
+            ("{n} case", None),
+            ("Open", "verb"),
+            ("Hello {name}", None),
+        }
         assert catalog.get("Save").auto_comments == ["the button that stores the form"]
 
     def test_keeps_translations_and_drops_removed_texts(self, project):
@@ -121,7 +134,14 @@ class TestCheck:
 
     def test_command_line(self, project, capsys):
         package, catalogs = project
-        args = ["--package", str(package), "--catalogs", str(catalogs), "--locales", "en,de"]
+        args = [
+            "--package",
+            str(package),
+            "--catalogs",
+            str(catalogs),
+            "--locales",
+            "en,de",
+        ]
 
         assert main(["update", *args]) == 0
         assert main(["check", *args]) == 1

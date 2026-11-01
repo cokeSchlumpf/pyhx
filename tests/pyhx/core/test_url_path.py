@@ -64,14 +64,14 @@ class TestConstruction:
         "value",
         [
             "",
-            "users",          # missing leading slash
-            "//users",        # empty segment
-            "/users/",        # trailing slash
-            "/Users",         # uppercase rejected
-            "/users/{1id}",   # variable must start with a letter
-            "/users/{}",      # empty variable name
-            "/users/{a-b}",   # hyphen not allowed in variable names
-            "/users/ id ",    # whitespace
+            "users",  # missing leading slash
+            "//users",  # empty segment
+            "/users/",  # trailing slash
+            "/Users",  # uppercase rejected
+            "/users/{1id}",  # variable must start with a letter
+            "/users/{}",  # empty variable name
+            "/users/{a-b}",  # hyphen not allowed in variable names
+            "/users/ id ",  # whitespace
         ],
     )
     def test_invalid_template_raises(self, value: str) -> None:
@@ -131,13 +131,13 @@ class TestMatch:
     @pytest.mark.parametrize(
         "path",
         [
-            "/users",          # missing segment
-            "/users/",         # trailing slash
-            "/users/42/posts", # extra segment
-            "/admin/42",       # different static
-            "/users/A1",       # uppercase rejected by [a-z0-9_-]
-            "/users/{42}",     # literal braces
-            "",                # empty
+            "/users",  # missing segment
+            "/users/",  # trailing slash
+            "/users/42/posts",  # extra segment
+            "/admin/42",  # different static
+            "/users/A1",  # uppercase rejected by [a-z0-9_-]
+            "/users/{42}",  # literal braces
+            "",  # empty
         ],
     )
     def test_non_matching_paths_return_none(self, path: str) -> None:
@@ -229,11 +229,11 @@ class TestPath:
         "value",
         [
             "",
-            "users",          # missing leading slash
-            "/users/",        # trailing slash
-            "/Users",         # uppercase rejected
-            "//users",        # empty segment
-            "/users/ id",     # whitespace
+            "users",  # missing leading slash
+            "/users/",  # trailing slash
+            "/Users",  # uppercase rejected
+            "//users",  # empty segment
+            "/users/ id",  # whitespace
         ],
     )
     def test_invalid_path_raises(self, value: str) -> None:
@@ -297,7 +297,6 @@ class TestIsPrefixOf:
 
 
 class TestPathTemplateJoin:
-
     def test_two_static_templates(self) -> None:
         result = PathTemplate("/foo/bar").join(PathTemplate("/lorem/ipsum"))
         assert isinstance(result, PathTemplate)
@@ -329,7 +328,6 @@ class TestPathTemplateJoin:
 
 
 class TestPathJoin:
-
     def test_two_concrete_paths(self) -> None:
         result = Path("/foo/bar").join(Path("/lorem/ipsum"))
         assert isinstance(result, Path)

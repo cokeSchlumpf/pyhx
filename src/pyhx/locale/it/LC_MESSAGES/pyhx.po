@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:50+0100\n"
+"POT-Creation-Date: 2026-11-01 21:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -37,10 +37,6 @@ msgstr "Aggiungi tag"
 #: components/primitives/conditional_select.py:64
 msgid "All"
 msgstr "Tutti"
-
-#: page_templates/app_shell.py:231
-msgid "Application Settings"
-msgstr "Impostazioni dell'applicazione"
 
 #: components/data/filter_drawer.py:575
 msgid "Apply Filter & Sort"
@@ -214,7 +210,7 @@ msgstr "Modalità filtro"
 msgid "Filter items"
 msgstr "Filtra elementi"
 
-#: page_templates/app_shell.py:234
+#: page_templates/app_shell.py:246
 msgid "Get Help"
 msgstr "Ottieni aiuto"
 
@@ -222,7 +218,7 @@ msgstr "Ottieni aiuto"
 msgid "Get a login link and a code by email."
 msgstr "Ricevi un link di accesso e un codice via e-mail."
 
-#: page_templates/app_shell.py:234
+#: page_templates/app_shell.py:246
 msgid "Help"
 msgstr "Aiuto"
 
@@ -238,6 +234,10 @@ msgstr "Nome utente o password non validi."
 msgid "Italic"
 msgstr "Corsivo"
 
+#: page_templates/settings_menu.py:44
+msgid "Language"
+msgstr "Lingua"
+
 #: addons/user_authentication/_pages.py:222
 #: addons/user_authentication/_pages.py:279
 #: addons/user_authentication/_pages.py:310
@@ -250,7 +250,7 @@ msgstr "Accesso non riuscito."
 msgid "Login link not valid"
 msgstr "Link di accesso non valido"
 
-#: page_templates/app_shell.py:263
+#: page_templates/app_shell.py:275
 msgid "Logout"
 msgstr "Esci"
 
@@ -284,7 +284,7 @@ msgstr "Nessun elemento da visualizzare"
 msgid "No selected item."
 msgstr "Nessun elemento selezionato."
 
-#: page_templates/app_shell.py:208
+#: page_templates/app_shell.py:222
 msgid "Open menu"
 msgstr "Apri menu"
 
@@ -370,7 +370,7 @@ msgstr "Elementi selezionati"
 msgid "Send login link"
 msgstr "Invia link di accesso"
 
-#: page_templates/app_shell.py:231 page_templates/app_shell.py:257
+#: page_templates/app_shell.py:269 page_templates/settings_menu.py:79
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -380,8 +380,8 @@ msgstr "Mostra tabella a schermo intero"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:304
-#: page_templates/app_shell.py:305 page_templates/app_shell.py:306
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:316
+#: page_templates/app_shell.py:317 page_templates/app_shell.py:318
 msgid "Sign In"
 msgstr "Accedi"
 
@@ -441,11 +441,11 @@ msgstr "Questo link di accesso non è valido o è scaduto. Richiedine uno nuovo.
 msgid "Timeline"
 msgstr "Cronologia"
 
-#: page_templates/app_shell.py:218
+#: page_templates/app_shell.py:232
 msgid "Toggle compact menu"
 msgstr "Attiva/disattiva menu compatto"
 
-#: page_templates/app_shell.py:311
+#: page_templates/app_shell.py:323
 msgid "Toggle user menu"
 msgstr "Apri/chiudi menu utente"
 
@@ -589,7 +589,7 @@ msgid "less than or equal"
 msgstr "minore o uguale a"
 
 #. accessible name of the main navigation.
-#: page_templates/app_shell.py:244
+#: page_templates/app_shell.py:256
 msgctxt "navigation"
 msgid "main"
 msgstr "Navigazione principale"
@@ -600,7 +600,7 @@ msgid "starts with"
 msgstr "inizia con"
 
 #. accessible name of the user menu.
-#: page_templates/app_shell.py:253
+#: page_templates/app_shell.py:265
 msgctxt "navigation"
 msgid "user"
 msgstr "Menu utente"

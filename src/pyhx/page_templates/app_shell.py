@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Annotated, Literal
 
 import htpy as y
@@ -22,6 +23,7 @@ from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
 from ..core.templates.page_template import Design, PageTemplate
 from ..core.templates.skeleton import Skeleton
+from .settings_menu import DEFAULT_SETTINGS, SettingsEntry, settings_menu
 
 
 @component
@@ -76,6 +78,16 @@ class AppShellNavRenderer(NavRenderer):
 
 
 class AppShell(PageTemplate):
+    """Page template of the ``default`` design: a header, a sidepanel and a footer.
+
+    ``settings`` fills the settings menu, the gear in the header opening a
+    dropdown with one section per entry. The default is the language of the
+    app (:class:`~pyhx.page_templates.LanguageSetting`), shown when the app
+    offers several languages; ``settings=()`` removes the gear. An entry is
+    any callable returning a section (see
+    :class:`~pyhx.page_templates.SettingsEntry`).
+    """
+
     design: Design = "default"
 
     def __init__(
@@ -93,6 +105,7 @@ class AppShell(PageTemplate):
         logout_url: str = "/logout",
         stylesheets: tuple[str, ...] = (),
         scripts: tuple[str, ...] = (),
+        settings: Sequence[SettingsEntry] = DEFAULT_SETTINGS,
     ) -> None:
         self.brand_image_alt = brand_img_alt
         self.brand_image_src = brand_img_src
@@ -105,6 +118,7 @@ class AppShell(PageTemplate):
         self.user_menu = user_menu
         self.sidebar_content = sidebar_content
         self.stylesheets = stylesheets
+        self.settings = tuple(settings)
         self.scripts = scripts
 
     async def __call__(
@@ -227,10 +241,8 @@ class AppShell(PageTemplate):
                     ],
                 ],
                 y.div[
-                    # User menu
-                    y.button(aria_label=_("Settings"), title=_("Application Settings"))[
-                        y.i(data_feather="settings")
-                    ],
+                    # Settings menu (gear), left out when no entry has anything to show
+                    settings_menu(self.settings),
                     y.button(aria_label=_("Help"), title=_("Get Help"))[
                         y.i(data_feather="help-circle")
                     ],

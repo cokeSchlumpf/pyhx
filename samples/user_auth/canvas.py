@@ -11,8 +11,8 @@ methods (``default_login_method=None``); ``main.py`` starts with the first
 method. The login link and code appear in the
 console (``LoggingLoginTokenSender``).
 
-The language switcher sits in the header of ``CanvasShell``, also on the
-login pages; texts and catalogs are shared with ``main.py``.
+The settings menu (the gear in the top bar) switches the language, also on
+the login pages; texts and catalogs are shared with ``main.py``.
 """
 
 import htpy as y
@@ -27,16 +27,12 @@ from pyhx.addons.user_authentication import (
 from pyhx.core import WebApp
 from pyhx.i18n import _, _l, t
 from pyhx.page_templates import CanvasShell
-from samples.user_auth.main import LOCALE_DIR, _build_users_repo, language_switcher
-
-
-def header_content() -> y.Node:
-    return language_switcher()
+from samples.user_auth.main import LOCALE_DIR, _build_users_repo
 
 
 hx = WebApp(
     title="User Auth Canvas",
-    default_page_template=CanvasShell(header_content=header_content),
+    default_page_template=CanvasShell(),
     locale_dir=LOCALE_DIR,
 )
 

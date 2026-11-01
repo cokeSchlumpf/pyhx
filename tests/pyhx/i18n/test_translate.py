@@ -194,7 +194,9 @@ class TestLazy:
         with use_locale("de"):
             assert str(y.h1[label]) == "<h1>Fälle &amp; mehr</h1>"
             assert f"{label} | App" == "Fälle & mehr | App"
-            assert str(y.a(title=str(label))["x"]) == '<a title="Fälle &amp; mehr">x</a>'
+            assert (
+                str(y.a(title=str(label))["x"]) == '<a title="Fälle &amp; mehr">x</a>'
+            )
 
 
 class TestPyhxCatalogs:
@@ -202,7 +204,11 @@ class TestPyhxCatalogs:
         from pyhx.i18n._catalogs import PYHX_LOCALE_DIR, clear_cache
 
         clear_cache()
-        for locale, cancel in (("de", "Abbrechen"), ("it", "Annulla"), ("fr", "Annuler")):
+        for locale, cancel in (
+            ("de", "Abbrechen"),
+            ("it", "Annulla"),
+            ("fr", "Annuler"),
+        ):
             assert (PYHX_LOCALE_DIR / locale / "LC_MESSAGES" / "pyhx.po").is_file()
             with use_locale(locale):
                 assert _("Cancel") == cancel

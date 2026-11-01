@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:14+0100\n"
+"POT-Creation-Date: 2026-11-01 21:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -27,7 +27,7 @@ msgstr "Importo"
 msgid "Case"
 msgstr "Pratica"
 
-#: canvas.py:53 main.py:156 main.py:204
+#: canvas.py:49 main.py:156 main.py:202
 msgid "Home"
 msgstr "Home"
 
@@ -35,28 +35,28 @@ msgstr "Home"
 msgid "Opened"
 msgstr "Aperta il"
 
-#: main.py:195 main.py:201
+#: main.py:194 main.py:199
 msgid "Protected"
 msgstr "Protetta"
 
-#: main.py:187
+#: main.py:186
 msgid "Sign in"
 msgstr "Accedi"
 
-#: main.py:166
+#: main.py:165
 #, python-brace-format
 msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
 msgstr "Accedi come {jane} o {marco} (password {password}) oppure con {email}: il link e il codice compaiono nella console."
 
-#: canvas.py:60 main.py:189 main.py:206
+#: canvas.py:56 main.py:188 main.py:204
 msgid "Sign out"
 msgstr "Esci"
 
-#: canvas.py:57
+#: canvas.py:53
 msgid "Signed in"
 msgstr "Accesso effettuato"
 
-#: main.py:175
+#: main.py:174
 #, python-brace-format
 msgid "Signed in as {name}."
 msgstr "Accesso effettuato come {name}."
@@ -65,26 +65,26 @@ msgstr "Accesso effettuato come {name}."
 msgid "Since"
 msgstr "Da"
 
-#: main.py:178
+#: main.py:177
 #, python-brace-format
 msgid "There is {n} open case worth {total}."
 msgid_plural "There are {n} open cases worth {total}."
 msgstr[0] "C'è {n} pratica aperta per un valore di {total}."
 msgstr[1] "Ci sono {n} pratiche aperte per un valore di {total}."
 
-#: main.py:163
+#: main.py:162
 msgid "User authentication sample"
 msgstr "Esempio: accesso utente"
 
-#: main.py:186
+#: main.py:185
 msgid "Visit the protected page"
 msgstr "Vai alla pagina protetta"
 
-#: main.py:173
+#: main.py:172
 msgid "You are not signed in."
 msgstr "Non hai effettuato l'accesso."
 
-#: canvas.py:59 main.py:202
+#: canvas.py:55 main.py:200
 #, python-brace-format
 msgid "You're signed in as {name}."
 msgstr "Hai effettuato l'accesso come {name}."

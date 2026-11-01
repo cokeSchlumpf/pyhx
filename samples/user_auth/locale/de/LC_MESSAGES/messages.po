@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:14+0100\n"
+"POT-Creation-Date: 2026-11-01 21:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -27,7 +27,7 @@ msgstr "Betrag"
 msgid "Case"
 msgstr "Fall"
 
-#: canvas.py:53 main.py:156 main.py:204
+#: canvas.py:49 main.py:156 main.py:202
 msgid "Home"
 msgstr "Startseite"
 
@@ -35,28 +35,28 @@ msgstr "Startseite"
 msgid "Opened"
 msgstr "Eröffnet"
 
-#: main.py:195 main.py:201
+#: main.py:194 main.py:199
 msgid "Protected"
 msgstr "Geschützt"
 
-#: main.py:187
+#: main.py:186
 msgid "Sign in"
 msgstr "Einloggen"
 
-#: main.py:166
+#: main.py:165
 #, python-brace-format
 msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
 msgstr "Melden Sie sich als {jane} oder {marco} an (Passwort {password}) oder mit {email} – Link und Code erscheinen in der Konsole."
 
-#: canvas.py:60 main.py:189 main.py:206
+#: canvas.py:56 main.py:188 main.py:204
 msgid "Sign out"
 msgstr "Abmelden"
 
-#: canvas.py:57
+#: canvas.py:53
 msgid "Signed in"
 msgstr "Angemeldet"
 
-#: main.py:175
+#: main.py:174
 #, python-brace-format
 msgid "Signed in as {name}."
 msgstr "Angemeldet als {name}."
@@ -65,26 +65,26 @@ msgstr "Angemeldet als {name}."
 msgid "Since"
 msgstr "Seit"
 
-#: main.py:178
+#: main.py:177
 #, python-brace-format
 msgid "There is {n} open case worth {total}."
 msgid_plural "There are {n} open cases worth {total}."
 msgstr[0] "Es gibt {n} offenen Fall im Wert von {total}."
 msgstr[1] "Es gibt {n} offene Fälle im Wert von {total}."
 
-#: main.py:163
+#: main.py:162
 msgid "User authentication sample"
 msgstr "Beispiel: Benutzeranmeldung"
 
-#: main.py:186
+#: main.py:185
 msgid "Visit the protected page"
 msgstr "Zur geschützten Seite"
 
-#: main.py:173
+#: main.py:172
 msgid "You are not signed in."
 msgstr "Sie sind nicht angemeldet."
 
-#: canvas.py:59 main.py:202
+#: canvas.py:55 main.py:200
 #, python-brace-format
 msgid "You're signed in as {name}."
 msgstr "Sie sind angemeldet als {name}."

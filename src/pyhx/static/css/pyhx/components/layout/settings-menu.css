@@ -1,0 +1,209 @@
+/* Settings menu of the page templates: a gear (`<summary>`) opening a
+   dropdown (`<details>`) with one section per settings entry. Colors of the
+   gear follow the header (`currentColor`), so it works on the AppShell's
+   gradient and on the CanvasShell's light top bar. */
+
+/* --- Components --- */
+
+.hx-settings-menu {
+    /* Position */
+    position: relative;
+
+    /* Box */
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    & > summary {
+        /* Layout */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        /* Box */
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0;
+        border-radius: var(--hx-radius-md);
+
+        /* Typography */
+        color: currentColor;
+
+        /* Visual */
+        background-color: transparent;
+
+        /* Motion */
+        transition: background-color var(--hx-transition-fast);
+
+        /* Interaction */
+        cursor: pointer;
+        list-style: none;
+
+        &::-webkit-details-marker,
+        &::after {
+            /* Box */
+            display: none;
+        }
+
+        &:hover,
+        &:focus-visible {
+            /* Visual */
+            background-color: color-mix(in srgb, currentColor 12%, transparent);
+        }
+    }
+
+    &[open] > summary {
+        /* Visual */
+        background-color: color-mix(in srgb, currentColor 20%, transparent);
+    }
+}
+
+.hx-settings-menu__panel {
+    /* Position */
+    position: absolute;
+    top: calc(100% + var(--hx-spacing-xs));
+    right: 0;
+    z-index: var(--hx-z-dropdown);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Box */
+    width: 18rem;
+    border: var(--hx-border-width-sm) solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-lg);
+
+    /* Typography */
+    color: var(--hx-color-text);
+    white-space: normal;
+
+    /* Visual */
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-md);
+}
+
+.hx-settings-menu__section {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin: 0;
+    padding: var(--hx-spacing-md);
+
+    & + & {
+        /* Box */
+        border-top: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+    }
+}
+
+.hx-settings-menu__heading {
+    /* Layout */
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+    color: var(--hx-color-neutral-700);
+
+    & > h2 {
+        /* Box */
+        margin: 0;
+
+        /* Typography */
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--hx-color-neutral-700);
+    }
+}
+
+/* The choices: a segmented row, one equal column per option. */
+.hx-settings-menu__choices {
+    /* Layout */
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+
+    /* Box */
+    margin: 0;
+    border: var(--hx-border-width-sm) solid var(--hx-color-neutral-400);
+    border-radius: var(--hx-radius-md);
+    overflow: hidden;
+
+    & > button {
+        /* Box */
+        width: auto;
+        height: 2.75rem;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-left: var(--hx-border-width-sm) solid var(--hx-color-neutral-400);
+        border-radius: 0;
+
+        /* Typography */
+        font-size: var(--hx-text-sm);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--hx-color-text);
+
+        /* Visual */
+        background-color: var(--hx-color-background);
+        box-shadow: none;
+
+        /* Interaction */
+        cursor: pointer;
+
+        &:first-of-type {
+            /* Box */
+            border-left: 0;
+        }
+
+        &:hover {
+            /* Visual */
+            background-color: var(--hx-color-neutral-100);
+        }
+
+        &:focus-visible {
+            /* Visual */
+            outline: 2px solid var(--hx-color-primary-focus);
+            outline-offset: -2px;
+        }
+
+        &[aria-pressed="true"] {
+            /* Typography */
+            color: var(--hx-color-white);
+
+            /* Visual */
+            background-color: var(--hx-color-primary);
+        }
+    }
+}
+
+/* --- Responsive --- */
+
+/* On a phone the dropdown spans the width below the header. */
+@media (max-width: 767px) {
+    .hx-settings-menu__panel {
+        /* Position */
+        position: fixed;
+        top: var(--header--height, 3.5rem);
+        right: 0;
+        left: 0;
+
+        /* Box */
+        width: auto;
+        border-width: 0 0 var(--hx-border-width-sm);
+        border-radius: 0;
+    }
+
+    .hx-settings-menu__choices > button {
+        /* Box */
+        height: 3rem;
+    }
+}

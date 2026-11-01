@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 20:50+0100\n"
+"POT-Creation-Date: 2026-11-01 21:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -37,10 +37,6 @@ msgstr "Ajouter un tag"
 #: components/primitives/conditional_select.py:64
 msgid "All"
 msgstr "Tous"
-
-#: page_templates/app_shell.py:231
-msgid "Application Settings"
-msgstr "Paramètres de l'application"
 
 #: components/data/filter_drawer.py:575
 msgid "Apply Filter & Sort"
@@ -214,7 +210,7 @@ msgstr "Mode de filtre"
 msgid "Filter items"
 msgstr "Filtrer les éléments"
 
-#: page_templates/app_shell.py:234
+#: page_templates/app_shell.py:246
 msgid "Get Help"
 msgstr "Obtenir de l'aide"
 
@@ -222,7 +218,7 @@ msgstr "Obtenir de l'aide"
 msgid "Get a login link and a code by email."
 msgstr "Recevez un lien de connexion et un code par e-mail."
 
-#: page_templates/app_shell.py:234
+#: page_templates/app_shell.py:246
 msgid "Help"
 msgstr "Aide"
 
@@ -238,6 +234,10 @@ msgstr "Nom d'utilisateur ou mot de passe invalide."
 msgid "Italic"
 msgstr "Italique"
 
+#: page_templates/settings_menu.py:44
+msgid "Language"
+msgstr "Langue"
+
 #: addons/user_authentication/_pages.py:222
 #: addons/user_authentication/_pages.py:279
 #: addons/user_authentication/_pages.py:310
@@ -250,7 +250,7 @@ msgstr "Échec de la connexion."
 msgid "Login link not valid"
 msgstr "Lien de connexion non valide"
 
-#: page_templates/app_shell.py:263
+#: page_templates/app_shell.py:275
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -284,7 +284,7 @@ msgstr "Aucun élément à afficher"
 msgid "No selected item."
 msgstr "Aucun élément sélectionné."
 
-#: page_templates/app_shell.py:208
+#: page_templates/app_shell.py:222
 msgid "Open menu"
 msgstr "Ouvrir le menu"
 
@@ -370,7 +370,7 @@ msgstr "Éléments sélectionnés"
 msgid "Send login link"
 msgstr "Envoyer le lien de connexion"
 
-#: page_templates/app_shell.py:231 page_templates/app_shell.py:257
+#: page_templates/app_shell.py:269 page_templates/settings_menu.py:79
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -380,8 +380,8 @@ msgstr "Afficher le tableau en plein écran"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:304
-#: page_templates/app_shell.py:305 page_templates/app_shell.py:306
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:316
+#: page_templates/app_shell.py:317 page_templates/app_shell.py:318
 msgid "Sign In"
 msgstr "Se connecter"
 
@@ -441,11 +441,11 @@ msgstr "Ce lien de connexion est invalide ou a expiré. Veuillez en demander un 
 msgid "Timeline"
 msgstr "Chronologie"
 
-#: page_templates/app_shell.py:218
+#: page_templates/app_shell.py:232
 msgid "Toggle compact menu"
 msgstr "Basculer le menu compact"
 
-#: page_templates/app_shell.py:311
+#: page_templates/app_shell.py:323
 msgid "Toggle user menu"
 msgstr "Afficher/masquer le menu utilisateur"
 
@@ -589,7 +589,7 @@ msgid "less than or equal"
 msgstr "inférieur ou égal à"
 
 #. accessible name of the main navigation.
-#: page_templates/app_shell.py:244
+#: page_templates/app_shell.py:256
 msgctxt "navigation"
 msgid "main"
 msgstr "Navigation principale"
@@ -600,7 +600,7 @@ msgid "starts with"
 msgstr "commence par"
 
 #. accessible name of the user menu.
-#: page_templates/app_shell.py:253
+#: page_templates/app_shell.py:265
 msgctxt "navigation"
 msgid "user"
 msgstr "Menu utilisateur"
