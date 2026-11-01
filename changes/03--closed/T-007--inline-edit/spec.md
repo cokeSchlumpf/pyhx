@@ -146,3 +146,25 @@ None left: the developer answered the intent's questions and asked for the chang
 - Editing several values at once, table cells, autosave, conflict detection (intent).
 - The compact size and the label-left layout (T-006).
 - A count of open items, and translations of the default labels (i18n work).
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **F1** `HeadlessForm` already catches a `ValidationError` raised by its submit handler, so errors raised by `save` show at the field without a change to `HeadlessForm`; its API is unchanged.
+- **F2** The layout of a `HeadlessForm` chooses the form's id, so each inline form carries a per-item id and is still morphed out of band after a failed save.
+- **F3** The inline form drops `HeadlessForm`'s `hx-include="[data-hx-include='always']"`: with nothing to include, htmx logged an error on every save.
+- **F4** htmx 2.0.4 fires `htmx:load` for the out-of-band item and for the morphed form, so focus after save and after a failed save needs no other event; the script guards against binding a morphed form twice.
+- **F5** The form gets the focus once htmx has settled the swap (about 20 ms after the response); keys typed in that moment go to the page.
+- **D1** The card "Extrahierte Angaben" of the dossier sample starts expanded (`open=True`) instead of collapsed, so the editable values are visible; it stays collapsible.
+- **D2** The label and the hint share a heading line (`hx-inline-edit__heading`), so the hint follows the label as in the design instead of sitting at the right edge.
+
+Checked in Chromium with a Playwright script against both samples (Enter saves, Esc and the cancel button cancel without a request, opening a second item of a group closes the first, focus into the field and back to the edit button, focus to the invalid field, no horizontal overflow at 390px, no console errors). Screenshots: branch `design/inline-edit-screenshots`, folder `inline-edit/`.
+
+Rollout: with the pull request of `feature/inline-edit`, released as a `feat` of pyhx.
+
+Open after this change:
+
+- `main` moved on while this change was built (T-005 "multilingual apps", canvas form controls); `samples/canvas_layout/main.py` conflicts (both add a router and a docstring paragraph), and the default texts of `InlineEdit` (`Save`, `Cancel`, `Edit`, the keyboard hint) should become `pyhx.i18n` texts with catalog entries like the other components'. Owner: Michael Wellner.
+- The compact look of the design (label left, 32px field, 28px buttons) follows when T-006 is merged; the component sets no sizes of its own. Owner: Michael Wellner.
+- Duplicate `form_field` help-text ids when two forms with the same field name are open in two groups (concern 1). Owner: Michael Wellner.
