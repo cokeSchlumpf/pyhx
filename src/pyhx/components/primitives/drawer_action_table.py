@@ -16,6 +16,7 @@ from pydantic import BaseModel
 import pyhx.components as c
 from pyhx.core import component
 from pyhx.core.primitives import htmx
+from pyhx.i18n import _
 
 CONFIG_JSON_FIELD = "drawer_action_table_config_json"
 AVAILABLE_ITEMS_ID = "hx-drawer-action-table__available-items"
@@ -41,7 +42,8 @@ class DrawerActionTableConfig(BaseModel):
     commit_hx_include: str | None = None
     cancel_url: str | None = None
     cancel_hx_include: str | None = None
-    title: str = "Select item"
+    title: str | None = None
+    """The drawer's title; ``None`` shows "Select item" in the request language."""
 
     def visible_items(self) -> tuple[DrawerActionItem, ...]:
         """Items whose label matches ``query`` (case-insensitive substring)."""
@@ -88,13 +90,13 @@ def _available_items(config: DrawerActionTableConfig, *, oob: bool = False) -> y
         **(htmx(hx_swap_oob="outerHTML", as_dict=True) if oob else {}),
     )[
         y.table[
-            y.thead[y.tr[y.th["Available items"]]],
+            y.thead[y.tr[y.th[_("Available items")]]],
             y.tbody[
                 *rows,
                 (
                     y.tr[
                         y.td(class_="hx-drawer-action-table__empty")[
-                            "No available items."
+                            _("No available items.")
                         ]
                     ]
                     if not rows
@@ -122,7 +124,7 @@ def drawer_action_table(
     commit_hx_include: str | None = None,
     cancel_url: str | None = None,
     cancel_hx_include: str | None = None,
-    title: str = "Select item",
+    title: str | None = None,
 ) -> y.Node:
     """Render popup-drawer content: a filterable flat list of items to pick one from.
 
@@ -182,15 +184,15 @@ def drawer_action_table(
                 as_dict=True,
             )[
                 _config_input(config),
-                c.form_field("query", "Filter items", y.input()),
+                c.form_field("query", _("Filter items"), y.input()),
             ],
             _available_items(config),
             y.div(class_="hx-drawer-action-table__actions")[
-                c.button("Cancel", **cancel_attrs),
+                c.button(_("Cancel"), **cancel_attrs),
             ],
         ],
         id=c.POPUP_DRAWER_CONTENT_ID,
-        title=config.title,
+        title=config.title or _("Select item"),
     )
 
 

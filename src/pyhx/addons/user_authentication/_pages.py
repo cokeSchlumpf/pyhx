@@ -20,7 +20,7 @@ whether an address is registered.
 
 import asyncio
 import logging
-from typing import Annotated
+from typing import Annotated, cast
 from urllib.parse import urlencode
 
 import htpy as y
@@ -40,6 +40,7 @@ from pyhx.core import (
 )
 from pyhx.core.primitives import htmx
 from pyhx.core.primitives.negotiate_locale import LocaleSettings, resolve_locale
+from pyhx.i18n import _, _l
 from pyhx.page_templates import AppShell
 
 from ._methods import EmailTokenLogin, LoginMethod
@@ -53,43 +54,46 @@ SESSION_LOGIN_REQUEST_KEY = "login_request_id"
 # ``?method=`` value of the page that lists the login methods.
 SELECT_METHOD = "select"
 
-_CODE_FAILED = (
+_CODE_FAILED = _l(
     "The code is invalid or has expired. Please check it or request a new one."
 )
-_LINK_FAILED = "This login link is invalid or has expired. Please request a new one."
-_SEND_FAILED = "The email could not be sent. Please try again later."
+_LINK_FAILED = _l(
+    "This login link is invalid or has expired. Please request a new one."
+)
+_SEND_FAILED = _l("The email could not be sent. Please try again later.")
 
 
-@c.annotations.form(columns=1, submit_label="Sign In")
+@c.annotations.form(columns=1, submit_label=lambda: _("Sign In"))
 class LoginForm(BaseModel):
     username: Annotated[
         str,
         c.data.annotations.TextField(
-            control=c.data.annotations.InputControl(), label="Username"
+            control=c.data.annotations.InputControl(), label=cast(str, _l("Username"))
         ),
     ]
     password: Annotated[
         str,
         c.data.annotations.TextField(
-            control=c.data.annotations.InputControl(type="password"), label="Password"
+            control=c.data.annotations.InputControl(type="password"),
+            label=cast(str, _l("Password")),
         ),
     ]
     next: Annotated[str | None, c.data.annotations.HiddenField()]
 
 
-@c.annotations.form(columns=1, submit_label="Send login link")
+@c.annotations.form(columns=1, submit_label=lambda: _("Send login link"))
 class EmailLoginForm(BaseModel):
     email: Annotated[
         str,
         c.data.annotations.TextField(
             control=c.data.annotations.InputControl(type="email", autocomplete="email"),
-            label="Email",
+            label=cast(str, _l("Email")),
         ),
     ]
     next: Annotated[str | None, c.data.annotations.HiddenField()]
 
 
-@c.annotations.form(columns=1, submit_label="Sign In")
+@c.annotations.form(columns=1, submit_label=lambda: _("Sign In"))
 class LoginCodeForm(BaseModel):
     code: Annotated[
         str,
@@ -97,7 +101,8 @@ class LoginCodeForm(BaseModel):
             control=c.data.annotations.InputControl(
                 inputmode="numeric", autocomplete="one-time-code"
             ),
-            label="Code",
+            # Translators: the one-time code sent by email.
+            label=cast(str, _l("Code")),
         ),
     ]
 
@@ -175,7 +180,7 @@ def register_default_auth_pages(
         if not several_methods:
             return None
         return y.p(class_="hx-login__switch")[
-            y.a(href=method_url(SELECT_METHOD, next_))["Sign in with another method"]
+            y.a(href=method_url(SELECT_METHOD, next_))[_("Sign in with another method")]
         ]
 
     def finish_login(user: RegisteredUser, next_: str | None) -> str:
@@ -199,9 +204,9 @@ def register_default_auth_pages(
                     password=form.password,
                 ),
                 c.notification(
-                    "Invalid username or password.",
+                    _("Invalid username or password."),
                     appearance="danger",
-                    title="Login failed.",
+                    title=_("Login failed."),
                 ),
             ]
 
@@ -258,7 +263,7 @@ def register_default_auth_pages(
             return y.fragment[
                 await render_email_box(next=form.next or "", email=form.email),
                 c.notification(
-                    _SEND_FAILED, appearance="danger", title="Login failed."
+                    str(_SEND_FAILED), appearance="danger", title=_("Login failed.")
                 ),
             ]
 
@@ -288,7 +293,9 @@ def register_default_auth_pages(
 
         return y.fragment[
             await render_code_box(),
-            c.notification(_CODE_FAILED, appearance="danger", title="Login failed."),
+            c.notification(
+                str(_CODE_FAILED), appearance="danger", title=_("Login failed.")
+            ),
         ]
 
     code_form = c.data.DataForm(
@@ -305,7 +312,7 @@ def register_default_auth_pages(
     ) -> y.Node:
         return _login_box(
             _card(
-                "Sign in",
+                _("Sign in"),
                 await login_form.render(
                     LoginForm(username=username, password=password, next=next)
                 ),
@@ -316,10 +323,12 @@ def register_default_auth_pages(
     async def render_email_box(next: str, email: str = "") -> y.Node:
         return _login_box(
             _card(
-                "Sign in",
+                _("Sign in"),
                 y.p[
-                    "Enter your email address and we'll send you a login link ",
-                    "and a code.",
+                    _(
+                        "Enter your email address and we'll send you a login link "
+                        "and a code."
+                    )
                 ],
                 await email_form.render(EmailLoginForm(email=email, next=next)),
             ),
@@ -330,17 +339,17 @@ def register_default_auth_pages(
         return _login_box(
             c.card[
                 c.card.header[
-                    c.card.title[y.h1["Sign in"]],
-                    c.card.subtitle["Choose how you want to sign in."],
+                    c.card.title[y.h1[_("Sign in")]],
+                    c.card.subtitle[_("Choose how you want to sign in.")],
                 ],
                 c.card.list[
                     [
                         c.card.item[
                             c.icon(method.icon, circle=True),
                             c.card.link(href=method_url(method.key, next))[
-                                method.label
+                                str(method.label)
                             ],
-                            c.card.subtle[method.description],
+                            c.card.subtle[str(method.description)],
                             c.icon("arrow-right-2"),
                         ]
                         for method in login_methods
@@ -359,19 +368,21 @@ def register_default_auth_pages(
     async def render_code_box() -> y.Node:
         return _login_box(
             _card(
-                "Check your email",
+                _("Check your email"),
                 y.p[
-                    "If an account exists for this address, we've sent you a login ",
-                    "link and a code. Open the link, or enter the code here.",
+                    _(
+                        "If an account exists for this address, we've sent you a "
+                        "login link and a code. Open the link, or enter the code here."
+                    )
                 ],
                 await code_form.render(LoginCodeForm(code="")),
-                y.p[y.a(href=method_url(EmailTokenLogin.key))["Request a new link"]],
+                y.p[y.a(href=method_url(EmailTokenLogin.key))[_("Request a new link")]],
             )
         )
 
     def message_box(title: str, text: str) -> y.Node:
         return _login_box(
-            _card(title, y.p[text], y.p[y.a(href=login_path)["Back to sign in"]])
+            _card(title, y.p[text], y.p[y.a(href=login_path)[_("Back to sign in")]])
         )
 
     # --- Pages --------------------------------------------------------------
@@ -387,7 +398,9 @@ def register_default_auth_pages(
         else:
             view = default_view
         return PageResponse(
-            node=await render_view(view, next), page_template=login_page_template
+            node=await render_view(view, next),
+            page_template=login_page_template,
+            page_title=_("Sign in"),
         )
 
     if email_login is not None:
@@ -397,7 +410,9 @@ def register_default_auth_pages(
             if not request.session.get(SESSION_LOGIN_REQUEST_KEY):
                 return PageResponse.redirect(login_path)
             return PageResponse(
-                node=await render_code_box(), page_template=login_page_template
+                node=await render_code_box(),
+                page_template=login_page_template,
+                page_title=_("Check your email"),
             )
 
         @webapp.page(token_path, title="Sign in")
@@ -412,8 +427,9 @@ def register_default_auth_pages(
 
             if request_id is None:
                 return PageResponse(
-                    node=message_box("Login link not valid", _LINK_FAILED),
+                    node=message_box(_("Login link not valid"), str(_LINK_FAILED)),
                     page_template=login_page_template,
+                    page_title=_("Sign in"),
                 )
 
             # Opened in the browser that requested the link: log in right
@@ -425,23 +441,25 @@ def register_default_auth_pages(
                         finish_login(result.user, result.redirect_to)
                     )
                 return PageResponse(
-                    node=message_box("Login link not valid", _LINK_FAILED),
+                    node=message_box(_("Login link not valid"), str(_LINK_FAILED)),
                     page_template=login_page_template,
+                    page_title=_("Sign in"),
                 )
 
             return PageResponse(
                 node=_login_box(
                     _card(
-                        "Sign in",
-                        y.p["Continue to sign in on this device."],
+                        _("Sign in"),
+                        y.p[_("Continue to sign in on this device.")],
                         c.button(
-                            "Sign In",
+                            _("Sign In"),
                             appearance="primary",
                             **htmx(hx_post=token_path, hx_vals={"t": t}),
                         ),
                     )
                 ),
                 page_template=login_page_template,
+                page_title=_("Sign in"),
             )
 
         @webapp.fragment.post(token_path)
@@ -455,7 +473,7 @@ def register_default_auth_pages(
                 return FragmentResponse.redirect(
                     finish_login(result.user, result.redirect_to)
                 )
-            return message_box("Login link not valid", _LINK_FAILED)
+            return message_box(_("Login link not valid"), str(_LINK_FAILED))
 
     @webapp.page(logout_path, title="Sign out")
     async def logout_handler(request: Request) -> PageResponse:

@@ -2,6 +2,7 @@ from typing import Any, overload
 
 from .page import Page
 from .primitives import IconName, Path
+from .primitives.lazy_text import Text
 from .templates import NavItem
 
 
@@ -9,7 +10,7 @@ from .templates import NavItem
 def nav_item(
     page: Page,
     *,
-    label: str | None = None,
+    label: Text | None = None,
     full_match: bool = False,
     params: dict[str, Any] | None = None,
     icon: IconName | None = None,
@@ -18,7 +19,7 @@ def nav_item(
 
 @overload
 def nav_item(
-    label: str,
+    label: Text,
     *,
     to: str | Path,
     full_match: bool = False,
@@ -36,7 +37,7 @@ def nav_item(*args: Any, **kwargs: Any) -> NavItem:
 def _nav_item_from_page(
     page: Page,
     *,
-    label: str | None = None,
+    label: Text | None = None,
     full_match: bool = False,
     params: dict[str, Any] | None = None,
     icon: IconName | None = None,
@@ -50,6 +51,6 @@ def _nav_item_from_page(
 
 
 def _nav_item(
-    label: str, to: str | Path, full_match: bool = False, icon: IconName | None = None
+    label: Text, to: str | Path, full_match: bool = False, icon: IconName | None = None
 ) -> NavItem:
     return NavItem(label=label, to=to, full_match=full_match, icon=icon)

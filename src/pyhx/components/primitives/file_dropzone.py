@@ -4,6 +4,7 @@ import htpy as y
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames
+from pyhx.i18n import _
 
 from .button import button
 
@@ -17,7 +18,7 @@ def file_dropzone(
     multiple: bool = False,
     disabled: bool = False,
     required: bool = False,
-    placeholder: str = "Drag & drop a file here, or click to browse",
+    placeholder: str | None = None,
     **kwargs,
 ) -> y.Node:
     """A drag-and-drop file picker wrapping a file.
@@ -35,7 +36,9 @@ def file_dropzone(
         **kwargs: Extra attributes for the root element.
     """
     dropzone_id = id or f"hx-file-dropzone-{uuid4().hex}"
-    select_label = "Select Files" if multiple else "Select File"
+    select_label = _("Select Files") if multiple else _("Select File")
+    if placeholder is None:
+        placeholder = _("Drag & drop a file here, or click to browse")
 
     return y.div(
         id=dropzone_id,

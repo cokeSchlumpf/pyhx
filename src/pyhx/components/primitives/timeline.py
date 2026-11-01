@@ -9,6 +9,7 @@ import htpy as y
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames
+from pyhx.i18n import _
 
 
 class _Timeline:
@@ -29,7 +30,7 @@ class _Timeline:
 
     def placeholder(self) -> y.Node:
         """Render the placeholder shown until the timeline has real content."""
-        return y.div(class_="hx-timeline__placeholder")["Timeline"]
+        return y.div(class_="hx-timeline__placeholder")[_("Timeline")]
 
 
 @component

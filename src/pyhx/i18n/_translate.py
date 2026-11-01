@@ -4,8 +4,8 @@ from string import Formatter
 from typing import Any
 
 import htpy as y
-from babel.support import LazyProxy
 
+from pyhx.core.primitives.lazy_text import LazyText
 from pyhx.core.primitives.negotiate_locale import negotiate_locale
 
 from ._catalogs import translations
@@ -75,14 +75,18 @@ def _p(context: str, message: str, /, **values: Any) -> str:
     )
 
 
-def _l(message: str, /, **values: Any) -> LazyProxy:
-    """Mark ``message`` for translation when it is used, not when it is defined.
+def _l(message: str, /, **values: Any) -> LazyText:
+    """Mark ``message`` for translation when it is shown, not when it is defined.
 
-    For texts defined at import time (module constants, class attributes),
-    when no request language is known yet. The result behaves like a ``str``
-    and is translated each time it is turned into one.
+    For texts defined at import time (page titles, navigation labels, module
+    constants, class defaults), when no request language is known yet. The
+    result translates on ``str()``, in f-strings and as an htpy child.
+
+    Examples
+    --------
+    >>> @hx.page("/cases", title=_l("Cases"))
     """
-    return LazyProxy(lambda: _(message, **values), enable_cache=False)
+    return LazyText(message, **values)
 
 
 def t(message: str, /, **values: y.Node) -> list[y.Node]:

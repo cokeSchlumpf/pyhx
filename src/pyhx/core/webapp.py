@@ -20,6 +20,7 @@ from .nav_item import nav_item
 from .page import Page, PageDecoratorFactory, PageResponse
 from .primitives import HandlerResponse, Omit, PathTemplate
 from .primitives import Path as UrlPath
+from .primitives.lazy_text import Text
 from .reflection_operators import ensure_parameter_type_in_signature
 from .request_context import (
     RequestContext,
@@ -464,7 +465,7 @@ class WebApp:
             )
 
     async def _render_page_template(
-        self, page_title: str | None, page_response: PageResponse
+        self, page_title: Text | None, page_response: PageResponse
     ) -> PageResponse:
         # Explicit ``None`` checks: ``omit`` is falsy, so ``or`` would replace
         # it with the fallback and silently ignore the page's opt-out.
@@ -481,7 +482,7 @@ class WebApp:
             page_response.node = await page_template(
                 request=RequestContext.get(),
                 app_title=self.title,
-                page_title=None if isinstance(title, Omit) else title,
+                page_title=None if isinstance(title, Omit | None) else str(title),
                 body=page_response.node,
                 navigation=self._navigation,
             )

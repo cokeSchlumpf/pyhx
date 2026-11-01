@@ -26,6 +26,7 @@ Examples
 >>> y.p[t("Signed in as {name}.", name=y.strong[user.display_name])]
 """
 
+from pyhx.core.primitives.lazy_text import LazyText, Text
 from pyhx.core.primitives.negotiate_locale import (
     LocaleSettings,
     negotiate_locale,
@@ -45,7 +46,9 @@ from ._format import (
 from ._translate import _, _l, _n, _p, t
 
 __all__ = [
+    "LazyText",
     "LocaleSettings",
+    "Text",
     "_",
     "_l",
     "_n",

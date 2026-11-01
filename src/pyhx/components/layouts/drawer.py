@@ -6,6 +6,7 @@ from fastapi import Form
 from pyhx.core import component
 from pyhx.core.fragment import HTTPMethodLiteral
 from pyhx.core.primitives import HtmxAttrs, classnames, htmx, merge_styles, styles
+from pyhx.i18n import _, _p
 
 from ..primitives.button import button
 
@@ -78,7 +79,8 @@ def drawer_content(
     )
     return y.aside(
         id=id,
-        aria_label=title or "Details",
+        # Translators: accessible name of a drawer without a title.
+        aria_label=title or _("Details"),
         hx_ext="morph",
         hx_swap_oob="morph",
         **kwargs,
@@ -91,7 +93,7 @@ def drawer_content(
                 else None,
                 button(
                     icon="x",
-                    aria_label="Close",
+                    aria_label=_p("drawer", "Close"),
                     appearance="neutral",
                     variant="solid",
                     # pyhx.drawer.js clicks this when the backdrop is clicked.

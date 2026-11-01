@@ -6,6 +6,8 @@ from commons.users import AnonymousUser
 from fastapi import Form
 from markupsafe import Markup
 
+from pyhx.i18n import _, _p
+
 from ..components.layouts import (
     POPUP_DRAWER_CONTENT_ID,
     drawer,
@@ -203,7 +205,7 @@ class AppShell(PageTemplate):
                         y.label(
                             for_="hx-menu__toggle",
                             class_="hx-menu-button hx-menu-button--icon",
-                            aria_label="Open menu",
+                            aria_label=_("Open menu"),
                         )[y.i(data_feather="menu")]
                         if self.main_navigation
                         else None
@@ -213,7 +215,7 @@ class AppShell(PageTemplate):
                         y.label(
                             for_="hx-menu__compact",
                             class_="hx-menu-button hx-menu-button--icon",
-                            aria_label="Toggle compact menu",
+                            aria_label=_("Toggle compact menu"),
                         )[y.i(data_feather="menu")]
                         if self.main_navigation
                         else None
@@ -226,10 +228,10 @@ class AppShell(PageTemplate):
                 ],
                 y.div[
                     # User menu
-                    y.button(aria_label="Settings", title="Application Settings")[
+                    y.button(aria_label=_("Settings"), title=_("Application Settings"))[
                         y.i(data_feather="settings")
                     ],
-                    y.button(aria_label="Help", title="Get Help")[
+                    y.button(aria_label=_("Help"), title=_("Get Help"))[
                         y.i(data_feather="help-circle")
                     ],
                     self._render_user_menu(request) if self.user_menu else None,
@@ -238,7 +240,8 @@ class AppShell(PageTemplate):
             (
                 y.div(class_="hx-sidepanel")[
                     y.div(class_="hx-sticky")[
-                        y.nav(aria_label="main")[
+                        # Translators: accessible name of the main navigation.
+                        y.nav(aria_label=_p("navigation", "main"))[
                             await nav_renderer(
                                 slot="main", ctx=request, navigation=navigation
                             ),
@@ -246,15 +249,18 @@ class AppShell(PageTemplate):
                         ],
                     ],
                     # User menu: fixed dropdown on desktop; flows inside sidepanel on mobile.
-                    y.nav(aria_label="user")[
+                    # Translators: accessible name of the user menu.
+                    y.nav(aria_label=_p("navigation", "user"))[
                         y.ul[
                             y.li[
-                                y.a(href="#")[y.i(data_feather="settings"), "Settings"]
+                                y.a(href="#")[
+                                    y.i(data_feather="settings"), _("Settings")
+                                ]
                             ],
                             y.li(role="separator"),
                             y.li[
                                 y.a(href=self.logout_url)[
-                                    y.i(data_feather="log-out"), "Logout"
+                                    y.i(data_feather="log-out"), _("Logout")
                                 ]
                             ],
                         ]
@@ -295,12 +301,12 @@ class AppShell(PageTemplate):
             return y.a(
                 href=self.login_url,
                 role="button",
-                aria_label="Sign In",
-                title="Sign In",
-            )[y.i(data_feather="log-in"), "Sign In"]
+                aria_label=_("Sign In"),
+                title=_("Sign In"),
+            )[y.i(data_feather="log-in"), _("Sign In")]
         else:
             return y.label(
                 for_="hx-user-menu__toggle",
                 class_="hx-menu-button",
-                aria_label="Toggle user menu",
+                aria_label=_("Toggle user menu"),
             )[request.user.display_name, y.i(data_feather="user")]

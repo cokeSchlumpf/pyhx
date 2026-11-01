@@ -76,7 +76,9 @@ check = [
     { cmd = "ruff check src/pyhx"},
     { cmd = "ruff format --check src/pyhx"},
     { cmd = "mypy src/pyhx"},
-    { cmd = "pytest" }
+    { cmd = "pytest" },
+    { cmd = "python -m pyhx.i18n check --package src/pyhx --catalogs src/pyhx/locale --domain pyhx --locales de,it,fr" },
+    { cmd = "python -m pyhx.i18n check --package samples/user_auth --catalogs samples/user_auth/locale --locales de,it,fr" },
 ]
 
 fix = [
