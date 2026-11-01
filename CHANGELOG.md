@@ -1,5 +1,7 @@
 # Changelog
 
+All notable changes to PyHX are documented here. The newest release is at the top.
+
 ## [1.0.0](https://github.com/cokeSchlumpf/pyhx/compare/v0.3.0...v1.0.0) (2026-11-01)
 
 
@@ -26,7 +28,3 @@
 ### Features
 
 * Add release and documentation pipelines ([#1](https://github.com/cokeSchlumpf/pyhx/issues/1)) ([0dae429](https://github.com/cokeSchlumpf/pyhx/commit/0dae42954c5c0b4d3c6432dba9c8f00eb465b446))
-
-## Changelog
-
-All notable changes to PyHX are documented here. The newest release is at the top.
