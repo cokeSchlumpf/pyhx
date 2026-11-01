@@ -24,6 +24,22 @@ class RequestContext:
     user: User = field(default_factory=AnonymousUser)
     app_context: AppContext = field(default_factory=_empty_app_context)
     page_template: PageTemplate | None = None
+    _locale: str | None = field(default=None, repr=False, compare=False)
+    _locale_resolved: bool = field(default=False, repr=False, compare=False)
+
+    def resolved_locale(self) -> str | None:
+        """The language of this request from session, user or browser, resolved once.
+
+        ``None`` if none of them names an offered language; use
+        :func:`~pyhx.core.primitives.negotiate_locale` for the language with
+        the default applied.
+        """
+        if not self._locale_resolved:
+            from .primitives.negotiate_locale import resolve_locale
+
+            self._locale = resolve_locale(self)
+            self._locale_resolved = True
+        return self._locale
 
     @staticmethod
     def get() -> RequestContext:
