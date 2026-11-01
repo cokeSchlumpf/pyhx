@@ -120,16 +120,16 @@ configure_user_authentication(
 )
 
 
-# Example data for the formatting table: (case, amount in EUR, opened).
-_NOW = datetime.now(UTC)
+# Example data for the formatting table: (case, amount in EUR, opened how long ago).
 _CASES = [
-    ("A-1042", 1234.5, _NOW - timedelta(hours=3)),
-    ("B-2001", 98000, _NOW - timedelta(days=12)),
-    ("C-0007", 12.75, _NOW - timedelta(minutes=5)),
+    ("A-1042", 1234.5, timedelta(hours=3)),
+    ("B-2001", 98000, timedelta(days=12)),
+    ("C-0007", 12.75, timedelta(minutes=5)),
 ]
 
 
 def _formatting_table() -> y.Node:
+    now = datetime.now(UTC)
     return y.table[
         y.thead[
             y.tr[
@@ -144,10 +144,10 @@ def _formatting_table() -> y.Node:
                 y.tr[
                     y.td[name],
                     y.td[format_currency(amount, "EUR")],
-                    y.td[format_date(opened, "long")],
-                    y.td[format_relative_time(opened)],
+                    y.td[format_date(now - ago, "long")],
+                    y.td[format_relative_time(now - ago, now=now)],
                 ]
-                for name, amount, opened in _CASES
+                for name, amount, ago in _CASES
             )
         ],
     ]
