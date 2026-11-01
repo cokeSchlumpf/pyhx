@@ -170,6 +170,22 @@ Forms need no extra code on the canvas: text inputs, selects, textareas, checkbo
 
 Contrast follows WCAG 2.2 AA: control borders reach 3:1 against white and the canvas (`#878787`, 1.4.11), help text and error text 4.5:1 (`--hx-color-danger-700` for errors, since the design's orange `--hx-color-danger-600` only reaches 3.58:1). The values are Pico's form tokens in `static/css/themes/canvas.css`; the rules Pico has no token for are in `static/css/pyhx/elements/form.css` and the component stylesheets, under `[data-hx-design="canvas"]`. The page `/forms` of `samples/canvas_layout` shows every control in every state.
 
+### Compact forms
+
+Drawers and asides are narrow, so their forms are compact: 32px fields with a 13px label, help text 4px below, fields 12px apart. The place decides, no code is needed: every `form_field` and `DataForm` in a drawer or in the aside of `split_layout` is compact. Where the place is at least 360px wide (a drawer on a desktop), the label sits left of the field in a 128px column; in a narrower place (the aside) it stays above. A compact `DataForm` shows one field per row, whatever its `columns`; forms with `template_areas` keep their layout.
+
+`size` overrides the place: `form_field(..., size="sm")`, `DataForm(..., size="sm")` or `DataFormDrawer(..., size="sm")` makes a field or form compact anywhere, `size="md"` keeps the full size in a drawer or aside. In the default design `size` has no visible effect.
+
+### DataPage and drawers
+
+A `DataPage` takes the look of the design without code changes:
+
+- Breadcrumbs, title and actions (e.g. "Filter & Sort", create) sit on the canvas, not in a band; neutral buttons are white with the 3:1 border.
+- The table is a white card (12px radius, thin border) with a light header row; a table directly in the content column gets the card, tables inside cards keep their look.
+- The edit and create drawers (also `DataFormDrawer` on its own) have a header with the title and a close button, a scrolling body with the compact form, and a footer fixed at the bottom: the delete action on the left as an underlined text button in `--hx-color-danger-700`, cancel and submit on the right, 28px buttons. Delete still asks for confirmation in the popup drawer.
+
+In both designs, an open drawer and its backdrop are drawn above the page (page header and sticky table header included) and below the top bar; focus moves into the drawer when it opens and back when it closes, and Esc closes the topmost drawer. `/data-page` and `/data-page-detail` of `samples/canvas_layout` show it.
+
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
 
 ## Sticky offset
