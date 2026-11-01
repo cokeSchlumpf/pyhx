@@ -19,6 +19,7 @@ from .data_table import DataTable
 from .filter_drawer import FilterDrawer
 from .headless_form import FormRenderContext, HeadlessForm
 from .hierarchical_data_table import HierarchicalDataTable
+from .inline_edit import InlineEdit
 from .sources.filter_type import (
     BooleanFilter,
     ChoiceFilter,
@@ -49,6 +50,7 @@ __all__ = [
     "FormRenderContext",
     "HeadlessForm",
     "HierarchicalDataTable",
+    "InlineEdit",
     "ListChoiceFilter",
     "ModelType",
     "NumericFilter",
