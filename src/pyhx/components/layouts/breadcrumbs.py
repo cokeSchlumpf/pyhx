@@ -10,6 +10,7 @@ import htpy as y
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames
+from pyhx.i18n import _
 
 
 @component
@@ -37,7 +38,7 @@ def breadcrumbs(*items: y.Node, **kwargs) -> y.Node:
     """
     ancestors, current = items[:-1], items[-1:]
 
-    return y.nav(aria_label="Breadcrumb", **classnames("hx-breadcrumbs", **kwargs))[
+    return y.nav(aria_label=_("Breadcrumb"), **classnames("hx-breadcrumbs", **kwargs))[
         y.ol[
             [y.li[item] for item in ancestors],
             [y.li(aria_current="page")[item] for item in current],

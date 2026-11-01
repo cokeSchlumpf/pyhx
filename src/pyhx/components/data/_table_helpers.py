@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from pyhx.core import RequestContext
 from pyhx.core.primitives import htmx
 from pyhx.core.primitives.resolve_value import SyncOrAsyncFn
+from pyhx.i18n import _
 
 from ..primitives import button, table
 from ..primitives.table import SortDirection
@@ -222,7 +223,7 @@ def render_toolbar(
                 icon="x",
                 variant="ghost",
                 disabled=not query.is_active_filter_or_sort(),
-                title="Clear Filter & Sort",
+                title=_("Clear Filter & Sort"),
                 **htmx(
                     hx_post=clear_sort_and_filter_url,
                     hx_swap="none",
@@ -233,7 +234,7 @@ def render_toolbar(
                 icon="settings",
                 variant="ghost",
                 appearance="primary" if query.is_active_filter_or_sort() else "neutral",
-                title="Filter & Sort Settings",
+                title=_("Filter & Sort Settings"),
                 **filter_drawer.open_drawer_htmx_attributes(
                     kwargs={"hx_include": "[data-hx-include='always']"}
                 ),
@@ -245,7 +246,7 @@ def render_toolbar(
         button(
             icon="maximize",
             variant="ghost",
-            title="Show Table Full Screen",
+            title=_("Show Table Full Screen"),
             **htmx(
                 hx_post=render_table_url,
                 hx_swap="none",
@@ -289,7 +290,8 @@ def render_header_cell[T](
     """
     resize = table.resize_handle(
         col_idx + col_idx_offset,
-        title=f"Resize column `{column.label}`",
+        # Translators: tooltip of the drag handle; {label} is the column header.
+        title=_("Resize column `{label}`", label=column.label),
     )
 
     if not enable_sort_and_filter:
@@ -375,7 +377,7 @@ async def resolve_empty_state(
     producers.
     """
     if provider is None:
-        return "No items to display"
+        return _("No items to display")
     if callable(provider):
         try:
             sig = inspect.signature(provider)

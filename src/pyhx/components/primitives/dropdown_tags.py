@@ -2,6 +2,7 @@ import htpy as y
 
 from pyhx.core import component
 from pyhx.core.primitives import classnames
+from pyhx.i18n import _
 
 from .button import button
 
@@ -10,5 +11,5 @@ from .button import button
 def dropdown_tags() -> y.Node:
     return y.details(**classnames(["dropdown", "hx-dropown-tags"]))[
         y.summary(id="summary_id")[y.span["Tag 1, Tag 2, Tag 3"]],
-        y.div[y.div[y.input(type="text"), button("Add", appearance="primary")]],
+        y.div[y.div[y.input(type="text"), button(_("Add"), appearance="primary")]],
     ]

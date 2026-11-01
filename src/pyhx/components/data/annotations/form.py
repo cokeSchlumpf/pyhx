@@ -19,6 +19,8 @@ Example
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from pyhx.i18n import _
+
 SubmitLabel = str | Callable[[], str]
 """Either a literal label or a zero-argument callable returning one.
 
@@ -91,7 +93,7 @@ class FormConfig:
     template_areas: list[str] | None = None
     template_columns: list[str] | None = None
     template_rows: list[str] | None = None
-    submit_label: Callable[[], str] = lambda: "Save"
+    submit_label: Callable[[], str] = lambda: _("Save")
     field_order: list[str] | None = None
 
 
@@ -101,7 +103,7 @@ def form[T](
     template_areas: list[str] | None = None,
     template_columns: list[str] | None = None,
     template_rows: list[str] | None = None,
-    submit_label: SubmitLabel = "Save",
+    submit_label: SubmitLabel = lambda: _("Save"),
     field_order: list[str] | None = None,
 ) -> Callable[[T], T]:
     """Class decorator that attaches a :class:`FormConfig` to ``cls.__form__``.

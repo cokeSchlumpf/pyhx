@@ -1,0 +1,607 @@
+# German translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-01 21:09+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: components/primitives/dropdown_tags.py:14
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: components/data/filter_drawer.py:617
+msgid "Add filter ..."
+msgstr "Filter hinzufügen ..."
+
+#: components/data/filter_drawer.py:848
+msgid "Add new rule ..."
+msgstr "Neue Regel hinzufügen ..."
+
+#: components/primitives/taglist.py:194
+msgid "Add tag"
+msgstr "Tag hinzufügen"
+
+#: components/primitives/conditional_select.py:64
+msgid "All"
+msgstr "Alle"
+
+#: components/data/filter_drawer.py:575
+msgid "Apply Filter & Sort"
+msgstr "Filter & Sortierung anwenden"
+
+#: components/data/filter_drawer.py:921
+msgid "Ascending"
+msgstr "Aufsteigend"
+
+#: components/primitives/drawer_action_table.py:93
+#: components/primitives/drawer_radio.py:61
+#: components/primitives/drawer_select.py:65
+msgid "Available items"
+msgstr "Verfügbare Einträge"
+
+#: addons/user_authentication/_pages.py:416
+msgid "Back to sign in"
+msgstr "Zurück zur Anmeldung"
+
+#. toolbar buttons of the rich text editor.
+#: components/primitives/wysiwyg_editor.py:27
+msgid "Bold"
+msgstr "Fett"
+
+#: components/layouts/breadcrumbs.py:41 components/layouts/page_header.py:117
+msgid "Breadcrumb"
+msgstr "Brotkrümelnavigation"
+
+#: components/primitives/wysiwyg_editor.py:30
+msgid "Bullet list"
+msgstr "Aufzählung"
+
+#: components/data/data_form_drawer.py:61 components/data/data_section.py:475
+#: components/data/data_section.py:479
+#: components/primitives/drawer_action_table.py:191
+#: components/primitives/drawer_radio.py:62
+#: components/primitives/drawer_select.py:67
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. {type} is the name of the item's type, e.g. "Case".
+#: components/data/data_section.py:588
+#, python-brace-format
+msgid "Cannot delete {type}"
+msgstr "{type} kann nicht gelöscht werden"
+
+#: addons/user_authentication/_pages.py:384
+#: addons/user_authentication/_pages.py:446
+msgid "Check your email"
+msgstr "Prüfen Sie Ihre E-Mails"
+
+#: addons/user_authentication/_pages.py:356
+msgid "Choose how you want to sign in."
+msgstr "Wählen Sie, wie Sie sich anmelden möchten."
+
+#: components/data/_table_helpers.py:226 components/data/filter_drawer.py:580
+msgid "Clear Filter & Sort"
+msgstr "Filter & Sortierung zurücksetzen"
+
+#: components/primitives/drawer_radio.py:57
+msgid "Clear selection"
+msgstr "Auswahl aufheben"
+
+#: components/layouts/drawer.py:96
+msgctxt "drawer"
+msgid "Close"
+msgstr "Schließen"
+
+#. the one-time code sent by email.
+#: addons/user_authentication/_pages.py:105
+msgid "Code"
+msgstr "Code"
+
+#: components/data/hierarchical_data_table.py:319
+msgid "Collapse All"
+msgstr "Alle zuklappen"
+
+#: addons/user_authentication/_pages.py:484
+msgid "Continue to sign in on this device."
+msgstr "Fahren Sie fort, um sich auf diesem Gerät anzumelden."
+
+#: components/layouts/code.py:109
+msgid "Copy code"
+msgstr "Code kopieren"
+
+#. {type} is the name of the item's type, e.g. "Case".
+#: components/data/data_section.py:437 components/data/data_section.py:443
+#: components/data/data_section.py:456
+#, python-brace-format
+msgid "Create {type}"
+msgstr "{type} erstellen"
+
+#. {type} is the name of the item's type, in lower case.
+#: components/data/data_section.py:609
+#, python-brace-format
+msgid "Delete this {type}?"
+msgstr "{type} löschen?"
+
+#. {type} is the name of the item's type, e.g. "Case".
+#: components/data/data_section.py:470
+#, python-brace-format
+msgid "Delete {type}"
+msgstr "{type} löschen"
+
+#: components/data/filter_drawer.py:922
+msgid "Descending"
+msgstr "Absteigend"
+
+#. accessible name of a drawer without a title.
+#: components/layouts/drawer.py:83
+msgid "Details"
+msgstr "Details"
+
+#: addons/user_authentication/_pages.py:395
+#, python-brace-format
+msgid "Didn't get it? {link}"
+msgstr "Nicht erhalten? {link}"
+
+#: components/layouts/message.py:62 components/layouts/notifications.py:63
+msgid "Dismiss"
+msgstr "Ausblenden"
+
+#: components/primitives/file_dropzone.py:41
+msgid "Drag & drop a file here, or click to browse"
+msgstr "Datei hierher ziehen oder klicken, um sie auszuwählen"
+
+#. default title of the drawer with the edit form.
+#: components/data/data_form_drawer.py:63
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#. {type} is the name of the item's type, e.g. "Case".
+#: components/data/data_section.py:450
+#, python-brace-format
+msgid "Edit {type}"
+msgstr "{type} bearbeiten"
+
+#: addons/user_authentication/_methods.py:82
+#: addons/user_authentication/_pages.py:90
+msgid "Email"
+msgstr "E-Mail"
+
+#: addons/user_authentication/_pages.py:342
+msgid "Enter your email address and we'll send you a login link and a code."
+msgstr "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Anmeldelink und einen Code."
+
+#: components/data/hierarchical_data_table.py:308
+msgid "Expand All"
+msgstr "Alle aufklappen"
+
+#: components/data/filter_drawer.py:419
+msgctxt "filter drawer tab"
+msgid "Filter"
+msgstr "Filter"
+
+#: components/data/data_section.py:488
+msgid "Filter & Sort"
+msgstr "Filter & Sortierung"
+
+#: components/data/_table_helpers.py:237
+msgid "Filter & Sort Settings"
+msgstr "Filter- und Sortiereinstellungen"
+
+#: components/data/filter_drawer.py:594
+msgid "Filter Mode"
+msgstr "Filtermodus"
+
+#: components/primitives/drawer_action_table.py:187
+#: components/primitives/drawer_radio.py:60
+#: components/primitives/drawer_select.py:64
+msgid "Filter items"
+msgstr "Einträge filtern"
+
+#: page_templates/app_shell.py:246
+msgid "Get Help"
+msgstr "Hilfe erhalten"
+
+#: addons/user_authentication/_methods.py:83
+msgid "Get a login link and a code by email."
+msgstr "Erhalten Sie einen Anmeldelink und einen Code per E-Mail."
+
+#: page_templates/app_shell.py:246
+msgid "Help"
+msgstr "Hilfe"
+
+#: addons/user_authentication/_pages.py:387
+msgid "If an account exists for this address, we've sent you a login link and a code. Open the link, or enter the code here."
+msgstr "Falls ein Konto mit dieser Adresse existiert, haben wir Ihnen einen Anmeldelink und einen Code gesendet. Öffnen Sie den Link oder geben Sie den Code hier ein."
+
+#: addons/user_authentication/_pages.py:220
+msgid "Invalid username or password."
+msgstr "Ungültiger Benutzername oder ungültiges Passwort."
+
+#: components/primitives/wysiwyg_editor.py:28
+msgid "Italic"
+msgstr "Kursiv"
+
+#: page_templates/settings_menu.py:44
+msgid "Language"
+msgstr "Sprache"
+
+#: addons/user_authentication/_pages.py:222
+#: addons/user_authentication/_pages.py:279
+#: addons/user_authentication/_pages.py:310
+msgid "Login failed."
+msgstr "Anmeldung fehlgeschlagen."
+
+#: addons/user_authentication/_pages.py:461
+#: addons/user_authentication/_pages.py:475
+#: addons/user_authentication/_pages.py:507
+msgid "Login link not valid"
+msgstr "Anmeldelink ungültig"
+
+#: page_templates/app_shell.py:275
+msgid "Logout"
+msgstr "Abmelden"
+
+#: components/data/filter_drawer.py:598
+msgid "Match All Filters"
+msgstr "Alle Filter erfüllen"
+
+#: components/data/filter_drawer.py:599
+msgid "Match Any Filter"
+msgstr "Mindestens einen Filter erfüllen"
+
+#: components/data/data_form.py:681 components/data/data_form.py:709
+msgid "No"
+msgstr "Nein"
+
+#: components/primitives/drawer_action_table.py:99
+#: components/primitives/drawer_radio.py:63
+#: components/primitives/drawer_select.py:70
+msgid "No available items."
+msgstr "Keine verfügbaren Einträge."
+
+#: components/primitives/drawer_select.py:71
+msgid "No items selected."
+msgstr "Keine Einträge ausgewählt."
+
+#: components/data/_table_helpers.py:380
+msgid "No items to display"
+msgstr "Keine Einträge vorhanden"
+
+#: components/primitives/drawer_radio.py:58
+msgid "No selected item."
+msgstr "Kein Eintrag ausgewählt."
+
+#: page_templates/app_shell.py:222
+msgid "Open menu"
+msgstr "Menü öffnen"
+
+#: components/layouts/page_header.py:130
+msgid "Page navigation"
+msgstr "Seitennavigation"
+
+#: addons/user_authentication/_pages.py:78
+msgid "Password"
+msgstr "Passwort"
+
+#: components/primitives/drawer_select.py:69
+msgid "Remove"
+msgstr "Entfernen"
+
+#: components/primitives/taglist.py:228
+msgid "Remove tag"
+msgstr "Tag entfernen"
+
+#: addons/user_authentication/_pages.py:397
+#: addons/user_authentication/_pages.py:411
+msgid "Request a new link"
+msgstr "Neuen Link anfordern"
+
+#. tooltip of the drag handle; {label} is the column header.
+#: components/data/_table_helpers.py:294
+#, python-brace-format
+msgid "Resize column `{label}`"
+msgstr "Spaltenbreite von «{label}» ändern"
+
+#: components/primitives/gantt/_shared.py:140
+msgid "Resize label column"
+msgstr "Breite der Beschriftungsspalte ändern"
+
+#: components/data/annotations/form.py:96
+#: components/data/annotations/form.py:106
+msgid "Save"
+msgstr "Speichern"
+
+#. {type} is the name of the item's type, e.g. "Case".
+#: components/data/data_section.py:463
+#, python-brace-format
+msgid "Save {type}"
+msgstr "{type} speichern"
+
+#: components/primitives/drawer_select.py:68
+msgid "Select"
+msgstr "Auswählen"
+
+#: components/primitives/conditional_select.py:66
+#: components/primitives/dropdown.py:64
+msgid "Select ..."
+msgstr "Auswählen ..."
+
+#: components/primitives/file_dropzone.py:39
+msgid "Select File"
+msgstr "Datei auswählen"
+
+#: components/primitives/file_dropzone.py:39
+msgid "Select Files"
+msgstr "Dateien auswählen"
+
+#: components/primitives/drawer_action_table.py:195
+#: components/primitives/drawer_radio.py:56
+#: components/primitives/drawer_radio.py:59
+msgid "Select item"
+msgstr "Eintrag auswählen"
+
+#: components/primitives/drawer_select.py:62
+#: components/primitives/drawer_select.py:63
+msgid "Select items"
+msgstr "Einträge auswählen"
+
+#: components/primitives/conditional_select.py:65
+msgid "Selected"
+msgstr "Ausgewählte"
+
+#: components/primitives/drawer_select.py:66
+msgid "Selected items"
+msgstr "Ausgewählte Einträge"
+
+#: addons/user_authentication/_pages.py:84
+msgid "Send login link"
+msgstr "Anmeldelink senden"
+
+#: page_templates/app_shell.py:269 page_templates/settings_menu.py:79
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: components/data/_table_helpers.py:249
+msgid "Show Table Full Screen"
+msgstr "Tabelle im Vollbild anzeigen"
+
+#: addons/user_authentication/_pages.py:66
+#: addons/user_authentication/_pages.py:96
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:316
+#: page_templates/app_shell.py:317 page_templates/app_shell.py:318
+msgid "Sign In"
+msgstr "Anmelden"
+
+#: addons/user_authentication/_pages.py:328
+#: addons/user_authentication/_pages.py:339
+#: addons/user_authentication/_pages.py:355
+#: addons/user_authentication/_pages.py:434
+#: addons/user_authentication/_pages.py:463
+#: addons/user_authentication/_pages.py:477
+#: addons/user_authentication/_pages.py:483
+#: addons/user_authentication/_pages.py:493
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: addons/user_authentication/_pages.py:196
+msgid "Sign in with another method"
+msgstr "Mit einer anderen Methode anmelden"
+
+#: addons/user_authentication/_methods.py:47
+msgid "Sign in with your username and password."
+msgstr "Melden Sie sich mit Ihrem Benutzernamen und Passwort an."
+
+#: components/data/filter_drawer.py:417
+msgctxt "filter drawer tab"
+msgid "Sort"
+msgstr "Sortierung"
+
+#: components/data/filter_drawer.py:438
+msgid "Sort & Filter"
+msgstr "Sortierung & Filter"
+
+#: components/data/filter_drawer.py:878
+msgid "Sort by:"
+msgstr "Sortieren nach:"
+
+#: components/primitives/taglist.py:188
+msgid "Suggested Tags"
+msgstr "Vorgeschlagene Tags"
+
+#: addons/user_authentication/_pages.py:58
+msgid "The code is invalid or has expired. Please check it or request a new one."
+msgstr "Der Code ist ungültig oder abgelaufen. Bitte prüfen Sie ihn oder fordern Sie einen neuen an."
+
+#: addons/user_authentication/_pages.py:63
+msgid "The email could not be sent. Please try again later."
+msgstr "Die E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
+
+#: components/data/data_section.py:614
+msgid "This action cannot be undone."
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: addons/user_authentication/_pages.py:61
+msgid "This login link is invalid or has expired. Please request a new one."
+msgstr "Dieser Anmeldelink ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an."
+
+#: components/primitives/timeline.py:33
+msgid "Timeline"
+msgstr "Zeitachse"
+
+#: page_templates/app_shell.py:232
+msgid "Toggle compact menu"
+msgstr "Kompaktes Menü umschalten"
+
+#: page_templates/app_shell.py:323
+msgid "Toggle user menu"
+msgstr "Benutzermenü umschalten"
+
+#. {value} is the text the user has to retype.
+#: components/data/data_section.py:647
+#, python-brace-format
+msgid "Type \"{value}\" to confirm."
+msgstr "Geben Sie «{value}» ein, um zu bestätigen."
+
+#: components/primitives/wysiwyg_editor.py:29
+msgid "Underline"
+msgstr "Unterstrichen"
+
+#: addons/user_authentication/_pages.py:71
+msgid "Username"
+msgstr "Benutzername"
+
+#: addons/user_authentication/_methods.py:45
+msgid "Username and password"
+msgstr "Benutzername und Passwort"
+
+#: components/primitives/drawer_radio.py:55
+#: components/primitives/drawer_select.py:61
+msgid "Value"
+msgstr "Wert"
+
+#: components/data/data_form.py:680 components/data/data_form.py:700
+#: components/data/data_form.py:708
+msgid "Yes"
+msgstr "Ja"
+
+#: components/data/sources/filter_options.py:66
+msgctxt "filter operator"
+msgid "after"
+msgstr "nach"
+
+#: components/data/sources/filter_options.py:65
+msgctxt "filter operator"
+msgid "before"
+msgstr "vor"
+
+#: components/data/sources/filter_options.py:53
+#: components/data/sources/filter_options.py:67
+msgctxt "filter operator"
+msgid "between"
+msgstr "zwischen"
+
+#: components/data/sources/filter_options.py:27
+msgctxt "filter operator"
+msgid "contains"
+msgstr "enthält"
+
+#: components/data/sources/filter_options.py:29
+msgctxt "filter operator"
+msgid "ends with"
+msgstr "endet mit"
+
+#: components/data/sources/filter_options.py:26
+#: components/data/sources/filter_options.py:40
+#: components/data/sources/filter_options.py:64
+#: components/data/sources/filter_options.py:86
+msgctxt "filter operator"
+msgid "equals"
+msgstr "ist gleich"
+
+#: components/data/sources/filter_options.py:42
+msgctxt "filter operator"
+msgid "greater than"
+msgstr "größer als"
+
+#: components/data/sources/filter_options.py:45
+msgctxt "filter operator"
+msgid "greater than or equal"
+msgstr "größer oder gleich"
+
+#: components/data/sources/filter_options.py:112
+msgctxt "filter operator"
+msgid "has all of"
+msgstr "hat alle von"
+
+#: components/data/sources/filter_options.py:111
+msgctxt "filter operator"
+msgid "has any of"
+msgstr "hat eines von"
+
+#: components/data/sources/filter_options.py:113
+msgctxt "filter operator"
+msgid "has none of"
+msgstr "hat keines von"
+
+#: components/data/sources/filter_options.py:98
+msgctxt "filter operator"
+msgid "is any of"
+msgstr "ist eines von"
+
+#: components/data/sources/filter_options.py:30
+#: components/data/sources/filter_options.py:54
+#: components/data/sources/filter_options.py:68
+#: components/data/sources/filter_options.py:78
+#: components/data/sources/filter_options.py:87
+#: components/data/sources/filter_options.py:100
+#: components/data/sources/filter_options.py:114
+msgctxt "filter operator"
+msgid "is empty"
+msgstr "ist leer"
+
+#: components/data/sources/filter_options.py:77
+msgctxt "filter operator"
+msgid "is false"
+msgstr "ist falsch"
+
+#: components/data/sources/filter_options.py:99
+msgctxt "filter operator"
+msgid "is none of"
+msgstr "ist keines von"
+
+#: components/data/sources/filter_options.py:32
+#: components/data/sources/filter_options.py:56
+#: components/data/sources/filter_options.py:69
+#: components/data/sources/filter_options.py:79
+#: components/data/sources/filter_options.py:89
+#: components/data/sources/filter_options.py:102
+#: components/data/sources/filter_options.py:115
+msgctxt "filter operator"
+msgid "is not empty"
+msgstr "ist nicht leer"
+
+#: components/data/sources/filter_options.py:76
+msgctxt "filter operator"
+msgid "is true"
+msgstr "ist wahr"
+
+#: components/data/sources/filter_options.py:48
+msgctxt "filter operator"
+msgid "less than"
+msgstr "kleiner als"
+
+#: components/data/sources/filter_options.py:50
+msgctxt "filter operator"
+msgid "less than or equal"
+msgstr "kleiner oder gleich"
+
+#. accessible name of the main navigation.
+#: page_templates/app_shell.py:256
+msgctxt "navigation"
+msgid "main"
+msgstr "Hauptnavigation"
+
+#: components/data/sources/filter_options.py:28
+msgctxt "filter operator"
+msgid "starts with"
+msgstr "beginnt mit"
+
+#. accessible name of the user menu.
+#: page_templates/app_shell.py:265
+msgctxt "navigation"
+msgid "user"
+msgstr "Benutzermenü"
+

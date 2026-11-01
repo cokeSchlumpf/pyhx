@@ -2,6 +2,7 @@ import htpy as y
 from htpy import head, html, link, meta, script, title
 from markupsafe import Markup
 
+from ..primitives.negotiate_locale import negotiate_locale
 from ..request_context import RequestContext
 from .nav import AppNavFn
 from .page_template import Design, PageTemplate
@@ -43,7 +44,9 @@ class Skeleton(PageTemplate):
         html_title = f"{page_title} | {app_title}" if page_title else app_title
         # main_nav = await nav_renderer(slot="main", ctx=request, navigation=navigation)
 
-        return html(data_theme="light", data_hx_design=self.design)[
+        return html(
+            lang=negotiate_locale(), data_theme="light", data_hx_design=self.design
+        )[
             head[
                 meta(charset="utf-8"),
                 meta(name="viewport", content="width=device-width, initial-scale=1"),

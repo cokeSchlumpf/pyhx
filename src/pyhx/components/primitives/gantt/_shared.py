@@ -13,6 +13,8 @@ from datetime import date
 import htpy as y
 from commons import datetime_operators
 
+from pyhx.i18n import _
+
 from ....core.primitives import classnames as cx
 from ...view_model import CalendarLabels, Color
 from ..bubble import bubble
@@ -135,7 +137,7 @@ def _gantt_shell(
     # (label) track — column index 0 in `--hx-table--cols`.
     label_header = [
         item_header_label,
-        table.resize_handle(0, title="Resize label column"),
+        table.resize_handle(0, title=_("Resize label column")),
     ]
 
     body = build_body(days)

@@ -82,19 +82,25 @@ class WYSIWYGControl:
 
 @dataclass(frozen=True, kw_only=True)
 class BooleanSegmentControl:
-    true_label: str = "Yes"
-    false_label: str = "No"
+    """Labels left at ``None`` show "Yes"/"No" in the request language."""
+
+    true_label: str | None = None
+    false_label: str | None = None
 
 
 @dataclass(frozen=True, kw_only=True)
 class BooleanCheckboxFieldsetControl:
-    label: str = "Yes"
+    """A ``label`` left at ``None`` shows "Yes" in the request language."""
+
+    label: str | None = None
 
 
 @dataclass(frozen=True, kw_only=True)
 class BooleanRadioFieldsetControl:
-    true_label: str = "Yes"
-    false_label: str = "No"
+    """Labels left at ``None`` show "Yes"/"No" in the request language."""
+
+    true_label: str | None = None
+    false_label: str | None = None
     orientation: Orientation = "vertical"
 
 
@@ -110,7 +116,7 @@ class TaglistControl:
     known_values: OptionsProvider = ()
     initial_tags: OptionsProvider | None = None
     allow_new_tags: bool = True
-    suggestions_label: str = "Suggested Tags"
+    suggestions_label: str | None = None
 
 
 TextControl = TextareaControl | InputControl | WYSIWYGControl
