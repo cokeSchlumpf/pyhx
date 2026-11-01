@@ -28,3 +28,4 @@ Most important first (reorder by moving lines); items not listed have the lowest
 <!-- One line per item: - [T-<n> <Title>](01--backlog/T-<n>--<slug>.md): <a few words>. -->
 
 - [T-001 Core API with private state](01--backlog/T-001--core-api.md): internal state only through public functions.
+- [T-009 Canvas design at phone width](01--backlog/T-009--canvas-phone-width.md): page header and top bar break at 390 px.
