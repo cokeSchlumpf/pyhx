@@ -136,3 +136,16 @@
         transition: none;
     }
 }
+
+
+/* --- Canvas design: the checked option in the text colour, not blue --- */
+
+[data-hx-design="canvas"] .hx-segment-control__option:has(:checked) {
+    /* Visual */
+    background-color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-segment-control__option:has(:focus-visible) {
+    /* Box */
+    outline-color: var(--hx-color-text);
+}

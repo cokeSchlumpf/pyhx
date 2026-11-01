@@ -299,3 +299,37 @@
         background-color: transparent;
     }
 }
+
+
+/* --- Canvas design ---
+   Buttons share the height of the form controls (36px, sm 28px) and their
+   8px radius. Primary is the text colour, not blue; its hover lightens,
+   since darkening near-black shows no change. */
+
+[data-hx-design="canvas"] .hx-button {
+    /* Box */
+    min-height: 2.25rem;
+    border-radius: var(--hx-radius-lg);
+}
+
+[data-hx-design="canvas"] .hx-button--sm {
+    /* Box */
+    min-height: 1.75rem;
+}
+
+[data-hx-design="canvas"] .hx-button--link {
+    /* Box */
+    min-height: 0;
+}
+
+[data-hx-design="canvas"] .hx-button--primary {
+    --_button-color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-button--primary.hx-button--solid:hover {
+    /* Box */
+    border-color: var(--hx-color-neutral-700);
+
+    /* Visual */
+    background-color: var(--hx-color-neutral-700);
+}
