@@ -65,8 +65,11 @@ class WebApp:
         configure_fastapi_app: Sequence[ConfigureAppFn] | None = None,
         navigation: AppNavFn | None = None,
         is_dev: bool | None = None,
+        locale_dir: Path | None = None,
     ) -> None:
         self.title = title
+        self.locale_dir = locale_dir or get_project_root_dir() / "locale"
+        """Directory of the app's translations (``<lang>/LC_MESSAGES/messages.po``), see :mod:`pyhx.i18n`."""
 
         # Defensive copy: caller-supplied dict isn't aliased into our
         # storage, so the caller mutating it post-construction can't
