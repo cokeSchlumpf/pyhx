@@ -1,6 +1,6 @@
 # Data Tables
 
-A `DataTable` shows the items of a data source with sorting, a filter drawer and row selection; `DataSection` adds a create/edit drawer, `DataPage` makes a full page of it. This guide covers the parts that make a list quick to work with: quick filters, counts, search and links to a filtered list.
+A `DataTable` shows the items of a data source with sorting, a filter drawer and row selection; `DataSection` adds a create/edit drawer, `DataPage` makes a full page of it. This guide covers the parts that make a list quick to work with: quick filters, counts, search, a footer with the number of items, and links to a filtered list.
 
 Everything below is expressed in the table's `Query` (sort, filter conditions, search term). The quick filters, the search field and the filter drawer all edit that one query, so they always agree.
 
@@ -61,6 +61,42 @@ table_search=c.TableSearch(label="Search", placeholder="Case, client")
 
 An item matches when one of the searchable columns contains the term, ignoring case; the search narrows the result of the filter conditions (AND), also when the drawer is set to "match any filter". The filter drawer shows the term; its Clear removes it, as does the table's own clear button.
 
+## Footer
+
+A footer is a row below the table: on the left the number of items, on the right an optional text, e.g. what a row click does. It is off by default; pass `footer=` to a `DataTable`, or `table_footer=` to a `DataSection` or `DataPage`:
+
+```python
+cases = c.DataPage(
+    ...,
+    table_footer=c.TableFooter(
+        label=("{n} Fall", "{n} Fälle"),
+        filtered_label=("{shown} von {total} Fall", "{shown} von {total} Fällen"),
+        text="Zeile anklicken zum Bearbeiten",
+    ),
+)
+```
+
+What the count shows:
+
+- **Unfiltered:** the number of items, "8 Fälle".
+- **Filtered** (a quick filter, the search or conditions of the drawer) **and the source can count:** the items shown and all items, "2 von 8 Fällen". The total is `source.count(Query())`, so it appears only for a source whose `count` returns a number (`SimpleDataSource` does; see below for your own).
+- **Filtered, but the source can't count:** the items shown only, "2 Fälle".
+
+The footer is part of the table's re-render, so it follows every change of the query.
+
+Parameters of `TableFooter`:
+
+| Parameter | Default | What it does |
+| --- | --- | --- |
+| `count` | `True` | Show the count. `False` leaves only `text`. |
+| `label` | `None` | Singular and plural of the count with `{n}`, e.g. `("{n} Fall", "{n} Fälle")`. `None` uses the translated "{n} entry" / "{n} entries" (de, it, fr in pyhx's catalog). |
+| `filtered_label` | `None` | Singular and plural of the filtered count with `{shown}` and `{total}`, chosen by `total`. Needed where the language declines the noun ("von 8 Fällen"). `None` uses the translated "{shown} of {total} entries", or, when only `label` is given, "2 / 8 Fälle". |
+| `text` | `None` | Content on the right: a string or any htpy node. |
+
+Your own `label` pairs pick the singular for exactly 1 and the plural otherwise, which fits English, German, French and Italian. They can be texts marked with `_l(...)` for your app's catalog, so the footer follows the language of the request.
+
+In the canvas design the footer is the bottom row of the table card (13 px, the card's bottom corners). In the default design it is a plain row below the table; in the full-height layout of an app shell page the table scrolls and the footer stays visible above the app's footer.
+
 ## Links to a filtered list
 
 The active pill and the search term are kept in the address bar (`?view=open&q=meier`) without reloading the page, and a page opened with them starts filtered. Another page can link to a filtered list:
@@ -78,7 +114,7 @@ c.button("Cases requiring input", href="/cases?view=requires-input")
 `SimpleDataSource` searches and counts in memory. Other sources opt in:
 
 - **Search:** set `supports_search = True` and apply `query.search` over `query.search_keys` in `fetch` (and `count`). The table fills `search_keys` from its searchable columns. With SQLAlchemy, `apply_sql_query` (or `apply_sql_filters`) does it: a case-insensitive `LIKE` over the mapped columns, with `%` and `_` in the term matched literally. Search is meant for text columns.
-- **Counts:** override `async count(query) -> int | None` (filter and search, no paging).
+- **Counts:** override `async count(query) -> int | None` (filter and search, no paging). It gives the numbers on the quick filters and the total in the footer ("2 of 8").
 
 For the request-scoped app sources:
 
@@ -93,6 +129,6 @@ class CasesSource(AppDataSourceBase[Registry, CaseRow]):
         return registry.cases.count(apply_sql_filters(select(func.count()).select_from(CaseRecord), query, COLUMNS))
 ```
 
-The function variants take `count=` and `supports_search=` (`AppReadOnlyDataSource(…, count=count_cases, supports_search=True)`). A source that sets neither keeps working as before: no search field, no numbers on the pills.
+The function variants take `count=` and `supports_search=` (`AppReadOnlyDataSource(…, count=count_cases, supports_search=True)`). A source that sets neither keeps working as before: no search field, no numbers on the pills, and a footer shows the items shown only.
 
-Quick filters and search are available on flat tables; a `DataSection` with a hierarchical source raises a `TypeError` when they are given.
+Quick filters, search and the footer are available on flat tables; a `DataSection` with a hierarchical source raises a `TypeError` when `table_quick_filters`, `table_search` or `table_footer` is given.

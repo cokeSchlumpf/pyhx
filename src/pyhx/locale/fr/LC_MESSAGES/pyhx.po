@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 21:40+0100\n"
+"POT-Creation-Date: 2026-11-01 22:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -69,8 +69,8 @@ msgstr "Fil d'Ariane"
 msgid "Bullet list"
 msgstr "Liste à puces"
 
-#: components/data/data_form_drawer.py:61 components/data/data_section.py:503
-#: components/data/data_section.py:507
+#: components/data/data_form_drawer.py:73 components/data/data_section.py:529
+#: components/data/data_section.py:533
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -78,7 +78,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:619
+#: components/data/data_section.py:645
 #, python-brace-format
 msgid "Cannot delete {type}"
 msgstr "Impossible de supprimer {type}"
@@ -100,7 +100,7 @@ msgstr "Réinitialiser le filtre et le tri"
 msgid "Clear selection"
 msgstr "Effacer la sélection"
 
-#: components/layouts/drawer.py:96
+#: components/layouts/drawer.py:98
 msgctxt "drawer"
 msgid "Close"
 msgstr "Fermer"
@@ -123,20 +123,20 @@ msgid "Copy code"
 msgstr "Copier le code"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:465 components/data/data_section.py:471
-#: components/data/data_section.py:484
+#: components/data/data_section.py:491 components/data/data_section.py:497
+#: components/data/data_section.py:510
 #, python-brace-format
 msgid "Create {type}"
 msgstr "Créer {type}"
 
 #. {type} is the name of the item's type, in lower case.
-#: components/data/data_section.py:640
+#: components/data/data_section.py:666
 #, python-brace-format
 msgid "Delete this {type}?"
 msgstr "Supprimer {type} ?"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:498
+#: components/data/data_section.py:524
 #, python-brace-format
 msgid "Delete {type}"
 msgstr "Supprimer {type}"
@@ -164,12 +164,12 @@ msgid "Drag & drop a file here, or click to browse"
 msgstr "Glissez-déposez un fichier ici ou cliquez pour parcourir"
 
 #. default title of the drawer with the edit form.
-#: components/data/data_form_drawer.py:63
+#: components/data/data_form_drawer.py:75
 msgid "Edit"
 msgstr "Modifier"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:478
+#: components/data/data_section.py:504
 #, python-brace-format
 msgid "Edit {type}"
 msgstr "Modifier {type}"
@@ -192,7 +192,7 @@ msgctxt "filter drawer tab"
 msgid "Filter"
 msgstr "Filtre"
 
-#: components/data/data_section.py:516
+#: components/data/data_section.py:542
 msgid "Filter & Sort"
 msgstr "Filtre et tri"
 
@@ -250,7 +250,7 @@ msgstr "Échec de la connexion."
 msgid "Login link not valid"
 msgstr "Lien de connexion non valide"
 
-#: page_templates/app_shell.py:275
+#: page_templates/app_shell.py:277
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -262,7 +262,7 @@ msgstr "Correspondre à tous les filtres"
 msgid "Match Any Filter"
 msgstr "Correspondre à au moins un filtre"
 
-#: components/data/data_form.py:681 components/data/data_form.py:709
+#: components/data/data_form.py:703 components/data/data_form.py:731
 msgid "No"
 msgstr "Non"
 
@@ -296,7 +296,7 @@ msgstr "Navigation de la page"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: components/data/quick_filter.py:73
+#: components/data/quick_filter.py:23
 msgid "Quick filters"
 msgstr "Filtres rapides"
 
@@ -329,12 +329,12 @@ msgid "Save"
 msgstr "Enregistrer"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:491
+#: components/data/data_section.py:517
 #, python-brace-format
 msgid "Save {type}"
 msgstr "Enregistrer {type}"
 
-#: components/data/filter_drawer.py:608 components/data/quick_filter.py:116
+#: components/data/filter_drawer.py:608 components/data/quick_filter.py:24
 msgid "Search"
 msgstr "Rechercher"
 
@@ -378,7 +378,7 @@ msgstr "Éléments sélectionnés"
 msgid "Send login link"
 msgstr "Envoyer le lien de connexion"
 
-#: page_templates/app_shell.py:269 page_templates/settings_menu.py:134
+#: page_templates/app_shell.py:271 page_templates/settings_menu.py:134
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -388,8 +388,8 @@ msgstr "Afficher le tableau en plein écran"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:316
-#: page_templates/app_shell.py:317 page_templates/app_shell.py:318
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:318
+#: page_templates/app_shell.py:319 page_templates/app_shell.py:320
 msgid "Sign In"
 msgstr "Se connecter"
 
@@ -437,7 +437,7 @@ msgstr "Le code est invalide ou a expiré. Veuillez le vérifier ou en demander 
 msgid "The email could not be sent. Please try again later."
 msgstr "L'e-mail n'a pas pu être envoyé. Veuillez réessayer plus tard."
 
-#: components/data/data_section.py:645
+#: components/data/data_section.py:671
 msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
@@ -453,12 +453,12 @@ msgstr "Chronologie"
 msgid "Toggle compact menu"
 msgstr "Basculer le menu compact"
 
-#: page_templates/app_shell.py:323
+#: page_templates/app_shell.py:325
 msgid "Toggle user menu"
 msgstr "Afficher/masquer le menu utilisateur"
 
 #. {value} is the text the user has to retype.
-#: components/data/data_section.py:678
+#: components/data/data_section.py:704
 #, python-brace-format
 msgid "Type \"{value}\" to confirm."
 msgstr "Saisissez « {value} » pour confirmer."
@@ -480,8 +480,8 @@ msgstr "Nom d'utilisateur et mot de passe"
 msgid "Value"
 msgstr "Valeur"
 
-#: components/data/data_form.py:680 components/data/data_form.py:700
-#: components/data/data_form.py:708
+#: components/data/data_form.py:702 components/data/data_form.py:722
+#: components/data/data_form.py:730
 msgid "Yes"
 msgstr "Oui"
 
@@ -597,7 +597,7 @@ msgid "less than or equal"
 msgstr "inférieur ou égal à"
 
 #. accessible name of the main navigation.
-#: page_templates/app_shell.py:256
+#: page_templates/app_shell.py:257
 msgctxt "navigation"
 msgid "main"
 msgstr "Navigation principale"
@@ -608,8 +608,22 @@ msgid "starts with"
 msgstr "commence par"
 
 #. accessible name of the user menu.
-#: page_templates/app_shell.py:265
+#: page_templates/app_shell.py:267
 msgctxt "navigation"
 msgid "user"
 msgstr "Menu utilisateur"
+
+#: components/data/data_table.py:648
+#, python-brace-format
+msgid "{n} entry"
+msgid_plural "{n} entries"
+msgstr[0] "{n} entrée"
+msgstr[1] "{n} entrées"
+
+#: components/data/data_table.py:654
+#, python-brace-format
+msgid "{shown} of {total} entry"
+msgid_plural "{shown} of {total} entries"
+msgstr[0] "{shown} sur {total} entrée"
+msgstr[1] "{shown} sur {total} entrées"
 

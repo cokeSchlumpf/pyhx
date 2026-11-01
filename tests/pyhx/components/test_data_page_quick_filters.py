@@ -10,7 +10,12 @@ from pydantic import BaseModel
 import pyhx.components.data.annotations as a
 from pyhx.components.data.data_page import DataPage
 from pyhx.components.data.data_section import DataSection
-from pyhx.components.data.quick_filter import QuickFilter, QuickFilters, TableSearch
+from pyhx.components.data.quick_filter import (
+    QuickFilter,
+    QuickFilters,
+    TableFooter,
+    TableSearch,
+)
 from pyhx.components.data.sources.filter import Condition, TextChoiceEquals
 from pyhx.components.data.sources.simple_data_source import SimpleDataSource
 from pyhx.components.data.sources.simple_hierarchical_data_source import (
@@ -103,7 +108,11 @@ class Node(BaseModel):
 
 @pytest.mark.parametrize(
     "kwargs",
-    [{"table_quick_filters": QUICK_FILTERS}, {"table_search": TableSearch()}],
+    [
+        {"table_quick_filters": QUICK_FILTERS},
+        {"table_search": TableSearch()},
+        {"table_footer": TableFooter()},
+    ],
 )
 def test_hierarchical_source_rejects_quick_filters_and_search(kwargs):
     with pytest.raises(TypeError, match="flat"):
@@ -125,3 +134,11 @@ def test_hierarchical_source_takes_url_param_keys():
         table_url_param_keys=["name"],
     )
     assert section.table.filter_drawer.url_param_keys == ["name"]
+
+
+def test_footer_reaches_the_table():
+    footer = TableFooter(text="Hint")
+    client, page = _client(table_footer=footer, table_quick_filters=QUICK_FILTERS)
+    assert page.section.table.footer is footer
+    text = client.get("/people?view=red").text
+    assert 'class="hx-table__footer-count">1 of 2 entries<' in text

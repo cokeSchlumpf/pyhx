@@ -230,3 +230,34 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 Rollout: pull request #30 from `feature/quick-filters`, released with the next minor version of pyhx. The apps adopt it by passing `table_quick_filters` / `table_search` and marking columns searchable; nothing changes for them otherwise.
 
 Open after this change: quick filters and search on `HierarchicalDataTable` (if needed, app developers); `count` and search in the apps' SQL sources (case-sight first); the canvas page header at phone width (F3, T-006).
+
+## Amendment 1: table footer, bar sizes per design
+
+Added after the review of the pull request (#30), decided with the developer; implemented in the same pull request. The design draft has a footer at the bottom of the table card ("8 Fälle" left, "Zeile anklicken zum Bearbeiten" right); the filter bar of the default design was sized after the canvas draft and looked too small next to the default design's headers and buttons.
+
+### Requirements
+
+- **R26** `DataTable(footer=TableFooter(...))` renders a row below the table, off by default: the count left, an optional `text` (string or node) right. `DataSection` and `DataPage` take it as `table_footer`; a hierarchical source raises a `TypeError`.
+- **R27** The count is the number of matching items; while the query filters (quick filter, search, drawer conditions) and the source counts (`source.count(Query())` is not `None`), it reads "{shown} of {total}". A source without count shows the shown number only. `count=False` hides the count.
+- **R28** The count is translated with plurals: the default "{n} entry" / "{n} entries" and "{shown} of {total} entry" / "... entries" have de, it and fr entries in pyhx's catalog; an app passes its own singular/plural pairs (`label`, `filtered_label`, e.g. "{n} Fall" / "{n} Fälle", "{shown} von {total} Fällen").
+- **R29** The footer is part of the re-rendered table, so it follows every change of the query.
+- **R30** Canvas design: the footer is the bottom row of the table card (13 px, neutral text, 12/16 px padding, line above, bottom corners). Default design: a plain row below the table; on a full-height app shell page the table container scrolls, the header stays sticky and the footer stays visible above the app's footer.
+- **R31** The filter bar uses each design's sizes: in the default design the label and pills follow `--hx-text-control` and the search field is as high as the page header's buttons, with the design's form border and radius; the canvas design keeps the draft's sizes (22 px pills, 13 px label, 32 px field). The search label sits on the baseline of the field's text.
+- **R32** Samples show the footer: canvas `/data-page` (count and hint), `/data-page-detail` (count only), the app shell DataPage (own label and hint) and `samples/components` → Data Table (a counting source and one without count); the guide has a "Footer" section.
+
+### Design
+
+- `TableFooter(count=True, label=None, filtered_label=None, text=None)` in `quick_filter.py`, next to `QuickFilters` and `TableSearch`. An app's pairs choose the singular for exactly 1 (enough for en, de, fr, it); the defaults go through `_n` (ngettext) of the request's language. With `label` but no `filtered_label` the filtered count reads "2 / 8 Fälle".
+- The table primitive gets a `footer` slot after the scroll container; `DataTable._render_footer` fills it with `div.hx-table__footer`. The total costs one `count` call per render, only while the query filters.
+- CSS: `table.css` (base row, no table bottom margin above it, canvas sizes under `[data-hx-design="canvas"]`), `canvas-shell.css` (the card's bottom row, next to the bar as its top row). The app shell's full-height wrapper is a flex column, so the footer keeps its height and the scroll container takes the rest.
+
+### Outcome
+
+Implemented as amended, with these deviations and findings:
+
+- **A-D1** Besides `label`, `TableFooter` has `filtered_label`: German declines the noun after "von" ("2 von 8 Fällen"), which a noun pair alone can't produce.
+- **A-F1** The bar sizing (R31) was changed by the developer in `table.css` during the review and committed as `fix(data): align the search label and size the filter bar to each design (T-008)`.
+- **A-F2** Checked in the browser at 1280 × 600 on the app shell DataPage: the table container scrolls, the header stays at its top, the footer ends exactly at the app footer. The page itself scrolls by 90 px there, also on `/table-view` without bar and footer, so this predates T-008 (app shell layout).
+- **A-F3** Screenshots: the list screenshots of F5 now show the footer ([after](screenshots/canvas-shell--data-page--after.png), [pill chosen, "2 von 8 Fällen"](screenshots/canvas-shell--data-page--pill-active.png), [phone](screenshots/canvas-shell--data-page--phone.png), [app shell](screenshots/app-shell--data-page--pill-active.png)); new: [detail page with the count only](screenshots/canvas-shell--data-page-detail--footer-count-only.png), [app shell at 1280 × 600, table scrolled](screenshots/app-shell--data-page--short-scrolled.png), [components sample with and without count](screenshots/app-shell--components-data-table--footer.png).
+
+Open after the amendment: the 90 px page scroll of the app shell's full-height table layout (A-F2), outside this change.

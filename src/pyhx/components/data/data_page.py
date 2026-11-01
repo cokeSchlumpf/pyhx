@@ -14,7 +14,7 @@ from ..variants import FormSize, LabelPosition
 from ._model_type import ModelType
 from .column import Column
 from .data_section import CM, EM, TM, CanEdit, DataSection, ExtraOobFn, T
-from .quick_filter import QuickFilters, TableSearch
+from .quick_filter import QuickFilters, TableFooter, TableSearch
 from .sources import (
     DataSource,
     HierarchicalDataSource,
@@ -64,6 +64,7 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_quick_filters: QuickFilters | None = None,
         table_search: TableSearch | None = None,
         table_url_param_keys: list[str] | None = None,
+        table_footer: TableFooter | None = None,
         fragments_path: Path | None = None,
         hidden_params: dict[str, str] | None = None,
     ) -> None:
@@ -198,6 +199,9 @@ class DataPage(Generic[T, TM, EM, CM]):
         table_url_param_keys : list[str], optional
             Filter keys mirrored into the URL, see :class:`DataTable`'s
             ``url_param_keys``.
+        table_footer : TableFooter, optional
+            A row below the table with the number of items and a text (flat
+            tables only), see :class:`DataTable`'s ``footer``.
         fragments_path : Path, optional
             Static base path under which the section's HTMX fragment
             endpoints are registered. When omitted it is ``Path(path)``
@@ -264,6 +268,7 @@ class DataPage(Generic[T, TM, EM, CM]):
             table_quick_filters=table_quick_filters,
             table_search=table_search,
             table_url_param_keys=table_url_param_keys,
+            table_footer=table_footer,
             # A DataPage renders a full-page table, which always gets its own
             # scroll container (paired with the app-shell full-height layout).
             table_scrollable=True,

@@ -15,7 +15,10 @@ Two pages over the same in-memory list of cases, to try ``DataPage`` inside
 Both pages have quick filters (pills with counts above the table: Alle,
 Offen, Eingabe erforderlich, Abgeschlossen) and a search over Fallnummer,
 Name and AHV-Nr. The active pill and the search term are kept in the URL, so
-the dossier links to ``/data-page?view=requires-input``.
+the dossier links to ``/data-page?view=requires-input``. A footer below the
+table counts the cases ("2 von 8 Fällen" while filtered); on ``/data-page``
+it also says what a row click does, ``/data-page-detail`` shows the count
+only.
 
 The create/edit/delete actions mutate a ``SimpleDataSource`` list, so no
 backend is needed.
@@ -187,6 +190,23 @@ quick_filters = c.QuickFilters(
 
 search = c.TableSearch(label="Suchen", placeholder="Fallnummer, Name, AHV-Nr.")
 
+# The noun and its plural in the sample's language; "{shown} von {total}"
+# needs its own pair, as German declines the noun ("von 8 Fällen").
+COUNT_LABEL = ("{n} Fall", "{n} Fälle")
+FILTERED_COUNT_LABEL = ("{shown} von {total} Fall", "{shown} von {total} Fällen")
+
+# The list: count and a hint on what a row click does.
+footer = c.TableFooter(
+    label=COUNT_LABEL,
+    filtered_label=FILTERED_COUNT_LABEL,
+    text="Zeile anklicken zum Bearbeiten",
+)
+
+# The detail variant: the count only.
+footer_count_only = c.TableFooter(
+    label=COUNT_LABEL, filtered_label=FILTERED_COUNT_LABEL
+)
+
 REQUIRES_INPUT_URL = "/data-page?view=requires-input"
 """The case list with the quick filter "Eingabe erforderlich" active."""
 
@@ -209,6 +229,7 @@ cases: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     delete_item_label="Fall löschen",
     table_quick_filters=quick_filters,
     table_search=search,
+    table_footer=footer,
 )
 
 
@@ -234,4 +255,5 @@ cases_detail: c.DataPage[Case, Case, Case, Case] = c.DataPage(
     can_edit=_open_case,
     table_quick_filters=quick_filters,
     table_search=search,
+    table_footer=footer_count_only,
 )

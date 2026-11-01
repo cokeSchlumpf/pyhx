@@ -43,6 +43,13 @@ class TestCanvasDataPage:
         cases = TestClient(app).get("/data-page?view=requires-input").text
         assert "IV-2026-0131" in cases and "IV-2026-0104" in cases
         assert "IV-2026-0142" not in cases
+        assert "2 von 8 Fällen" in cases
+
+    def test_list_has_a_footer(self):
+        text = TestClient(app).get("/data-page").text
+
+        assert "8 Fälle" in text
+        assert "Zeile anklicken zum Bearbeiten" in text
 
     def test_edit_drawer_has_footer_slots(self):
         # A row click renders the edit drawer: the form, cancel and the delete
@@ -60,3 +67,9 @@ class TestCanvasDataPage:
         assert 'class="hx-data-form-drawer__cancel"' in html
         assert 'class="hx-data-form-drawer__delete"' in html
         assert "Fall löschen" in html
+
+    def test_detail_page_footer_counts_only(self):
+        text = TestClient(app).get("/data-page-detail?view=open").text
+
+        assert "4 von 8 Fällen" in text
+        assert "Zeile anklicken" not in text

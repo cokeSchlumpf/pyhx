@@ -12,6 +12,8 @@ column that matches no preset leaves no pill active ("custom").
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+import htpy as y
+
 from pyhx.core.primitives.lazy_text import Text
 from pyhx.i18n import _l
 
@@ -119,6 +121,38 @@ class TableSearch:
     label: Text = _SEARCH_LABEL
     placeholder: Text | None = None
     url_param: str | None = "q"
+
+
+@dataclass(frozen=True, kw_only=True)
+class TableFooter:
+    """A row below the table: the number of items left, a text right.
+
+    Parameters
+    ----------
+    count : bool, default True
+        Show how many items the table shows. While the query filters (a quick
+        filter, the search or drawer conditions) and the source can count
+        (:meth:`~.sources.source.ReadOnlyDataSource.count`), also how many
+        there are in all ("2 of 8 entries").
+    label : tuple[Text, Text] | None, default None
+        Singular and plural of the count, with ``{n}``, e.g.
+        ``("{n} Fall", "{n} Fälle")``. ``None`` uses the translated
+        "{n} entry" / "{n} entries". The plural is used for every ``n`` but 1.
+    filtered_label : tuple[Text, Text] | None, default None
+        Singular and plural of the filtered count, with ``{shown}`` and
+        ``{total}``, chosen by ``total``, e.g.
+        ``("{shown} von {total} Fall", "{shown} von {total} Fällen")``.
+        ``None`` uses the translated "{shown} of {total} entries", or, when
+        only ``label`` is given, "{shown} / " followed by ``label`` for the
+        total.
+    text : y.Node, default None
+        Content on the right, e.g. a hint like "Click a row to edit it".
+    """
+
+    count: bool = True
+    label: tuple[Text, Text] | None = None
+    filtered_label: tuple[Text, Text] | None = None
+    text: y.Node = None
 
 
 def apply_quick_filter(

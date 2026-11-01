@@ -32,3 +32,4 @@ class TestQuickFilters:
 
         text = TestClient(app).get("/data-page?view=done").text
         assert 'value="done" checked' in text
+        assert "2 of 10 projects" in text

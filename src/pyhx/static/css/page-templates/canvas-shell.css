@@ -191,6 +191,28 @@
                 }
             }
 
+            /* A DataTable's footer (T-008) is the bottom row of the card:
+               it takes the card's bottom edge and radius; the line above it
+               is its own top border. */
+            &:has(> .hx-table__footer) {
+                .hx-table__footer {
+                    /* Box */
+                    padding-inline: var(--table-card--padding-inline);
+                    border: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+                    border-radius: 0 0 var(--table-card--radius) var(--table-card--radius);
+
+                    /* Visual */
+                    background-color: var(--hx-color-background);
+                }
+
+                .hx-table__scroll-container {
+                    /* Box */
+                    border-bottom: 0;
+                    border-end-start-radius: 0;
+                    border-end-end-radius: 0;
+                }
+            }
+
             .hx-table thead tr th {
                 /* Box */
                 padding: 0.625rem var(--table-card--padding-inline);

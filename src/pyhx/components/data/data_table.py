@@ -11,6 +11,7 @@ from fastapi import Form, Request
 from pyhx.core import RequestContext, WebAppRoutes
 from pyhx.core.fragment import FragmentResponse
 from pyhx.core.primitives import SyncOrAsyncValue, htmx, resolve_value
+from pyhx.i18n import _n
 
 from ..primitives import segment_control, table
 from ..view_model import Option
@@ -37,6 +38,7 @@ from .column_resolution import resolve_columns
 from .filter_drawer import FilterDrawer
 from .quick_filter import (
     QuickFilters,
+    TableFooter,
     TableSearch,
     active_quick_filter,
     apply_quick_filter,
@@ -93,6 +95,7 @@ class DataTable[T]:
         url_param_keys: list[str] | None = None,
         quick_filters: QuickFilters | None = None,
         search: TableSearch | None = None,
+        footer: TableFooter | None = None,
     ) -> None:
         """Bind a table to ``source`` and register its htmx fragments.
 
@@ -193,6 +196,11 @@ class DataTable[T]:
             source :attr:`~.sources.source.ReadOnlyDataSource.supports_search`;
             ``None`` uses the defaults of :class:`~.quick_filter.TableSearch`.
             The term is kept in the URL (``?q=<term>``).
+        footer : TableFooter | None, default None
+            A row below the table with the number of items (and of all items
+            while the query filters) and an optional text, see
+            :class:`~.quick_filter.TableFooter`. Re-rendered with the table.
+            ``None`` renders no footer.
         """
         if isinstance(source, list):
             source = SimpleDataSource(source)
@@ -208,6 +216,7 @@ class DataTable[T]:
         self.url_param_keys = url_param_keys or []
         self.quick_filters = quick_filters
         self.search = search or TableSearch()
+        self.footer = footer
 
         self.type = type
         self.columns = columns
@@ -520,6 +529,7 @@ class DataTable[T]:
                     enable_sort_and_filter=self.enable_sort_and_filter,
                 ),
             ],
+            footer=await self._render_footer(state.query, rows.total),
             table_kwargs=table_kwargs,
             is_tree=False,
             **htmx(hx_swap_oob="outerHTML", as_dict=True),
@@ -600,6 +610,53 @@ class DataTable[T]:
             "data-hx-url-param-keys": ",".join(keys),
             "data-hx-url-params": urlencode(pairs),
         }
+
+    async def _render_footer(self, query: Query, shown: int) -> y.Node:
+        """The row below the table: count left, ``footer.text`` right.
+
+        ``shown`` is the number of matching items (the page's ``total``).
+        While the query filters and the source counts, the count reads
+        "{shown} of {total}", the total from ``source.count(Query())``.
+        """
+        if self.footer is None:
+            return None
+        count: y.Node = None
+        if self.footer.count:
+            total = None
+            if query.filter or query.search:
+                total = await self.source.count(Query())
+            count = self._count_text(shown, total)
+        return y.div(class_="hx-table__footer")[
+            y.span(class_="hx-table__footer-count")[count],
+            y.span(class_="hx-table__footer-text")[self.footer.text]
+            if self.footer.text is not None
+            else None,
+        ]
+
+    def _count_text(self, shown: int, total: int | None) -> str:
+        """The count of the footer in the language of the request."""
+        assert self.footer is not None
+        label = self.footer.label
+        filtered = self.footer.filtered_label
+
+        def pick(pair: tuple[Any, Any], n: int) -> str:
+            return str(pair[0] if n == 1 else pair[1])
+
+        if total is None:
+            if label is not None:
+                return pick(label, shown).format(n=shown)
+            return _n("{n} entry", "{n} entries", shown)
+        if filtered is not None:
+            return pick(filtered, total).format(shown=shown, total=total)
+        if label is not None:
+            return f"{shown} / {pick(label, total).format(n=total)}"
+        return _n(
+            "{shown} of {total} entry",
+            "{shown} of {total} entries",
+            total,
+            shown=shown,
+            total=total,
+        )
 
     async def _render_filter_bar(
         self, query: Query, *, search_enabled: bool, preserve_search: bool

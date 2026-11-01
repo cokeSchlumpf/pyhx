@@ -8,12 +8,18 @@ from typing import Annotated
 from urllib.parse import parse_qs
 
 import htpy as y
+import pytest
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
 
 import pyhx.components.data.annotations as a
 from pyhx.components.data.data_table import DataTable
-from pyhx.components.data.quick_filter import QuickFilter, QuickFilters, TableSearch
+from pyhx.components.data.quick_filter import (
+    QuickFilter,
+    QuickFilters,
+    TableFooter,
+    TableSearch,
+)
 from pyhx.components.data.sources.filter import Condition, TextChoiceIn
 from pyhx.components.data.sources.query import Query
 from pyhx.components.data.sources.simple_data_source import SimpleDataSource
@@ -393,3 +399,84 @@ class TestDrawer:
             headers={"HX-Request": "true"},
         ).text
         assert _query(cleared).search is None
+
+
+def _footer(text: str) -> str:
+    match = re.search(r'class="hx-table__footer-count">([^<]*)<', text)
+    assert match, "no footer count"
+    return html.unescape(match.group(1))
+
+
+class TestFooter:
+    def test_no_footer_by_default(self):
+        client, _ = _app()
+        assert "hx-table__footer" not in client.get("/projects").text
+
+    def test_count_and_text(self):
+        client, _ = _app(footer=TableFooter(text="Click a row"))
+        text = client.get("/projects").text
+        assert _footer(text) == "4 entries"
+        assert '<span class="hx-table__footer-text">Click a row</span>' in text
+
+    def test_filtered_count_shows_the_total(self):
+        client, _ = _app(quick_filters=QUICK_FILTERS, footer=TableFooter())
+        assert _footer(client.get("/projects?view=done").text) == "1 of 4 entries"
+        assert _footer(client.get("/projects?q=anna").text) == "2 of 4 entries"
+
+    def test_footer_follows_a_pill_click(self):
+        client, table = _app(quick_filters=QUICK_FILTERS, footer=TableFooter())
+        page = client.get("/projects").text
+        text = _post(
+            client, table, page, action="quick_filter", projects_quick_filter="open"
+        )
+        assert _footer(text) == "3 of 4 entries"
+
+    def test_source_without_count_filtered(self):
+        client, table = _app(source=NoSearchSource(), footer=TableFooter())
+        state = {"query": Query(filter=[_status("Done")]).model_dump(mode="json")}
+        text = client.post(
+            table.render_table_fragment.url(),
+            data={STATE: json.dumps(state)},
+            headers={"HX-Request": "true"},
+        ).text
+        assert _footer(text) == "4 entries"  # NoSearchSource ignores filters
+
+    def test_own_labels(self):
+        footer = TableFooter(
+            label=("{n} Projekt", "{n} Projekte"),
+            filtered_label=(
+                "{shown} von {total} Projekt",
+                "{shown} von {total} Projekten",
+            ),
+        )
+        client, _ = _app(quick_filters=QUICK_FILTERS, footer=footer)
+        assert _footer(client.get("/projects").text) == "4 Projekte"
+        assert _footer(client.get("/projects?view=done").text) == "1 von 4 Projekten"
+        assert _footer(client.get("/projects?q=aurora").text) == "1 von 4 Projekten"
+
+    def test_label_without_filtered_label(self):
+        footer = TableFooter(label=("{n} project", "{n} projects"))
+        client, _ = _app(quick_filters=QUICK_FILTERS, footer=footer)
+        assert _footer(client.get("/projects?view=done").text) == "1 / 4 projects"
+
+    def test_no_count(self):
+        client, _ = _app(footer=TableFooter(count=False, text="Hint"))
+        text = client.get("/projects").text
+        assert _footer(text) == ""
+        assert ">Hint<" in text
+
+    @pytest.mark.parametrize(
+        ("lang", "plain", "one", "filtered"),
+        [
+            ("de", "4 Einträge", "1 Eintrag", "1 von 4 Einträgen"),
+            ("fr", "4 entrées", "1 entrée", "1 sur 4 entrées"),
+            ("it", "4 voci", "1 voce", "1 di 4 voci"),
+        ],
+    )
+    def test_translated_plurals(self, lang, plain, one, filtered):
+        client, _ = _app(quick_filters=QUICK_FILTERS, footer=TableFooter())
+        headers = {"Accept-Language": lang}
+        assert _footer(client.get("/projects", headers=headers).text) == plain
+        assert _footer(client.get("/projects?q=dune", headers=headers).text) == filtered
+        client, _ = _app(source=[PROJECTS[0]], footer=TableFooter())
+        assert _footer(client.get("/projects", headers=headers).text) == one

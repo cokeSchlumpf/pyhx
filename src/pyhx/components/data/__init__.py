@@ -19,7 +19,7 @@ from .data_table import DataTable
 from .filter_drawer import FilterDrawer
 from .headless_form import FormRenderContext, HeadlessForm
 from .hierarchical_data_table import HierarchicalDataTable
-from .quick_filter import QuickFilter, QuickFilters, TableSearch
+from .quick_filter import QuickFilter, QuickFilters, TableFooter, TableSearch
 from .sources.filter_type import (
     BooleanFilter,
     ChoiceFilter,
@@ -55,6 +55,7 @@ __all__ = [
     "NumericFilter",
     "QuickFilter",
     "QuickFilters",
+    "TableFooter",
     "TableSearch",
     "TextFilter",
     "annotations",

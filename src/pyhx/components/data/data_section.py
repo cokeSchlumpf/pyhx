@@ -41,7 +41,7 @@ from .column import Column
 from .data_form_drawer import DataFormDrawer
 from .data_table import DataTable
 from .hierarchical_data_table import HierarchicalDataTable
-from .quick_filter import QuickFilters, TableSearch
+from .quick_filter import QuickFilters, TableFooter, TableSearch
 from .sources import (
     DataSource,
     HierarchicalDataSource,
@@ -145,6 +145,7 @@ class DataSection(Generic[T, TM, EM, CM]):
         table_quick_filters: QuickFilters | None = None,
         table_search: TableSearch | None = None,
         table_url_param_keys: list[str] | None = None,
+        table_footer: TableFooter | None = None,
     ) -> None:
         """Assemble a CRUD section (table + create/edit forms + drawer).
 
@@ -285,12 +286,15 @@ class DataSection(Generic[T, TM, EM, CM]):
         table_url_param_keys : list[str], optional
             Filter keys mirrored into the URL, see :class:`DataTable`'s
             ``url_param_keys``. Forwarded to whichever table type is built.
+        table_footer : TableFooter, optional
+            A row below the table with the number of items and a text, see
+            :class:`DataTable`'s ``footer``. Flat tables only.
 
         Raises
         ------
         TypeError
-            If ``table_quick_filters`` or ``table_search`` is given for a
-            hierarchical source.
+            If ``table_quick_filters``, ``table_search`` or ``table_footer``
+            is given for a hierarchical source.
         """
         self.source = source
 
@@ -419,12 +423,17 @@ class DataSection(Generic[T, TM, EM, CM]):
                 url_param_keys=table_url_param_keys,
                 quick_filters=table_quick_filters,
                 search=table_search,
+                footer=table_footer,
             )
         elif isinstance(self.table_source, ReadOnlyHierarchicalDataSource):
-            if table_quick_filters is not None or table_search is not None:
+            if (
+                table_quick_filters is not None
+                or table_search is not None
+                or table_footer is not None
+            ):
                 raise TypeError(
-                    "table_quick_filters and table_search are only supported "
-                    "for flat (non-hierarchical) sources"
+                    "table_quick_filters, table_search and table_footer are only "
+                    "supported for flat (non-hierarchical) sources"
                 )
             self.table = HierarchicalDataTable(
                 routes=routes,

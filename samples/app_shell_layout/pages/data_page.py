@@ -8,7 +8,8 @@ they mutate an in-memory ``SimpleDataSource`` list, so no backend is needed.
 
 Quick filters (All / Active / On hold / Done, with counts) and a search over
 name, code and owner sit above the table; both are kept in the URL, e.g.
-``/data-page?view=active&q=anna``.
+``/data-page?view=active&q=anna``. The footer counts the projects ("5 of 10
+projects" while filtered) and says what a row click does.
 """
 
 from datetime import date
@@ -218,6 +219,11 @@ projects = c.DataPage(
         counts=True,
     ),
     table_search=c.TableSearch(placeholder="Name, code, owner"),
+    table_footer=c.TableFooter(
+        label=("{n} project", "{n} projects"),
+        filtered_label=("{shown} of {total} project", "{shown} of {total} projects"),
+        text="Click a row to edit it",
+    ),
 )
 
 # Convenience handle for the app's navigation wiring.
