@@ -1,0 +1,149 @@
+/* --- Inline edit ---
+
+   One value with an edit button (`InlineEdit`), edited in place. The item
+   is a grid: label (and hint) on the first line, then the value, then the
+   source; the edit button sits on the right. In edit mode the form takes
+   the value's place across both columns; the value and the edit button
+   are hidden while the item `:has()` a form (state via `:has`, no class
+   toggled by the script).
+
+   Controls and buttons keep their default size, so a compact scope (T-006)
+   applies to them as anywhere else. */
+
+
+/* --- Item --- */
+
+.hx-inline-edit {
+    /* Layout */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--hx-spacing-sm);
+}
+
+.hx-inline-edit__label {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 1;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    font-weight: var(--hx-font-medium);
+    line-height: 1rem;
+    color: var(--hx-color-neutral-500);
+}
+
+/* The hint shares the label's line, after it. */
+.hx-inline-edit__hint {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    font-weight: var(--hx-font-semibold);
+    line-height: 1rem;
+    color: var(--hx-color-warning-800);
+}
+
+.hx-inline-edit__value {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 2;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    font-size: var(--hx-text-item);
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+    color: var(--hx-color-text);
+}
+
+.hx-inline-edit__source {
+    /* Layout */
+    grid-column: 1;
+    grid-row: 3;
+
+    /* Box */
+    margin-top: 0.125rem;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    line-height: 1.25rem;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-inline-edit__edit {
+    /* Layout */
+    grid-column: 2;
+    grid-row: 1 / span 3;
+
+    /* Box */
+    margin: 0;
+}
+
+
+/* --- Edit mode --- */
+
+.hx-inline-edit:has(> .hx-inline-edit__form) > :is(.hx-inline-edit__value, .hx-inline-edit__edit) {
+    /* Layout */
+    display: none;
+}
+
+.hx-inline-edit__form {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    gap: var(--hx-spacing-sm);
+
+    /* Box */
+    margin: var(--hx-spacing-xs) 0 var(--hx-spacing-sm);
+}
+
+/* Pico spaces form controls for stacked forms; here the actions follow
+   directly. */
+.hx-inline-edit__fields > .hx-form-field,
+.hx-inline-edit__fields input,
+.hx-inline-edit__fields select,
+.hx-inline-edit__fields textarea {
+    /* Box */
+    margin-bottom: 0;
+}
+
+.hx-inline-edit__fields > .hx-form-field + .hx-form-field {
+    /* Box */
+    margin-top: var(--hx-spacing-sm);
+}
+
+.hx-inline-edit__fields small {
+    /* Box */
+    margin: var(--hx-spacing-xs) 0 0;
+}
+
+.hx-inline-edit__actions {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-sm) var(--hx-spacing-md);
+}
+
+.hx-inline-edit__actions > .hx-button {
+    /* Box */
+    width: auto;
+    margin: 0;
+}
+
+.hx-inline-edit__shortcuts {
+    /* Box */
+    margin-left: auto;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    color: var(--hx-color-neutral-500);
+}

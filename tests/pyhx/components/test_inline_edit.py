@@ -316,3 +316,22 @@ class TestCustomFields:
             data={"value": "-1"},
         ).text
         assert 'aria-invalid="true"' in error
+
+
+class TestAssets:
+    def test_page_loads_the_script(self, app):
+        client, _, _ = app
+        assert (
+            '<script src="/static/js/pyhx.inline-edit.js"></script>'
+            in client.get("/").text
+        )
+
+    def test_styles_are_imported_into_the_pyhx_layer(self, app):
+        client, _, _ = app
+        css = client.get("/static/css/pyhx.css").text
+        assert '@import "./pyhx/components/data/inline_edit.css" layer(pyhx);' in css
+        assert (
+            client.get("/static/css/pyhx/components/data/inline_edit.css").status_code
+            == 200
+        )
+        assert client.get("/static/js/pyhx.inline-edit.js").status_code == 200
