@@ -19,7 +19,6 @@ src = snippets(__file__)
 
 router = WebAppRouter()
 
-
 @router.fragment.post("/wysiwyg-editor/preview")
 async def preview(
     description: Annotated[str, Form()] = "",
@@ -32,7 +31,6 @@ async def preview(
         y.h4["Raw submitted HTML"],
         y.pre[y.code[description]],
     ]
-
 
 @router.page("/wysiwyg-editor", title="WYSIWYG Editor")
 async def wysiwyg_editor_page() -> y.Node:

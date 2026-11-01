@@ -61,9 +61,7 @@ async def home() -> y.Node:
                     " — main longer than sidebar",
                 ],
                 y.li[
-                    y.a(href=scenarios.long_nav_content.url())[
-                        "Long Navigation Content"
-                    ],
+                    y.a(href=scenarios.long_nav_content.url())["Long Navigation Content"],
                     " — sidebar longer than main",
                 ],
                 y.li[

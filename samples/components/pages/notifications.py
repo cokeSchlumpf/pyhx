@@ -25,7 +25,6 @@ router = WebAppRouter()
 # response while letting the OOB child apply via `beforeend:#hx-notifications`.
 # ---------------------------------------------------------------------------
 
-
 # docs:start fragment_handlers
 @router.fragment.post("/notifications/info")
 async def emit_info() -> y.Node:
@@ -90,8 +89,6 @@ async def emit_non_dismissible() -> y.Node:
         timeout=4000,
         dismissible=False,
     )
-
-
 # docs:end fragment_handlers
 
 
@@ -203,9 +200,7 @@ async def notifications_page() -> y.Node:
                 )[
                     _trigger("No title", emit_no_title.url()),
                     _trigger(
-                        "Non-dismissible",
-                        emit_non_dismissible.url(),
-                        appearance="primary",
+                        "Non-dismissible", emit_non_dismissible.url(), appearance="primary"
                     ),
                 ],
                 # docs:end variations_demo
@@ -266,12 +261,10 @@ async def notifications_page() -> y.Node:
             ],
             c.code([("code", src.text("fragment_handlers"), "python")]),
             y.h2["Example calls"],
-            c.code(
-                [
-                    ("code", src.text("example_calls"), "python"),
-                    ("imports", src.text("imports"), "python"),
-                ]
-            ),
+            c.code([
+                ("code", src.text("example_calls"), "python"),
+                ("imports", src.text("imports"), "python"),
+            ]),
         ]
     )
 

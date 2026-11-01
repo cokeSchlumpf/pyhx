@@ -1,11 +1,14 @@
 """The settings menu of the page templates: a gear in the header opening a dropdown."""
 
 from collections.abc import Sequence
+from dataclasses import dataclass
 from typing import Protocol
 
 import htpy as y
 
 from pyhx.components.primitives.icon import icon
+from pyhx.core.primitives import IconName
+from pyhx.core.primitives.lazy_text import Text
 from pyhx.i18n import _, locale_switch
 
 
@@ -18,6 +21,57 @@ class SettingsEntry(Protocol):
     """
 
     def __call__(self) -> y.Node: ...
+
+
+@dataclass(frozen=True)
+class SettingsLink:
+    """A plain entry of the settings menu: a link with an optional icon.
+
+    Attributes
+    ----------
+    label
+        The text, e.g. ``_l("Sign out")``.
+    href
+        Where the link goes.
+    icon
+        A Feather icon name, e.g. ``"log-out"``.
+    """
+
+    label: Text
+    href: str
+    icon: IconName | None = None
+
+
+class SettingsLinks:
+    """Settings entry: a list of links, e.g. to the profile or to sign out.
+
+    Examples
+    --------
+    >>> AppShell(settings=[
+    ...     SettingsLinks(SettingsLink(_l("Sign out"), "/logout", icon="log-out")),
+    ...     LanguageSetting(),
+    ... ])
+
+    For links that depend on the request (e.g. only for signed-in users),
+    write an entry function that returns ``SettingsLinks(...)()`` or ``None``.
+    """
+
+    def __init__(self, *links: SettingsLink) -> None:
+        self.links = links
+
+    def __call__(self) -> y.Node:
+        if not self.links:
+            return None
+        return y.ul(".hx-settings-menu__links")[
+            (
+                y.li[
+                    y.a(href=link.href)[
+                        icon(link.icon) if link.icon else None, y.span[link.label]
+                    ]
+                ]
+                for link in self.links
+            )
+        ]
 
 
 class LanguageSetting:

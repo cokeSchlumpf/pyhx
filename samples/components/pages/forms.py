@@ -27,50 +27,49 @@ src = snippets(__file__)
 
 
 PRIORITY_OPTIONS = (
-    Option(label="Low", value="low"),
-    Option(label="Medium", value="medium"),
-    Option(label="High", value="high"),
+    Option(label="Low",      value="low"),
+    Option(label="Medium",   value="medium"),
+    Option(label="High",     value="high"),
     Option(label="Critical", value="critical"),
 )
 
 TYPE_OPTIONS = [
-    Option(label="Bug", value="bug"),
-    Option(label="Feature", value="feature"),
+    Option(label="Bug",      value="bug"),
+    Option(label="Feature",  value="feature"),
     Option(label="Question", value="question"),
 ]
 
 LABEL_OPTIONS = (
-    Option(label="Backend", value="backend"),
+    Option(label="Backend",  value="backend"),
     Option(label="Frontend", value="frontend"),
-    Option(label="Docs", value="docs"),
-    Option(label="Infra", value="infra"),
+    Option(label="Docs",     value="docs"),
+    Option(label="Infra",    value="infra"),
 )
 
 # A deliberately long pool — the kind of list a drawer_select handles better
 # than an inline checkbox fieldset or a multi-select dropdown.
 COMPONENT_OPTIONS = (
-    Option(label="API Gateway", value="api-gateway"),
+    Option(label="API Gateway",   value="api-gateway"),
     Option(label="Authentication", value="auth"),
-    Option(label="Billing", value="billing"),
-    Option(label="Caching", value="caching"),
-    Option(label="CLI", value="cli"),
-    Option(label="Database", value="database"),
-    Option(label="Email", value="email"),
-    Option(label="Frontend", value="frontend"),
-    Option(label="Logging", value="logging"),
-    Option(label="Metrics", value="metrics"),
+    Option(label="Billing",       value="billing"),
+    Option(label="Caching",       value="caching"),
+    Option(label="CLI",           value="cli"),
+    Option(label="Database",      value="database"),
+    Option(label="Email",         value="email"),
+    Option(label="Frontend",      value="frontend"),
+    Option(label="Logging",       value="logging"),
+    Option(label="Metrics",       value="metrics"),
     Option(label="Notifications", value="notifications"),
-    Option(label="Payments", value="payments"),
-    Option(label="Scheduler", value="scheduler"),
-    Option(label="Search", value="search"),
-    Option(label="Storage", value="storage"),
-    Option(label="Webhooks", value="webhooks"),
+    Option(label="Payments",      value="payments"),
+    Option(label="Scheduler",     value="scheduler"),
+    Option(label="Search",        value="search"),
+    Option(label="Storage",       value="storage"),
+    Option(label="Webhooks",      value="webhooks"),
 )
 
 # ----------------------------------------------------------
 # Models used by the DataForm demos below
 # ----------------------------------------------------------
-
 
 # docs:start issue_report_model
 @a.form(columns=2, submit_label="Create issue")
@@ -99,8 +98,6 @@ class IssueReport(BaseModel):
             help_text="Write something nice. Max. 160 characters.",
         ),
     ]
-
-
 # docs:end issue_report_model
 
 
@@ -159,7 +156,6 @@ class BlogPost(BaseModel):
     author: Annotated[str, a.TextField()]
     tags: Annotated[list[str], a.TextListField(label="Tags")]
 
-
 class UserPreferences(BaseModel):
     """Un-decorated model — every field uses the reader's auto-derived defaults.
 
@@ -184,8 +180,6 @@ class UserPreferences(BaseModel):
         default_factory=lambda: ["news", "tech"]
     )
     joined_on: date = date(2026, 1, 1)
-
-
 # docs:end preferences_model
 
 
@@ -243,8 +237,6 @@ class IssueTriage(BaseModel):
             ),
         ),
     ] = "auth"
-
-
 # docs:end triage_model
 
 
@@ -272,8 +264,6 @@ class ArticleDraft(BaseModel):
         str,
         a.TextField(control=a.TextareaControl(rows="3"), columns=2),
     ]
-
-
 # docs:end article_model
 
 
@@ -396,7 +386,6 @@ _article_form = c.DataForm[ArticleDraft](
 )
 
 # docs:end article_form
-
 
 async def _handle_profile_submit(value: ProfileCard) -> y.Node:
     return _success_banner(
@@ -550,8 +539,6 @@ async def _render_contact_form(ctx: c.FormRenderContext[ContactRequest]) -> y.No
             ),
         ],
     ]
-
-
 # docs:end contact_render
 
 
@@ -597,8 +584,6 @@ async def _drawer_form_fragment() -> y.Node:
         ),
         title="Edit issue",
     )
-
-
 # docs:end drawer_form_fragment
 
 
@@ -653,13 +638,12 @@ async def forms_page() -> y.Node:
                 verbatim.
             """),
             await _issue_form.render(),
-            c.code(
-                [
-                    ("model", src.text("issue_report_model"), "python"),
-                    ("form", src.text("issue_form"), "python"),
-                    ("imports", src.text("imports"), "python"),
-                ]
-            ),
+            c.code([
+                ("model", src.text("issue_report_model"), "python"),
+                ("form", src.text("issue_form"), "python"),
+                ("imports", src.text("imports"), "python"),
+            ]),
+
             c.markdown("""
                 ### Un-decorated model — every control auto-derived
 
@@ -671,12 +655,11 @@ async def forms_page() -> y.Node:
                 from `FormConfig()`'s defaults (`"Save"`, 2 columns).
             """),
             await _preferences_form.render(),
-            c.code(
-                [
-                    ("model", src.text("preferences_model"), "python"),
-                    ("form", src.text("preferences_form"), "python"),
-                ]
-            ),
+            c.code([
+                ("model", src.text("preferences_model"), "python"),
+                ("form", src.text("preferences_form"), "python"),
+            ]),
+
             c.markdown("""
                 ### Choosing from a drawer — for long option pools
 
@@ -694,12 +677,11 @@ async def forms_page() -> y.Node:
                 *Primary component* (single).
             """),
             await _triage_form.render(),
-            c.code(
-                [
-                    ("model", src.text("triage_model"), "python"),
-                    ("form", src.text("triage_form"), "python"),
-                ]
-            ),
+            c.code([
+                ("model", src.text("triage_model"), "python"),
+                ("form", src.text("triage_form"), "python"),
+            ]),
+
             c.markdown("""
                 ### Per-field column span
 
@@ -712,12 +694,10 @@ async def forms_page() -> y.Node:
                 `published_on` keep the default single-cell layout.
             """),
             await _article_form.render(),
-            c.code(
-                [
-                    ("model", src.text("article_model"), "python"),
-                    ("form", src.text("article_form"), "python"),
-                ]
-            ),
+            c.code([
+                ("model", src.text("article_model"), "python"),
+                ("form", src.text("article_form"), "python"),
+            ]),
             c.markdown("""
                 ### Per-field row span
 
@@ -729,6 +709,7 @@ async def forms_page() -> y.Node:
                 `display_name` and `location` stack down the left.
             """),
             await _profile_form.render(),
+
             c.markdown("""
                 ### Field-keyed layout (`template_areas`)
 
@@ -742,6 +723,7 @@ async def forms_page() -> y.Node:
                 is set, per-field `columns` / `rows` are ignored.
             """),
             await _blog_form.render(),
+
             c.markdown("""
                 ### Read-only / disabled form
 
@@ -760,6 +742,7 @@ async def forms_page() -> y.Node:
                 ),
                 disabled=True,
             ),
+
             c.markdown("""
                 ### Extra actions next to Save
 
@@ -780,6 +763,7 @@ async def forms_page() -> y.Node:
                     c.button("Save draft", variant="ghost"),
                 ],
             ),
+
             c.markdown("""
                 ### `disable_actions=True` — no divider, no buttons
 
@@ -797,6 +781,7 @@ async def forms_page() -> y.Node:
                 ),
                 disable_actions=True,
             ),
+
             c.markdown("""
                 ### Inside a drawer — Save on top, secondary actions below
 
@@ -817,6 +802,7 @@ async def forms_page() -> y.Node:
                 **c.open_drawer_htmx_attributes(_drawer_form_fragment.url()),
             ),
             c.code([("fragment", src.text("drawer_form_fragment"), "python")]),
+
             c.markdown("""
                 ### Drawer pickers inside a drawer form
 
@@ -831,6 +817,7 @@ async def forms_page() -> y.Node:
                 "Open triage form in drawer",
                 **c.open_drawer_htmx_attributes(_drawer_triage_fragment.url()),
             ),
+
             c.markdown("""
                 ### New-record form — no initial value, invalid from the start
 
@@ -845,6 +832,7 @@ async def forms_page() -> y.Node:
                 the description is long enough too.
             """),
             await _blank_issue_form.render(),
+
             c.markdown("""
                 ## Custom layouts with `HeadlessForm`
 
@@ -884,12 +872,11 @@ async def forms_page() -> y.Node:
                 > paint and `True` for the live validate/submit re-renders.
             """),
             await _contact_form.render(),
-            c.code(
-                [
-                    ("render", src.text("contact_render"), "python"),
-                    ("form", src.text("contact_form"), "python"),
-                ]
-            ),
+            c.code([
+                ("render", src.text("contact_render"), "python"),
+                ("form", src.text("contact_form"), "python"),
+            ]),
+
             y.h2["Issue report (live example)"],
             c.example(
                 # docs:start live_form
@@ -912,6 +899,7 @@ async def forms_page() -> y.Node:
                         value="bug",
                         orientation="horizontal",
                     ),
+
                     # Row 2 — text input alongside a horizontal checkbox_fieldset.
                     c.form_field(
                         "description",
@@ -927,20 +915,22 @@ async def forms_page() -> y.Node:
                         value=("backend",),
                         orientation="horizontal",
                     ),
+
                     # Row 3 — dropdown_radio + segment_control via partial.
                     c.form_field(
                         "priority",
                         "Priority",
                         partial(c.dropdown_radio, options=PRIORITY_OPTIONS),
                         help_text="How urgent is it?",
-                        error_text="That's strange!",
+                        error_text="That's strange!"
                     ),
                     c.form_field(
                         "type",
                         "Type",
                         partial(c.segment_control, options=TYPE_OPTIONS),
-                        help_text="Huhu!",
+                        help_text="Huhu!"
                     ),
+
                     # Row 4 — dropdown_checkbox + email success.
                     c.form_field(
                         "labels",
@@ -956,6 +946,7 @@ async def forms_page() -> y.Node:
                         value="me@example.com",
                         success_text="That looks like a valid email.",
                     ),
+
                     # Row 5 — email error + vertical radio_fieldset.
                     c.form_field(
                         "email_bad",
@@ -971,6 +962,7 @@ async def forms_page() -> y.Node:
                         PRIORITY_OPTIONS,
                         value="medium",
                     ),
+
                     # Row 6 — vertical checkbox_fieldset (paired with the
                     # vertical radio above by grid flow).
                     c.checkbox_fieldset(
@@ -983,6 +975,7 @@ async def forms_page() -> y.Node:
                 # docs:end live_form
                 code=[("code", src.text("live_form"), "python")],
             ),
+
             c.markdown("""
                 ## Disabled state
 
@@ -1026,6 +1019,7 @@ async def forms_page() -> y.Node:
                         orientation="horizontal",
                         disabled=True,
                     ),
+
                     # Row 2 — dropdown_radio + segment_control via partial.
                     c.form_field(
                         "disabled_priority",
@@ -1042,6 +1036,7 @@ async def forms_page() -> y.Node:
                         value="feature",
                         disabled=True,
                     ),
+
                     # Row 3 — dropdown_checkbox + vertical checkbox_fieldset.
                     c.form_field(
                         "disabled_labels",
@@ -1057,18 +1052,22 @@ async def forms_page() -> y.Node:
                         value=("backend", "docs"),
                         disabled=True,
                     ),
+
                     # Row 4 — buttons (native + anchor variants).
                     y.div[
                         c.button("Save", appearance="primary", disabled=True),
                         " ",
                         c.button("Cancel", variant="outline", disabled=True),
                         " ",
-                        c.button("Docs", variant="link", href="/docs", disabled=True),
+                        c.button(
+                            "Docs", variant="link", href="/docs", disabled=True
+                        ),
                     ],
                 ],
                 # docs:end disabled_form
                 code=[("code", src.text("disabled_form"), "python")],
             ),
+
             c.markdown("""
                 ## Plugging multi-arg controls in with `partial`
 

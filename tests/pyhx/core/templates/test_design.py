@@ -102,8 +102,7 @@ class TestDesignAttribute:
     def test_page_renders_design_on_html_element(self):
         client = TestClient(_build_app(Skeleton(design="canvas")).create_app())
         assert (
-            '<html lang="en" data-theme="light" data-hx-design="canvas">'
-            in client.get("/").text
+            '<html lang="en" data-theme="light" data-hx-design="canvas">' in client.get("/").text
         )
 
     def test_plain_skeleton_renders_plain(self):

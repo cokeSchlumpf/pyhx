@@ -62,7 +62,9 @@ def test_relative_source_timezone_shifts_delta():
     # 10:00 == UTC 08:00), so the "ago" delta grows.
     naive = (datetime.now(timezone.utc) - timedelta(hours=3)).replace(tzinfo=None)
     as_utc = _render(RelativeDateFormat(), naive)
-    as_zurich = _render(RelativeDateFormat(source_timezone="Europe/Zurich"), naive)
+    as_zurich = _render(
+        RelativeDateFormat(source_timezone="Europe/Zurich"), naive
+    )
     assert "3 hours ago" in as_utc
     # Zurich is +1/+2h ahead of UTC → instant is 1-2h further in the past.
     assert ("5 hours ago" in as_zurich) or ("4 hours ago" in as_zurich)
@@ -91,7 +93,9 @@ def test_localized_datetime_crosses_midnight_in_display_zone():
 def test_localized_datetime_utc_display_keeps_day():
     _clear_request()
     value = datetime(2024, 4, 25, 23, 0, tzinfo=timezone.utc)
-    rendered = _render(LocalizedDateFormat(locale="en", timezone="UTC"), value)
+    rendered = _render(
+        LocalizedDateFormat(locale="en", timezone="UTC"), value
+    )
     assert "25" in rendered
 
 
@@ -120,7 +124,9 @@ def test_localized_pinned_tz_overrides_cookie():
     try:
         value = datetime(2024, 4, 25, 23, 0, tzinfo=timezone.utc)
         # Pinned UTC wins over the Zurich cookie → stays on the 25th.
-        rendered = _render(LocalizedDateFormat(locale="en", timezone="UTC"), value)
+        rendered = _render(
+            LocalizedDateFormat(locale="en", timezone="UTC"), value
+        )
         assert "25" in rendered
     finally:
         _clear_request()
@@ -165,11 +171,15 @@ def test_localized_datetime_display_tz_from_cookie():
 
 def test_localized_datetime_none_renders_empty():
     _clear_request()
-    assert _render(LocalizedDateTimeFormat(locale="en"), None) == "<span></span>"
+    assert (
+        _render(LocalizedDateTimeFormat(locale="en"), None) == "<span></span>"
+    )
 
 
 def test_iso_and_pattern_keep_time_for_datetime():
     _clear_request()
     value = datetime(2024, 4, 25, 14, 30, 45, tzinfo=timezone.utc)
     assert "14:30:45" in _render(IsoDateFormat(), value)
-    assert "14:30:45" in _render(PatternDateFormat(pattern="%d %b %Y %H:%M:%S"), value)
+    assert "14:30:45" in _render(
+        PatternDateFormat(pattern="%d %b %Y %H:%M:%S"), value
+    )

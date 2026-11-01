@@ -24,6 +24,8 @@
         width: 2.25rem;
         height: 2.25rem;
         padding: 0;
+        /* Pico gives an open summary a bottom margin, which lifts the gear. */
+        margin: 0;
         border-radius: var(--hx-radius-md);
 
         /* Typography */
@@ -120,6 +122,65 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         color: var(--hx-color-neutral-700);
+    }
+}
+
+/* Links: a plain list of menu entries (icon and label). */
+.hx-settings-menu__links {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+
+    /* Box */
+    margin: 0;
+    padding: var(--hx-spacing-xs);
+
+    & + .hx-settings-menu__section,
+    .hx-settings-menu__section + & {
+        /* Box */
+        border-top: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
+    }
+
+    & > li {
+        /* Box */
+        margin: 0;
+        padding: 0;
+
+        /* Interaction */
+        list-style: none;
+    }
+
+    & a {
+        /* Layout */
+        display: flex;
+        align-items: center;
+        gap: var(--hx-spacing-sm);
+
+        /* Box */
+        padding: 0.625rem 0.75rem;
+        border-radius: var(--hx-radius-md);
+
+        /* Typography */
+        font-size: var(--hx-text-sm);
+        text-decoration: none;
+        color: var(--hx-color-text);
+
+        & svg,
+        & i {
+            /* Box */
+            width: 1rem;
+            height: 1rem;
+
+            /* Typography */
+            color: var(--hx-color-neutral-700);
+        }
+
+        &:hover,
+        &:focus-visible {
+            /* Visual */
+            background-color: var(--hx-color-neutral-100);
+        }
     }
 }
 

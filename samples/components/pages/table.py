@@ -78,66 +78,28 @@ def _tree_expand_cell(is_expanded: bool | None) -> y.Node:
 # Simple calendar sample: one month (July), 31 days.
 CAL_DAYS = 31
 WEEKDAY_LETTERS = ("M", "T", "W", "T", "F", "S", "S")
-CALENDAR_PROJECTS = (
-    "Website redesign",
-    "Mobile app",
-    "API migration",
-    "Data warehouse",
-)
+CALENDAR_PROJECTS = ("Website redesign", "Mobile app", "API migration", "Data warehouse")
 
 
 # Stacked-bar chart sample: each project's effort split across phases as
 # fractions of the column height (design / build / QA). Percentages need not
 # sum to 1 — any remainder shows as empty space at the top of the bar.
 STACK_ROWS = (
-    (
-        "Website redesign",
-        "A. Okafor",
-        "48,000",
-        (
-            c.StackChartItem(
-                color=c.Color.info(), title="Design — 40%", percent=c.Pct.of(40)
-            ),
-            c.StackChartItem(
-                color=c.Color.success(), title="Build — 40%", percent=c.Pct.of(40)
-            ),
-            c.StackChartItem(
-                color=c.Color.warning(), title="QA — 15%", percent=c.Pct.of(15)
-            ),
-        ),
-    ),
-    (
-        "Mobile app",
-        "R. Silva",
-        "72,500",
-        (
-            c.StackChartItem(
-                color=c.Color.info(), title="Design — 25%", percent=c.Pct.of(25)
-            ),
-            c.StackChartItem(
-                color=c.Color.success(), title="Build — 55%", percent=c.Pct.of(55)
-            ),
-            c.StackChartItem(
-                color=c.Color.warning(), title="QA — 20%", percent=c.Pct.of(20)
-            ),
-        ),
-    ),
-    (
-        "API migration",
-        "T. Nguyen",
-        "31,000",
-        (
-            c.StackChartItem(
-                color=c.Color.info(), title="Design — 15%", percent=c.Pct.of(15)
-            ),
-            c.StackChartItem(
-                color=c.Color.success(), title="Build — 35%", percent=c.Pct.of(35)
-            ),
-            c.StackChartItem(
-                color=c.Color.warning(), title="QA — 10%", percent=c.Pct.of(10)
-            ),
-        ),
-    ),
+    ("Website redesign", "A. Okafor", "48,000", (
+        c.StackChartItem(color=c.Color.info(), title="Design — 40%", percent=c.Pct.of(40)),
+        c.StackChartItem(color=c.Color.success(), title="Build — 40%", percent=c.Pct.of(40)),
+        c.StackChartItem(color=c.Color.warning(), title="QA — 15%", percent=c.Pct.of(15)),
+    )),
+    ("Mobile app", "R. Silva", "72,500", (
+        c.StackChartItem(color=c.Color.info(), title="Design — 25%", percent=c.Pct.of(25)),
+        c.StackChartItem(color=c.Color.success(), title="Build — 55%", percent=c.Pct.of(55)),
+        c.StackChartItem(color=c.Color.warning(), title="QA — 20%", percent=c.Pct.of(20)),
+    )),
+    ("API migration", "T. Nguyen", "31,000", (
+        c.StackChartItem(color=c.Color.info(), title="Design — 15%", percent=c.Pct.of(15)),
+        c.StackChartItem(color=c.Color.success(), title="Build — 35%", percent=c.Pct.of(35)),
+        c.StackChartItem(color=c.Color.warning(), title="QA — 10%", percent=c.Pct.of(10)),
+    )),
 )
 
 
@@ -275,7 +237,7 @@ async def table_page() -> y.Node:
                 "Pass ",
                 y.code["controls=c.table.toolbar[...]"],
                 " to render a control bar above the table — a natural home for "
-                "add / filter / settings actions. The buttons below are for "
+                'add / filter / settings actions. The buttons below are for '
                 "show; wire up your own handlers.",
             ],
             # docs:start toolbar
@@ -332,13 +294,9 @@ async def table_page() -> y.Node:
                 c.table.thead[
                     c.table.tr[
                         c.table.th["Name", c.table.resize_handle(0, "Resize Name")],
-                        c.table.th[
-                            "Country", c.table.resize_handle(1, "Resize Country")
-                        ],
+                        c.table.th["Country", c.table.resize_handle(1, "Resize Country")],
                         c.table.th["Born", c.table.resize_handle(2, "Resize Born")],
-                        c.table.th[
-                            "Known for", c.table.resize_handle(3, "Resize Known for")
-                        ],
+                        c.table.th["Known for", c.table.resize_handle(3, "Resize Known for")],
                         c.table.th[""],  # filler — takes remaining space
                     ]
                 ],
@@ -389,10 +347,7 @@ async def table_page() -> y.Node:
                         # Row 2 — weekday letter.
                         c.table.tr[
                             c.table.th[""],
-                            *[
-                                c.table.th[WEEKDAY_LETTERS[i % 7]]
-                                for i in range(CAL_DAYS)
-                            ],
+                            *[c.table.th[WEEKDAY_LETTERS[i % 7]] for i in range(CAL_DAYS)],
                         ],
                         # Row 3 — date number.
                         c.table.tr[
@@ -544,7 +499,9 @@ async def table_page() -> y.Node:
                     ]
                 ],
                 c.table.tbody[
-                    c.table.tr[c.table.td(kind="empty")["No records found"],]
+                    c.table.tr[
+                        c.table.td(kind="empty")["No records found"],
+                    ]
                 ],
             ],
             # docs:end empty_cell

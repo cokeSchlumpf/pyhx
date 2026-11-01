@@ -8,7 +8,14 @@ from sqlalchemy.pool import StaticPool
 from pyhx.addons.user_authentication import configure_user_session
 from pyhx.core.primitives.negotiate_locale import LocaleSettings
 from pyhx.core.webapp import WebApp
-from pyhx.page_templates import AppShell, CanvasShell, LanguageSetting
+from pyhx.i18n import _l
+from pyhx.page_templates import (
+    AppShell,
+    CanvasShell,
+    LanguageSetting,
+    SettingsLink,
+    SettingsLinks,
+)
 
 SECRET = "x" * 32
 
@@ -85,6 +92,27 @@ class TestSettingsMenu:
         page = _client(make(settings=[LanguageSetting(), nothing, theme])).get("/").text
 
         assert page.index("hx-settings-language") < page.index("<h2>Theme</h2>")
+
+    @pytest.mark.parametrize("make", TEMPLATES)
+    def test_links_above_the_language(self, make):
+        links = SettingsLinks(
+            SettingsLink(_l("Profile"), "/profile", icon="user"),
+            SettingsLink("Sign out", "/logout", icon="log-out"),
+        )
+
+        page = _client(make(settings=[links, LanguageSetting()])).get("/").text
+
+        start = page.index('<ul class="hx-settings-menu__links">')
+        assert (
+            start
+            < page.index('href="/profile"')
+            < page.index('href="/logout"')
+            < page.index("hx-settings-language")
+        )
+        assert "<span>Profile</span>" in page and "<span>Sign out</span>" in page
+
+    def test_no_links_no_section(self):
+        assert SettingsLinks()() is None
 
     def test_the_canvas_menu_is_outside_the_clipped_header_content(self):
         page = _client(CanvasShell(header_content=y.span["Jane"])).get("/").text

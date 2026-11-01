@@ -99,9 +99,7 @@ def _build_page_header(*, with_breadcrumbs: bool) -> y.Node:
         breadcrumbs=c.page_header.breadcrumbs(
             y.a(href="/")["Home"],
             "The current page",
-        )
-        if with_breadcrumbs
-        else None,
+        ) if with_breadcrumbs else None,
         title=y.h1["Page Header"],
         actions=y.fragment[
             c.pill("Some Status"),
@@ -176,5 +174,5 @@ async def page_header() -> PageResponse:
                 content=lorem_ipsum(paragraphs=20),
             ),
         ],
-        page_template=AppShell(mode="app", compact_main_navigation=False),
+        page_template=AppShell(mode="app", compact_main_navigation=False)
     )

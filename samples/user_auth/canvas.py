@@ -27,12 +27,11 @@ from pyhx.addons.user_authentication import (
 from pyhx.core import WebApp
 from pyhx.i18n import _, _l, t
 from pyhx.page_templates import CanvasShell
-from samples.user_auth.main import LOCALE_DIR, _build_users_repo
-
+from samples.user_auth.main import LOCALE_DIR, SETTINGS, _build_users_repo
 
 hx = WebApp(
     title="User Auth Canvas",
-    default_page_template=CanvasShell(),
+    default_page_template=CanvasShell(settings=SETTINGS),
     locale_dir=LOCALE_DIR,
 )
 
@@ -54,6 +53,19 @@ async def home() -> y.Node:
         c.card.section[
             y.p[t("You're signed in as {name}.", name=y.strong[user.display_name])],
             y.p[y.a(href="/logout")[_("Sign out")]],
+        ],
+    ]
+
+
+@hx.page("/profile", title=_l("Profile"))
+async def profile() -> y.Node:
+    user = require_authenticated_user()
+    return c.card[
+        c.card.header[c.card.title[y.h1[_("Profile")]]],
+        c.card.section[
+            y.p[t("You're signed in as {name}.", name=y.strong[user.display_name])],
+            y.p[_("Stored language"), ": ", getattr(user, "locale", None) or "–"],
+            y.p[y.a(href="/")[_("Home")]],
         ],
     ]
 

@@ -21,14 +21,14 @@ def test_plain_when_lang_none():
     html = _html(_render_lines("a\nb", None))
     assert html.count("hx-code__line") == 2
     # no token spans
-    assert '<span class="k"' not in html
+    assert "<span class=\"k\"" not in html
 
 
 def test_plain_for_explicit_plaintext_values():
     for lang in ("none", "plaintext", "text"):
         html = _html(_render_lines("def f(): pass", lang))
         assert "hx-code__line" in html
-        assert '<span class="k"' not in html
+        assert "<span class=\"k\"" not in html
 
 
 def test_python_highlighting_emits_token_classes():
@@ -61,7 +61,7 @@ def test_trailing_newline_line_count_consistent_plain_and_highlighted():
 def test_unknown_lang_falls_back_to_plain():
     html = _html(_render_lines("def f(): pass", "bogus-lang"))
     assert "hx-code__line" in html
-    assert '<span class="k"' not in html
+    assert "<span class=\"k\"" not in html
 
 
 def test_code_renders_shell_and_hidden_config():
@@ -134,5 +134,4 @@ def test_three_tuple_part_carries_lang():
 
 def test_c_code_export_resolves():
     import pyhx.components as c
-
     assert callable(c.code)

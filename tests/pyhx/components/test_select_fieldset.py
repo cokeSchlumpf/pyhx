@@ -44,9 +44,7 @@ class TestDisabledEmitsHiddenValues:
 
     def test_checkbox_emits_one_hidden_value_per_selection(self) -> None:
         html = str(
-            checkbox_fieldset(
-                "L", "country", OPTIONS, value=["de", "it"], disabled=True
-            )
+            checkbox_fieldset("L", "country", OPTIONS, value=["de", "it"], disabled=True)
         )
         hidden = _hidden_inputs(html)
         assert hidden == [

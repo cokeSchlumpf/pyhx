@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 21:09+0100\n"
+"POT-Creation-Date: 2026-11-01 21:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -19,73 +19,89 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: main.py:137
+#: main.py:153
 msgid "Amount"
 msgstr "Betrag"
 
-#: main.py:136
+#: main.py:152
 msgid "Case"
 msgstr "Fall"
 
-#: canvas.py:49 main.py:156 main.py:202
+#: canvas.py:48 main.py:172 main.py:218 main.py:239
 msgid "Home"
 msgstr "Startseite"
 
-#: main.py:138
+#: main.py:234
+msgid "Name"
+msgstr "Name"
+
+#: main.py:154
 msgid "Opened"
 msgstr "Eröffnet"
 
-#: main.py:194 main.py:199
+#: main.py:113 main.py:226 main.py:232
+msgid "Profile"
+msgstr "Profil"
+
+#: main.py:210 main.py:215
 msgid "Protected"
 msgstr "Geschützt"
 
-#: main.py:186
+#: main.py:202
 msgid "Sign in"
 msgstr "Einloggen"
 
-#: main.py:165
+#: main.py:181
 #, python-brace-format
 msgid "Sign in as {jane} or {marco} (password {password}), or with {email} — the login link and code appear in the console."
 msgstr "Melden Sie sich als {jane} oder {marco} an (Passwort {password}) oder mit {email} – Link und Code erscheinen in der Konsole."
 
-#: canvas.py:56 main.py:188 main.py:204
+#: canvas.py:55 main.py:114 main.py:204 main.py:220
 msgid "Sign out"
 msgstr "Abmelden"
 
-#: canvas.py:53
+#: canvas.py:52
 msgid "Signed in"
 msgstr "Angemeldet"
 
-#: main.py:174
+#: main.py:190
 #, python-brace-format
 msgid "Signed in as {name}."
 msgstr "Angemeldet als {name}."
 
-#: main.py:139
+#: main.py:155
 msgid "Since"
 msgstr "Seit"
 
-#: main.py:177
+#: main.py:236
+msgid "Stored language"
+msgstr "Gespeicherte Sprache"
+
+#: main.py:193
 #, python-brace-format
 msgid "There is {n} open case worth {total}."
 msgid_plural "There are {n} open cases worth {total}."
 msgstr[0] "Es gibt {n} offenen Fall im Wert von {total}."
 msgstr[1] "Es gibt {n} offene Fälle im Wert von {total}."
 
-#: main.py:162
+#: main.py:178
 msgid "User authentication sample"
 msgstr "Beispiel: Benutzeranmeldung"
 
-#: main.py:185
+#: main.py:201
 msgid "Visit the protected page"
 msgstr "Zur geschützten Seite"
 
-#: main.py:172
+#: main.py:188
 msgid "You are not signed in."
 msgstr "Sie sind nicht angemeldet."
 
-#: canvas.py:55 main.py:200
+#: canvas.py:54 main.py:216
 #, python-brace-format
 msgid "You're signed in as {name}."
 msgstr "Sie sind angemeldet als {name}."
+
+#: main.py:237
+msgid "none (the browser's language applies)"
+msgstr "keine (es gilt die Sprache des Browsers)"
 

@@ -46,15 +46,13 @@ def test_results_are_deep_copies_independent_of_original():
     extracted.sort[0].order = "asc"
     remaining.sort[0].order = "desc"
     # original is untouched
-    assert original.sort[0].order == "asc"  # name
+    assert original.sort[0].order == "asc"   # name
     assert original.sort[1].order == "desc"  # score
 
     # Deep-copy independence for Condition filter entries: mutating a nested
     # FilterValue on the extracted copy must not affect the original.
     extracted.filter[0].values[0].value = "MUTATED"
-    assert (
-        original.filter[1].values[0].value == "9"
-    )  # score condition (index 1) untouched
+    assert original.filter[1].values[0].value == "9"  # score condition (index 1) untouched
 
 
 def test_unknown_keys_extract_nothing():

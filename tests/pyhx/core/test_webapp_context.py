@@ -6,6 +6,7 @@ from pyhx.core.webapp import WebApp, set_webapp
 
 
 class TestWebAppContext:
+
     def test_get_after_set_returns_same_instance(self):
         app = WebApp()
         set_webapp(app)
@@ -41,5 +42,5 @@ class TestWebAppContext:
 
         result = copy_context().run(in_isolated_context)
 
-        assert result is inner  # inner context saw its own write
-        assert WebApp.get() is outer  # outer context unaffected
+        assert result is inner          # inner context saw its own write
+        assert WebApp.get() is outer    # outer context unaffected

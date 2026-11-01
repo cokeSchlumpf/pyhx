@@ -49,7 +49,8 @@ async def grid_page() -> y.Node:
             y.p[
                 "The ",
                 y.code["hx-grid"],
-                " class is a CSS-only layout utility — apply it to any container (",
+                " class is a CSS-only layout utility — apply it to any "
+                "container (",
                 y.code["div"],
                 ", ",
                 y.code["form"],

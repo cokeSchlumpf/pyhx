@@ -119,6 +119,4 @@ def test_date_between_does_not_raise_on_datetime():
 
 
 def test_date_equals_still_works_for_plain_date():
-    assert (
-        _matches_value(date(2024, 4, 25), DateEquals(value=date(2024, 4, 25))) is True
-    )
+    assert _matches_value(date(2024, 4, 25), DateEquals(value=date(2024, 4, 25))) is True

@@ -57,7 +57,9 @@ class Project(BaseModel):
     priority: Annotated[Priority, a.TextColumn(label="Priority")]
     budget: Annotated[
         float,
-        a.NumericColumn(label="Budget", format=a.CurrencyNumberFormat(currency="EUR")),
+        a.NumericColumn(
+            label="Budget", format=a.CurrencyNumberFormat(currency="EUR")
+        ),
     ]
     progress: Annotated[int, a.NumericColumn(label="Progress %")]
     active: Annotated[bool, a.BooleanColumn(label="Active")]

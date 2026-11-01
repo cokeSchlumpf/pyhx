@@ -33,9 +33,7 @@ class Registry:
     calls: list[tuple[str, tuple]] = field(default_factory=list)
 
 
-def _install_context(
-    registry: Registry | None = None, user: User | None = None
-) -> None:
+def _install_context(registry: Registry | None = None, user: User | None = None) -> None:
     """Seed an :class:`AppContext` (with optional registry) + user on the
     current :class:`RequestContext`."""
     source: dict = {}

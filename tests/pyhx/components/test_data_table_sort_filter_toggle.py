@@ -29,7 +29,7 @@ def _install_htmx_request() -> None:
     """Seed a RequestContext carrying the ``HX-Request`` header htmx sends
     on every fragment call it issues. the signal ``update_query_fragment``
     gates on to avoid rendering a literal, visible duplicate during a plain
-    page load
+    page load 
     """
     request = Request({"type": "http", "headers": [(b"hx-request", b"true")]})
     set_request_context(RequestContext(request=request))
@@ -49,9 +49,9 @@ def _render(**kwargs) -> str:
 
 def test_enabled_by_default_shows_sort_and_filter_controls():
     html = _render()
-    assert "table-header-click" in html  # sortable header link
+    assert "table-header-click" in html          # sortable header link
     assert "/_components/filter-drawer/" in html  # filter drawer button
-    assert "clear-sort-and-filter" in html  # clear button
+    assert "clear-sort-and-filter" in html        # clear button
 
 
 def test_disabled_hides_sort_and_filter_controls():
@@ -63,9 +63,9 @@ def test_disabled_hides_sort_and_filter_controls():
 
 def test_disabled_keeps_header_text_and_resizer():
     html = _render(enable_sort_and_filter=False)
-    assert "Name" in html  # header label still rendered
-    assert "hx-table__col-resizer" in html  # resize handle preserved
-    assert "toggle_fullscreen" in html  # maximize button preserved
+    assert "Name" in html                          # header label still rendered
+    assert "hx-table__col-resizer" in html         # resize handle preserved
+    assert "toggle_fullscreen" in html             # maximize button preserved
 
 
 def test_renders_via_table_primitive():

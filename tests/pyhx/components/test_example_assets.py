@@ -15,9 +15,9 @@ def test_code_stylesheets_imported():
 def test_code_js_exists_and_is_included():
     js = _STATIC / "js" / "pyhx.code.js"
     assert js.is_file()
-    skeleton = (
-        _ROOT / "src" / "pyhx" / "core" / "templates" / "skeleton.py"
-    ).read_text(encoding="utf-8")
+    skeleton = (_ROOT / "src" / "pyhx" / "core" / "templates" / "skeleton.py").read_text(
+        encoding="utf-8"
+    )
     assert "pyhx.code.js" in skeleton
     assert "pyhx.example.js" not in skeleton
 

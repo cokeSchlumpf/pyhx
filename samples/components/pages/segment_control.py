@@ -105,7 +105,9 @@ async def segment_control_page() -> y.Node:
             c.example(
                 # docs:start in_form
                 y.form(method="get", style="margin-block: 1rem;")[
-                    y.div(style="display: flex; align-items: center; gap: 1rem;")[
+                    y.div(
+                        style="display: flex; align-items: center; gap: 1rem;"
+                    )[
                         c.segment_control("range", RANGE_OPTIONS, value="month"),
                         c.button("Submit", appearance="primary", type="submit"),
                     ]

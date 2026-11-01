@@ -33,6 +33,7 @@ def _render(renderer: NavRenderer, nav: AppNavFn, path: str = "/") -> str:
 
 
 class TestFlat:
+
     def test_renders_flat_list_as_nav_ul_li(self):
         nav = _slot([NavItem("Home", "/"), NavItem("About", "/about")])
         html = _render(NavRenderer(), nav, path="/elsewhere")
@@ -64,6 +65,7 @@ class TestFlat:
 
 
 class TestGrouped:
+
     def test_renders_groups_with_labels(self):
         nav = _slot(
             {
@@ -101,6 +103,7 @@ class TestGrouped:
 
 
 class TestMissingSlot:
+
     def test_calls_render_empty_when_slot_missing(self):
         seen: list[str] = []
 
@@ -109,12 +112,15 @@ class TestMissingSlot:
                 seen.append(slot)
                 return super().render_empty(slot=slot)
 
-        node = asyncio.run(R()(slot="missing", ctx=_ctx(), navigation={}))
+        node = asyncio.run(
+            R()(slot="missing", ctx=_ctx(), navigation={})
+        )
         assert seen == ["missing"]
         assert str(node) == ""
 
 
 class TestCustomization:
+
     def test_subclass_overriding_only_render_item_still_orchestrates(self):
         class R(NavRenderer):
             def render_item(self, *, item, is_active, in_group):
@@ -132,5 +138,7 @@ class TestCustomization:
                 return super().render_root(slot=slot, sections=sections)
 
         _render(R(), _slot([NavItem("Home", "/")]))
-        _render(R(), _slot({"A": [NavItem("Home", "/")], "B": [NavItem("X", "/x")]}))
+        _render(
+            R(), _slot({"A": [NavItem("Home", "/")], "B": [NavItem("X", "/x")]})
+        )
         assert seen == [1, 2]

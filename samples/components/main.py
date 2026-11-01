@@ -178,16 +178,22 @@ async def home() -> y.Node:
                     " + radio inputs",
                 ],
                 y.li[
-                    y.a(href=file_dropzone.file_dropzone_page.url())["File Dropzone"],
+                    y.a(href=file_dropzone.file_dropzone_page.url())[
+                        "File Dropzone"
+                    ],
                     " — drag-and-drop file picker with a click-to-browse fallback",
                 ],
                 y.li[
-                    y.a(href=drawer_select.drawer_select_page.url())["Drawer Select"],
+                    y.a(href=drawer_select.drawer_select_page.url())[
+                        "Drawer Select"
+                    ],
                     " — multi-select for long option pools via a filterable ",
                     "drawer",
                 ],
                 y.li[
-                    y.a(href=drawer_radio.drawer_radio_page.url())["Drawer Radio"],
+                    y.a(href=drawer_radio.drawer_radio_page.url())[
+                        "Drawer Radio"
+                    ],
                     " — single-select sibling; click-to-commit in the drawer",
                 ],
                 y.li[

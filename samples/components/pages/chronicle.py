@@ -112,13 +112,17 @@ async def chronicle_page() -> y.Node:
                     ],
                     c.chronicle.entry(
                         date="14.04.2026", icon="send-2", appearance="info"
-                    )[c.chronicle.title["Anfrage an Helvetia versendet"],],
+                    )[
+                        c.chronicle.title["Anfrage an Helvetia versendet"],
+                    ],
                     c.chronicle.entry(date="12.04.2026", color="#F194B4")[
                         c.chronicle.title["Arbeitgeberfragebogen eingegangen"],
                     ],
                     c.chronicle.entry(
                         date="15.03.2026", icon="check-2", appearance="success"
-                    )[c.chronicle.title["IV-Anmeldung validiert"],],
+                    )[
+                        c.chronicle.title["IV-Anmeldung validiert"],
+                    ],
                 ],
                 # docs:end icons
                 code=[("code", src.text("icons"), "python")],

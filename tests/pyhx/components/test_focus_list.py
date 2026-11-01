@@ -160,5 +160,5 @@ class TestFocusListCssDedup:
 
     def test_kept_non_inherited_bits(self) -> None:
         # row padding override + focus behavior must remain
-        assert "data-is-active" in FOCUS_CSS  # sibling-dim / active-lift
-        assert "view-transition" in FOCUS_CSS  # transitions kept
+        assert "data-is-active" in FOCUS_CSS          # sibling-dim / active-lift
+        assert "view-transition" in FOCUS_CSS          # transitions kept

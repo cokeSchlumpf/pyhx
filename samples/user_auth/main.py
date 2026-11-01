@@ -25,7 +25,8 @@ of a request is the one chosen in the session, else the signed-in user's,
 else the browser's, else English. Try it:
 
 - As an anonymous visitor, switch the language in the settings menu (the gear
-  in the header, ``LanguageSetting`` of the page template): it is
+  in the header: ``settings=[account_links, LanguageSetting()]``; the account
+  links, Profile and Sign out, appear once signed in): it is
   kept in the session only (open a private window: English or your browser's
   language again).
 - Sign in as ``jane`` and switch: the language is also stored on the user, so
@@ -67,7 +68,7 @@ from pyhx.i18n import (
     format_relative_time,
     t,
 )
-from pyhx.page_templates import AppShell
+from pyhx.page_templates import AppShell, LanguageSetting, SettingsLink, SettingsLinks
 
 LOCALE_DIR = Path(__file__).parent / "locale"
 
@@ -104,9 +105,24 @@ def _build_users_repo() -> SQLUsersRepository:
 users = _build_users_repo()
 
 
+def account_links() -> y.Node:
+    """Settings entry of the sample: profile and sign-out, for signed-in users only."""
+    if isinstance(require_user(), AnonymousUser):
+        return None
+    return SettingsLinks(
+        SettingsLink(_l("Profile"), "/profile", icon="user"),
+        SettingsLink(_l("Sign out"), "/logout", icon="log-out"),
+    )()
+
+
+# The settings menu (gear in the header): account links above the language.
+SETTINGS = [account_links, LanguageSetting()]
+
 hx = WebApp(
     title="User Auth Sample",
-    default_page_template=AppShell(mode="app", main_navigation=False, user_menu=False),
+    default_page_template=AppShell(
+        mode="app", main_navigation=False, user_menu=False, settings=SETTINGS
+    ),
     locale_dir=LOCALE_DIR,
 )
 
@@ -203,6 +219,24 @@ async def protected() -> y.Node:
                 " · ",
                 y.a(href="/logout")[_("Sign out")],
             ],
+        ],
+    ]
+
+
+@hx.page("/profile", title=_l("Profile"))
+async def profile() -> y.Node:
+    user = require_authenticated_user()
+    stored = getattr(user, "locale", None)
+    return y.main[
+        y.article[
+            y.h1[_("Profile")],
+            y.dl[
+                y.dt[_("Name")],
+                y.dd[user.display_name],
+                y.dt[_("Stored language")],
+                y.dd[stored or _("none (the browser's language applies)")],
+            ],
+            y.p[y.a(href="/")[_("Home")]],
         ],
     ]
 
