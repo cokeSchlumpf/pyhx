@@ -5,7 +5,7 @@ from babel.messages.pofile import read_po, write_po
 
 from pyhx.i18n.__main__ import main
 from pyhx.i18n._catalogs import catalog_path
-from pyhx.i18n._tooling import check, update
+from pyhx.i18n._tooling import check, extract, update
 
 CODE = """
 from pyhx.i18n import _, _l, _n, _p, t
@@ -45,6 +45,22 @@ GERMAN = {
     "Open": "Öffnen",
     "Hello {name}": "Hallo {name}",
 }
+
+
+class TestExtract:
+    def test_finds_texts_in_directories_starting_with_an_underscore(self, tmp_path):
+        layer = tmp_path / "src" / "app" / "_02_webapp" / "home"
+        layer.mkdir(parents=True)
+        (layer / "start.py").write_text(
+            'from pyhx.i18n import _\n\nTITLE = _("Start")\n'
+        )
+        hidden = tmp_path / "src" / "app" / ".cache"
+        hidden.mkdir()
+        (hidden / "x.py").write_text('from pyhx.i18n import _\n\nX = _("Hidden")\n')
+
+        ids = [m.id for m in extract(tmp_path / "src" / "app") if m.id]
+
+        assert ids == ["Start"]
 
 
 class TestUpdate:

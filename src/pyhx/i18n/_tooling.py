@@ -26,6 +26,16 @@ def translated_locales(locales: Iterable[str]) -> list[str]:
     ]
 
 
+def _scanned(directory: str) -> bool:
+    """Whether to look into a directory: all but hidden ones and ``__pycache__``.
+
+    Babel's default skips every directory starting with ``_``, which would
+    skip the layers of an app (``_01_domain``, ``_02_webapp``).
+    """
+    name = Path(directory).name
+    return not name.startswith(".") and name != "__pycache__"
+
+
 def extract(package: Path) -> Catalog:
     """Extract the marked texts of all Python files below ``package``."""
     template = Catalog()
@@ -33,6 +43,7 @@ def extract(package: Path) -> Catalog:
         package,
         method_map=[("**.py", "python")],
         keywords=KEYWORDS,
+        directory_filter=_scanned,
         comment_tags=("Translators:",),
         strip_comment_tags=True,
     ):
