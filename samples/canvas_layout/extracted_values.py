@@ -12,7 +12,6 @@ case number; a corrected value is marked as such in its source line.
 import datetime
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TypedDict
 from zoneinfo import ZoneInfo
 
 import htpy as y
@@ -105,19 +104,9 @@ def _source(attribute: str, document: str) -> Callable[[str, object], y.Node]:
     return render
 
 
-class _Labels(TypedDict):
-    save_label: str
-    cancel_label: str
-    edit_label: str
-    shortcuts_hint: str
-
-
-_LABELS: _Labels = {
-    "save_label": "Korrektur speichern",
-    "cancel_label": "Abbrechen",
-    "edit_label": "Bearbeiten",
-    "shortcuts_hint": "Esc abbrechen · ↵ speichern",
-}
+# The other texts (cancel, the edit button's name, the keyboard hint) come
+# translated from pyhx's catalogs in the language of the request.
+_SAVE_LABEL = "Korrektur speichern"
 
 
 def _single[T: Activity | Percent | StartDate](
@@ -146,7 +135,7 @@ def _single[T: Activity | Percent | StartDate](
         save=save,
         display=display,
         source=_source(attribute, document),
-        **_LABELS,
+        save_label=_SAVE_LABEL,
     )
 
 
@@ -190,7 +179,7 @@ reading = c.InlineEdit[Reading](
         None if "reading" in STORE[key].corrected else "unsicher gelesen"
     ),
     source=_source("reading", "Arztbericht S. 6"),
-    **_LABELS,
+    save_label=_SAVE_LABEL,
 )
 
 

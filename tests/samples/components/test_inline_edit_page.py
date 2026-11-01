@@ -7,7 +7,7 @@ def test_inline_edit_page_renders_editable_values():
     html = TestClient(app).get("/inline-edit").text
     assert 'data-hx-inline-edit-group="project"' in html
     for label in ("Owner", "Budget", "Due date"):
-        assert f'aria-label="Edit: {label}"' in html
+        assert f'aria-label="Edit {label}"' in html
     assert '<span class="hx-inline-edit__value">120 kCHF</span>' in html
 
 

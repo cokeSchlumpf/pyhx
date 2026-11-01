@@ -149,8 +149,9 @@ async def inline_edit_page() -> y.Node:
                   `hint(key, value)` add a source line and a short remark next to the label.
                 - `fields(ctx)` renders other controls than the default text, number
                   or date input, with `form_field(error_text=ctx.visible_errors.get(...))`.
-                - `save_label`, `cancel_label`, `edit_label` and `shortcuts_hint` set the
-                  texts.
+                - The default texts come translated in the language of the request;
+                  `save_label`, `cancel_label`, `edit_label` and `shortcuts_hint` replace
+                  them.
 
                 Items in the same element with `data-hx-inline-edit-group` form a group;
                 without one, the page is the group.

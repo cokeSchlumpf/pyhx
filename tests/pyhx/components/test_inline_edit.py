@@ -95,7 +95,7 @@ class TestDisplay:
         assert button is not None
         tag = button.group()
         assert 'type="button"' in tag
-        assert 'aria-label="Edit: Pensum"' in tag
+        assert 'aria-label="Edit Pensum"' in tag
         assert 'hx-get="/_components/inline-edit/pensum/edit?key=case-1"' in tag
         assert 'hx-target="#hx-inline-edit--pensum--case-1"' in tag
         assert 'hx-swap="beforeend"' in tag
@@ -335,3 +335,50 @@ class TestAssets:
             == 200
         )
         assert client.get("/static/js/pyhx.inline-edit.js").status_code == 200
+
+
+class TestTexts:
+    def test_default_texts_follow_the_request_language(self, app):
+        client, _, _ = app
+        german = {"Accept-Language": "de-CH"}
+        page = client.get("/", headers=german).text
+        assert 'aria-label="Pensum bearbeiten"' in page
+        form = client.get(
+            "/_components/inline-edit/pensum/edit",
+            params={"key": "case-1"},
+            headers=german,
+        ).text
+        assert ">Speichern</button>" in form
+        assert ">Abbrechen</button>" in form
+        assert "Esc abbrechen · ↵ speichern" in form
+
+    def test_texts_can_be_replaced(self):
+        hx = WebApp()
+
+        async def load(key: str) -> _Pensum:
+            return _Pensum(value=50)
+
+        async def save(key: str, value: _Pensum) -> _Pensum:
+            return value
+
+        item = c.InlineEdit[_Pensum](
+            routes=hx,
+            name="p",
+            type=_Pensum,
+            label="Pensum",
+            load=load,
+            save=save,
+            save_label="Korrektur speichern",
+            edit_label="Pensum korrigieren",
+            shortcuts_hint=None,
+        )
+
+        @hx.page("/", title="Home")
+        async def home() -> y.Node:
+            return await item.render("x")
+
+        client = TestClient(hx.create_app())
+        assert 'aria-label="Pensum korrigieren"' in client.get("/").text
+        form = client.get("/_components/inline-edit/p/edit", params={"key": "x"}).text
+        assert ">Korrektur speichern</button>" in form
+        assert "hx-inline-edit__shortcuts" not in form

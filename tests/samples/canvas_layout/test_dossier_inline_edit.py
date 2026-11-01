@@ -10,7 +10,7 @@ KEY = extracted_values.DOSSIER
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.setitem(extracted_values.STORE, KEY, extracted_values._Dossier())
-    return TestClient(app)
+    return TestClient(app, headers={"Accept-Language": "de-CH"})
 
 
 def _value(html: str, item_id: str) -> str:
@@ -25,7 +25,7 @@ class TestDossierInlineEdit:
         html = client.get("/dossier").text
         assert 'data-hx-inline-edit-group="extracted"' in html
         for label in ("Tätigkeit", "Pensum", "Beginn AU", "Grad AU"):
-            assert f'aria-label="Bearbeiten: {label}"' in html
+            assert f'aria-label="{label} bearbeiten"' in html
         assert _value(html, extracted_values.workload.item_id(KEY)) == "100%"
         assert (
             _value(html, extracted_values.incapacity_start.item_id(KEY)) == "20.01.2026"

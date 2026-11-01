@@ -32,12 +32,18 @@ from pydantic import BaseModel
 
 from pyhx.core.fragment import FragmentResponse
 from pyhx.core.primitives import htmx
+from pyhx.core.primitives.lazy_text import Text
 from pyhx.core.request_context import RequestContext
 from pyhx.core.webapp_routes import WebAppRoutes
+from pyhx.i18n import _, _l
 
 from ..primitives.button import button
 from ..primitives.form_field import form_field
 from .headless_form import FormRenderContext, HeadlessForm
+
+_SAVE = _l("Save")
+_CANCEL = _l("Cancel")
+_SHORTCUTS = _l("Esc cancels · ↵ saves")
 
 _UNSAFE_ID_CHARS = re.compile(r"[^A-Za-z0-9_-]")
 
@@ -92,7 +98,7 @@ class InlineEdit[T: BaseModel]:
         Unique name of the value; part of the fragment paths and element ids.
     type : type[T]
         Pydantic model the input is validated against.
-    label : str
+    label : Text
         Visible label of the value.
     load : Callable[[str], Awaitable[T]]
         Returns the current value of the record ``key``; called when the edit
@@ -114,11 +120,14 @@ class InlineEdit[T: BaseModel]:
         Renders the controls of the form. Default: one ``form_field`` per
         model field with a text, number or date input. Show the errors with
         ``form_field(error_text=ctx.visible_errors.get(name))``.
-    save_label, cancel_label, edit_label : str
-        Labels of the save and cancel buttons; ``edit_label`` and the value's
-        label make the accessible name of the edit button ("Edit: Pensum").
-    shortcuts_hint : str | None
-        Keyboard hint below the form; ``None`` hides it.
+    save_label, cancel_label : Text
+        Labels of the save and cancel buttons; translated by default.
+    edit_label : Text, optional
+        Accessible name of the edit button. Default: "Edit <label>",
+        translated.
+    shortcuts_hint : Text | None
+        Keyboard hint below the form, translated by default; ``None`` hides
+        it.
     """
 
     def __init__(
@@ -127,17 +136,17 @@ class InlineEdit[T: BaseModel]:
         routes: WebAppRoutes,
         name: str,
         type: type[T],
-        label: str,
+        label: Text,
         load: Callable[[str], Awaitable[T]],
         save: Callable[[str, T], Awaitable[T]],
         display: Callable[[T], y.Node] | None = None,
         source: Callable[[str, T], y.Node] | None = None,
         hint: Callable[[str, T], y.Node] | None = None,
         fields: Callable[[FormRenderContext[T]], y.Node] | None = None,
-        save_label: str = "Save",
-        cancel_label: str = "Cancel",
-        edit_label: str = "Edit",
-        shortcuts_hint: str | None = "Esc cancels · ↵ saves",
+        save_label: Text = _SAVE,
+        cancel_label: Text = _CANCEL,
+        edit_label: Text | None = None,
+        shortcuts_hint: Text | None = _SHORTCUTS,
     ) -> None:
         self.name = to_kebabcase(name)
         self.type = type
@@ -220,7 +229,11 @@ class InlineEdit[T: BaseModel]:
                 size="sm",
                 type="button",
                 class_="hx-inline-edit__edit",
-                aria_label=f"{self.edit_label}: {self.label}",
+                aria_label=str(self.edit_label)
+                if self.edit_label is not None
+                # Translators: accessible name of the edit button; {label} is
+                # the label of the value, e.g. "Start of incapacity".
+                else _("Edit {label}", label=str(self.label)),
                 **htmx(
                     hx_get=self.edit_fragment.url(query={"key": key}),
                     hx_target=f"#{item_id}",

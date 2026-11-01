@@ -72,6 +72,7 @@ async def case(case_id: str) -> y.Node:
 - `save` returns the value to display. It may raise a `pydantic.ValidationError` (e.g. for a rule the model can't check); its messages show at the fields.
 - `hint(key, value)` adds a short remark next to the label (e.g. "unsicher gelesen"), `source(key, value)` a line below the value. Both are called again after a save, so they can change with the value.
 - Only one item of a group is in edit mode: opening one cancels the open one. A group is the nearest element with `data-hx-inline-edit-group`; without one, the page is the group.
-- The edit button is a real button with the accessible name `"<edit_label>: <label>"`; focus moves into the field when the form opens and back to the button when it closes. `save_label`, `cancel_label`, `edit_label` and `shortcuts_hint` set the texts.
+- The edit button is a real button with the accessible name "Edit <label>"; focus moves into the field when the form opens and back to the button when it closes.
+- The default texts ("Save", "Cancel", "Edit <label>", the keyboard hint) come translated from pyhx's catalogs in the language of the request; `save_label`, `cancel_label`, `edit_label` (the button's whole accessible name) and `shortcuts_hint` (`None` hides it) replace them.
 
 The samples show it in both designs: the dossier page of `samples/canvas_layout` (`/dossier`) and the "Inline Edit" page of `samples/components`.

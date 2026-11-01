@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 21:09+0100\n"
+"POT-Creation-Date: 2026-11-01 21:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -70,7 +70,7 @@ msgid "Bullet list"
 msgstr "Aufzählung"
 
 #: components/data/data_form_drawer.py:61 components/data/data_section.py:475
-#: components/data/data_section.py:479
+#: components/data/data_section.py:479 components/data/inline_edit.py:45
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -168,6 +168,13 @@ msgstr "Datei hierher ziehen oder klicken, um sie auszuwählen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
+#. accessible name of the edit button; {label} is
+#. the label of the value, e.g. "Start of incapacity".
+#: components/data/inline_edit.py:236
+#, python-brace-format
+msgid "Edit {label}"
+msgstr "{label} bearbeiten"
+
 #. {type} is the name of the item's type, e.g. "Case".
 #: components/data/data_section.py:450
 #, python-brace-format
@@ -182,6 +189,10 @@ msgstr "E-Mail"
 #: addons/user_authentication/_pages.py:342
 msgid "Enter your email address and we'll send you a login link and a code."
 msgstr "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Anmeldelink und einen Code."
+
+#: components/data/inline_edit.py:46
+msgid "Esc cancels · ↵ saves"
+msgstr "Esc abbrechen · ↵ speichern"
 
 #: components/data/hierarchical_data_table.py:308
 msgid "Expand All"
@@ -234,7 +245,7 @@ msgstr "Ungültiger Benutzername oder ungültiges Passwort."
 msgid "Italic"
 msgstr "Kursiv"
 
-#: page_templates/settings_menu.py:44
+#: page_templates/settings_menu.py:101
 msgid "Language"
 msgstr "Sprache"
 
@@ -320,7 +331,7 @@ msgid "Resize label column"
 msgstr "Breite der Beschriftungsspalte ändern"
 
 #: components/data/annotations/form.py:96
-#: components/data/annotations/form.py:106
+#: components/data/annotations/form.py:106 components/data/inline_edit.py:44
 msgid "Save"
 msgstr "Speichern"
 
@@ -370,7 +381,7 @@ msgstr "Ausgewählte Einträge"
 msgid "Send login link"
 msgstr "Anmeldelink senden"
 
-#: page_templates/app_shell.py:269 page_templates/settings_menu.py:79
+#: page_templates/app_shell.py:269 page_templates/settings_menu.py:134
 msgid "Settings"
 msgstr "Einstellungen"
 
