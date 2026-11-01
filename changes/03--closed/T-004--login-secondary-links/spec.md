@@ -64,3 +64,14 @@ None.
 
 - The look of the forms themselves (fields, button sizes) and of the page that lists the methods.
 - Changing texts of the pages beyond "Didn't get it?".
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **F1** `c.card.footer` and `c.button(href=...)` already covered the footer rows and the link button; no new component or CSS rule was needed, only the grey of `.hx-login__switch`.
+- **F2** The screenshots of the login pages in both designs, on desktop and at phone width, are kept in `screenshots/` next to this spec (`canvas-shell--code--before.png` is the page before the change).
+
+Rollout: PR #21, released as a `fix:` with the next release of `pyhx`; apps such as case-sight get it by updating `pyhx` on `versions/1`.
+
+Open after this change: Nothing.
