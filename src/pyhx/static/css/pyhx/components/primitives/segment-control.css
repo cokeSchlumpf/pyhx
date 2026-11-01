@@ -136,3 +136,45 @@
         transition: none;
     }
 }
+
+
+/* --- Canvas design ---
+   Looks like the other controls: white, a border with 3:1 (#878787, the
+   field border of themes/canvas.css), 8px radius, 6px below its label; the
+   form field gives it the controls' height (form_field.css). The checked
+   option in the text colour, not blue. */
+
+[data-hx-design="canvas"] .hx-segment-control {
+    /* Box */
+    padding: 0.125rem;
+    border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+    border-radius: var(--hx-radius-lg);
+
+    /* Visual */
+    background-color: var(--pico-form-element-background-color);
+}
+
+[data-hx-design="canvas"] .hx-form-field > .hx-segment-control {
+    /* Box */
+    margin-top: 0.375rem;
+}
+
+[data-hx-design="canvas"] .hx-segment-control__option {
+    /* Box */
+    border-radius: calc(var(--hx-radius-lg) - 0.125rem);
+}
+
+[data-hx-design="canvas"] .hx-segment-control__option:hover:not(:has(:checked)) {
+    /* Visual */
+    background-color: var(--hx-color-neutral-100);
+}
+
+[data-hx-design="canvas"] .hx-segment-control__option:has(:checked) {
+    /* Visual */
+    background-color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-segment-control__option:has(:focus-visible) {
+    /* Box */
+    outline-color: var(--hx-color-text);
+}

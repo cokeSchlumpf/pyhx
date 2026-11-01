@@ -12,8 +12,14 @@ column that matches no preset leaves no pill active ("custom").
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+from pyhx.core.primitives.lazy_text import Text
+from pyhx.i18n import _l
+
 from .sources.filter import Condition
 from .sources.query import Query
+
+_QUICK_FILTERS_LABEL = _l("Quick filters")
+_SEARCH_LABEL = _l("Search")
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -25,8 +31,8 @@ class QuickFilter:
     key : str
         Identifier of the preset, unique within the table. Written to the
         URL (``?view=<key>``) while the preset is active.
-    label : str
-        Text of the pill.
+    label : Text
+        Text of the pill (a ``str`` or a text marked with ``_l``).
     filter : Sequence[Condition], default ()
         The preset's conditions, at most one per column. A preset without
         conditions shows everything ("all") and is the one active on an
@@ -34,7 +40,7 @@ class QuickFilter:
     """
 
     key: str
-    label: str
+    label: Text
     filter: Sequence[Condition] = ()
 
 
@@ -51,7 +57,7 @@ class QuickFilters:
         it (``source.count``; a source that returns ``None`` shows no number).
         One count per preset and render, so only for sources that count
         cheaply.
-    label : str, default "Quick filters"
+    label : Text, default "Quick filters" (translated)
         Accessible name of the group of pills.
     url_param : str | None, default "view"
         URL parameter holding the active preset's key, so a link like
@@ -67,7 +73,7 @@ class QuickFilters:
 
     presets: Sequence[QuickFilter]
     counts: bool = False
-    label: str = "Quick filters"
+    label: Text = _QUICK_FILTERS_LABEL
     url_param: str | None = "view"
 
     def __post_init__(self) -> None:
@@ -101,17 +107,17 @@ class TableSearch:
 
     Parameters
     ----------
-    label : str, default "Search"
+    label : Text, default "Search" (translated)
         Visible label of the field.
-    placeholder : str | None, default None
+    placeholder : Text | None, default None
         Placeholder, e.g. the searchable columns' names.
     url_param : str | None, default "q"
         URL parameter holding the search term. ``None`` keeps the search out
         of the URL.
     """
 
-    label: str = "Search"
-    placeholder: str | None = None
+    label: Text = _SEARCH_LABEL
+    placeholder: Text | None = None
     url_param: str | None = "q"
 
 

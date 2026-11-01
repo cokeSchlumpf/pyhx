@@ -198,7 +198,8 @@ class TestUserSessionSettings:
         """Forward-compat: future sibling settings keys (e.g. csrf_secret_key)
         under ``[app.pyhx]`` shouldn't break instantiation of this class."""
         settings = UserSessionSettings(
-            sessions_secret_key="abc", csrf_secret_key="other"  # type: ignore[call-arg]
+            sessions_secret_key="abc",
+            csrf_secret_key="other",  # type: ignore[call-arg]
         )
         assert settings.sessions_secret_key == "abc"
 
@@ -328,9 +329,7 @@ class TestConfigureUserSessionMissingKey:
     """When no ``secret_key`` is passed and settings don't provide one,
     behavior diverges by ``webapp.is_dev``."""
 
-    def test_dev_mode_generates_random_key_and_logs_warning(
-        self, monkeypatch, caplog
-    ):
+    def test_dev_mode_generates_random_key_and_logs_warning(self, monkeypatch, caplog):
         # Make sure no real config provides the key.
         monkeypatch.delenv("APP__PYHX__SESSIONS_SECRET_KEY", raising=False)
         monkeypatch.setattr(
@@ -345,8 +344,7 @@ class TestConfigureUserSessionMissingKey:
         # The addon must keep working — building the app should succeed.
         hx.create_app()
         assert any(
-            "random per-process key" in record.message
-            for record in caplog.records
+            "random per-process key" in record.message for record in caplog.records
         )
 
     def test_prod_mode_raises(self, monkeypatch):

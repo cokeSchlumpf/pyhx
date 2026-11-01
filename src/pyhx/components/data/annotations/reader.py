@@ -3,33 +3,24 @@ when none is set on the field."""
 
 import types
 from collections.abc import Callable
-from datetime import UTC, date, datetime, time
+from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal, Union, get_args, get_origin
 from zoneinfo import ZoneInfo
 
 import htpy as y
-import humanize
-from babel.dates import (
-    format_date as babel_format_date,
-)
-from babel.dates import (
-    format_datetime as babel_format_datetime,
-)
-from babel.numbers import (
-    format_compact_decimal as babel_format_compact_decimal,
-)
-from babel.numbers import (
-    format_currency as babel_format_currency,
-)
-from babel.numbers import (
-    format_decimal as babel_format_decimal,
-)
 from commons.string_operators import to_title_case
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 
-from pyhx.core.primitives import negotiate_locale, negotiate_timezone
+from pyhx.core.primitives import negotiate_locale
+from pyhx.i18n._format import (
+    format_currency,
+    format_date,
+    format_datetime,
+    format_number,
+    format_relative_time,
+)
 
 from ...primitives import pill
 from ...view_model import Option
@@ -613,18 +604,18 @@ def _date_value_renderer(fmt: DateFormat | DateTimeFormat) -> Callable[[Any], y.
         def render_localized(v: Any) -> y.Node:
             if v is None:
                 return y.span[""]
-            locale = pinned_locale or negotiate_locale(fallback=fallback)
-            value = v
             # A bare `date` has no instant — format as-is. Only a `datetime`
             # represents a point in time that must be moved into the user's
             # zone before the calendar date is taken (off-by-one near midnight).
-            if isinstance(v, datetime):
-                aware = (
-                    v if v.tzinfo is not None else v.replace(tzinfo=ZoneInfo(source_tz))
+            return y.span[
+                format_date(
+                    v,
+                    width,
+                    locale=pinned_locale or negotiate_locale(fallback=fallback),
+                    tzinfo=ZoneInfo(pinned_tz) if pinned_tz else None,
+                    source_timezone=source_tz,
                 )
-                display_tz = pinned_tz or negotiate_timezone()
-                value = aware.astimezone(ZoneInfo(display_tz))
-            return y.span[babel_format_date(value, format=width, locale=locale)]
+            ]
 
         return render_localized
     if isinstance(fmt, LocalizedDateTimeFormat):
@@ -637,18 +628,17 @@ def _date_value_renderer(fmt: DateFormat | DateTimeFormat) -> Callable[[Any], y.
         def render_localized_datetime(v: Any) -> y.Node:
             if v is None:
                 return y.span[""]
-            locale = pinned_locale or negotiate_locale(fallback=fallback)
-            # Promote a bare `date` to midnight so babel always gets a datetime;
-            # a real `datetime` instant is moved into the display zone first.
-            moment = v if isinstance(v, datetime) else datetime.combine(v, time.min)
-            aware = (
-                moment
-                if moment.tzinfo is not None
-                else moment.replace(tzinfo=ZoneInfo(source_tz))
-            )
-            display_tz = pinned_tz or negotiate_timezone()
-            value = aware.astimezone(ZoneInfo(display_tz))
-            return y.span[babel_format_datetime(value, format=width, locale=locale)]
+            # A bare `date` counts as midnight; a `datetime` instant is moved
+            # into the display zone first.
+            return y.span[
+                format_datetime(
+                    v,
+                    width,
+                    locale=pinned_locale or negotiate_locale(fallback=fallback),
+                    tzinfo=ZoneInfo(pinned_tz) if pinned_tz else None,
+                    source_timezone=source_tz,
+                )
+            ]
 
         return render_localized_datetime
     if isinstance(fmt, RelativeDateFormat):
@@ -657,14 +647,10 @@ def _date_value_renderer(fmt: DateFormat | DateTimeFormat) -> Callable[[Any], y.
         def render_relative(v: Any) -> y.Node:
             if v is None:
                 return y.span[""]
-            # humanize.naturaltime requires a datetime; bare date → midnight.
-            moment = v if isinstance(v, datetime) else datetime.combine(v, time.min)
-            # Anchor both sides to UTC so the delta is independent of the
-            # server's local clock: naive values are read as `source_timezone`
-            # (UTC by convention), the reference is always now-in-UTC.
-            if moment.tzinfo is None:
-                moment = moment.replace(tzinfo=ZoneInfo(source_tz))
-            return y.span[humanize.naturaltime(moment, when=datetime.now(UTC))]
+            # Naive values are read as `source_timezone` (UTC by convention),
+            # the reference is now-in-UTC, so the delta doesn't depend on the
+            # server's clock zone; a bare date counts as midnight.
+            return y.span[format_relative_time(v, source_timezone=source_tz)]
 
         return render_relative
     raise AssertionError(f"unhandled DateFormat: {fmt!r}")
@@ -695,11 +681,9 @@ def _number_value_renderer(fmt: NumberFormat) -> Callable[[Any], y.Node]:
                 return y.span[""]
             locale = pinned or negotiate_locale(fallback=fallback)
             if width == "compact":
-                return y.span[
-                    babel_format_compact_decimal(v, format_type="short", locale=locale)
-                ]
+                return y.span[format_number(v, compact=True, locale=locale)]
             decimal_format = f"#,##0.{'0' * decimals}" if decimals is not None else None
-            return y.span[babel_format_decimal(v, format=decimal_format, locale=locale)]
+            return y.span[format_number(v, decimal_format, locale=locale)]
 
         return render_localized_number
 
@@ -712,7 +696,7 @@ def _number_value_renderer(fmt: NumberFormat) -> Callable[[Any], y.Node]:
             if v is None:
                 return y.span[""]
             locale = pinned or negotiate_locale(fallback=fallback)
-            return y.span[babel_format_currency(v, currency, locale=locale)]
+            return y.span[format_currency(v, currency, locale=locale)]
 
         return render_currency
 

@@ -6,7 +6,7 @@ method, ``/login?method=select`` lists them, in the given order.
 """
 
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, cast
 
 from commons.users.login_tokens import (
     LoginTokenSettings,
@@ -15,6 +15,7 @@ from commons.users.login_tokens import (
 )
 
 from pyhx.core.primitives import IconName
+from pyhx.i18n import _l
 
 
 @dataclass(frozen=True)
@@ -23,7 +24,8 @@ class LoginMethod:
     ``configure_user_authentication(login_methods=...)``.
 
     ``key`` identifies the method in ``/login?method=…``; label, description
-    and icon show on the page that lists the methods.
+    and icon show on the page that lists the methods. Label and description
+    may be marked with ``_l`` to show in the language of the request.
     """
 
     key: ClassVar[str]
@@ -40,8 +42,10 @@ class PasswordLogin(LoginMethod):
     """
 
     key: ClassVar[str] = "password"
-    label: ClassVar[str] = "Username and password"
-    description: ClassVar[str] = "Sign in with your username and password."
+    label: ClassVar[str] = cast(str, _l("Username and password"))
+    description: ClassVar[str] = cast(
+        str, _l("Sign in with your username and password.")
+    )
     icon: ClassVar[IconName] = "lock"
 
 
@@ -75,8 +79,8 @@ class EmailTokenLogin(LoginMethod):
     """
 
     key: ClassVar[str] = "email"
-    label: ClassVar[str] = "Email"
-    description: ClassVar[str] = "Get a login link and a code by email."
+    label: ClassVar[str] = cast(str, _l("Email"))
+    description: ClassVar[str] = cast(str, _l("Get a login link and a code by email."))
     icon: ClassVar[IconName] = "mail"
 
     store: LoginTokenStore | None = None

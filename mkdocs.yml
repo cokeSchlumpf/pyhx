@@ -62,6 +62,8 @@ nav:
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
       - Sidepanel: guides/sidepanel.md
+      - User Authentication: guides/user-authentication.md
+      - Multilingual Apps: guides/i18n.md
   - Decisions:
       - NumPy-style docstrings: decisions/2026-05-14-1714--python-docstrings-style.md
       - CSS authoring conventions: decisions/2026-05-27-1436--css-authoring-conventions.md

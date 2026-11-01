@@ -86,3 +86,71 @@ form.hx-grid>.hx-select-fieldset {
 .hx-data-form__actions .hx-button {
     margin-bottom: 0;
 }
+
+/* --- Canvas design ---
+   Label above the control (14px, medium), help text below (12px), 6px
+   between them; fields 16px apart, in a grid the grid's gap does that.
+   Error text and required marker in danger-700: the canvas danger-600 is
+   an orange with 3.58:1, enough for a border but not for text (4.5:1). */
+
+[data-hx-design="canvas"] .hx-form-field {
+    /* Box */
+    margin-bottom: var(--pico-spacing);
+
+    /* Typography */
+    font-size: var(--hx-text-item);
+    font-weight: var(--hx-font-medium);
+    color: var(--hx-color-neutral-700);
+}
+
+[data-hx-design="canvas"] .hx-grid > .hx-form-field {
+    /* Box */
+    margin-bottom: 0;
+}
+
+[data-hx-design="canvas"] .hx-form-field__label {
+    /* Box */
+    margin-bottom: 0;
+}
+
+[data-hx-design="canvas"] .hx-form-field > :is(input, select, textarea, details, fieldset, div) {
+    /* Box */
+    margin-top: 0.375rem;
+    margin-bottom: 0;
+}
+
+[data-hx-design="canvas"] .hx-form-field > small {
+    /* Box */
+    margin-top: 0.375rem;
+    margin-bottom: 0;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    font-weight: var(--hx-font-normal);
+}
+
+[data-hx-design="canvas"] .hx-form-field:has([aria-invalid="true"]) small,
+[data-hx-design="canvas"] .hx-form-field__required {
+    /* Typography */
+    color: var(--hx-color-danger-700);
+}
+
+[data-hx-design="canvas"] .hx-select-fieldset > legend {
+    /* Typography */
+    font-size: var(--hx-text-item);
+    font-weight: var(--hx-font-medium);
+    color: var(--hx-color-neutral-700);
+}
+
+/* Repeats the muted label above, which the canvas label colour overrides. */
+[data-hx-design="canvas"] .hx-form-field:has(:disabled) {
+    /* Typography */
+    color: var(--hx-color-neutral-500);
+}
+
+/* Option labels of checkboxes and radios read as values, not as labels. */
+[data-hx-design="canvas"] :is(.hx-form-field, .hx-select-fieldset) label:has([type="checkbox"], [type="radio"]):not(.hx-segment-control__option) {
+    /* Typography */
+    font-weight: var(--hx-font-normal);
+    color: var(--hx-color-text);
+}

@@ -590,7 +590,7 @@ test = ["pytest"]
 
 [[package]]
 name = "commons"
-version = "1.2.0"
+version = "1.4.0"
 description = "This library contains common functionalities which are used across a broad range of apps and other libs."
 optional = false
 python-versions = ">=3.14, <4.0"
@@ -613,7 +613,7 @@ azure = ["azure-identity (>=1.25.3,<2.0.0)", "azure-storage-blob (>=12.28.0,<13.
 type = "git"
 url = "https://github.com/cokeSchlumpf/lib--python-commons.git"
 reference = "versions/1"
-resolved_reference = "e9e6d539ac4ca783c6108a8849a27b25eb1c1f42"
+resolved_reference = "81c7d548a95e738ec2c5f867d3a4cc6fed4c62f9"
 
 [[package]]
 name = "coverage"
@@ -1329,21 +1329,6 @@ cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
 zstd = ["zstandard (>=0.18.0)"]
-
-[[package]]
-name = "humanize"
-version = "4.16.0"
-description = "Python humanize utilities"
-optional = false
-python-versions = ">=3.10"
-groups = ["main"]
-files = [
-    {file = "humanize-4.16.0-py3-none-any.whl", hash = "sha256:353eb2f34c09d098b2880eee8bef21832eae6d174f48c5762fff7e5fcb74d01d"},
-    {file = "humanize-4.16.0.tar.gz", hash = "sha256:7dc2244a2f84a4bfb1d36c37bac80cd78e35cdc5c119206d87b018e1445f3a3f"},
-]
-
-[package.extras]
-tests = ["freezegun", "pytest (>=9)", "pytest-benchmark", "pytest-codspeed", "pytest-cov"]
 
 [[package]]
 name = "idna"
@@ -4159,4 +4144,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14, <4.0"
-content-hash = "e778e047a0f96df58c06fba8d591b8724445ff7431d20446d130a94e9f4cfe90"
+content-hash = "76d3507abb31be343217d816fb9428a144a8f2b3b5d77ac74c4fb7bf29c8a549"

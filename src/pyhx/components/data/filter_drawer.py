@@ -29,6 +29,7 @@ from pyhx.core.primitives import (
     resolve_value,
     styles,
 )
+from pyhx.i18n import _, _p
 
 from ..layouts.drawer import (
     DRAWER_CONTENT_ID,
@@ -288,7 +289,7 @@ class FilterDrawer[T]:
         the committed-query half of its result. This is what :class:`~.data_table.DataTable`/:class:`~.hierarchical_data_table.HierarchicalDataTable`
         pass as their own ``update_query_fragment`` when they build their internal drawer.
         """
-        node, _ = await self._render_and_apply(request)
+        node, _query = await self._render_and_apply(request)
         return node
 
     async def _render_and_apply(self, request: Request) -> tuple[y.Node, Query | None]:
@@ -388,7 +389,7 @@ class FilterDrawer[T]:
             filter_drawer_value.action is not None
             and filter_drawer_value.action.startswith("remove_filter_condition")
         ):
-            _, key, cond_idx = filter_drawer_value.action.split(" ")
+            _action, key, cond_idx = filter_drawer_value.action.split(" ")
             filter_drawer_value.remove_filter_condition(key, int(cond_idx))
         elif (
             filter_drawer_value.action is not None
@@ -420,8 +421,11 @@ class FilterDrawer[T]:
                     segment_control(
                         "view",
                         [
-                            Option(label="Sort", value="sort"),
-                            Option(label="Filter", value="filter"),
+                            Option(label=_p("filter drawer tab", "Sort"), value="sort"),
+                            Option(
+                                label=_p("filter drawer tab", "Filter"),
+                                value="filter",
+                            ),
                         ],
                         value=filter_drawer_value.view,
                     ),
@@ -439,7 +443,7 @@ class FilterDrawer[T]:
                         search=filter_drawer_value.search,
                     ),
                 ],
-                title="Sort & Filter",
+                title=_("Sort & Filter"),
             ),
             None,
         )
@@ -576,12 +580,12 @@ class FilterDrawer[T]:
     def _render_submit_buttons(self) -> y.Node:
         return y.div(**styles("flex", "flex-col", "gap-sm", "items-stretch"))[
             button(
-                "Apply Filter & Sort",
+                _("Apply Filter & Sort"),
                 appearance="primary",
                 name="action",
                 value="apply",
             ),
-            button("Clear Filter & Sort", name="action", value="clear"),
+            button(_("Clear Filter & Sort"), name="action", value="clear"),
         ]
 
     def _render_filter(
@@ -601,18 +605,18 @@ class FilterDrawer[T]:
             # drawer tells the whole story, kept by Apply (hidden input on the
             # form), removed by Clear.
             [
-                y.p(**styles("font-bold", "mb-md", "mt-md"))["Search"],
+                y.p(**styles("font-bold", "mb-md", "mt-md"))[_("Search")],
                 y.p(class_="hx-filter-drawer__search")[f"“{search}”"],
                 y.hr,
             ]
             if search
             else None,
-            y.p(**styles("font-bold", "mb-md", "mt-md"))["Filter Mode"],
+            y.p(**styles("font-bold", "mb-md", "mt-md"))[_("Filter Mode")],
             dropdown_radio(
                 "filter_mode",
                 (
-                    Option(label="Match All Filters", value="all"),
-                    Option(label="Match Any Filter", value="any"),
+                    Option(label=_("Match All Filters"), value="all"),
+                    Option(label=_("Match Any Filter"), value="any"),
                 ),
                 filter_mode,
             ),
@@ -630,7 +634,7 @@ class FilterDrawer[T]:
                         and columns_by_key[col.value].filter_type is not None
                     ]
                 ),
-                placeholder="Add filter ...",
+                placeholder=_("Add filter ..."),
                 **htmx(
                     hx_post=self.render_drawer_fragment.url(),
                     hx_include=self.hx_include,
@@ -861,7 +865,7 @@ class FilterDrawer[T]:
                     render_filter_dropdown(),
                     render_filter_value_controls(),
                     button(
-                        "Add new rule ...",
+                        _("Add new rule ..."),
                         variant="link",
                         name="action",
                         value=f"add_filter_condition {key}",
@@ -891,7 +895,7 @@ class FilterDrawer[T]:
         return y.div(
             **classnames("hx-filter-drawer__sort", **styles("ml-lg", "mr-lg"))
         )[
-            y.p(**styles("font-bold", "mb-md", "mt-md"))["Sort by:"],
+            y.p(**styles("font-bold", "mb-md", "mt-md"))[_("Sort by:")],
             dropdown_radio(
                 "add_sort_field",
                 tuple(
@@ -934,8 +938,8 @@ class FilterDrawer[T]:
                     dropdown_radio(
                         f"sort[{i}].order",
                         (
-                            Option(label="Ascending", value="asc"),
-                            Option(label="Descending", value="desc"),
+                            Option(label=_("Ascending"), value="asc"),
+                            Option(label=_("Descending"), value="desc"),
                         ),
                         s.order,
                         **styles("mb-none"),

@@ -46,3 +46,14 @@ details.dropdown[aria-disabled="true"] {
     /* Interaction */
     cursor: not-allowed;
 }
+
+
+/* --- Canvas design ---
+   Pico shows the summary in the placeholder colour, chosen value or not.
+   With a checked option the summary shows a value: text colour, like the
+   value of a text field. */
+
+[data-hx-design="canvas"] details.dropdown:has(:checked) > summary {
+    /* Typography */
+    color: var(--pico-form-element-color);
+}

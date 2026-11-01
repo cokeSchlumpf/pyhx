@@ -24,6 +24,7 @@ from pyhx.core.primitives import (
     styles,
 )
 from pyhx.core.webapp_routes import WebAppRoutes
+from pyhx.i18n import _
 
 from ..layouts import (
     POPUP_DRAWER_CONTENT_ID,
@@ -289,25 +290,14 @@ class DataSection(Generic[T, TM, EM, CM]):
 
         self.name = name or to_snake_case(self.type_name_title_case_plural)
 
-        self.create_button_label = (
-            create_button_label or f"Create {self.type_name_title_case_short}"
-        )
-        self.create_dialog_title = (
-            create_dialog_title or f"Create {self.type_name_title_case}"
-        )
-        self.edit_dialog_title = (
-            edit_dialog_title or f"Edit {self.type_name_title_case}"
-        )
-
-        self.create_submit_label = (
-            create_submit_label or f"Create {self.type_name_title_case_short}"
-        )
-        self.edit_submit_label = (
-            edit_submit_label or f"Save {self.type_name_title_case_short}"
-        )
-        self.delete_item_label = (
-            delete_item_label or f"Delete {self.type_name_title_case_short}"
-        )
+        # Labels left at ``None`` get their default text when read (see the
+        # properties below), in the language of the request.
+        self._create_button_label = create_button_label
+        self._create_dialog_title = create_dialog_title
+        self._edit_dialog_title = edit_dialog_title
+        self._create_submit_label = create_submit_label
+        self._edit_submit_label = edit_submit_label
+        self._delete_item_label = delete_item_label
         # When set, the delete-confirmation popup requires retyping this value
         # before the Delete button enables (Azure-style). ``None`` (default)
         # is a plain Confirm/Cancel prompt.
@@ -316,8 +306,8 @@ class DataSection(Generic[T, TM, EM, CM]):
             if delete_confirmation_value is not None
             else None
         )
-        self.cancel_edit_label = cancel_edit_label or "Cancel"
-        self.cancel_create_label = cancel_create_label or "Cancel"
+        self._cancel_edit_label = cancel_edit_label
+        self._cancel_create_label = cancel_create_label
 
         self.can_edit: CanEdit[T] = can_edit
         self.can_create = can_create
@@ -372,9 +362,9 @@ class DataSection(Generic[T, TM, EM, CM]):
             name=f"{self.name}_edit_form",
             type=self.edit_form_model_type.type,
             handle_submit=self._on_edit_form_submit,
-            submit_label=self.edit_submit_label,
-            dialog_title=self.edit_dialog_title,
-            cancel_label=self.cancel_edit_label,
+            submit_label=lambda: self.edit_submit_label,
+            dialog_title=lambda: self.edit_dialog_title,
+            cancel_label=lambda: self.cancel_edit_label,
         )
 
         self.create_form = DataFormDrawer(
@@ -382,9 +372,9 @@ class DataSection(Generic[T, TM, EM, CM]):
             name=f"{self.name}_save_form",
             type=self.create_form_model_type.type,
             handle_submit=self._on_create_form_submit,
-            submit_label=self.create_submit_label,
-            dialog_title=self.create_dialog_title,
-            cancel_label=self.cancel_create_label,
+            submit_label=lambda: self.create_submit_label,
+            dialog_title=lambda: self.create_dialog_title,
+            cancel_label=lambda: self.cancel_create_label,
         )
 
         #
@@ -465,6 +455,57 @@ class DataSection(Generic[T, TM, EM, CM]):
             self._on_delete_confirm
         )
 
+    # Labels: the explicit text passed to ``__init__``, else a default in the
+    # language of the request. ``{type}`` is the name of the item's type.
+
+    @property
+    def create_button_label(self) -> str:
+        # Translators: {type} is the name of the item's type, e.g. "Case".
+        return self._create_button_label or _(
+            "Create {type}", type=self.type_name_title_case_short
+        )
+
+    @property
+    def create_dialog_title(self) -> str:
+        return self._create_dialog_title or _(
+            "Create {type}", type=self.type_name_title_case
+        )
+
+    @property
+    def edit_dialog_title(self) -> str:
+        # Translators: {type} is the name of the item's type, e.g. "Case".
+        return self._edit_dialog_title or _(
+            "Edit {type}", type=self.type_name_title_case
+        )
+
+    @property
+    def create_submit_label(self) -> str:
+        return self._create_submit_label or _(
+            "Create {type}", type=self.type_name_title_case_short
+        )
+
+    @property
+    def edit_submit_label(self) -> str:
+        # Translators: {type} is the name of the item's type, e.g. "Case".
+        return self._edit_submit_label or _(
+            "Save {type}", type=self.type_name_title_case_short
+        )
+
+    @property
+    def delete_item_label(self) -> str:
+        # Translators: {type} is the name of the item's type, e.g. "Case".
+        return self._delete_item_label or _(
+            "Delete {type}", type=self.type_name_title_case_short
+        )
+
+    @property
+    def cancel_edit_label(self) -> str:
+        return self._cancel_edit_label or _("Cancel")
+
+    @property
+    def cancel_create_label(self) -> str:
+        return self._cancel_create_label or _("Cancel")
+
     async def _render_filter_sort_button(self, query: Query) -> y.Node:
         """The page-header "Filter & Sort" trigger, highlighted while ``query`` is active.
 
@@ -472,7 +513,7 @@ class DataSection(Generic[T, TM, EM, CM]):
         ``hx-swap-oob`` is always set, even on this method's first call from :meth:`render_actions`: it's inert on a plain page load and only takes effect once this node shows up inside a fragment response.
         """
         return button(
-            "Filter & Sort",
+            _("Filter & Sort"),
             appearance="primary" if query.is_active_filter_or_sort() else "neutral",
             id=self.filter_sort_button_id,
             **self.table.filter_drawer.open_drawer_htmx_attributes(
@@ -573,7 +614,10 @@ class DataSection(Generic[T, TM, EM, CM]):
                 notification(
                     str(error),
                     appearance="danger",
-                    title=f"Cannot delete {self.type_name_title_case_short}",
+                    # Translators: {type} is the name of the item's type, e.g. "Case".
+                    title=_(
+                        "Cannot delete {type}", type=self.type_name_title_case_short
+                    ),
                 ),
             ]
 
@@ -591,10 +635,14 @@ class DataSection(Generic[T, TM, EM, CM]):
                     y.i(data_feather="alert-triangle", **styles("text-danger")),
                     y.div(**styles("flex", "flex-col", "gap-none"))[
                         y.strong(**styles("text-lg"))[
-                            f"Delete this {self.type_name_title_case_short.lower()}?"
+                            # Translators: {type} is the name of the item's type, in lower case.
+                            _(
+                                "Delete this {type}?",
+                                type=self.type_name_title_case_short.lower(),
+                            )
                         ],
                         y.p(**styles("mb-none", "text-muted"))[
-                            "This action cannot be undone."
+                            _("This action cannot be undone.")
                         ],
                     ],
                 ],
@@ -624,7 +672,12 @@ class DataSection(Generic[T, TM, EM, CM]):
         expected = await self._delete_confirmation_value(item)
 
         return y.div(**styles("flex", "flex-col", "gap-sm"))[
-            y.p(**styles("mb-none"))[y.strong[f'Type "{expected}" to confirm.']],
+            y.p(**styles("mb-none"))[
+                y.strong[
+                    # Translators: {value} is the text the user has to retype.
+                    _('Type "{value}" to confirm.', value=expected)
+                ]
+            ],
             y.input(
                 name="typed_value",
                 autocomplete="off",

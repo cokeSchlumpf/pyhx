@@ -103,7 +103,7 @@ class LocalizedDateTimeFormat:
 
 @dataclass(frozen=True, kw_only=True)
 class RelativeDateFormat:
-    """Server-rendered relative time, e.g. ``"3 hours ago"`` (via ``humanize``).
+    """Server-rendered relative time, e.g. ``"3 hours ago"`` in the request language (via Babel).
 
     Frozen at render time — does not auto-update in the browser.
 

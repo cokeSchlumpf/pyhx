@@ -619,7 +619,7 @@ class DataTable[T]:
             active = active_quick_filter(query, self.quick_filters)
             options = []
             for preset in self.quick_filters.presets:
-                label = preset.label
+                label = str(preset.label)
                 if self.quick_filters.counts:
                     count = await self.source.count(
                         apply_quick_filter(query, preset, self.quick_filters)
@@ -641,7 +641,7 @@ class DataTable[T]:
                 value=active.key if active is not None else None,
                 size="sm",
                 input_id_prefix=self.quick_filter_input_name,
-                aria_label=self.quick_filters.label,
+                aria_label=str(self.quick_filters.label),
                 class_="hx-table__quick-filters",
                 **pill_attrs,
             )
@@ -655,7 +655,9 @@ class DataTable[T]:
                     id=self.search_input_name,
                     name=self.search_input_name,
                     value=query.search or "",
-                    placeholder=self.search.placeholder,
+                    placeholder=str(self.search.placeholder)
+                    if self.search.placeholder is not None
+                    else None,
                     autocomplete="off",
                     hx_preserve=preserve_search or None,
                     **htmx(

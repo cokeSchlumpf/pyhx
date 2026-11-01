@@ -116,3 +116,15 @@ def test_searchable_flag_reaches_the_column():
     assert columns["name"].searchable is True
     assert columns["code"].searchable is False
     assert columns["plain"].searchable is False
+
+
+def test_default_labels_are_translated():
+    from pyhx.components.data.quick_filter import TableSearch
+    from pyhx.i18n import use_locale
+
+    with use_locale("de"):
+        assert str(QuickFilters(presets=[]).label) == "Schnellfilter"
+        assert str(TableSearch().label) == "Suchen"
+    with use_locale("fr"):
+        assert str(TableSearch().label) == "Rechercher"
+    assert str(TableSearch().label) == "Search"
