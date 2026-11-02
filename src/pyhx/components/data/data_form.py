@@ -1,6 +1,6 @@
 import logging
 from collections.abc import Awaitable, Callable, Iterable, Sequence
-from datetime import datetime
+from datetime import date, datetime
 from functools import partial
 
 import htpy as y
@@ -523,13 +523,17 @@ class DataForm[T: BaseModel]:
                 class_=span_class,
             )
 
-        elif isinstance(annotation, DateField) and isinstance(current_value, datetime):
+        elif isinstance(annotation, DateField) and (
+            current_value is None or isinstance(current_value, (date, str))
+        ):
+            # A date field shows a ``date``, the day of a ``datetime``, the raw
+            # text of a re-rendered form, or nothing (a new or empty value).
             return form_field(
                 field,
                 label,
                 y.input,
                 type="date",
-                value=current_value.isoformat(),
+                value=_date_input_value(current_value),
                 help_text=help_text,
                 required=required,
                 error_text=error,
@@ -901,3 +905,14 @@ class DataForm[T: BaseModel]:
             disabled=disabled,
             class_=class_,
         )
+
+
+def _date_input_value(value: date | str | None) -> str:
+    """The ``YYYY-MM-DD`` an ``<input type="date">`` accepts; empty for no value."""
+    if value is None:
+        return ""
+    if isinstance(value, datetime):
+        return value.date().isoformat()
+    if isinstance(value, date):
+        return value.isoformat()
+    return value
