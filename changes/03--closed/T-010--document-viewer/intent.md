@@ -2,7 +2,7 @@
 
 ## Problem
 
-Apps on the canvas design need to show a document page by page next to what was read from it, as in the GILAI design template (`https://gilai-demo-refine.vercel.app/dossier/IV-2026-0142/dokument/dok-001`, screenshots in [screenshots/](screenshots/)). The first app is CaseSight, which already renders the pages of every uploaded file as PNG images (`/case-pages/<case_id>/<file_id>/<page>.png`) but has no way to show them.
+Apps on the canvas design need to show a document page by page next to what was read from it, as in the design template the canvas design is based on (not public). The first app is CaseSight, which already renders the pages of every uploaded file as PNG images (`/case-pages/<case_id>/<file_id>/<page>.png`) but has no way to show them.
 
 pyhx has only the frame for it: `CanvasShell(mode="full")` and the `/full` page of `samples/canvas_layout`, whose three panes ("Thumbnails", the document, "Extracted values") are plain `<article>` placeholders. Everything a viewer needs is missing:
 
