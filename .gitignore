@@ -177,3 +177,6 @@ junit/
 # Our settings
 .secrets.toml
 .app_data
+
+# Playwright MCP snapshots and screenshots (may show pages of other projects)
+.playwright-mcp/

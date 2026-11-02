@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 22:36+0100\n"
+"POT-Creation-Date: 2026-11-02 22:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -159,6 +159,10 @@ msgstr "Nicht erhalten? {link}"
 msgid "Dismiss"
 msgstr "Ausblenden"
 
+#: components/layouts/document_viewer.py:129
+msgid "Document"
+msgstr "Dokument"
+
 #: components/primitives/file_dropzone.py:41
 msgid "Drag & drop a file here, or click to browse"
 msgstr "Datei hierher ziehen oder klicken, um sie auszuwählen"
@@ -221,6 +225,10 @@ msgstr "Filtermodus"
 msgid "Filter items"
 msgstr "Einträge filtern"
 
+#: components/layouts/document_viewer.py:393
+msgid "Fit to width"
+msgstr "An Breite anpassen"
+
 #: page_templates/app_shell.py:246
 msgid "Get Help"
 msgstr "Hilfe erhalten"
@@ -273,6 +281,10 @@ msgstr "Alle Filter erfüllen"
 msgid "Match Any Filter"
 msgstr "Mindestens einen Filter erfüllen"
 
+#: components/layouts/document_viewer.py:170
+msgid "Next page"
+msgstr "Nächste Seite"
+
 #: components/data/data_form.py:703 components/data/data_form.py:731
 msgid "No"
 msgstr "Nein"
@@ -295,6 +307,11 @@ msgstr "Keine Einträge vorhanden"
 msgid "No selected item."
 msgstr "Kein Eintrag ausgewählt."
 
+#: components/layouts/document_viewer.py:316
+#, python-brace-format
+msgid "Note: {label}"
+msgstr "Notiz: {label}"
+
 #: page_templates/app_shell.py:222
 msgid "Open menu"
 msgstr "Menü öffnen"
@@ -303,9 +320,23 @@ msgstr "Menü öffnen"
 msgid "Page navigation"
 msgstr "Seitennavigation"
 
+#: components/layouts/document_viewer.py:208
+#: components/layouts/document_viewer.py:270
+#, python-brace-format
+msgid "Page {page}"
+msgstr "Seite {page}"
+
+#: components/layouts/document_viewer.py:178
+msgid "Pages"
+msgstr "Seiten"
+
 #: addons/user_authentication/_pages.py:78
 msgid "Password"
 msgstr "Passwort"
+
+#: components/layouts/document_viewer.py:164
+msgid "Previous page"
+msgstr "Vorherige Seite"
 
 #: components/data/quick_filter.py:23
 msgid "Quick filters"
@@ -495,6 +526,14 @@ msgstr "Wert"
 #: components/data/data_form.py:730
 msgid "Yes"
 msgstr "Ja"
+
+#: components/layouts/document_viewer.py:389
+msgid "Zoom in"
+msgstr "Vergrössern"
+
+#: components/layouts/document_viewer.py:383
+msgid "Zoom out"
+msgstr "Verkleinern"
 
 #: components/data/sources/filter_options.py:66
 msgctxt "filter operator"
