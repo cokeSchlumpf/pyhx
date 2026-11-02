@@ -2,6 +2,19 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.5.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.4.1...v1.5.0) (2026-11-02)
+
+
+### Features
+
+* add a document viewer with annotations ([#42](https://github.com/cokeSchlumpf/pyhx/issues/42)) ([e88e2ee](https://github.com/cokeSchlumpf/pyhx/commit/e88e2ee48711975db8fe92cf7f46e3daf56f9d90))
+
+
+### Bug Fixes
+
+* header dropdowns above sticky table headers, reachable table toolbar ([#41](https://github.com/cokeSchlumpf/pyhx/issues/41)) ([b47de52](https://github.com/cokeSchlumpf/pyhx/commit/b47de5295bac5ca30069bd319749f860eb7e4e07))
+* translated labels in the filter drawer and boolean cells, icons after morph swaps ([7008133](https://github.com/cokeSchlumpf/pyhx/commit/70081331e8f54e00c0c1c01b094efd8861cef872))
+
 ## [1.4.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.4.0...v1.4.1) (2026-11-02)
 
 
