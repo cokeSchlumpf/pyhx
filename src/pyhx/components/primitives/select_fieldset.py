@@ -27,6 +27,8 @@ def _select_fieldset(
     value: str | Sequence[str] | None = None,
     orientation: Orientation = "vertical",
     disabled: bool = False,
+    help_text: str | None = None,
+    error_text: str | None = None,
     **kwargs,
 ) -> y.Node:
     """Shared implementation behind :func:`radio_fieldset` /
@@ -55,9 +57,15 @@ def _select_fieldset(
         checkboxes). ``None`` leaves everything unchecked.
     orientation : Orientation, default "vertical"
         Stacking direction — see above.
+    help_text : str | None, default None
+        Neutral help text below the group.
+    error_text : str | None, default None
+        Error message below the group, in place of ``help_text``; marks the
+        fieldset ``aria-invalid``.
     **kwargs
         Forwarded to the ``<fieldset>`` element (e.g. ``class_=``,
-        ``data-*``, ``aria_*``).
+        ``data-*``, ``aria_*``); with a help or error text, ``class_`` goes
+        to the wrapper around fieldset and text.
     """
 
     def is_checked(option_value: str) -> bool:
@@ -96,18 +104,34 @@ def _select_fieldset(
                 ]
             )
 
+    # A help or error text sits below the group, in a wrapper that takes the
+    # caller's classes (e.g. the grid span), as ``form_field`` does for a
+    # single control; ``aria-invalid`` on the fieldset colours it.
+    text = error_text or help_text
+    text_id = f"{name}__help_text"
+    wrapper_class = kwargs.pop("class_", "") if text else None
+    if text:
+        kwargs["aria_describedby"] = text_id
+    if error_text:
+        kwargs["aria_invalid"] = "true"
+
     fieldset = y.fieldset(
         disabled=disabled, **classnames("hx-select-fieldset", **kwargs)
     )[
         y.legend[label],
         *items,
     ]
+    node: y.Node = fieldset
     if disabled:
         # A disabled <fieldset> cascades disabled to every descendant form
         # control — including a hidden input placed inside it — so the value
         # siblings must live *outside* the fieldset to still submit.
-        return y.fragment[fieldset, *_disabled_value_inputs(input_type, name, value)]
-    return fieldset
+        node = y.fragment[fieldset, *_disabled_value_inputs(input_type, name, value)]
+    if text:
+        return y.div(**classnames("hx-form-field", class_=wrapper_class or ""))[
+            node, y.small(id=text_id)[text]
+        ]
+    return node
 
 
 def _disabled_value_inputs(
@@ -138,6 +162,8 @@ def radio_fieldset(
     value: str | None = None,
     orientation: Orientation = "vertical",
     disabled: bool = False,
+    help_text: str | None = None,
+    error_text: str | None = None,
     **kwargs,
 ) -> y.Node:
     """Single-select group of radio buttons grouped by a ``<legend>``.
@@ -165,8 +191,14 @@ def radio_fieldset(
         child too) — otherwise the field would arrive server-side as
         missing rather than unchanged. The CSS in ``select_fieldset.css``
         adds the muted look.
+    help_text : str | None, default None
+        Neutral help text below the group.
+    error_text : str | None, default None
+        Error message below the group, in place of ``help_text``; marks the
+        fieldset ``aria-invalid``.
     **kwargs
-        Forwarded to the ``<fieldset>`` element.
+        Forwarded to the ``<fieldset>`` element; with a help or error text,
+        ``class_`` goes to the wrapper around fieldset and text.
     """
     return _select_fieldset(
         label,
@@ -176,6 +208,8 @@ def radio_fieldset(
         value=value,
         orientation=orientation,
         disabled=disabled,
+        help_text=help_text,
+        error_text=error_text,
         **kwargs,
     )
 
@@ -189,6 +223,8 @@ def checkbox_fieldset(
     value: Sequence[str] | None = None,
     orientation: Orientation = "vertical",
     disabled: bool = False,
+    help_text: str | None = None,
+    error_text: str | None = None,
     **kwargs,
 ) -> y.Node:
     """Multi-select group of checkboxes grouped by a ``<legend>``.
@@ -217,8 +253,14 @@ def checkbox_fieldset(
         child too) — otherwise the field would arrive server-side as
         missing rather than unchanged. The CSS in ``select_fieldset.css``
         adds the muted look.
+    help_text : str | None, default None
+        Neutral help text below the group.
+    error_text : str | None, default None
+        Error message below the group, in place of ``help_text``; marks the
+        fieldset ``aria-invalid``.
     **kwargs
-        Forwarded to the ``<fieldset>`` element.
+        Forwarded to the ``<fieldset>`` element; with a help or error text,
+        ``class_`` goes to the wrapper around fieldset and text.
     """
     return _select_fieldset(
         label,
@@ -228,5 +270,7 @@ def checkbox_fieldset(
         value=value,
         orientation=orientation,
         disabled=disabled,
+        help_text=help_text,
+        error_text=error_text,
         **kwargs,
     )
