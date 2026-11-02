@@ -252,7 +252,9 @@ class DataSection(Generic[T, TM, EM, CM]):
             ``FragmentResponse`` it returns is read as a truthy bool: the
             built-in drawer renders and the custom response is dropped.
         can_create : SyncOrAsyncValue[bool], optional
-            Whether new items may be created. Gates the create button.
+            Whether new items may be created, or a sync/async producer of
+            it, resolved per request (e.g. from the user's permissions).
+            Gates the create button, the create drawer and its submit.
             Defaults to ``True``.
         can_remove : SyncOrAsyncValue[bool], optional
             Whether items may be deleted. Gates the delete action.
@@ -573,7 +575,7 @@ class DataSection(Generic[T, TM, EM, CM]):
                 appearance="primary",
                 **htmx(hx_get=self.open_create_form.url(), hx_swap="none"),
             )
-            if self.can_create
+            if await resolve_value(self.can_create)
             else None,
         ]
 
@@ -593,6 +595,8 @@ class DataSection(Generic[T, TM, EM, CM]):
         return await self._extra_oob() if self._extra_oob is not None else None
 
     async def _on_create_form_submit(self, item: CM) -> y.Node:
+        if not await resolve_value(self.can_create):
+            return None
         await self.source.create(await self.create_form_model_type.map_from(item))
         return y.fragment[
             drawer_content(),
@@ -601,6 +605,8 @@ class DataSection(Generic[T, TM, EM, CM]):
         ]
 
     async def _on_create_item_click(self) -> y.Node:
+        if not await resolve_value(self.can_create):
+            return None
         return await self.create_form.render_drawer()
 
     async def _on_edit_form_submit(self, item: EM) -> y.Node:
