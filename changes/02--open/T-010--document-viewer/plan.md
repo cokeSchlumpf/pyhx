@@ -11,7 +11,7 @@
 
 Deviations from the spec:
 
-- None yet.
+- **D1** The examples and the guide import the data types as a module, `from pyhx.components.view_model import document_viewer as vm`, instead of `vm = c.document_viewer.view_model`: mypy accepts a variable bound to a module for attribute access but not in type annotations (`list[vm.MarkStyle]` fails with `name-defined`). `c.document_viewer.view_model` stays as a shortcut for code without annotations (R5 unchanged).
 
 ## Branching
 

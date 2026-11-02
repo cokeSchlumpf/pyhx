@@ -14,9 +14,6 @@ from markupsafe import Markup
 import pyhx.components as c
 from samples.components._snippets import extract_region
 
-STYLESHEET = "/static/css/document-viewer.css"
-SCRIPT = "/static/js/document-viewer.js"
-
 EXAMPLES: list[tuple[str, str, str]] = [
     ("/basic", "Basic viewer", "One document with the standard toolbar."),
     (
@@ -53,14 +50,12 @@ def example_page(
 ) -> y.Node:
     """An example: title and explanation, the code, the live viewer below."""
     return y.div(class_="sample-example")[
-        y.link(rel="stylesheet", href=STYLESHEET),
         y.link(rel="stylesheet", href="/static/css/sample.css"),
         c.breadcrumbs(y.a(href="/")["Document viewer"], title),
         y.h1[title],
         y.div(class_="sample-example__intro")[intro],
         code,
         y.div(class_="sample-example__frame", style=f"height: {height};")[viewer],
-        y.script(src=SCRIPT),
         y.script[Markup(script)] if script else None,
     ]
 

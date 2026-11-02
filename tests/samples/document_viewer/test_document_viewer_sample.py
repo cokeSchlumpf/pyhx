@@ -3,29 +3,22 @@ import pytest
 from fastapi.testclient import TestClient
 
 import pyhx.components as c
-from samples.document_viewer.document_viewer import (
-    BoundingBox,
-    Document,
-    DocumentPage,
-    Mark,
-    Note,
-    PageBadge,
-    Point,
-)
-from samples.document_viewer.document_viewer import document_viewer as dv
 from samples.document_viewer.main import app
+
+dv = c.document_viewer
+vm = c.document_viewer.view_model
 
 EXAMPLES = ["/basic", "/documents", "/marks", "/notes", "/toolbar", "/case"]
 
 
-def _doc(id_: str, *annotations, badge: PageBadge | None = None) -> Document:
-    page = DocumentPage(
+def _doc(id_: str, *annotations, badge: vm.PageBadge | None = None) -> vm.Document:
+    page = vm.DocumentPage(
         src="/p.png", width=10, height=10, annotations=annotations, badge=badge
     )
-    return Document(id=id_, title=id_.title(), pages=[page])
+    return vm.Document(id=id_, title=id_.title(), pages=[page])
 
 
-def _render(*parts: y.Node, documents: list[Document] | None = None) -> str:
+def _render(*parts: y.Node, documents: list[vm.Document] | None = None) -> str:
     return str(dv(id="v", documents=documents or [_doc("a")])[parts])
 
 
@@ -106,7 +99,7 @@ class TestComposition:
         )
 
     def test_badge_only_when_the_app_gives_one(self):
-        badge = PageBadge("3", "3 values", appearance="warning")
+        badge = vm.PageBadge("3", "3 values", appearance="warning")
 
         assert "__badge" not in _render(dv.thumbnails())
         html = _render(dv.thumbnails(), documents=[_doc("a", badge=badge)])
@@ -114,16 +107,16 @@ class TestComposition:
         assert 'aria-label="Page 1, 3 values"' in html
 
     def test_marks_and_notes_with_their_attributes(self):
-        mark = Mark(
+        mark = vm.Mark(
             id="m",
             label="M",
-            box=BoundingBox(0.1, 0.1, 0.2, 0.1),
+            box=vm.BoundingBox(0.1, 0.1, 0.2, 0.1),
             attrs={"hx-get": "/m"},
         )
-        note = Note(
+        note = vm.Note(
             id="n",
             label="N",
-            at=Point(0.5, 0.5),
+            at=vm.Point(0.5, 0.5),
             color="danger",
             attrs={"hx-get": "/n"},
         )
@@ -152,9 +145,9 @@ class TestComposition:
 
 class TestPageSize:
     def test_a_page_with_a_size_has_its_ratio(self):
-        page = DocumentPage(src="/p.png", width=1240, height=1754)
+        page = vm.DocumentPage(src="/p.png", width=1240, height=1754)
         html = _render(
-            dv.pages(), documents=[Document(id="a", title="A", pages=[page])]
+            dv.pages(), documents=[vm.Document(id="a", title="A", pages=[page])]
         )
 
         assert "aspect-ratio: 1240 / 1754;" in html
@@ -162,9 +155,9 @@ class TestPageSize:
 
     @pytest.mark.parametrize("size", [{}, {"width": 1240}, {"height": 1754}])
     def test_without_both_sizes_a4_is_assumed(self, size: dict[str, int]):
-        page = DocumentPage(src="/p.png", **size)
+        page = vm.DocumentPage(src="/p.png", **size)
         html = _render(
-            dv.pages(), documents=[Document(id="a", title="A", pages=[page])]
+            dv.pages(), documents=[vm.Document(id="a", title="A", pages=[page])]
         )
 
         assert "aspect-ratio: 210 / 297;" in html
@@ -172,12 +165,12 @@ class TestPageSize:
 
     def test_refuses_a_size_that_is_not_positive(self):
         with pytest.raises(ValueError):
-            DocumentPage(src="/p.png", width=0, height=10)
+            vm.DocumentPage(src="/p.png", width=0, height=10)
 
 
 class TestGeometry:
     def test_box_from_pixels_gives_fractions_of_the_page(self):
-        box = BoundingBox.from_pixels(
+        box = vm.BoundingBox.from_pixels(
             x=124, y=175.4, width=620, height=87.7, page_width=1240, page_height=1754
         )
 
@@ -187,9 +180,9 @@ class TestGeometry:
 
     def test_refuses_a_box_outside_the_page(self):
         with pytest.raises(ValueError):
-            BoundingBox(x=0.8, y=0.1, width=0.3, height=0.1)
+            vm.BoundingBox(x=0.8, y=0.1, width=0.3, height=0.1)
 
     def test_point_from_pixels(self):
-        point = Point.from_pixels(x=620, y=877, page_width=1240, page_height=1754)
+        point = vm.Point.from_pixels(x=620, y=877, page_width=1240, page_height=1754)
 
-        assert point == Point(0.5, 0.5)
+        assert point == vm.Point(0.5, 0.5)

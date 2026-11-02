@@ -5,29 +5,28 @@ import dataclasses
 import htpy as y
 
 import pyhx.components as c
+from pyhx.components.view_model import document_viewer as vm
 from pyhx.core import WebAppRouter
 from samples.document_viewer import sample_document as data
-from samples.document_viewer.document_viewer import (
-    Document,
-    Mark,
-    MarkStyle,
-)
-from samples.document_viewer.document_viewer import document_viewer as dv
 
 from ._layout import code, example_page
+
+dv = c.document_viewer
 
 router = WebAppRouter()
 
 # docs:start styles
 # The app maps its own categories and its confidence to colours and looks.
-PERSON = MarkStyle(color=c.Color.hex("#0f766e"))  # look="fill" (default)
-ADDRESS = MarkStyle(color=c.Color.hex("#1d4ed8"))
-WORK = MarkStyle(color=c.Color.hex("#6d28d9"))
-UNCERTAIN = MarkStyle(color="warning", look="fill-outline")  # read with low confidence
-CONTEXT = MarkStyle(color="neutral", look="outline")  # only context
+PERSON = vm.MarkStyle(color=c.Color.hex("#0f766e"))  # look="fill" (default)
+ADDRESS = vm.MarkStyle(color=c.Color.hex("#1d4ed8"))
+WORK = vm.MarkStyle(color=c.Color.hex("#6d28d9"))
+UNCERTAIN = vm.MarkStyle(
+    color="warning", look="fill-outline"
+)  # read with low confidence
+CONTEXT = vm.MarkStyle(color="neutral", look="outline")  # only context
 # docs:end styles
 
-KINDS: list[tuple[str, str, MarkStyle]] = [
+KINDS: list[tuple[str, str, vm.MarkStyle]] = [
     ("person", "Person", PERSON),
     ("address", "Address", ADDRESS),
     ("work", "Employment", WORK),
@@ -36,27 +35,27 @@ KINDS: list[tuple[str, str, MarkStyle]] = [
 ]
 
 
-def _marks_only(document: Document) -> Document:
+def _marks_only(document: vm.Document) -> vm.Document:
     """The registration without its notes: this example is about marks."""
     pages = [
         dataclasses.replace(
-            page, annotations=[a for a in page.annotations if isinstance(a, Mark)]
+            page, annotations=[a for a in page.annotations if isinstance(a, vm.Mark)]
         )
         for page in document.pages
     ]
     return dataclasses.replace(document, pages=pages)
 
 
-def _ids(document: Document, style: MarkStyle) -> list[str]:
+def _ids(document: vm.Document, style: vm.MarkStyle) -> list[str]:
     return [
         a.id
         for page in document.pages
         for a in page.annotations
-        if isinstance(a, Mark) and a.style == style
+        if isinstance(a, vm.Mark) and a.style == style
     ]
 
 
-def _color(style: MarkStyle) -> str:
+def _color(style: vm.MarkStyle) -> str:
     color = style.color
     return (
         color.value if isinstance(color, c.Color) else c.Color.appearance(color).value
@@ -64,7 +63,7 @@ def _color(style: MarkStyle) -> str:
 
 
 # docs:start sidebar
-def kind_row(key: str, name: str, style: MarkStyle, ids: list[str]) -> y.Node:
+def kind_row(key: str, name: str, style: vm.MarkStyle, ids: list[str]) -> y.Node:
     """All marks of a kind are shown; the steps select one instance after the other."""
     return y.div(class_="sample-kind", data_kind=key, data_ids=" ".join(ids))[
         y.span[

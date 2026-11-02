@@ -15,8 +15,7 @@ from html import escape
 
 from pyhx.components import Color
 from pyhx.components.variants import Appearance
-
-from .document_viewer import (
+from pyhx.components.view_model.document_viewer import (
     Annotation,
     BoundingBox,
     Document,

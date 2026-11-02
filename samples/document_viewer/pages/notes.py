@@ -3,34 +3,30 @@
 import htpy as y
 
 import pyhx.components as c
+from pyhx.components.view_model import document_viewer as vm
 from pyhx.core import WebAppRouter
-from samples.document_viewer.document_viewer import (
-    Document,
-    DocumentPage,
-    Note,
-    Point,
-)
-from samples.document_viewer.document_viewer import document_viewer as dv
 from samples.document_viewer.sample_document import HEIGHT, WIDTH, page_url
 
 from ._layout import code, example_page
 
+dv = c.document_viewer
+
 router = WebAppRouter()
 
 
-def at(x: int, y: int) -> Point:
-    return Point.from_pixels(x=x, y=y, page_width=WIDTH, page_height=HEIGHT)
+def at(x: int, y: int) -> vm.Point:
+    return vm.Point.from_pixels(x=x, y=y, page_width=WIDTH, page_height=HEIGHT)
 
 
 # docs:start notes
 NOTES = {
     1: [
-        Note(
+        vm.Note(
             id="n-address", label="Address", at=at(1100, 640)
         ),  # color="warning" (default)
     ],
     6: [
-        Note(
+        vm.Note(
             id="n-incapacity",
             label="Start of incapacity",
             at=at(1100, 300),
@@ -39,7 +35,7 @@ NOTES = {
             attrs={"hx-get": "/sample-notes/note-au", "hx-target": "#notes-detail"},
         ),
     ],
-    9: [Note(id="n-employer", label="Employer", at=at(1100, 500), color="info")],
+    9: [vm.Note(id="n-employer", label="Employer", at=at(1100, 500), color="info")],
 }
 TEXTS = {
     "n-address": (
@@ -57,12 +53,12 @@ TEXTS = {
 }
 # docs:end notes
 
-document = Document(
+document = vm.Document(
     id="anmeldung",
     title="IV-Anmeldung 001.001",
     subtitle="Received 21.06.2026",
     pages=[
-        DocumentPage(
+        vm.DocumentPage(
             src=page_url("anmeldung", n),
             width=WIDTH,
             height=HEIGHT,
@@ -74,7 +70,7 @@ document = Document(
 
 
 # docs:start entry
-def note_entry(note: Note, page: int) -> y.Node:
+def note_entry(note: vm.Note, page: int) -> y.Node:
     """A sidebar entry linked to the pin; its text shows while the note is selected."""
     author, text = TEXTS[note.id]
     color = (

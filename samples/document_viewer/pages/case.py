@@ -4,9 +4,8 @@ import htpy as y
 
 import pyhx.components as c
 from pyhx.components.variants import Appearance
+from pyhx.components.view_model import document_viewer as vm
 from pyhx.core import WebAppRouter
-from samples.document_viewer.document_viewer import Mark
-from samples.document_viewer.document_viewer import document_viewer as dv
 from samples.document_viewer.sample_document import (
     NOTES,
     TO_CHECK,
@@ -17,6 +16,8 @@ from samples.document_viewer.sample_document import (
 )
 
 from ._layout import code, example_page
+
+dv = c.document_viewer
 
 router = WebAppRouter()
 
@@ -79,7 +80,7 @@ async def case() -> y.Node:
         for document in documents
         for page in document.pages
         for a in page.annotations
-        if isinstance(a, Mark) and a.style in TO_CHECK
+        if isinstance(a, vm.Mark) and a.style in TO_CHECK
     )
     # docs:start viewer
     viewer = dv(id="case", documents=documents)[

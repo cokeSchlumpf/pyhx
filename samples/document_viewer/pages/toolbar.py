@@ -4,10 +4,11 @@ import htpy as y
 
 import pyhx.components as c
 from pyhx.core import WebAppRouter
-from samples.document_viewer.document_viewer import document_viewer as dv
 from samples.document_viewer.sample_document import registration
 
 from ._layout import code, example_page
+
+dv = c.document_viewer
 
 router = WebAppRouter()
 

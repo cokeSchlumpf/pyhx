@@ -7,8 +7,8 @@ Run with::
 Each example page explains a scenario, shows its code (cut from the page's own
 module, so the code shown is the code that runs) and the live viewer below:
 the basic viewer, several documents, marks, notes, a custom toolbar and a
-case page with everything together. The draft component is
-:mod:`samples.document_viewer.document_viewer`; the page images are SVGs
+case page with everything together, using ``c.document_viewer`` and
+its view model; the page images are SVGs
 served by this sample (:mod:`samples.document_viewer.sample_document`).
 """
 

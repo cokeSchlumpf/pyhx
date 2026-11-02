@@ -2,22 +2,19 @@
 
 import htpy as y
 
-from pyhx.core import WebAppRouter
-
 # docs:start imports
-from samples.document_viewer.document_viewer import (
-    BoundingBox,
-    Document,
-    DocumentPage,
-    Mark,
+import pyhx.components as c
+from pyhx.components.view_model import (
+    document_viewer as vm,  # Document, Mark, Note, ...
 )
-from samples.document_viewer.document_viewer import document_viewer as dv
 
-# (once released: import pyhx.components as c; c.document_viewer, c.Document, ...)
 # docs:end imports
+from pyhx.core import WebAppRouter
 from samples.document_viewer.sample_document import page_url
 
 from ._layout import code, example_page
+
+dv = c.document_viewer
 
 router = WebAppRouter()
 
@@ -28,28 +25,28 @@ W, H = 1240, 1754
 
 # A box is given in fractions (0–1) of the page's width and height,
 # origin top left: here 8.4 % from the left, 16.4 % from the top.
-NAME = BoundingBox(x=0.084, y=0.164, width=0.081, height=0.025)
+NAME = vm.BoundingBox(x=0.084, y=0.164, width=0.081, height=0.025)
 # docs:end document
 
 # docs:start pixels
 # OCR delivers pixels of the page image: from_pixels turns them into fractions.
-BIRTH = BoundingBox.from_pixels(
+BIRTH = vm.BoundingBox.from_pixels(
     x=104, y=478, width=180, height=44, page_width=W, page_height=H
-)  # == BoundingBox(x=0.0839, y=0.2725, width=0.1452, height=0.0251)
+)  # == vm.BoundingBox(x=0.0839, y=0.2725, width=0.1452, height=0.0251)
 # docs:end pixels
 
 # docs:start pages
-registration = Document(
+registration = vm.Document(
     id="anmeldung",
     title="IV-Anmeldung 001.001",
     subtitle="Received 21.06.2026",
     pages=[
-        DocumentPage(
+        vm.DocumentPage(
             src=page_url("anmeldung", number),
             # width=W, height=H: optional, only the aspect ratio (A4 when left out)
             annotations=[
-                Mark(id="name", label="Name", box=NAME),
-                Mark(id="birth", label="Date of birth", box=BIRTH),
+                vm.Mark(id="name", label="Name", box=NAME),
+                vm.Mark(id="birth", label="Date of birth", box=BIRTH),
             ]
             if number == 1
             else [],
@@ -63,6 +60,7 @@ registration = Document(
 @router.page("/basic", title="Basic viewer")
 async def basic() -> y.Node:
     # docs:start viewer
+    # dv = c.document_viewer
     viewer = dv(id="basic", documents=[registration])[
         dv.toolbar(),  # standard controls: title, pager, zoom, fit to width
         dv.thumbnails(),
