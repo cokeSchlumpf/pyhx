@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.4.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.4.0...v1.4.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* can_create per request, date fields and fieldset errors of DataForm ([#39](https://github.com/cokeSchlumpf/pyhx/issues/39)) ([9db3e7e](https://github.com/cokeSchlumpf/pyhx/commit/9db3e7e7ab7efad29cdc1b1beaf35256094e2863))
+
 ## [1.4.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.3.2...v1.4.0) (2026-11-01)
 
 
