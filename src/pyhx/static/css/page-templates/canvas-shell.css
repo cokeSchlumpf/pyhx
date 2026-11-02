@@ -45,7 +45,9 @@
             /* Position */
             position: sticky;
             top: 0;
-            z-index: var(--hx-z-table-header);
+            /* Above sticky table headers, so the header's dropdowns (settings
+               menu) aren't covered by a table below them. */
+            z-index: var(--hx-z-page-header);
 
             /* Box */
             padding: 0;
