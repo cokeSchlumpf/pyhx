@@ -213,3 +213,24 @@ Answer below each question; leave **Answer** empty to accept the proposal.
 - Drawing or editing annotations by the user; a popover with a note's content.
 - Rotation, a single-page mode, opening a document at a page through the URL, documents side by side, keyboard shortcuts beyond the focused controls and Esc.
 - A page of `samples/components` (Q3).
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** The examples and the guide import the data types as a module, `from pyhx.components.view_model import document_viewer as vm`: mypy accepts a variable bound to a module (`vm = c.document_viewer.view_model`) for attribute access but not in type annotations. `c.document_viewer.view_model` stays as a shortcut (R5 unchanged).
+- **F1** The data types live in `pyhx.components.view_model.document_viewer` (Q2), next to `Color`; the package stays neutral (it imports only htpy, `Color` and the variants). A package named `document_viewer` was avoided, since importing it would shadow the singleton `c.document_viewer`.
+- **F2** `toolbar()` without children must render within the viewer's htpy context: it implements `iter_chunks`/`aiter_chunks` (htpy calls them before `__html__`); tested for sync and async rendering.
+- **F3** `poe check` lints and formats only `src/pyhx`; the samples keep their own style, so only the files of this change were formatted.
+- **F4** A thumbnail jump with smooth scrolling used to pass the current page through every page on the way; the viewer now selects the target at once and pauses the scroll tracking until `scrollend` (R16).
+
+Screenshots (from the samples): [overview](screenshots/document-viewer--overview--desktop.png), [basic example](screenshots/document-viewer--basic-example--desktop.png), [several documents](screenshots/document-viewer--several-documents--desktop.png), [marks and spotlight](screenshots/document-viewer--marks-spotlight--desktop.png), [notes](screenshots/document-viewer--notes--desktop.png), [custom toolbar](screenshots/document-viewer--custom-toolbar--desktop.png), [case page](screenshots/document-viewer--case--desktop.png), [case page at phone width](screenshots/document-viewer--case--phone.png); `/full` of the canvas sample [before](screenshots/canvas-shell--full--before.png), [after](screenshots/canvas-shell--full--desktop.png) and [at phone width](screenshots/canvas-shell--full--phone.png); the design template for comparison in `gilai-demo--*`.
+
+Rollout: pull request #42 (`feat: add a document viewer with annotations`); released with the next pyhx release on `versions/1` by release-please.
+
+Open after this change:
+
+- Pinch zoom tested only with simulated touch events; test it on iOS Safari and Android Chrome (Michael Wellner).
+- Measure scrolling and blending with CaseSight's largest documents; decide a roving tab index for pages with many marks then (Q5) (Michael Wellner).
+- Use the viewer in CaseSight once its data model for marks and notes is settled: a change of CaseSight (Michael Wellner).
+- The top bar of the canvas design at phone width stays T-009.
