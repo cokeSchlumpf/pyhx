@@ -92,6 +92,8 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **F2** pyhx's texts: about 160 marked in 27 files, 123 entries per catalog (de, it, fr), translated with an LLM; "Sign in" and "Sign In" both exist as source texts (different buttons, same translations).
 - **F3** Catalog files are part of the wheel (checked with `poetry build`); `poe check` runs the catalog check for pyhx and for the sample.
 - **F4** `humanize` is no longer a dependency; relative times are worded by Babel ("1 minute ago" instead of "a minute ago").
+- **F5** Found after the release (1.3.x): translating the accessible names of the `AppShell` navigations (`_p("navigation", "main")`, `"user"`) broke the sidebar in German, Italian and French, as `app-shell.css` selected the navigations by `nav[aria-label="main"]` and `nav[aria-label="user"]`: the main navigation rendered as a wrapped row and the user menu showed open in the sidebar. Fixed by #34 (released in 1.4.0): the navigations carry the classes `hx-main-nav` and `hx-user-nav`, and the styles select on those. `samples/app_shell_layout` in de-CH: [before](screenshots/app-shell--home--before.png), [after on desktop](screenshots/app-shell--home--desktop.png) and [at phone width with the menu open](screenshots/app-shell--home--phone.png).
+- **F6** Found after the release: `samples/components/pages/file_dropzone.py` still imported `humanize` (F4), which failed once a test imported `samples.components.main`; fixed in #31, the file size is formatted with `pyhx.i18n.format_number`.
 
 Rollout: PR #20, released as pyhx 1.3.0 on `versions/1` after the developer's review and merge; requires commons 1.4.0 (T-007 of `lib--python-commons`).
 
