@@ -79,3 +79,18 @@ def test_columns_by_key_and_field_options_track_resolved_columns():
     _, columns_by_key, all_fields_options = _resolve(_make(type=Person))
     assert set(columns_by_key) == {"name", "age"}
     assert {o.value for o in all_fields_options} == {"name", "age"}
+
+
+def test_labels_marked_with_l_are_resolved_to_text():
+    from typing import Annotated
+
+    import pyhx.components.data.annotations as a
+    from pyhx.i18n import _l
+
+    class Translated(BaseModel):
+        name: Annotated[str, a.TextColumn(label=_l("Name"))]
+
+    drawer = _make(type=Translated)
+    _columns, _by_key, options = _resolve(drawer)
+
+    assert [(o.label, o.value) for o in options] == [("Name", "name")]
