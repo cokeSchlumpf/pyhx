@@ -9,9 +9,9 @@ breadcrumbs and placeholder content, plus a dossier page built from
 ``card``s in a ``split_layout`` (main column and sticky aside below the
 breadcrumbs) and two ``DataPage``s, see :mod:`samples.canvas_layout.data_page`.
 The dossier's extracted values are editable in place (``InlineEdit``, see
-:mod:`samples.canvas_layout.extracted_values`). The panes of the ``full``
-page are plain Pico ``<article>`` placeholders, since a document viewer has
-panes, not cards.
+:mod:`samples.canvas_layout.extracted_values`). The ``full`` page shows a
+``c.document_viewer`` filling the window (pages of
+:mod:`samples.document_viewer`).
 
 Pages without navigation (all of the above) sit next to pages with a main
 navigation: tabs below the top bar and an admin sidebar, see
@@ -31,6 +31,11 @@ from pyhx.core import PageResponse, WebApp
 from pyhx.core.primitives import IconName
 from pyhx.page_templates import CanvasShell
 from pyhx.utils import lorem_ipsum
+from samples.document_viewer.sample_document import (
+    VALUES,
+    register_routes,
+    registration,
+)
 
 from . import data_page, extracted_values, forms, navigation
 from .header import header_content
@@ -38,6 +43,7 @@ from .header import header_content
 hx = WebApp(
     title="Canvas Layout",
     default_page_template=CanvasShell(header_content=header_content),
+    configure_fastapi_app=[register_routes],  # page images of the /full page
 )
 
 hx.include_router(navigation.router)
@@ -109,18 +115,50 @@ async def wide() -> PageResponse:
 
 @hx.page("/full", title="Full")
 async def full() -> PageResponse:
-    pane = "margin: 0; border-radius: 0; min-height: calc(100dvh - 3.5rem);"
+    """Full viewport width without padding: a document viewer filling the window."""
+    dv = c.document_viewer
+    document = registration()
+    values = [
+        (id_, label, value)
+        for id_, label, value, where in VALUES
+        if where.startswith(document.title)
+    ]
     return PageResponse(
-        node=y.div(
-            style="display: grid; grid-template-columns: 12rem 1fr 24rem; gap: 1px;"
-        )[
-            y.article(style=pane)["Thumbnails"],
-            y.article(style=pane)[
-                y.h1["Full"],
-                y.p["Full viewport width without padding, e.g. a document viewer."],
-                _modes(),
-            ],
-            y.article(style=pane)["Extracted values"],
+        node=y.div(style="height: calc(100dvh - 3.5rem);")[
+            dv(id="full", documents=[document])[
+                dv.toolbar[
+                    dv.back(href="/dossier", label="Dossier"),
+                    dv.title(),
+                    dv.pager(),
+                    dv.zoom(),
+                    dv.fit(),
+                ],
+                dv.thumbnails(),
+                dv.pages(),
+                dv.sidebar[
+                    y.h2(style="margin: 1rem 1rem 0.5rem; font-size: 0.875rem;")[
+                        "Extracted values"
+                    ],
+                    c.card.list[
+                        (
+                            c.card.item[
+                                c.button(
+                                    [y.small(style="display: block;")[label], value],
+                                    variant="ghost",
+                                    type="button",
+                                    data_hx_document_annotation=f"full:{id_}",
+                                    style=(
+                                        "width: 100%; height: auto; flex-direction: column;"
+                                        " align-items: flex-start; white-space: normal;"
+                                        " text-align: left;"
+                                    ),
+                                )
+                            ]
+                            for id_, label, value in values
+                        )
+                    ],
+                ],
+            ]
         ],
         page_template=CanvasShell(header_content=header_content, mode="full"),
     )

@@ -15,7 +15,6 @@ served by this sample (:mod:`samples.document_viewer.sample_document`).
 from pathlib import Path
 
 import htpy as y
-from fastapi import FastAPI, Response
 
 import pyhx.components as c
 from pyhx.core import WebApp
@@ -23,32 +22,9 @@ from pyhx.page_templates import CanvasShell
 
 from .pages import basic, case, documents, marks, notes, toolbar
 from .pages._layout import links
-from .sample_document import DOCUMENTS, NOTES, find_document, page_svg
+from .sample_document import register_routes
 
 HERE = Path(__file__).parent
-
-
-def _sample_routes(app: FastAPI) -> None:
-    @app.get("/sample-pages/{document_id}/{number}.svg")
-    async def sample_page(document_id: str, number: int) -> Response:
-        document = find_document(document_id)
-        if document is None or not 1 <= number <= document.page_count:
-            return Response(status_code=404)
-        return Response(page_svg(document, number), media_type="image/svg+xml")
-
-    @app.get("/sample-notes/{note_id}")
-    async def sample_note(note_id: str) -> Response:
-        note = next((n for n in NOTES if n.id == note_id), None)
-        if note is None:
-            return Response(status_code=404)
-        title = next(d.title for d in DOCUMENTS if d.id == note.document)
-        fragment = y.div[
-            y.strong[note.label],
-            y.small[f"{note.author} · {title}, p. {note.page}"],
-            y.p[note.text],
-            y.small["loaded with hx-get from the pin"],
-        ]
-        return Response(str(fragment), media_type="text/html")
 
 
 hx = WebApp(
@@ -57,7 +33,7 @@ hx = WebApp(
         header_content=lambda: [y.span["T-010 draft"]], mode="wide"
     ),
     static_dirs=[HERE / "static"],
-    configure_fastapi_app=[_sample_routes],
+    configure_fastapi_app=[register_routes],
 )
 
 for module in (basic, documents, marks, notes, toolbar, case):

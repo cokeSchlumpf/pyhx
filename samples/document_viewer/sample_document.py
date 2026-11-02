@@ -13,6 +13,9 @@ the warning appearance when some of them need checking.
 from dataclasses import dataclass
 from html import escape
 
+import htpy as y
+from fastapi import FastAPI, Response
+
 from pyhx.components import Color
 from pyhx.components.variants import Appearance
 from pyhx.components.view_model.document_viewer import (
@@ -440,3 +443,28 @@ def registration() -> Document:
 def medical_report() -> Document:
     """The medical report (3 pages) with its marks, notes and badges."""
     return sample_documents()[1]
+
+
+def register_routes(app: FastAPI) -> None:
+    """Serve the page images and the notes of the samples (also used by samples/canvas_layout)."""
+
+    @app.get("/sample-pages/{document_id}/{number}.svg")
+    async def sample_page(document_id: str, number: int) -> Response:
+        document = find_document(document_id)
+        if document is None or not 1 <= number <= document.page_count:
+            return Response(status_code=404)
+        return Response(page_svg(document, number), media_type="image/svg+xml")
+
+    @app.get("/sample-notes/{note_id}")
+    async def sample_note(note_id: str) -> Response:
+        note = next((n for n in NOTES if n.id == note_id), None)
+        if note is None:
+            return Response(status_code=404)
+        title = next(d.title for d in DOCUMENTS if d.id == note.document)
+        fragment = y.div[
+            y.strong[note.label],
+            y.small[f"{note.author} · {title}, p. {note.page}"],
+            y.p[note.text],
+            y.small["loaded with hx-get from the pin"],
+        ]
+        return Response(str(fragment), media_type="text/html")
