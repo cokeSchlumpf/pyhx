@@ -1,4 +1,4 @@
-// Draft script of the document viewer (T-010); moves to static/js/pyhx.document-viewer.js once accepted.
+// Document viewer (c.document_viewer, pyhx/components/layouts/document_viewer.py).
 //
 // - zoom: steps, "fit to width", applied through --document-viewer--zoom on the root
 // - current page: the page under the middle of the column; the toolbar shows the

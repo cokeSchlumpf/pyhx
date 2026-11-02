@@ -1,4 +1,4 @@
-/* Draft styles of the document viewer (T-010); move to static/css/pyhx/components once accepted. */
+/* Document viewer (c.document_viewer): toolbar, thumbnails, pages with marks and notes, sidebar. */
 
 .hx-document-viewer {
     --document-viewer--zoom: 1;

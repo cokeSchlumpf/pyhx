@@ -71,6 +71,7 @@ class Skeleton(PageTemplate):
                 script(src="/static/js/pyhx.drawer.js"),
                 script(src="/static/js/pyhx.filter-drawer.js"),
                 script(src="/static/js/pyhx.inline-edit.js"),
+                script(src="/static/js/pyhx.document-viewer.js"),
                 *[script(src=src) for src in self.scripts],
                 *self.head_extras,
             ],

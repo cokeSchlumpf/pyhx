@@ -2,6 +2,7 @@ from .breadcrumbs import breadcrumbs
 from .card import card
 from .code import code
 from .container import ContainerWidth, container
+from .document_viewer import document_viewer
 from .drawer import (
     DRAWER_CONTENT_ID,
     POPUP_DRAWER_CONTENT_ID,
@@ -37,6 +38,7 @@ __all__ = [
     "close_drawer",
     "code",
     "container",
+    "document_viewer",
     "drawer",
     "drawer_content",
     "example",
