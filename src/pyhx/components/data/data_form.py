@@ -726,6 +726,8 @@ class DataForm[T: BaseModel]:
                 (Option(label=control.label or _("Yes"), value="true"),),
                 value=("true",) if current_value else (),
                 disabled=disabled,
+                help_text=help_text,
+                error_text=error,
                 class_=class_,
             )
 
@@ -741,6 +743,8 @@ class DataForm[T: BaseModel]:
                 value="true" if current_value else "false",
                 orientation=control.orientation,
                 disabled=disabled,
+                help_text=help_text,
+                error_text=error,
                 class_=class_,
             )
 
@@ -783,6 +787,8 @@ class DataForm[T: BaseModel]:
                 value=current_value,
                 orientation=control.orientation,
                 disabled=disabled,
+                help_text=help_text,
+                error_text=error,
                 class_=class_,
             )
 
@@ -839,6 +845,8 @@ class DataForm[T: BaseModel]:
                 value=current,
                 orientation=control.orientation,
                 disabled=disabled,
+                help_text=help_text,
+                error_text=error,
                 class_=class_,
             )
 
