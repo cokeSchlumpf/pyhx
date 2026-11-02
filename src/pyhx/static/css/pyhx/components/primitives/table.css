@@ -507,13 +507,33 @@
     transition: opacity var(--hx-transition-fast) 500ms;
 }
 
-.hx-table__wrapper:has(.hx-table thead:hover) .hx-table__toolbar,
+/* Revealed from the header row and from the filter bar, which sits between
+   the header row and the toolbar when the table has quick filters or a
+   search field. */
+.hx-table__wrapper:has(.hx-table thead:hover, .hx-table__filter-bar:hover) .hx-table__toolbar,
 .hx-table__toolbar:hover {
     /* Visual */
     opacity: 1;
 
     /* Motion */
     transition: opacity var(--hx-transition-fast);
+}
+
+/* An invisible strip over the gap between the toolbar and the table, so the
+   pointer stays on the toolbar (and its table) on the way up; otherwise it
+   leaves both in the gap and the toolbar can't be reached. */
+.hx-table__toolbar::after {
+    /* Position */
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+
+    /* Box */
+    height: var(--hx-spacing-sm);
+
+    /* Content */
+    content: "";
 }
 
 
