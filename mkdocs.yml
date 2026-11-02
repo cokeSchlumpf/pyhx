@@ -63,6 +63,7 @@ nav:
       - Layouts & Templates: guides/layouts.md
       - Editing Patterns: guides/editing.md
       - Data Tables: guides/data-tables.md
+      - Document Viewer: guides/document-viewer.md
       - Sidepanel: guides/sidepanel.md
       - User Authentication: guides/user-authentication.md
       - Multilingual Apps: guides/i18n.md
