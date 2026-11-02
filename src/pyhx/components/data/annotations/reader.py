@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 
 from pyhx.core.primitives import negotiate_locale
+from pyhx.i18n import _
 from pyhx.i18n._format import (
     format_currency,
     format_date,
@@ -550,7 +551,8 @@ def _default_cell_renderer(
 def _value_renderer_for(annotation_type) -> Callable[[Any], y.Node]:
     """Per-type value formatter used by the default cell renderer."""
     if annotation_type is bool:
-        return lambda v: y.span["yes" if v else "no"]
+        # Translated at render time, in the request language (as the form's Yes/No).
+        return lambda v: y.span[_("Yes") if v else _("No")]
     if annotation_type is datetime:
         return lambda v: y.span[v.isoformat() if v is not None else ""]
     if annotation_type is date:

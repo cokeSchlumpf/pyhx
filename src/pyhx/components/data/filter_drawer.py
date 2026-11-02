@@ -463,7 +463,8 @@ class FilterDrawer[T]:
         columns_by_key = {column.key: column for column in columns}
 
         all_fields_options = tuple(
-            [Option(label=c.label, value=c.key) for c in columns]
+            # ``str()`` resolves labels marked with ``_l`` in the request language.
+            [Option(label=str(c.label), value=c.key) for c in columns]
         )
 
         return (columns, columns_by_key, all_fields_options)
@@ -815,7 +816,7 @@ class FilterDrawer[T]:
                         else []
                     )
                     options = tuple(
-                        Option(label=c.label, value=c.value) for c in choices
+                        Option(label=str(c.label), value=c.value) for c in choices
                     )
                     control = getattr(filter_type, "_control", None)
                     if isinstance(cond, TextChoiceEquals):
