@@ -30,11 +30,11 @@ _KINDS = (
 _APPEARANCES = ("primary", "info", "neutral", "success", "warning", "danger")
 
 
-def _grid(*items: y.Node, min_width: str = "10rem") -> y.Node:
+def _grid(*items: y.Node) -> y.Node:
     # Several columns, fewer at phone width.
     return y.div(
         style="display: grid; gap: 1.25rem 2rem;"
-        f" grid-template-columns: repeat(auto-fit, minmax({min_width}, 1fr));"
+        " grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));"
     )[items]
 
 
@@ -163,7 +163,9 @@ def showcase() -> y.Node:
             "With reduced motion set in the system, nothing moves: the pulse stays a solid dot, the ripple loses its ring, the spinner shows a half arc, dots and bars stand at a middle step.",
         ],
         y.h3["Next to a status, in a header"],
+        y.p["Beside the pill, the pill says what and the mark says “now”; inside the pill, the mark stands before its text."],
         c.example(
+            y.div(style="display: grid; gap: 1rem")[
             # docs:start header
             _row(
                 y.span(style="font-size: 1.5rem; font-weight: 600")["Quarterly report"],
@@ -190,11 +192,17 @@ def showcase() -> y.Node:
                 ),
             ),
             # docs:end header
+            ],
             code=[("code", src.text("header"), "python")],
         ),
         y.h3["On buttons"],
         y.p[
-            "Beside the label of a button that leads to the running work; as a spinner before the label while the button's own action runs.",
+            "Beside the label of a button that leads to the running work; as a spinner before the label while the button's own action runs. ",
+            "Inside a button, the mark's ",
+            y.code["label"],
+            " becomes part of the button's name: choose one that reads on from the button's text (“Import running”), or give the button its own ",
+            y.code["aria_label"],
+            ".",
         ],
         c.example(
             # docs:start buttons
@@ -204,7 +212,7 @@ def showcase() -> y.Node:
                     [
                         "Import",
                         c.loading_indicator(
-                            label="Import running",
+                            label="running",
                             kind="ripple",
                             appearance="info",
                             size="sm",
@@ -215,7 +223,7 @@ def showcase() -> y.Node:
                 c.button(
                     [c.loading_indicator(label="Saving", size="sm"), "Saving"],
                     appearance="primary",
-                    disabled=True,
+                    aria_label="Saving",
                 ),
             ),
             # docs:end buttons
@@ -272,23 +280,22 @@ def showcase() -> y.Node:
         y.p["Tells from anywhere in the app that something runs in another section."],
         c.example(
             # docs:start navigation
-            y.nav(aria_label="Sections")[
-                y.ul(style="display: flex; flex-direction: column; padding: 0")[
-                    y.li(style="list-style: none")[y.a(href="#overview")["Overview"]],
-                    y.li(style="list-style: none")[
-                        y.a(href="#imports")[
-                            "Imports",
-                            c.loading_indicator(
-                                label="Import running",
-                                kind="ripple",
-                                appearance="info",
-                                size="sm",
-                                style="margin-inline-start: 0.375rem",
-                            ),
-                        ]
-                    ],
-                    y.li(style="list-style: none")[y.a(href="#reports")["Reports"]],
-                ]
+            y.nav(
+                aria_label="Sections",
+                style="display: flex; flex-direction: column; gap: 0.5rem",
+            )[
+                y.a(href="#overview")["Overview"],
+                y.a(href="#imports")[
+                    "Imports",
+                    c.loading_indicator(
+                        label="running",
+                        kind="ripple",
+                        appearance="info",
+                        size="sm",
+                        style="margin-inline-start: 0.375rem",
+                    ),
+                ],
+                y.a(href="#reports")["Reports"],
             ],
             # docs:end navigation
             code=[("code", src.text("navigation"), "python")],

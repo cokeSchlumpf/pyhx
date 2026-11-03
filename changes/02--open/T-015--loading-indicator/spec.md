@@ -11,6 +11,7 @@
 - **R5** `size` `sm`, `md`, `lg` sizes the mark to sit on a text line: `sm` next to 12–13px text and in table rows, `md` next to body text and pills, `lg` next to headings. The mark is vertically centred on the line it stands in, within 1px: beside a label in a flex row, beside a button's label, inside a pill before its text, in a table cell and after a link's text in a navigation.
 - **R6** With `prefers-reduced-motion: reduce` nothing moves and the mark stays visible: pulse is a solid dot, ripple has no ring, the spinner shows a static half arc, dots and bars stand at a middle step.
 - **R7** Pico's global rules don't change it (no Pico spinner, no Pico background or spacing on its parts).
+- **R12** Every kind keeps its motion inside its own box: nothing paints outside it, so the gap next to the mark (e.g. a button's gap) is the visible spacing. (Added by the developer during the implementation, see the Outcome.)
 - **R8** It looks as in the reviewed draft in the plain design (`AppShell`) and the canvas design (`CanvasShell`), at desktop and phone width, needs no JavaScript and adds no text of its own.
 
 ### Samples, docs and tests
