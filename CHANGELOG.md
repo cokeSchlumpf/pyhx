@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.7.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.6.0...v1.7.0) (2026-11-03)
+
+
+### Features
+
+* modal dialogs (T-012) ([#49](https://github.com/cokeSchlumpf/pyhx/issues/49)) ([8b9dd74](https://github.com/cokeSchlumpf/pyhx/commit/8b9dd7402a9236ec710838495ccee872430d1c9b))
+
 ## [1.6.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.5.0...v1.6.0) (2026-11-03)
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-02 22:30+0100\n"
+"POT-Creation-Date: 2026-11-03 08:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "Add"
 msgstr "Ajouter"
 
-#: components/data/filter_drawer.py:637
+#: components/data/filter_drawer.py:638
 msgid "Add filter ..."
 msgstr "Ajouter un filtre ..."
 
-#: components/data/filter_drawer.py:868
+#: components/data/filter_drawer.py:869
 msgid "Add new rule ..."
 msgstr "Ajouter une règle ..."
 
@@ -38,11 +38,11 @@ msgstr "Ajouter un tag"
 msgid "All"
 msgstr "Tous"
 
-#: components/data/filter_drawer.py:583
+#: components/data/filter_drawer.py:584
 msgid "Apply Filter & Sort"
 msgstr "Appliquer le filtre et le tri"
 
-#: components/data/filter_drawer.py:941
+#: components/data/filter_drawer.py:942
 msgid "Ascending"
 msgstr "Croissant"
 
@@ -69,8 +69,8 @@ msgstr "Fil d'Ariane"
 msgid "Bullet list"
 msgstr "Liste à puces"
 
-#: components/data/data_form_drawer.py:73 components/data/data_section.py:529
-#: components/data/data_section.py:533 components/data/inline_edit.py:46
+#: components/data/data_form_drawer.py:73 components/data/data_section.py:531
+#: components/data/data_section.py:535 components/data/inline_edit.py:46
 #: components/primitives/drawer_action_table.py:191
 #: components/primitives/drawer_radio.py:62
 #: components/primitives/drawer_select.py:67
@@ -78,7 +78,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:645
+#: components/data/data_section.py:651
 #, python-brace-format
 msgid "Cannot delete {type}"
 msgstr "Impossible de supprimer {type}"
@@ -92,13 +92,19 @@ msgstr "Consultez vos e-mails"
 msgid "Choose how you want to sign in."
 msgstr "Choisissez comment vous souhaitez vous connecter."
 
-#: components/data/_table_helpers.py:226 components/data/filter_drawer.py:588
+#: components/data/_table_helpers.py:226 components/data/filter_drawer.py:589
 msgid "Clear Filter & Sort"
 msgstr "Réinitialiser le filtre et le tri"
 
 #: components/primitives/drawer_radio.py:57
 msgid "Clear selection"
 msgstr "Effacer la sélection"
+
+#. accessible name of the close button of a dialog.
+#: components/layouts/dialog.py:80
+msgctxt "dialog"
+msgid "Close"
+msgstr "Fermer"
 
 #: components/layouts/drawer.py:98
 msgctxt "drawer"
@@ -123,25 +129,25 @@ msgid "Copy code"
 msgstr "Copier le code"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:491 components/data/data_section.py:497
-#: components/data/data_section.py:510
+#: components/data/data_section.py:493 components/data/data_section.py:499
+#: components/data/data_section.py:512
 #, python-brace-format
 msgid "Create {type}"
 msgstr "Créer {type}"
 
 #. {type} is the name of the item's type, in lower case.
-#: components/data/data_section.py:666
+#: components/data/data_section.py:672
 #, python-brace-format
 msgid "Delete this {type}?"
 msgstr "Supprimer {type} ?"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:524
+#: components/data/data_section.py:526
 #, python-brace-format
 msgid "Delete {type}"
 msgstr "Supprimer {type}"
 
-#: components/data/filter_drawer.py:942
+#: components/data/filter_drawer.py:943
 msgid "Descending"
 msgstr "Décroissant"
 
@@ -159,7 +165,7 @@ msgstr "Vous ne l'avez pas reçu ? {link}"
 msgid "Dismiss"
 msgstr "Fermer"
 
-#: components/layouts/document_viewer.py:129
+#: components/layouts/document_viewer.py:130
 msgid "Document"
 msgstr "Document"
 
@@ -180,7 +186,7 @@ msgid "Edit {label}"
 msgstr "Modifier {label}"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:504
+#: components/data/data_section.py:506
 #, python-brace-format
 msgid "Edit {type}"
 msgstr "Modifier {type}"
@@ -207,7 +213,7 @@ msgctxt "filter drawer tab"
 msgid "Filter"
 msgstr "Filtre"
 
-#: components/data/data_section.py:542
+#: components/data/data_section.py:544
 msgid "Filter & Sort"
 msgstr "Filtre et tri"
 
@@ -215,7 +221,7 @@ msgstr "Filtre et tri"
 msgid "Filter & Sort Settings"
 msgstr "Paramètres de filtre et de tri"
 
-#: components/data/filter_drawer.py:614
+#: components/data/filter_drawer.py:615
 msgid "Filter Mode"
 msgstr "Mode de filtre"
 
@@ -225,7 +231,7 @@ msgstr "Mode de filtre"
 msgid "Filter items"
 msgstr "Filtrer les éléments"
 
-#: components/layouts/document_viewer.py:393
+#: components/layouts/document_viewer.py:394
 msgid "Fit to width"
 msgstr "Ajuster à la largeur"
 
@@ -273,19 +279,20 @@ msgstr "Lien de connexion non valide"
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: components/data/filter_drawer.py:618
+#: components/data/filter_drawer.py:619
 msgid "Match All Filters"
 msgstr "Correspondre à tous les filtres"
 
-#: components/data/filter_drawer.py:619
+#: components/data/filter_drawer.py:620
 msgid "Match Any Filter"
 msgstr "Correspondre à au moins un filtre"
 
-#: components/layouts/document_viewer.py:170
+#: components/layouts/document_viewer.py:171
 msgid "Next page"
 msgstr "Page suivante"
 
-#: components/data/data_form.py:703 components/data/data_form.py:731
+#: components/data/annotations/reader.py:555 components/data/data_form.py:707
+#: components/data/data_form.py:737
 msgid "No"
 msgstr "Non"
 
@@ -307,7 +314,7 @@ msgstr "Aucun élément à afficher"
 msgid "No selected item."
 msgstr "Aucun élément sélectionné."
 
-#: components/layouts/document_viewer.py:316
+#: components/layouts/document_viewer.py:317
 #, python-brace-format
 msgid "Note: {label}"
 msgstr "Note : {label}"
@@ -320,13 +327,13 @@ msgstr "Ouvrir le menu"
 msgid "Page navigation"
 msgstr "Navigation de la page"
 
-#: components/layouts/document_viewer.py:208
-#: components/layouts/document_viewer.py:270
+#: components/layouts/document_viewer.py:209
+#: components/layouts/document_viewer.py:271
 #, python-brace-format
 msgid "Page {page}"
 msgstr "Page {page}"
 
-#: components/layouts/document_viewer.py:178
+#: components/layouts/document_viewer.py:179
 msgid "Pages"
 msgstr "Pages"
 
@@ -334,7 +341,7 @@ msgstr "Pages"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: components/layouts/document_viewer.py:164
+#: components/layouts/document_viewer.py:165
 msgid "Previous page"
 msgstr "Page précédente"
 
@@ -371,12 +378,12 @@ msgid "Save"
 msgstr "Enregistrer"
 
 #. {type} is the name of the item's type, e.g. "Case".
-#: components/data/data_section.py:517
+#: components/data/data_section.py:519
 #, python-brace-format
 msgid "Save {type}"
 msgstr "Enregistrer {type}"
 
-#: components/data/filter_drawer.py:608 components/data/quick_filter.py:24
+#: components/data/filter_drawer.py:609 components/data/quick_filter.py:24
 msgid "Search"
 msgstr "Rechercher"
 
@@ -463,7 +470,7 @@ msgstr "Tri"
 msgid "Sort & Filter"
 msgstr "Tri et filtre"
 
-#: components/data/filter_drawer.py:898
+#: components/data/filter_drawer.py:899
 msgid "Sort by:"
 msgstr "Trier par :"
 
@@ -479,7 +486,7 @@ msgstr "Le code est invalide ou a expiré. Veuillez le vérifier ou en demander 
 msgid "The email could not be sent. Please try again later."
 msgstr "L'e-mail n'a pas pu être envoyé. Veuillez réessayer plus tard."
 
-#: components/data/data_section.py:671
+#: components/data/data_section.py:677
 msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
@@ -500,7 +507,7 @@ msgid "Toggle user menu"
 msgstr "Afficher/masquer le menu utilisateur"
 
 #. {value} is the text the user has to retype.
-#: components/data/data_section.py:704
+#: components/data/data_section.py:710
 #, python-brace-format
 msgid "Type \"{value}\" to confirm."
 msgstr "Saisissez « {value} » pour confirmer."
@@ -522,16 +529,16 @@ msgstr "Nom d'utilisateur et mot de passe"
 msgid "Value"
 msgstr "Valeur"
 
-#: components/data/data_form.py:702 components/data/data_form.py:722
-#: components/data/data_form.py:730
+#: components/data/annotations/reader.py:555 components/data/data_form.py:706
+#: components/data/data_form.py:726 components/data/data_form.py:736
 msgid "Yes"
 msgstr "Oui"
 
-#: components/layouts/document_viewer.py:389
+#: components/layouts/document_viewer.py:390
 msgid "Zoom in"
 msgstr "Agrandir"
 
-#: components/layouts/document_viewer.py:383
+#: components/layouts/document_viewer.py:384
 msgid "Zoom out"
 msgstr "Réduire"
 

@@ -62,6 +62,7 @@ nav:
       - Navigation: guides/navigation.md
       - Layouts & Templates: guides/layouts.md
       - Editing Patterns: guides/editing.md
+      - Dialogs: guides/dialogs.md
       - Data Tables: guides/data-tables.md
       - Document Viewer: guides/document-viewer.md
       - Server-Sent Events: guides/server-sent-events.md

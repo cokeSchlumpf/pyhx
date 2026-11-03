@@ -38,6 +38,7 @@ from .meta import meta
 from .metric_tile import metric_tile
 from .notification_badge import notification_badge
 from .pill import PillVariant, pill
+from .progress_bar import ProgressMotion, progress_bar
 from .segment_control import segment_control
 from .select_fieldset import checkbox_fieldset, radio_fieldset
 from .slider import SliderThumb, slider
@@ -66,6 +67,7 @@ __all__ = [
     "PlannedTimespan",
     "PlannedUtilization",
     "PlannedUtilizationItem",
+    "ProgressMotion",
     "ProjectTimeline",
     "SelectControl",
     "SliderThumb",
@@ -93,6 +95,7 @@ __all__ = [
     "metric_tile",
     "notification_badge",
     "pill",
+    "progress_bar",
     "radio_fieldset",
     "segment_control",
     "slider",

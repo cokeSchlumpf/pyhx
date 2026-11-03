@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal, cast
 
 import htpy as y
 from commons.settings import AppSettings
@@ -11,13 +11,20 @@ from pyhx.i18n import _, _p
 
 from ..components.layouts import (
     POPUP_DRAWER_CONTENT_ID,
+    dialog,
     drawer,
     notification_error_template,
     notifications,
 )
 from ..components.primitives import icon, pill
 from ..core import component
-from ..core.primitives import Omit, classnames, htmx
+from ..core.primitives import (
+    Omit,
+    SyncOrAsyncValue,
+    classnames,
+    htmx,
+    resolve_value,
+)
 from ..core.request_context import RequestContext
 from ..core.templates.nav import AppNavFn, NavItem
 from ..core.templates.nav_renderer import NavRenderer
@@ -86,6 +93,19 @@ class AppShell(PageTemplate):
     offers several languages; ``settings=()`` removes the gear. An entry is
     any callable returning a section (see
     :class:`~pyhx.page_templates.SettingsEntry`).
+
+    ``dialog_content`` shows a dialog on a full page load: a node or a
+    zero-argument producer, sync or async, evaluated per request like
+    ``header_content``. It returns a ``c.dialog_content(...)`` to deliver the
+    page with that dialog open (e.g. a notice the user must confirm), or
+    ``None``::
+
+        async def notice() -> y.Node | None:
+            if await notices.accepted(RequestContext.get().user):
+                return None
+            return c.dialog_content(..., title="Terms of use", closable=False)
+
+        AppShell(dialog_content=notice)
     """
 
     design: Design = "default"
@@ -106,6 +126,7 @@ class AppShell(PageTemplate):
         stylesheets: tuple[str, ...] = (),
         scripts: tuple[str, ...] = (),
         settings: Sequence[SettingsEntry] = DEFAULT_SETTINGS,
+        dialog_content: SyncOrAsyncValue[y.Node | None] = None,
     ) -> None:
         self.brand_image_alt = brand_img_alt
         self.brand_image_src = brand_img_src
@@ -120,6 +141,7 @@ class AppShell(PageTemplate):
         self.stylesheets = stylesheets
         self.settings = tuple(settings)
         self.scripts = scripts
+        self.dialog_content = dialog_content
 
     async def __call__(
         self,
@@ -184,6 +206,10 @@ class AppShell(PageTemplate):
             footer_content_left = y.fragment[""]
         else:
             footer_content_left = self.footer_content_left
+
+        dialog_content: y.Node | None = await resolve_value(
+            cast(SyncOrAsyncValue[Any], self.dialog_content)
+        )
 
         return y.body(
             data_hx_page_template="app-shell",
@@ -306,6 +332,7 @@ class AppShell(PageTemplate):
                 top="var(--header--height)",
                 bottom="var(--footer--height)",
             ),
+            dialog(dialog_content),
             notifications(top="var(--header--height)"),
             notification_error_template(),
         ]
