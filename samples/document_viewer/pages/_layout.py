@@ -29,6 +29,11 @@ EXAMPLES: list[tuple[str, str, str]] = [
         "Controls left out, reordered, the app's own controls.",
     ),
     ("/case", "Case page", "Everything together, as in the design template."),
+    (
+        "/open-at-a-page",
+        "Open at a page",
+        "One document at a time, opened at a page or a mark, switched in the toolbar.",
+    ),
 ]
 
 

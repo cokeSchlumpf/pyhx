@@ -8,6 +8,10 @@
 //   "hx-document:annotation-select" ({viewer, id, kind}); anything with
 //   data-hx-document-annotation="<viewer>:<id>" activates (click) and highlights
 //   (hover/focus) it and carries aria-pressed while it is active
+// - start: data-hx-document-start="<document>:<page>" opens at that page,
+//   data-hx-document-selected="<annotation>" selects that annotation (and wins)
+// - document switcher (dv.files): filters its list while typing, ↑/↓ and Enter,
+//   closes on a click outside and on Escape
 (function () {
     "use strict";
 
@@ -25,10 +29,17 @@
         // target is already selected and the pages passed on the way are ignored.
         let lock = null;
 
-        function scrollTo(element, index, block) {
+        function scrollTo(element, index, block, behavior = "smooth") {
             lock = index;
             setCurrent(index);
-            element.scrollIntoView({ block, inline: "nearest", behavior: "smooth" });
+            if (behavior === "auto" && column) {
+                // where the viewer opens: move only the page column, not the page around the viewer
+                const offset = element.getBoundingClientRect().top - column.getBoundingClientRect().top;
+                const centre = (column.clientHeight - element.getBoundingClientRect().height) / 2;
+                column.scrollTop += block === "center" ? offset - centre : offset - parseFloat(getComputedStyle(column).paddingTop);
+            } else {
+                element.scrollIntoView({ block, inline: "nearest", behavior });
+            }
             clearTimeout(lock_timer);
             lock_timer = setTimeout(release, 1200);
         }
@@ -90,7 +101,14 @@
             root.querySelectorAll("[data-hx-document-goto]").forEach((thumb) => {
                 if (thumb.dataset.hxDocumentGoto === key) {
                     thumb.setAttribute("aria-current", "page");
-                    thumb.scrollIntoView({ block: "nearest" });
+                    // keep it in view within the rail only, never scrolling the page around the viewer
+                    const rail = thumb.closest(".hx-document-viewer__thumbnails");
+                    if (rail) {
+                        const t = thumb.getBoundingClientRect();
+                        const r = rail.getBoundingClientRect();
+                        if (t.top < r.top) rail.scrollTop += t.top - r.top;
+                        else if (t.bottom > r.bottom) rail.scrollTop += t.bottom - r.bottom;
+                    }
                 } else {
                     thumb.removeAttribute("aria-current");
                 }
@@ -122,14 +140,14 @@
             select(null);
         }
 
-        function activate(id, { scroll = true, toggle = false } = {}) {
+        function activate(id, { scroll = true, toggle = false, behavior = "smooth" } = {}) {
             const target = find(id);
             if (toggle && target && target.getAttribute("aria-pressed") === "true") {
                 clear();
                 return;
             }
             if (!select(id)) return;
-            if (scroll) scrollTo(target, pages.indexOf(target.closest("[data-hx-document-page]")), "center");
+            if (scroll) scrollTo(target, pages.indexOf(target.closest("[data-hx-document-page]")), "center", behavior);
         }
 
         function hover(id, on) {
@@ -220,7 +238,14 @@
 
         if (PHONE.matches) fit();
         else setZoom(1);
-        setCurrent(0);
+        // where the viewer opens: the selected annotation, else the start page, else the first page
+        const start = Math.max(0, indexOf(root.dataset.hxDocumentStart || ""));
+        const selected = root.dataset.hxDocumentSelected;
+        setCurrent(start);
+        requestAnimationFrame(() => {
+            if (selected && find(selected)) activate(selected, { behavior: "auto" });
+            else if (start > 0) scrollTo(pages[start], start, "start", "auto");
+        });
 
         root.hxDocumentViewer = { activate, clear, hover, goTo: (key) => goTo(indexOf(key)), setZoom, fit };
         return root.hxDocumentViewer;
@@ -248,6 +273,88 @@
             if (v) v.hover(id, on);
         });
     }
+
+    // ------------------------------------------------------------------ document switcher
+
+    const SWITCHER = ".hx-document-viewer__files-menu";
+    const searchable = (text) => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+    const shownEntries = (menu) => [...menu.querySelectorAll("a[data-hx-document-search]:not([hidden])")];
+
+    function filter(menu, value) {
+        const term = searchable(value.trim());
+        let matches = 0;
+        menu.querySelectorAll("[data-hx-document-search]").forEach((entry) => {
+            const match = !term || entry.dataset.hxDocumentSearch.includes(term);
+            entry.hidden = !match;
+            if (match) matches += 1;
+        });
+        menu.querySelectorAll(".hx-document-viewer__files-group").forEach((group) => {
+            group.hidden = !group.querySelector("[data-hx-document-search]:not([hidden])");
+        });
+        const count = menu.querySelector("[data-hx-document-files-matches]");
+        if (count) count.textContent = count.dataset.template.replace("{n}", String(matches));
+    }
+
+    function close(menu, focus) {
+        menu.removeAttribute("open");
+        if (focus) menu.querySelector("summary")?.focus();
+    }
+
+    document.addEventListener("input", (event) => {
+        const input = event.target.closest && event.target.closest("[data-hx-document-files-search]");
+        if (input) filter(input.closest(SWITCHER), input.value);
+    });
+
+    // opening it puts the focus into the search field
+    document.addEventListener("toggle", (event) => {
+        const menu = event.target;
+        if (menu.matches && menu.matches(SWITCHER) && menu.open) {
+            menu.querySelector("[data-hx-document-files-search]")?.focus();
+        }
+    }, true);
+
+    document.addEventListener("click", (event) => {
+        for (const menu of document.querySelectorAll(`${SWITCHER}[open]`)) {
+            if (!menu.contains(event.target)) close(menu, false);
+        }
+    });
+
+    // captured, so Escape closes the switcher before the viewer clears its selection
+    document.addEventListener("keydown", (event) => {
+        const menu = event.target.closest && event.target.closest(`${SWITCHER}[open]`);
+        if (!menu) {
+            if (event.key === "Escape") {
+                const open = document.querySelector(`${SWITCHER}[open]`);
+                if (open) {
+                    event.stopPropagation();
+                    close(open, true);
+                }
+            }
+            return;
+        }
+        if (event.key === "Escape") {
+            event.preventDefault();
+            event.stopPropagation();
+            close(menu, true);
+            return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "Enter") return;
+        const entries = shownEntries(menu);
+        const at = entries.indexOf(document.activeElement);
+        if (event.key === "Enter") {
+            // in the search field Enter opens the first entry shown; on an entry the link opens itself
+            if (at === -1 && entries.length) {
+                event.preventDefault();
+                entries[0].click();
+            }
+            return;
+        }
+        event.preventDefault();
+        if (!entries.length) return;
+        if (event.key === "ArrowDown") entries[Math.min(entries.length - 1, at + 1)].focus();
+        else if (at <= 0) menu.querySelector("[data-hx-document-files-search]")?.focus();
+        else entries[at - 1].focus();
+    }, true);
 
     function init(scope) {
         (scope || document).querySelectorAll("[data-hx-document-viewer]").forEach(viewer);

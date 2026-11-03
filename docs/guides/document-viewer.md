@@ -114,6 +114,43 @@ y.button(
 - A click on a mark or a pin dispatches `hx-document:annotation-select` on the viewer, with `detail.viewer`, `detail.id` and `detail.kind` (`"mark"` or `"note"`).
 - In your own JavaScript, `pyhx.documentViewer("case")` returns `activate(id)`, `clear()`, `goTo("anmeldung:9")`, `setZoom(1.5)` and `fit()`.
 
+## Opening at a page
+
+A link to a place in a document opens the viewer there, without a jump from page 1:
+
+```python
+dv(
+    id="case",
+    documents=[registration],
+    start="anmeldung:9",   # "<document id>:<page>": pager, title and thumbnail of that page
+    selected="beruf",      # an annotation: selected and scrolled into view; wins over start
+)[...]
+```
+
+The server renders the pager, the title, the current thumbnail and the page's image (loaded at once) for the start page; on load the viewer shows it without smooth scrolling. An unknown `start` opens the first page, an unknown `selected` selects nothing. Both are optional.
+
+## One document at a time: the document switcher
+
+With many documents (a case with hundreds of files), show one at a time and let `dv.files` switch between them:
+
+```python
+dv.toolbar[
+    dv.back(href="/cases/42", label="Case"),
+    dv.files([
+        vm.DocumentLink("MRI_LWS.pdf", href="/cases/42/documents?file=7", group="Radiology", detail="6 p.", current=True),
+        vm.DocumentLink("Befund.pdf", group="Radiology", detail="Pages not ready"),   # no href: greyed out
+        ...
+    ]),
+    dv.pager(), dv.zoom(), dv.fit(),
+]
+```
+
+- The button shows the current entry's title and group; it opens a dropdown directly below it with a search field, the entries under their groups (in the order given, so sort them), each with its `detail`, the current one checked.
+- Typing filters by title and group in the browser (case and accents ignored); ↑/↓ move through the entries, Enter opens one; a click outside or Esc closes the dropdown.
+- Beside it, previous and next document (the neighbouring entries with a link) and the position ("4 of 37 documents").
+- An entry without `href` is shown greyed out and can't be chosen. Choosing an entry follows its `href`: the app renders the viewer with that document.
+- At phone width the dropdown spans the toolbar and its entries are 44 px high.
+
 ## Sidebar and phone width
 
 `dv.sidebar[...]` is a pane for your content beside the pages, scrolling on its own; set its width with the CSS custom property `--document-viewer--sidebar-width` (default 22rem). Below 40rem the thumbnails are hidden, the toolbar wraps, the pages start at fit to width and the sidebar moves below the pages. On touch devices two fingers zoom.
