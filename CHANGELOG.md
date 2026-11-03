@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.10.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.9.0...v1.10.0) (2026-11-03)
+
+
+### Features
+
+* page sections in the canvas design (T-016) ([#57](https://github.com/cokeSchlumpf/pyhx/issues/57)) ([5393c17](https://github.com/cokeSchlumpf/pyhx/commit/5393c17b8ad2f9f3532ad2fd84643b6f2459a6cd))
+
 ## [1.9.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.8.1...v1.9.0) (2026-11-03)
 
 
