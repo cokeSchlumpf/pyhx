@@ -297,6 +297,7 @@ CustomIconName = Literal[
     "chevron-down-2",
     "document",
     "exclamation",
+    "folder-2",
     "pencil",
     "send-2",
     "swap",
