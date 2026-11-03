@@ -23,7 +23,11 @@ The framework takes care of the wire protocol:
 - a :data:`STREAM_ERROR_EVENT` (followed by the close event) when the
   generator raises,
 - closing the generator (``aclose()``) when the client disconnects, so
-  ``finally`` blocks in app code run.
+  ``finally`` blocks in app code run,
+- ending every open stream, without the close event, when the process is
+  asked to stop (``SIGTERM``, ``SIGINT``) or :func:`end_streams` is called,
+  so the server doesn't wait for them and the browser reconnects to the next
+  process.
 
 The generator is advanced to its first item *before* the response starts.
 Anything raised up to the first ``yield`` (e.g. an auth check) therefore goes
@@ -34,6 +38,8 @@ fragment.
 import asyncio
 import functools
 import inspect
+import signal
+import threading
 import traceback
 from collections.abc import (
     AsyncIterable,
@@ -45,6 +51,7 @@ from collections.abc import (
 )
 from dataclasses import dataclass
 from http import HTTPMethod
+from types import FrameType
 from typing import Any, Final, Protocol
 
 import anyio
@@ -76,6 +83,83 @@ _SSE_HEADERS: Final = {
 # How long a disconnected stream waits for the app's cleanup (``finally``
 # blocks) before giving up on it.
 _CLEANUP_TIMEOUT: Final = 5.0
+
+
+class _OpenStreams:
+    """The open streams of the process, to end them all when it stops.
+
+    Once ended, streams that start afterwards end at once too: the process is
+    on its way out.
+    """
+
+    def __init__(self) -> None:
+        self._ending = False
+        self._waiters: set[tuple[asyncio.AbstractEventLoop, asyncio.Event]] = set()
+
+    async def wait_for_end(self) -> None:
+        """Return when the streams are ended."""
+        if self._ending:
+            return
+        entry = (asyncio.get_running_loop(), asyncio.Event())
+        self._waiters.add(entry)
+        try:
+            await entry[1].wait()
+        finally:
+            self._waiters.discard(entry)
+
+    def end(self) -> None:
+        """End all open streams and the ones started later; safe from any thread and from signal handlers."""
+        self._ending = True
+        for loop, event in list(self._waiters):
+            try:
+                loop.call_soon_threadsafe(event.set)
+            except RuntimeError:  # the loop is closed already
+                pass
+
+
+_open_streams = _OpenStreams()
+
+_HOOKED_SIGNALS: Final = (signal.SIGINT, signal.SIGTERM)
+
+
+def end_streams() -> None:
+    """End every open stream of the process, and every stream started later.
+
+    Each response ends without :data:`STREAM_CLOSE_EVENT`, so the browser
+    reconnects, e.g. to the process that replaces this one. pyhx calls it when
+    the process receives ``SIGTERM`` or ``SIGINT``; call it yourself where a
+    server stops in another way. Safe from any thread.
+    """
+    _open_streams.end()
+
+
+def _hook_signals() -> None:
+    """Make ``SIGTERM`` and ``SIGINT`` end the open streams, then run the handlers installed before.
+
+    Servers like uvicorn wait for open responses before they shut down and tell
+    them nothing, so a stream would keep the process alive. The server installs
+    its handlers before it starts the app, so they are wrapped when the first
+    stream starts. Only the main thread may install signal handlers; elsewhere
+    (e.g. in a test client) nothing is wrapped.
+    """
+    if threading.current_thread() is not threading.main_thread():
+        return
+    for sig in _HOOKED_SIGNALS:
+        previous = signal.getsignal(sig)
+        if not callable(previous) or getattr(previous, "_pyhx_ends_streams", False):
+            continue
+        signal.signal(sig, _ending_handler(previous))
+
+
+def _ending_handler(
+    previous: Callable[[int, FrameType | None], Any],
+) -> Callable[[int, FrameType | None], Any]:
+    def handler(sig: int, frame: FrameType | None) -> Any:
+        end_streams()
+        return previous(sig, frame)
+
+    handler._pyhx_ends_streams = True  # type: ignore[attr-defined]
+    return handler
 
 
 @dataclass(frozen=True)
@@ -214,14 +298,27 @@ async def _sse_frames(
     """Turn ``events`` into SSE frames, adding keepalives, error and close events.
 
     The next item is awaited in a separate task so that a keepalive can be sent
-    while the generator is busy without cancelling it.
+    while the generator is busy without cancelling it. When the streams are
+    ended (:func:`end_streams`), the frames stop without the close event, so the
+    browser reconnects.
     """
+    _hook_signals()
     pending: asyncio.Task[Any] | None = None
+    ending = asyncio.ensure_future(_open_streams.wait_for_end())
     try:
         try:
             while True:
                 pending = asyncio.create_task(_next_or_end(events))
-                while not (await asyncio.wait({pending}, timeout=keepalive))[0]:
+                while True:
+                    done, _ = await asyncio.wait(
+                        {pending, ending},
+                        timeout=keepalive,
+                        return_when=asyncio.FIRST_COMPLETED,
+                    )
+                    if pending in done:
+                        break
+                    if ending in done:
+                        return
                     yield ": keepalive\n\n"
                 item = pending.result()
                 pending = None
@@ -235,6 +332,7 @@ async def _sse_frames(
             )
         yield await encode_event(SseEvent(event=STREAM_CLOSE_EVENT))
     finally:
+        ending.cancel()
         with anyio.move_on_after(_CLEANUP_TIMEOUT, shield=True):
             if pending is not None:
                 # Cancelling the task throws CancelledError into the app's
