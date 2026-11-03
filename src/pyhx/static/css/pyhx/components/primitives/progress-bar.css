@@ -1,0 +1,236 @@
+/* --- Progress bar ---
+   A read-only track with a filled part, optionally with a label and a value
+   above and a supporting line below. The server sets the fill's width as
+   `--progress-bar--value` (a CSS percentage). Modes: static, working
+   (`--working` plus a motion: `--sheen`, `--stripes`, `--pulse`) and
+   waiting (`--waiting`: no value, a segment travels along the track). */
+
+.hx-progress-bar {
+    /* Tokens */
+    --progress-bar--color: var(--hx-color-primary);
+    --progress-bar--height: 0.5rem;
+    --progress-bar--track-color: var(--hx-slider--track-color, var(--hx-color-neutral-300));
+    --progress-bar--radius: var(--hx-radius-full);
+    --progress-bar--sheen: rgb(255 255 255 / 0.55);
+    --progress-bar--stripe: rgb(255 255 255 / 0.3);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+}
+
+.hx-progress-bar__head {
+    /* Layout */
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--hx-spacing-sm);
+
+    /* Typography */
+    font-size: var(--hx-text-sm);
+    line-height: 1.4;
+}
+
+.hx-progress-bar__label {
+    /* Box */
+    min-width: 0;
+
+    /* Typography */
+    color: var(--hx-color-text);
+    font-weight: var(--hx-font-medium);
+    overflow-wrap: anywhere;
+}
+
+.hx-progress-bar__value {
+    /* Layout */
+    flex-shrink: 0;
+
+    /* Typography */
+    color: var(--hx-color-neutral-700);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.hx-progress-bar__supporting-text {
+    /* Typography */
+    color: var(--hx-color-neutral-600);
+    font-size: var(--hx-text-xs);
+    line-height: 1.35;
+}
+
+
+/* --- Track and fill --- */
+
+.hx-progress-bar__track {
+    /* Positioning */
+    position: relative;
+
+    /* Box */
+    height: var(--progress-bar--height);
+    border-radius: var(--progress-bar--radius);
+    overflow: hidden;
+
+    /* Visual */
+    background-color: var(--progress-bar--track-color);
+}
+
+.hx-progress-bar__fill {
+    /* Positioning */
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+
+    /* Box */
+    width: var(--progress-bar--value, 0%);
+    border-radius: inherit;
+
+    /* Visual */
+    background-color: var(--progress-bar--color);
+}
+
+
+/* --- Working: the filled part moves --- */
+
+.hx-progress-bar--sheen .hx-progress-bar__fill {
+    /* Visual */
+    background-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--progress-bar--sheen) 50%,
+        transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 60% 100%;
+
+    /* Animation */
+    animation: hx-progress-bar-sheen 1.6s linear infinite;
+}
+
+.hx-progress-bar--stripes .hx-progress-bar__fill {
+    /* Visual
+       Stripes 6px wide at 45°: one period along the x axis is
+       12px / sin(45°) = 16.97px, so moving by that loops seamlessly. */
+    background-image: repeating-linear-gradient(
+        -45deg,
+        var(--progress-bar--stripe) 0 6px,
+        transparent 6px 12px
+    );
+    background-size: 16.97px 16.97px;
+
+    /* Animation */
+    animation: hx-progress-bar-stripes 0.8s linear infinite;
+}
+
+.hx-progress-bar--pulse .hx-progress-bar__fill {
+    /* Animation */
+    animation: hx-progress-bar-pulse 1.8s ease-in-out infinite;
+}
+
+
+/* --- Waiting: no value, a segment travels along the track --- */
+
+.hx-progress-bar--waiting .hx-progress-bar__fill {
+    /* Box */
+    width: 35%;
+
+    /* Animation */
+    animation: hx-progress-bar-waiting 1.4s ease-in-out infinite;
+}
+
+@keyframes hx-progress-bar-sheen {
+    from { background-position: -150% 0; }
+    to   { background-position: 250% 0; }
+}
+
+@keyframes hx-progress-bar-stripes {
+    to { background-position: 16.97px 0; }
+}
+
+@keyframes hx-progress-bar-pulse {
+    50% { opacity: 0.5; }
+}
+
+@keyframes hx-progress-bar-waiting {
+    from { inset-inline-start: -35%; }
+    to   { inset-inline-start: 100%; }
+}
+
+/* Nothing moves when the system asks for reduced motion; a waiting bar
+   shows a faint full track instead of the travelling segment. */
+@media (prefers-reduced-motion: reduce) {
+    .hx-progress-bar__fill {
+        animation: none;
+    }
+
+    .hx-progress-bar--waiting .hx-progress-bar__fill {
+        inset-inline-start: 0;
+        width: 100%;
+        opacity: 0.35;
+    }
+}
+
+
+/* --- Appearances --- */
+
+.hx-progress-bar--neutral {
+    --progress-bar--color: var(--hx-color-neutral-600);
+}
+
+.hx-progress-bar--primary {
+    --progress-bar--color: var(--hx-color-primary);
+}
+
+.hx-progress-bar--info {
+    --progress-bar--color: var(--hx-color-info-600);
+}
+
+.hx-progress-bar--success {
+    --progress-bar--color: var(--hx-color-success-600);
+}
+
+.hx-progress-bar--warning {
+    --progress-bar--color: var(--hx-color-warning-600);
+}
+
+.hx-progress-bar--danger {
+    --progress-bar--color: var(--hx-color-danger-600);
+}
+
+
+/* --- Sizes: only the bar's height --- */
+
+.hx-progress-bar--sm {
+    --progress-bar--height: 0.25rem;
+}
+
+.hx-progress-bar--lg {
+    --progress-bar--height: 0.75rem;
+}
+
+
+/* --- Canvas design: primary is the text colour, a lighter track ---
+   Heights in px, as in the draft (the canvas design runs on a 16px root,
+   the default design on 14px). */
+
+[data-hx-design="canvas"] .hx-progress-bar {
+    --progress-bar--track-color: var(--hx-color-neutral-200);
+    --progress-bar--height: 8px;
+}
+
+[data-hx-design="canvas"] .hx-progress-bar--primary {
+    --progress-bar--color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-progress-bar--neutral {
+    --progress-bar--color: var(--hx-color-neutral-500);
+}
+
+[data-hx-design="canvas"] .hx-progress-bar--sm {
+    --progress-bar--height: 4px;
+}
+
+[data-hx-design="canvas"] .hx-progress-bar--lg {
+    --progress-bar--height: 12px;
+}
