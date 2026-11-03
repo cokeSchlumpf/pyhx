@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.11.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.10.0...v1.11.0) (2026-11-03)
+
+
+### Features
+
+* **stream:** end open streams when the server shuts down ([#59](https://github.com/cokeSchlumpf/pyhx/issues/59)) ([f0ad9d6](https://github.com/cokeSchlumpf/pyhx/commit/f0ad9d614420066d3f42a4c212e4c3c57cb57d25))
+
 ## [1.10.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.9.0...v1.10.0) (2026-11-03)
 
 
