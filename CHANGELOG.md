@@ -2,6 +2,14 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.8.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.7.0...v1.8.0) (2026-11-03)
+
+
+### Features
+
+* progress bar ([#50](https://github.com/cokeSchlumpf/pyhx/issues/50)) ([20e033b](https://github.com/cokeSchlumpf/pyhx/commit/20e033be43c47a2de5a5783f1af2a531277c9f4b))
+* server-sent events ([#48](https://github.com/cokeSchlumpf/pyhx/issues/48)) ([53f3406](https://github.com/cokeSchlumpf/pyhx/commit/53f34068d71143ca49df8c019d6bf5d99d7f75e8))
+
 ## [1.7.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.6.0...v1.7.0) (2026-11-03)
 
 
