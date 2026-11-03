@@ -25,4 +25,6 @@ class TestCanvasPageSections:
         section = (CSS / "pyhx" / "components" / "layout" / "page-section.css").read_text()
 
         assert ".hx-page-section__content > .hx-table__wrapper {" in shell
+        # Without scrollable=True there is no scroll container: the table itself is the card's body.
+        assert "& > :is(.hx-table__scroll-container, .hx-table) {" in shell
         assert '[data-hx-design="canvas"] .hx-page-section__header {' in section

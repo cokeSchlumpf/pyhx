@@ -44,6 +44,7 @@ None.
 Implemented as specified.
 
 - **F1** `DataTable.render()` returns the `.hx-table__wrapper` itself, so the card rule matches a table passed directly as a section's `content`; a table wrapped in another element keeps the plain look.
+- **F2** The card's body was only the scroll container, which a `DataTable` has with `scrollable=True` (as a `DataPage` always passes); a table without it had borders on its search bar and footer but not beside its rows. The card's body is now the scroll container or, without one, the table itself (the developer's review of the sample).
 
 | Page | Before | After |
 | --- | --- | --- |
