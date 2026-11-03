@@ -87,6 +87,8 @@ class TestJob:
         assert names[-1] == STREAM_CLOSE_EVENT
         assert "status" in names[3:] and "progress" in names[3:]
         assert "Finished" in body
+        assert "hx-progress-bar--working" in body  # while the job runs
+        assert "hx-progress-bar--success" in body  # when it is finished
         assert job.JOBS[job_id].status == "finished"
 
     def test_the_current_state_comes_first_and_a_finished_job_ends(self):

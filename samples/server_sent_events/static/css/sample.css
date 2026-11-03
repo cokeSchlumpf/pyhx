@@ -15,8 +15,6 @@
 .sample-job { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 36rem; padding: 0.75rem 1rem; border: 1px solid var(--hx-color-neutral-200, #e4e4e7); background: var(--hx-color-neutral-50, #fafafa); }
 .sample-job__head, .sample-job__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; }
 .sample-job__foot { font-size: 0.75rem; color: var(--hx-color-neutral-600, #52525b); }
-.sample-job progress { width: 100%; height: 0.5rem; }
-.sample-job__stage { margin: 0; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 .sample-job__actions { display: flex; gap: 0.75rem; align-items: center; }
 .sample-job__drop { padding: 0; border: 0; background: none; color: var(--hx-color-primary-600, #2563eb); font: inherit; cursor: pointer; text-decoration: underline; }
 .sample-job__actions a, .sample-job__drop { font-size: 0.75rem; }

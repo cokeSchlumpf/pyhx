@@ -24,6 +24,7 @@ from fastapi import Header, HTTPException
 from pydantic import BaseModel
 
 import pyhx.components as c
+from pyhx.components.view_model import Pct
 from pyhx.core import SseEvent, StreamItem, WebAppRouter
 
 # docs:end imports
@@ -161,13 +162,16 @@ def status_pill(state: JobState) -> y.Node:
 
 
 def progress(state: JobState) -> y.Node:
+    done = Pct.clamp(state.pages_done / state.pages_total)
     left = f" · about {state.seconds_left} s left" if state.seconds_left else ""
-    return [
-        y.progress(value=str(state.pages_done), max=str(state.pages_total)),
-        y.p(".sample-job__stage")[
-            f"{state.stage} · {state.pages_done} of {state.pages_total} pages{left}"
-        ],
-    ]
+    return c.progress_bar(
+        None if state.status == "queued" else done,  # queued: waiting, no value
+        working=state.status == "running",
+        appearance="success" if state.status == "finished" else "primary",
+        label=state.stage,
+        value_text=f"{done.percent:.0f} %",
+        supporting_text=f"{state.pages_done} of {state.pages_total} pages{left}",
+    )
 
 
 # docs:end page
