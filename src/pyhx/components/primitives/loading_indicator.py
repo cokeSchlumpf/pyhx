@@ -9,7 +9,10 @@ the app simply no longer renders it::
     loading_indicator(label="Import running", kind="ripple", appearance="info")
     loading_indicator(label="Being processed", kind="pulse", size="sm")
 
-Screen readers announce its ``label`` (``role="status"``). Which kind to use:
+Screen readers announce its ``label`` (``role="status"``). Inside a button or
+a link, the label becomes part of their accessible name: choose one that
+reads on from their text (``"Import"`` and ``"running"``), or give the button
+its own ``aria_label``. Which kind to use:
 
 - ``spinner`` (the default): a turning arc, for short waits and inside
   buttons whose own action runs.
@@ -74,7 +77,8 @@ def loading_indicator(
 
     Examples
     --------
-    >>> c.button(["Saving", loading_indicator(label="Saving", size="sm")])
+    >>> c.button([loading_indicator(label="Saving", size="sm"), "Saving"],
+    ...          appearance="primary", aria_label="Saving")
     >>> c.pill([loading_indicator(label="Import running", kind="ripple",
     ...                           appearance="info", size="sm"), "Import 35 %"])
     """

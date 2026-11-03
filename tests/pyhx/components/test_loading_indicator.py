@@ -17,9 +17,9 @@ def _css() -> str:
 
 
 def _rule(selector: str, css: str | None = None) -> str:
-    """The declarations of the first rule for ``selector`` in ``css``."""
+    """The declarations of the last rule for ``selector`` in ``css``."""
     css = _css() if css is None else css
-    start = css.index(f"\n{selector} {{") + len(selector) + 3
+    start = css.rindex(f"\n{selector} {{") + len(selector) + 3
     return css[start : css.index("}", start)]
 
 
@@ -104,7 +104,10 @@ class TestStyles:
         rule = _rule(".hx-loading-indicator")
 
         assert "align-items: center;" in rule
-        assert "vertical-align: middle;" in rule
+        assert (
+            "vertical-align: calc(0.5cap - var(--loading-indicator--height) / 2);"
+            in rule
+        )
 
     @pytest.mark.parametrize(
         "selector",
@@ -168,3 +171,43 @@ class TestStyles:
         assert "var(--hx-color-text)" in _rule(
             '[data-hx-design="canvas"] .hx-loading-indicator--primary'
         )
+
+
+def _keyframes(name: str) -> str:
+    css = _css()
+    block = css[css.index(f"@keyframes {name} ") :]
+    return block[: block.index("\n}") + 2]
+
+
+class TestMotionStaysInsideTheBox:
+    """Nothing paints outside the mark's box, so the gap next to it counts."""
+
+    def test_ripple_box_holds_its_ring(self) -> None:
+        rule = _rule(".hx-loading-indicator--ripple")
+
+        assert "width: var(--loading-indicator--box);" in rule
+        assert "height: var(--loading-indicator--box);" in rule
+        # The ring starts at the dot (half the box) and grows to twice it.
+        assert "transform: scale(2);" in _keyframes("hx-loading-indicator-ripple")
+
+    def test_ripple_dot_and_ring_are_centred(self) -> None:
+        rule = _rule(
+            ".hx-loading-indicator--ripple::before,\n"
+            ".hx-loading-indicator--ripple::after"
+        )
+
+        assert "top: 50%;" in rule
+        assert "left: 50%;" in rule
+        assert "width: var(--loading-indicator--dot);" in rule
+
+    def test_pulse_only_shrinks(self) -> None:
+        keyframes = _keyframes("hx-loading-indicator-pulse")
+
+        assert "scale(1)" in keyframes
+        assert "scale(0.8)" in keyframes
+
+    def test_bars_never_grow_beyond_their_height(self) -> None:
+        keyframes = _keyframes("hx-loading-indicator-bar")
+
+        assert "scaleY(1)" in keyframes
+        assert "scaleY(0.35)" in keyframes

@@ -3,7 +3,7 @@
    inline element per kind (`--spinner`, `--ripple`, `--pulse`, `--dots`,
    `--bars`); dots and bars draw from three `__part`s. The mark centres on
    the line it stands in: by `align-items` in a flex row (buttons, pills),
-   by `vertical-align` in running text. Its shapes use `background-color`
+   by its `vertical-align` in running text. Its shapes use `background-color`
    and borders only, so Pico's reset (`background-repeat` on every element)
    has nothing to change; it is `role="status"` and never `aria-busy`, so
    Pico's busy spinner doesn't reach it. */
@@ -13,10 +13,12 @@
        `--dot` is the size of a dot (and twice a bar's width), `--box` the
        size of the spinner and the height of the bars. The ring of the
        spinner derives from the mark's own colour, so it stays faint on a
-       light background and visible on a solid one. */
+       light background and visible on a solid one. `--height` is the
+       height of the mark, set per kind. */
     --loading-indicator--color: var(--hx-color-primary);
     --loading-indicator--dot: 8px;
     --loading-indicator--box: 16px;
+    --loading-indicator--height: var(--loading-indicator--dot);
     --loading-indicator--track: color-mix(in srgb, currentColor 15%, transparent);
 
     /* Positioning */
@@ -27,7 +29,10 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    vertical-align: middle;
+    /* In running text, the mark's centre sits at half the cap height above
+       the baseline, where the text looks centred (`middle` would use the
+       x-height and sit low). A flex row ignores this and centres it. */
+    vertical-align: calc(0.5cap - var(--loading-indicator--height) / 2);
 
     /* Box */
     box-sizing: border-box;
@@ -39,9 +44,11 @@
 
 /* --- Kinds --- */
 
-/* Pulse and ripple: a dot. */
-.hx-loading-indicator--pulse,
-.hx-loading-indicator--ripple {
+/* Every kind keeps its motion inside its own box, so the gap next to the
+   mark (e.g. a button's gap) is the visible spacing. */
+
+/* Pulse: a dot that breathes; it only shrinks. */
+.hx-loading-indicator--pulse {
     /* Box */
     width: var(--loading-indicator--dot);
     height: var(--loading-indicator--dot);
@@ -49,31 +56,49 @@
 
     /* Visual */
     background-color: currentColor;
-}
 
-.hx-loading-indicator--pulse {
     /* Animation */
     animation: hx-loading-indicator-pulse 1.8s ease-in-out infinite;
 }
 
-/* The ripple's ring is drawn over the dot and takes no space. */
+/* Ripple: the box is as big as the ring (twice the dot); the dot
+   (`::before`) and the ring (`::after`) are centred in it, and the ring
+   grows to the box's edge. */
+.hx-loading-indicator--ripple {
+    --loading-indicator--height: var(--loading-indicator--box);
+
+    /* Box */
+    width: var(--loading-indicator--box);
+    height: var(--loading-indicator--box);
+}
+
+.hx-loading-indicator--ripple::before,
 .hx-loading-indicator--ripple::after {
     /* Positioning */
     position: absolute;
-    inset: 0;
+    top: 50%;
+    left: 50%;
 
     /* Box */
+    width: var(--loading-indicator--dot);
+    height: var(--loading-indicator--dot);
+    margin: calc(var(--loading-indicator--dot) / -2) 0 0
+        calc(var(--loading-indicator--dot) / -2);
     border-radius: 50%;
 
     /* Visual */
     background-color: currentColor;
     content: "";
+}
 
+.hx-loading-indicator--ripple::after {
     /* Animation */
     animation: hx-loading-indicator-ripple 2s ease-out infinite;
 }
 
 .hx-loading-indicator--spinner {
+    --loading-indicator--height: var(--loading-indicator--box);
+
     /* Box */
     width: var(--loading-indicator--box);
     height: var(--loading-indicator--box);
@@ -110,6 +135,8 @@
 }
 
 .hx-loading-indicator--bars {
+    --loading-indicator--height: var(--loading-indicator--box);
+
     /* Layout */
     align-items: flex-end;
     gap: 2px;
@@ -152,7 +179,7 @@
 
 @keyframes hx-loading-indicator-ripple {
     from { opacity: 0.45; transform: scale(1); }
-    to   { opacity: 0; transform: scale(3); }
+    to   { opacity: 0; transform: scale(2); }
 }
 
 @keyframes hx-loading-indicator-spin {
