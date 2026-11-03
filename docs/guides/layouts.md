@@ -200,6 +200,20 @@ In both designs:
 - An open drawer and its backdrop are drawn above the page (page header and sticky table header included) and below the top bar. The page behind it doesn't scroll, also not when the drawer's content ends or fits.
 - Focus moves into a drawer when it opens and back when it closes; Esc closes the topmost drawer.
 
+### Pages with several tables
+
+A page with more than one table uses the same parts as a `DataPage`: a `page_header`, then one `page_section` per table, each with a `DataTable` (rendered with `await table.render()`) as its content. In the canvas design the section is a heading on the canvas, like the page header: its title, and its actions (e.g. a short note) on the right; no band, no line and no glow between sections, and it doesn't stick. A `DataTable` directly in a section's content is the same white card as the table of a `DataPage`. The page `/page-sections` of `samples/canvas_layout` shows it.
+
+```python
+@router.page("/usage")
+async def usage() -> y.Node:
+    return y.fragment[
+        c.page_header(breadcrumbs=..., title=y.h1["Usage"], actions=month_switch),
+        c.page_section(title=y.h2["Users"], content=await users_table.render()),
+        c.page_section(title=y.h2["Cases"], content=await cases_table.render()),
+    ]
+```
+
 `/data-page`, `/data-page-detail` (create drawer with `form_label_position="top"`) and `/forms` (a form with `label_position="left"`) of `samples/canvas_layout` show it.
 
 Drawers, notifications and htmx error toasts are mounted like in `AppShell`, so drawer-based components keep working. The design's token values live in `static/css/themes/canvas.css`; see `samples/canvas_layout` for a runnable example.
