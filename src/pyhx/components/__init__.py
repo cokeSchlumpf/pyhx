@@ -25,6 +25,7 @@ from .data import (
     annotations,
 )
 from .layouts import (
+    DIALOG_CONTENT_ID,
     DRAWER_CONTENT_ID,
     NOTIFICATION_ERROR_TEMPLATE_ID,
     NOTIFICATIONS_CONTAINER_ID,
@@ -32,8 +33,11 @@ from .layouts import (
     ContainerWidth,
     breadcrumbs,
     card,
+    close_dialog,
     code,
     container,
+    dialog,
+    dialog_content,
     document_viewer,
     drawer,
     drawer_content,
@@ -43,6 +47,7 @@ from .layouts import (
     notification_card,
     notification_error_template,
     notifications,
+    open_dialog_htmx_attributes,
     open_drawer_htmx_attributes,
     page_header,
     page_section,
@@ -116,6 +121,7 @@ from .view_model import (
 )
 
 __all__ = [
+    "DIALOG_CONTENT_ID",
     "DRAWER_CONTENT_ID",
     "NOTIFICATIONS_CONTAINER_ID",
     "NOTIFICATION_ERROR_TEMPLATE_ID",
@@ -181,9 +187,12 @@ __all__ = [
     "card",
     "checkbox_fieldset",
     "chronicle",
+    "close_dialog",
     "code",
     "conditional_select",
     "container",
+    "dialog",
+    "dialog_content",
     "document_viewer",
     "drawer",
     "drawer_action_table",
@@ -209,6 +218,7 @@ __all__ = [
     "notification_card",
     "notification_error_template",
     "notifications",
+    "open_dialog_htmx_attributes",
     "open_drawer_htmx_attributes",
     "page_header",
     "page_section",

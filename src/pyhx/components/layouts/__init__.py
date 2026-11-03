@@ -2,6 +2,13 @@ from .breadcrumbs import breadcrumbs
 from .card import card
 from .code import code
 from .container import ContainerWidth, container
+from .dialog import (
+    DIALOG_CONTENT_ID,
+    close_dialog,
+    dialog,
+    dialog_content,
+    open_dialog_htmx_attributes,
+)
 from .document_viewer import document_viewer
 from .drawer import (
     DRAWER_CONTENT_ID,
@@ -28,6 +35,7 @@ from .page_section import page_section
 from .split_layout import split_layout
 
 __all__ = [
+    "DIALOG_CONTENT_ID",
     "DRAWER_CONTENT_ID",
     "NOTIFICATIONS_CONTAINER_ID",
     "NOTIFICATION_ERROR_TEMPLATE_ID",
@@ -35,9 +43,12 @@ __all__ = [
     "ContainerWidth",
     "breadcrumbs",
     "card",
+    "close_dialog",
     "close_drawer",
     "code",
     "container",
+    "dialog",
+    "dialog_content",
     "document_viewer",
     "drawer",
     "drawer_content",
@@ -47,6 +58,7 @@ __all__ = [
     "notification_card",
     "notification_error_template",
     "notifications",
+    "open_dialog_htmx_attributes",
     "open_drawer_htmx_attributes",
     "page_header",
     "page_section",

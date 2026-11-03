@@ -11,7 +11,7 @@
 
 Deviations from the spec:
 
-- None yet.
+- **D1** The translation of the close button's label (step 3) is done in step 1: `poe check` fails on a missing translation, and every step's commit keeps it green. Step 3 remains for texts added later.
 
 ## Branching
 

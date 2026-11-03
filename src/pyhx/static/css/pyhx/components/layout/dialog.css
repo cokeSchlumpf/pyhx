@@ -1,0 +1,210 @@
+/* --- Dialog (modal, opened by the server) ---
+
+   `c.dialog()` is the mount: a backdrop and a <dialog>. The server swaps the
+   <dialog> out of band; with content it carries `open`, which shows the mount
+   through `:has()`. The dialog is not shown with `showModal()`: the browser's
+   top layer would cover the drawers, which must open above a dialog. So the
+   mount sits at `--hx-z-dialog` (below the drawers) and pyhx.dialog.js makes
+   the rest of the page inert. */
+
+.hx-dialog {
+    /* Interaction */
+    display: none;
+}
+
+.hx-dialog:has(> dialog[open]) {
+    /* Position */
+    position: fixed;
+    inset: 0;
+    z-index: var(--hx-z-dialog);
+
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Box */
+    padding: var(--hx-spacing-md);
+}
+
+.hx-dialog__backdrop {
+    /* Position */
+    position: absolute;
+    inset: 0;
+
+    /* Visual */
+    background-color: var(--hx-color-overlay-dark);
+}
+
+/* Pico styles every <dialog> as a full-screen overlay; the values it sets
+   are reset here, the mount is the overlay. */
+.hx-dialog > dialog {
+    /* Position */
+    position: relative;
+    inset: auto;
+    z-index: auto;
+
+    /* Box */
+    width: 100%;
+    min-width: 0;
+    max-width: 32rem;
+    height: auto;
+    min-height: 0;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--hx-radius-lg);
+    overflow: hidden;
+
+    /* Visual */
+    color: var(--hx-color-text);
+    background-color: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-md);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+
+    /* Focused on open when nothing in it has `autofocus` (pyhx.dialog.js). */
+    &:focus {
+        /* Box */
+        outline: none;
+    }
+
+    &[open] {
+        /* Layout */
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Header and footer stay, the content scrolls when the dialog is taller
+   than the window (e.g. at phone width). */
+.hx-dialog__form {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    /* Box */
+    margin: 0;
+
+    > header {
+        /* Layout */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--hx-spacing-md);
+        flex: 0 0 auto;
+
+        /* Box */
+        min-height: 3.5rem;
+        padding: var(--hx-spacing-sm) var(--hx-spacing-sm) var(--hx-spacing-sm) var(--hx-spacing-lg);
+        border-bottom: 1px solid var(--hx-color-neutral-200);
+
+        > h2 {
+            /* Box */
+            margin: 0;
+
+            /* Typography */
+            font-size: var(--hx-text-xl);
+            font-weight: var(--hx-font-semibold);
+        }
+    }
+
+    > section {
+        /* Layout */
+        display: flex;
+        flex-direction: column;
+        gap: var(--hx-spacing-md);
+        flex: 1 1 auto;
+
+        /* Box */
+        min-height: 0;
+        padding: var(--hx-spacing-lg);
+        overflow-y: auto;
+
+        /* Typography */
+        font-size: var(--hx-text-body);
+        line-height: 1.5;
+
+        > * {
+            /* Box */
+            margin: 0;
+        }
+    }
+
+    > footer {
+        /* Layout */
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: var(--hx-spacing-sm);
+        flex: 0 0 auto;
+
+        /* Box */
+        padding: var(--hx-spacing-md) var(--hx-spacing-lg);
+        border-top: 1px solid var(--hx-color-neutral-200);
+
+        /* Visual */
+        background-color: var(--hx-color-neutral-050);
+    }
+
+    > footer:empty {
+        /* Interaction */
+        display: none;
+    }
+}
+
+/* While a dialog is open the page behind it doesn't scroll. */
+html:has(.hx-dialog > dialog[open]) {
+    /* Box */
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+
+/* --- Canvas design: rounder, white footer, title as in the drawer --- */
+
+[data-hx-design="canvas"] .hx-dialog > dialog {
+    /* Box */
+    border-radius: 0.75rem;
+}
+
+[data-hx-design="canvas"] .hx-dialog__form {
+    > header > h2 {
+        /* Typography */
+        font-size: var(--hx-text-lg);
+    }
+
+    > footer {
+        /* Visual */
+        background-color: var(--hx-color-background);
+    }
+}
+
+/* --- Phone width: actions across the full width, stacked --- */
+
+@media (max-width: 480px) {
+    .hx-dialog__form {
+        > header {
+            /* Box */
+            padding-left: var(--hx-spacing-md);
+        }
+
+        > section,
+        > footer {
+            /* Box */
+            padding-inline: var(--hx-spacing-md);
+        }
+
+        > footer {
+            /* Layout */
+            flex-direction: column-reverse;
+
+            > * {
+                /* Box */
+                width: 100%;
+                min-height: 2.75rem;
+            }
+        }
+    }
+}
