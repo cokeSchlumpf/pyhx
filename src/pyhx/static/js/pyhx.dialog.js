@@ -2,8 +2,9 @@
  * Dialog behaviour shared by every page template (see dialog.css):
  *
  * - While the dialog is open, every other child of <body> is inert, except the
- *   drawers and the notifications: a drawer opened from the dialog works
- *   above it. On close, only the `inert` set here is removed again.
+ *   notifications and the open drawers: a drawer opened from the dialog works
+ *   above it, closed drawers are inert too (their close button would stay in
+ *   the tab order). On close, only the `inert` set here is removed again.
  * - When the dialog opens, focus moves to the element with `autofocus` in it,
  *   or to the dialog; when it closes, focus returns to the element that had it
  *   before, or to the page's <main>. When an answer replaces the content,
@@ -19,8 +20,32 @@
 
     const dialogOf = (mount) => mount.querySelector(':scope > dialog');
     const isOpen = (mount) => !!dialogOf(mount)?.hasAttribute('open');
-    const isDrawerOpen = () => [...document.querySelectorAll('.hx-drawer')]
-        .some((drawer) => drawer.querySelector(':scope > aside > section > *'));
+    const drawers = () => [...document.querySelectorAll('.hx-drawer')];
+    const isDrawerPanelOpen = (drawer) => !!drawer.querySelector(':scope > aside > section > *');
+    const isDrawerOpen = () => drawers().some(isDrawerPanelOpen);
+    const isDialogOpen = () => [...document.querySelectorAll('.hx-dialog')].some(isOpen);
+
+    // A closed drawer is only moved off screen; its close button would stay in
+    // the tab order. While a dialog is open, closed drawers are inert, and a
+    // drawer that opens (e.g. from a drawer select in the dialog) is usable.
+    const inertDrawers = new Set();
+    const syncDrawers = () => {
+        const dialogOpen = isDialogOpen();
+        drawers().forEach((drawer) => {
+            const open = isDrawerPanelOpen(drawer);
+            if (dialogOpen && !open && !drawer.inert) {
+                drawer.inert = true;
+                inertDrawers.add(drawer);
+            } else if ((!dialogOpen || open) && inertDrawers.has(drawer)) {
+                drawer.inert = false;
+                inertDrawers.delete(drawer);
+                // pyhx.drawer.js tried to focus the panel while it was inert.
+                if (open && !drawer.contains(document.activeElement)) {
+                    drawer.querySelector(':scope > aside')?.focus({ preventScroll: true });
+                }
+            }
+        });
+    };
 
     const focusInto = (dialog) => {
         (dialog.querySelector('[autofocus]') ?? dialog).focus({ preventScroll: true });
@@ -55,10 +80,12 @@
             const inerted = [...document.body.children].filter((el) => !el.matches(KEEP) && !el.inert);
             inerted.forEach((el) => { el.inert = true; });
             state.set(mount, { open: true, returnTo, inerted });
+            syncDrawers();
             focusInto(dialog);
         } else {
             before.inerted.forEach((el) => { el.inert = false; });
             state.set(mount, { open: false, returnTo: null, inerted: [] });
+            syncDrawers();
             const focusLost = !document.activeElement || document.activeElement === document.body
                 || mount.contains(document.activeElement);
             if (!focusLost) return;
@@ -108,6 +135,9 @@
             });
             // A page delivered with the dialog open.
             sync(mount);
+        });
+        drawers().forEach((drawer) => {
+            new MutationObserver(syncDrawers).observe(drawer, { childList: true, subtree: true });
         });
     };
 

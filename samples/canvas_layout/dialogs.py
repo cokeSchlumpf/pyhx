@@ -41,7 +41,7 @@ OWNERS = tuple(
 
 
 # docs:start notice
-def _notice(error: str | None = None) -> y.Node:
+def _notice(error: str | None = None, dont_show_again: bool = False) -> y.Node:
     return c.dialog_content(
         y.p[
             "This instance is for testing only. Documents you upload are "
@@ -54,7 +54,10 @@ def _notice(error: str | None = None) -> y.Node:
             error_text=error,
         ),
         c.checkbox_fieldset(
-            "", "dont_show_again", [c.Option(label="Don't show this again", value="true")]
+            "",
+            "dont_show_again",
+            [c.Option(label="Don't show this again", value="true")],
+            value=["true"] if dont_show_again else [],  # keeps the choice after an error
         ),
         title="Demo instance",
         closable=False,
@@ -73,7 +76,7 @@ async def accept_notice(
     dont_show_again: Annotated[bool, Form()] = False,
 ) -> y.Node:
     if not accepted:
-        return _notice(error="Confirm this to continue.")
+        return _notice(error="Confirm this to continue.", dont_show_again=dont_show_again)
     # A real app stores the answer here and asks it in `dialog_content`.
     again = "won't be shown again" if dont_show_again else "will be shown again"
     return y.fragment[

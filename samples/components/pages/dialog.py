@@ -18,7 +18,7 @@ router = WebAppRouter()
 
 
 # docs:start notice
-def notice(error: str | None = None) -> y.Node:
+def notice(error: str | None = None, dont_show_again: bool = False) -> y.Node:
     return c.dialog_content(
         y.p["This instance is for testing only. Use only synthetic test data."],
         c.checkbox_fieldset(
@@ -28,7 +28,10 @@ def notice(error: str | None = None) -> y.Node:
             error_text=error,
         ),
         c.checkbox_fieldset(
-            "", "dont_show_again", [c.Option(label="Don't show this again", value="true")]
+            "",
+            "dont_show_again",
+            [c.Option(label="Don't show this again", value="true")],
+            value=["true"] if dont_show_again else [],  # keeps the choice after an error
         ),
         title="Demo instance",
         closable=False,  # required: no close button, Escape does nothing
@@ -47,7 +50,7 @@ async def accept(
     dont_show_again: Annotated[bool, Form()] = False,
 ) -> y.Node:
     if not accepted:
-        return notice(error="Confirm this to continue.")  # replaces the content
+        return notice(error="Confirm this to continue.", dont_show_again=dont_show_again)  # replaces the content
     return y.fragment[
         c.dialog_content(),  # closes the dialog
         c.notification(

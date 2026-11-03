@@ -74,6 +74,9 @@
         /* Layout */
         display: flex;
         flex-direction: column;
+        /* Pico centres the content of a <dialog>; the form fills it. */
+        align-items: stretch;
+        justify-content: flex-start;
     }
 }
 
@@ -98,7 +101,7 @@
 
         /* Box */
         min-height: 3.5rem;
-        padding: var(--hx-spacing-sm) var(--hx-spacing-sm) var(--hx-spacing-sm) var(--hx-spacing-lg);
+        padding: var(--hx-spacing-sm) var(--hx-spacing-md) var(--hx-spacing-sm) var(--hx-spacing-lg);
         border-bottom: 1px solid var(--hx-color-neutral-200);
 
         > h2 {
@@ -120,6 +123,7 @@
 
         /* Box */
         min-height: 0;
+        margin: 0;
         padding: var(--hx-spacing-lg);
         overflow-y: auto;
 
@@ -127,7 +131,9 @@
         font-size: var(--hx-text-body);
         line-height: 1.5;
 
-        > * {
+        /* Pico's margins under paragraphs and fieldsets; the gap spaces them. */
+        > *,
+        fieldset {
             /* Box */
             margin: 0;
         }
@@ -155,6 +161,19 @@
     }
 }
 
+/* Pico puts a margin under buttons in a form; header and footer align them. */
+.hx-dialog__form :is(header, footer) .hx-button {
+    /* Box */
+    margin-bottom: 0;
+}
+
+/* Form fields space themselves (`[data-hx-design] .hx-form-field`); in the
+   dialog the section's gap does. */
+.hx-dialog .hx-dialog__form > section > .hx-form-field {
+    /* Box */
+    margin-bottom: 0;
+}
+
 /* While a dialog is open the page behind it doesn't scroll. */
 html:has(.hx-dialog > dialog[open]) {
     /* Box */
@@ -178,6 +197,42 @@ html:has(.hx-dialog > dialog[open]) {
     > footer {
         /* Visual */
         background-color: var(--hx-color-background);
+    }
+
+    /* Neutral buttons (cancel, the close button) are the white secondary
+       buttons of the design, as in the drawer. */
+    .hx-button--neutral.hx-button--solid {
+        /* Box */
+        border-color: var(--pico-form-element-border-color);
+
+        /* Typography */
+        color: var(--hx-color-text);
+
+        /* Visual */
+        background-color: var(--hx-color-background);
+    }
+
+    .hx-button--neutral.hx-button--solid:hover {
+        /* Box */
+        border-color: var(--hx-color-neutral-500);
+
+        /* Visual */
+        background-color: var(--hx-color-neutral-050);
+    }
+
+    [data-hx-dialog-close] {
+        /* Box */
+        width: 2rem;
+        height: 2rem;
+        min-height: 2rem;
+        padding: 0;
+        border-color: var(--hx-color-neutral-200);
+
+        svg {
+            /* Box */
+            width: 0.875rem;
+            height: 0.875rem;
+        }
     }
 }
 

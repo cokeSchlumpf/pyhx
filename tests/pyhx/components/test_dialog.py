@@ -138,6 +138,12 @@ class TestDialogScript:
         assert "el.inert = true" in DIALOG_JS
         assert "before.inerted.forEach((el) => { el.inert = false; });" in DIALOG_JS
 
+    def test_closed_drawers_are_inert_while_the_dialog_is_open(self):
+        # A closed drawer is only moved off screen; its close button would
+        # otherwise stay in the tab order behind the dialog.
+        assert "if (dialogOpen && !open && !drawer.inert)" in DIALOG_JS
+        assert "drawer.querySelector(':scope > aside')?.focus(" in DIALOG_JS
+
     def test_escape_waits_for_drawers_and_needs_a_close_button(self):
         handler = DIALOG_JS[DIALOG_JS.index("addEventListener('keydown'") :]
 
