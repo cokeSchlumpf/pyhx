@@ -12,6 +12,7 @@
 Deviations from the spec:
 
 - **D1** The translation of the close button's label (step 3) is done in step 1: `poe check` fails on a missing translation, and every step's commit keeps it green. Step 3 remains for texts added later.
+- **D2** `dialog()` takes an optional `content` (spec R2: `dialog(*, id)`): the templates render the mount with the dialog the page is delivered with, and a custom template can do the same.
 
 ## Branching
 

@@ -23,18 +23,20 @@ DIALOG_CONTENT_ID = "dialog-content"
 
 
 @component
-def dialog(*, id: str = DIALOG_CONTENT_ID) -> y.Node:
-    """The dialog's mount: backdrop and an empty dialog. Render once per page.
+def dialog(content: y.Node | None = None, *, id: str = DIALOG_CONTENT_ID) -> y.Node:
+    """The dialog's mount: backdrop and dialog. Render once per page.
 
     The page templates of pyhx render it after the drawers; a custom template
     renders it once at the end of ``<body>``.
 
     Args:
-        id: DOM id of the dialog, the target of out-of-band swaps.
+        content: A ``dialog_content(...)`` the page is delivered with (open);
+            ``None`` renders the mount with an empty, closed dialog.
+        id: DOM id of the empty dialog, the target of out-of-band swaps.
     """
     return y.div(class_="hx-dialog")[
         y.div(class_="hx-dialog__backdrop", aria_hidden="true"),
-        dialog_content(id=id),
+        content if content is not None else dialog_content(id=id),
     ]
 
 

@@ -5,6 +5,7 @@ import htpy as y
 
 from ..components.layouts import (
     POPUP_DRAWER_CONTENT_ID,
+    dialog,
     drawer,
     notification_error_template,
     notifications,
@@ -109,6 +110,19 @@ class CanvasShell(PageTemplate):
 
         CanvasShell(header_content=header_content)
 
+    ``dialog_content`` shows a dialog on a full page load: a node or a
+    zero-argument producer, sync or async, evaluated per request like
+    ``header_content``. It returns a ``c.dialog_content(...)`` to deliver the
+    page with that dialog open (e.g. a notice the user must confirm), or
+    ``None``::
+
+        async def notice() -> y.Node | None:
+            if await notices.accepted(RequestContext.get().user):
+                return None
+            return c.dialog_content(..., title="Terms of use", closable=False)
+
+        CanvasShell(dialog_content=notice)
+
     ``main_navigation`` adds the app's navigation (slot ``navigation_slot``,
     default ``main``) as ``"tabs"`` below the top bar or as a ``"sidebar"``
     left of the content. Without it (the default) the shell has no
@@ -139,6 +153,7 @@ class CanvasShell(PageTemplate):
         brand_img_src: str = "/static/images/pyhx_mark.svg",
         favicon: str = "/static/images/pyhx_mark.svg",
         header_content: SyncOrAsyncValue[y.Node] = None,
+        dialog_content: SyncOrAsyncValue[y.Node | None] = None,
         main_navigation: CanvasShellNavigation | None = None,
         navigation_slot: str = "main",
         mode: CanvasShellMode = "centered",
@@ -150,6 +165,7 @@ class CanvasShell(PageTemplate):
         self.brand_image_src = brand_img_src
         self.favicon = favicon
         self.header_content = header_content
+        self.dialog_content = dialog_content
         self.main_navigation = main_navigation
         self.navigation_slot = navigation_slot
         self.mode = mode
@@ -212,6 +228,9 @@ class CanvasShell(PageTemplate):
         header_content: y.Node = await resolve_value(
             cast(SyncOrAsyncValue[Any], self.header_content)
         )
+        dialog_content: y.Node | None = await resolve_value(
+            cast(SyncOrAsyncValue[Any], self.dialog_content)
+        )
 
         # Without a navigation the markup stays exactly as before, so pages
         # built for the plain canvas are unaffected.
@@ -248,6 +267,7 @@ class CanvasShell(PageTemplate):
                 class_="hx-drawer--popup",
                 top="var(--hx-sticky-top)",
             ),
+            dialog(dialog_content),
             notifications(top="var(--hx-sticky-top)"),
             notification_error_template(),
         ]
