@@ -29,6 +29,7 @@ from .request_context import (
     set_request_context,
 )
 from .static import MultiStaticFiles
+from .stream import StreamFactory
 from .templates import AppNavFn, Design, NavFactory, PageTemplate, Skeleton
 from .webapp_router import WebAppRouter
 
@@ -92,6 +93,7 @@ class WebApp:
         self._is_dev = is_dev if is_dev is not None else is_dev_mode()
 
         self.fragment = FragmentFactory(self._fragments)
+        self.stream = StreamFactory(self._fragments.append)
         self.page = PageDecoratorFactory(self._pages)
         self.api = ApiFactory(self._api_endpoints)
         self.navigation = NavFactory(self._navigation)

@@ -2,7 +2,7 @@
 
 Use a :class:`WebAppRouter` to declare pages, fragments, and websockets in
 modules that should not import a live :class:`~pyhx.core.WebApp`
-instance. The router exposes the same ``.page`` and ``.fragment``
+instance. The router exposes the same ``.page``, ``.fragment`` and ``.stream``
 decorator surfaces as the WebApp, captured against a local list, and is
 attached via :meth:`WebApp.include_router`. Routers can also be merged
 into one another via :meth:`WebAppRouter.include_router` for nested
@@ -18,6 +18,7 @@ from .api_endpoint import ApiEndpoint, ApiFactory
 from .fragment import Fragment, FragmentFactory
 from .page import Page, PageDecoratorFactory
 from .primitives import PathTemplate
+from .stream import StreamFactory
 
 if TYPE_CHECKING:
     from .webapp import WebSocket
@@ -33,6 +34,7 @@ class WebAppRouter:
 
         self.page = PageDecoratorFactory(self._pages)
         self.fragment = FragmentFactory(self._fragments)
+        self.stream = StreamFactory(self._fragments.append)
         self.api = ApiFactory(self._api_endpoints)
 
     def add_websocket(self, ws: WebSocket) -> None:

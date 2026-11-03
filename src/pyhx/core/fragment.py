@@ -9,7 +9,7 @@ from htpy import Node
 from htpy.starlette import HtpyResponse
 from starlette.background import BackgroundTask
 
-from .primitives import Path, PathTemplate, encode_query
+from .primitives import HandlerResponse, Path, PathTemplate, encode_query
 
 HTTPMethodLiteral = Literal["DELETE", "GET", "PATCH", "POST", "PUT"]
 
@@ -78,21 +78,24 @@ class FragmentResponse:
         )
 
 
-FragmentResult = Node | FragmentResponse
+FragmentResult = Node | HandlerResponse
 
 
 def resolve_fragment_result(
     fn: Callable[..., Awaitable[FragmentResult]],
-) -> Callable[..., Awaitable[FragmentResponse]]:
+) -> Callable[..., Awaitable[HandlerResponse]]:
     # @functools.wraps copies __wrapped__ onto the inner function so
     # introspection tools (FastAPI's route-parameter analysis among them)
     # can recover the original signature. Without this, FastAPI sees only
     # ``(**kwargs)`` and treats ``kwargs`` as a single query parameter.
     @functools.wraps(fn)
-    async def __call__(**kwargs) -> FragmentResponse:
+    async def __call__(**kwargs) -> HandlerResponse:
         result = await fn(**kwargs)
 
-        if isinstance(result, FragmentResponse):
+        # Any HandlerResponse (FragmentResponse, StreamResponse, ...) is sent
+        # as is; this also keeps re-wrapping an already resolved render (e.g.
+        # when a WebApp replays the global registry) idempotent.
+        if isinstance(result, HandlerResponse):
             return result
         else:
             return FragmentResponse(node=result)
@@ -103,7 +106,7 @@ def resolve_fragment_result(
 class Fragment(Protocol):
     path: PathTemplate
     method: HTTPMethod
-    render: Callable[..., Awaitable[FragmentResponse]]
+    render: Callable[..., Awaitable[HandlerResponse]]
     url: Callable[..., str]
 
 
@@ -112,7 +115,7 @@ class FragmentDefinition(Fragment):
         self,
         path: PathTemplate,
         method: HTTPMethod,
-        render: Callable[..., Awaitable[FragmentResponse]],
+        render: Callable[..., Awaitable[HandlerResponse]],
     ) -> None:
         self.path = path
         self.method = method
