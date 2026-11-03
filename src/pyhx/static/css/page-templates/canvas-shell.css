@@ -149,20 +149,24 @@
 
         /* --- Table on the canvas ---
            A table standing directly in the content column (the table of a
-           DataPage) is a white card, like every other content of the
-           canvas; tables inside cards keep their look. The scroll container
-           is the card: it already clips the table, so the radius holds. */
+           DataPage) or directly in a page section (T-016) is a white card,
+           like every other content of the canvas; tables inside cards keep
+           their look. The scroll container is the card: it already clips the
+           table, so the radius holds. */
 
         :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-container:has(> .hx-table__wrapper) {
             /* Tokens */
             --hx-container-padding-inline: 0;
         }
 
-        :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-container > .hx-table__wrapper {
+        :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-container > .hx-table__wrapper,
+        .hx-page-section__content > .hx-table__wrapper {
             --table-card--radius: 0.75rem; /* 12px, as the draft; between radius-lg and -xl */
             --table-card--padding-inline: var(--hx-spacing-md);
 
-            .hx-table__scroll-container {
+            /* The card's body is the scroll container of a scrollable table
+               (as on a DataPage), or the table itself (T-016). */
+            & > :is(.hx-table__scroll-container, .hx-table) {
                 /* Box */
                 border: var(--hx-border-width-sm) solid var(--hx-color-neutral-200);
                 border-radius: var(--table-card--radius);
@@ -186,7 +190,7 @@
                     background-color: var(--hx-color-background);
                 }
 
-                .hx-table__scroll-container {
+                & > :is(.hx-table__scroll-container, .hx-table) {
                     /* Box */
                     border-top: 0;
                     border-radius: 0 0 var(--table-card--radius) var(--table-card--radius);
@@ -207,7 +211,7 @@
                     background-color: var(--hx-color-background);
                 }
 
-                .hx-table__scroll-container {
+                & > :is(.hx-table__scroll-container, .hx-table) {
                     /* Box */
                     border-bottom: 0;
                     border-end-start-radius: 0;

@@ -45,6 +45,7 @@ from . import (
     forms,
     loading,
     navigation,
+    page_sections,
     progress,
 )
 from .header import header_content
@@ -62,6 +63,7 @@ hx.include_router(forms.router)
 hx.include_router(dialogs.router)
 hx.include_router(progress.router)
 hx.include_router(loading.router)
+hx.include_router(page_sections.router)
 navigation.register_navigation(hx)
 
 
@@ -89,6 +91,10 @@ def _modes() -> y.Node:
         y.li[
             y.a(href="/data-page-detail")["data page (detail)"],
             " — DataPage whose row click opens the detail page (can_edit callable)",
+        ],
+        y.li[
+            y.a(href="/page-sections")["page sections"],
+            " — a page header and one page_section per DataTable",
         ],
         y.li[
             y.a(href="/cases")["tabs"],

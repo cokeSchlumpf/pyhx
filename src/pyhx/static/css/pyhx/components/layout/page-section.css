@@ -172,3 +172,62 @@
     align-items: center;
     gap: var(--hx-spacing-sm);
 }
+
+
+/* --- Canvas design (T-016) ---
+   As the page header in the canvas design (page-header.css): the section is a
+   heading on the canvas, in the page's content column: no band, no line, no
+   glow between sections, not sticky. A data table directly in its content is
+   the same white card as the table of a DataPage (canvas-shell.css). */
+
+[data-hx-design="canvas"] .hx-page-section {
+    /* Tokens: the section header doesn't stick, so a table's header sticks
+       below the top bar, as on a DataPage. */
+    --hx-page-section-gutter: 0;
+    --hx-table--sticky-top: var(--hx-sticky-top, 0);
+
+    /* Box */
+    max-width: none;
+}
+
+[data-hx-design="canvas"] .hx-page-section + .hx-page-section {
+    /* Box */
+    margin-top: var(--hx-spacing-xl);
+
+    &::before {
+        display: none;
+    }
+}
+
+[data-hx-design="canvas"] .hx-page-section__header {
+    /* Position */
+    position: static;
+
+    /* Box */
+    height: auto;
+    padding-inline: 0;
+    border-bottom: 0;
+
+    /* Visual */
+    background-color: transparent;
+    backdrop-filter: none;
+}
+
+[data-hx-design="canvas"] .hx-page-section__title {
+    /* Typography */
+    font-size: var(--hx-text-lg);
+    line-height: 1.4;
+    color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-page-section__actions {
+    /* Typography */
+    font-size: 0.8125rem; /* 13px, as the page header's breadcrumbs */
+    color: var(--hx-color-neutral-600);
+}
+
+[data-hx-design="canvas"] .hx-page-section__content {
+    /* Box */
+    padding-inline: 0;
+    margin-top: var(--hx-spacing-sm);
+}
