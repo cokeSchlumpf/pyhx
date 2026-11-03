@@ -160,7 +160,8 @@
 /* Nothing moves when the system asks for reduced motion; a waiting bar
    shows a faint full track instead of the travelling segment. */
 @media (prefers-reduced-motion: reduce) {
-    .hx-progress-bar__fill {
+    /* Same specificity as the motion rules above, so this one wins. */
+    .hx-progress-bar .hx-progress-bar__fill {
         animation: none;
     }
 

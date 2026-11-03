@@ -37,7 +37,7 @@ from samples.document_viewer.sample_document import (
     registration,
 )
 
-from . import data_page, extracted_values, forms, navigation
+from . import data_page, extracted_values, forms, navigation, progress
 from .header import header_content
 
 hx = WebApp(
@@ -50,6 +50,7 @@ hx.include_router(navigation.router)
 hx.include_router(extracted_values.router)
 hx.include_router(data_page.router)
 hx.include_router(forms.router)
+hx.include_router(progress.router)
 navigation.register_navigation(hx)
 
 
@@ -61,6 +62,10 @@ def _modes() -> y.Node:
         y.li[y.a(href="/dossier")["dossier"], " — split layout with a sticky aside"],
         y.li[y.a(href="/colors")["colors"], " — appearance colours of the design"],
         y.li[y.a(href="/forms")["forms"], " — form controls in every state"],
+        y.li[
+            y.a(href="/progress-bars")["progress bars"],
+            " — static, working and waiting bars, a job panel",
+        ],
         y.li[
             y.a(href="/data-page")["data page"],
             " — DataPage with the built-in create/edit drawer",

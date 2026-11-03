@@ -7,6 +7,9 @@
 - **F3** The slider's track colour is the token `--hx-slider--track-color` (neutral-300); the draft's canvas track is neutral-200, so the canvas block sets it.
 - **F4** No page of `docs/` lists components; the components sample is their reference (spec, out of scope).
 
+- **F5** (implementation) The reduced-motion rule first had a lower specificity than the motion rules and didn't stop them; found by emulating reduced motion in the browser, fixed by the same specificity (`.hx-progress-bar .hx-progress-bar__fill`).
+- **F6** (implementation) `hx-grid` has no phone breakpoint; the sample lays its examples out with an auto-fit grid (three columns, one at phone width).
+
 Deviations from the spec:
 
 - None.
