@@ -103,7 +103,7 @@ async def job_events(
     # The current state first, on every connect: nothing is lost while the
     # connection was down, also when the browser couldn't send Last-Event-ID.
     yield SseEvent(status_pill(state), event="status")
-    yield SseEvent(progress(state), event="progress")
+    yield SseEvent(progress(job_id, state), event="progress")
     if state.status == "finished":
         return  # pyhx-close: the browser doesn't reconnect
 
@@ -112,7 +112,7 @@ async def job_events(
         if change.version <= state.version:
             continue  # already shown with the current state
         yield SseEvent(status_pill(change), event="status", id=position)
-        yield SseEvent(progress(change), event="progress", id=position)
+        yield SseEvent(progress(job_id, change), event="progress", id=position)
 
 
 # docs:end stream
@@ -140,7 +140,7 @@ def job_card(job_id: str) -> y.Node:
             y.strong[f"Job {job_id}"],
             y.span(sse_swap="status")[status_pill(JOBS[job_id])],
         ],
-        y.div(sse_swap="progress")[progress(JOBS[job_id])],
+        y.div(sse_swap="progress")[progress(job_id, JOBS[job_id])],
         y.div(".sample-job__foot")[
             y.small(sse_swap="connection"),
             y.span(".sample-job__actions")[
@@ -161,11 +161,12 @@ def status_pill(state: JobState) -> y.Node:
     return c.pill(state.status.capitalize(), appearance=appearance[state.status])
 
 
-def progress(state: JobState) -> y.Node:
+def progress(job_id: str, state: JobState) -> y.Node:
     done = Pct.clamp(state.pages_done / state.pages_total)
     left = f" · about {state.seconds_left} s left" if state.seconds_left else ""
     return c.progress_bar(
         None if state.status == "queued" else done,  # queued: waiting, no value
+        id=f"job-{job_id}-progress",  # stable id: new values glide in
         working=state.status == "running",
         appearance="success" if state.status == "finished" else "primary",
         label=state.stage,

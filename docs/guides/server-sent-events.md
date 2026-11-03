@@ -52,7 +52,7 @@ To update several parts of the page from one stream, pass `swap=None` and let th
 ```python
 y.div(**job_events.connect(job_id=job_id, swap=None))[
     y.span(sse_swap="status")[status_pill(state)],
-    y.div(sse_swap="progress")[progress(state)],
+    y.div(sse_swap="progress")[progress(job_id, state)],
 ]
 ```
 
@@ -90,7 +90,7 @@ async def job_events(
 
     # The current state first, on every connect.
     yield SseEvent(status_pill(state), event="status")
-    yield SseEvent(progress(state), event="progress")
+    yield SseEvent(progress(job_id, state), event="progress")
     if state.status == "finished":
         return                                # pyhx-close: no reconnect
 
@@ -99,8 +99,10 @@ async def job_events(
         if change.version <= state.version:
             continue                          # already shown with the state
         yield SseEvent(status_pill(change), event="status", id=position)
-        yield SseEvent(progress(change), event="progress", id=position)
+        yield SseEvent(progress(job_id, change), event="progress", id=position)
 ```
+
+`progress(job_id, state)` renders `c.progress_bar(..., id=f"job-{job_id}-progress")`. With a stable `id`, htmx carries the old width into the bar it swaps in, so the bar glides to the new value instead of jumping; without an `id`, it jumps.
 
 The work itself starts with a `POST` fragment, since `EventSource` can only `GET`: it creates the job and returns the element that connects to the job's stream.
 

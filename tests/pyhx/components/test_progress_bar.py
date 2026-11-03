@@ -116,6 +116,17 @@ class TestVariants:
         assert "hx-progress-bar--success" in html
         assert "hx-progress-bar--sm" in html
 
+    def test_an_id_gives_the_fill_a_stable_id_for_transitions(self) -> None:
+        html = _html(progress_bar(Pct(0.5), id="job-1"))
+
+        assert 'id="job-1-fill"' in html
+
+    def test_no_fill_id_while_waiting(self) -> None:
+        assert "-fill" not in _html(progress_bar(None, id="job-1"))
+
+    def test_no_fill_id_without_an_id(self) -> None:
+        assert "-fill" not in _html(progress_bar(Pct(0.5)))
+
     def test_kwargs_reach_the_root(self) -> None:
         html = _html(progress_bar(Pct(0.5), id="job-1", class_="extra"))
 
@@ -131,6 +142,8 @@ def test_styles_stop_the_motion_for_reduced_motion() -> None:
     ).read_text()
 
     assert "@media (prefers-reduced-motion: reduce)" in css
+    assert "transition:" in css
+    assert "transition: none;" in css
     assert (
         "progress-bar.css"
         in (Path(pyhx.__file__).parent / "static/css/pyhx.css").read_text()

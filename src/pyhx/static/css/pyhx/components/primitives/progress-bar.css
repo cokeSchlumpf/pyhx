@@ -88,6 +88,14 @@
 
     /* Visual */
     background-color: var(--progress-bar--color);
+
+    /* Animation
+       A new value glides in. When htmx swaps in a new bar, it settles the
+       old `style` into the fill with the same id first, so this runs on
+       swaps too (the component derives the fill's id from the bar's). */
+    transition:
+        width 0.4s ease-out,
+        background-color 0.4s ease-out;
 }
 
 
@@ -163,6 +171,7 @@
     /* Same specificity as the motion rules above, so this one wins. */
     .hx-progress-bar .hx-progress-bar__fill {
         animation: none;
+        transition: none;
     }
 
     .hx-progress-bar--waiting .hx-progress-bar__fill {
