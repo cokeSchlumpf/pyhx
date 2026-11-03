@@ -48,3 +48,11 @@ None.
 ## Out of scope
 
 - Loading the entries lazily from the server (an app with thousands of documents).
+
+## Outcome
+
+Built as specified. Proof: `tests/pyhx/components/test_document_viewer_start_and_files.py` (start page in pager, title, thumbnail and eager images; fallbacks; `selected`; switcher entries, groups, greyed-out entries, previous/next, position) and the sample page "Open at a page", checked in a browser at 1280 px and 390 px: opens at page 9 with the mark selected and in view; typing filters; ↑/↓ move; Esc closes, returns the focus to the button and keeps the mark selected; a click outside closes; at phone width the dropdown spans the toolbar with 44 px entries.
+
+Deviation: opening at a page, and keeping the current thumbnail in view, now scroll only inside the viewer (page column, thumbnail rail); before, `scrollIntoView` also scrolled the page around a viewer embedded in a longer page. Smooth scrolling from the pager, thumbnails and linked content is unchanged.
+
+Open: the entries are rendered all at once; loading them from the server is left for an app with thousands of documents.
