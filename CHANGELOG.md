@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.6.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.5.0...v1.6.0) (2026-11-03)
+
+
+### Features
+
+* add the folder-2 icon ([#46](https://github.com/cokeSchlumpf/pyhx/issues/46)) ([43fe0c7](https://github.com/cokeSchlumpf/pyhx/commit/43fe0c7681ec9683a2c57f04f7288b70d48242f1))
+
 ## [1.5.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.4.1...v1.5.0) (2026-11-02)
 
 
