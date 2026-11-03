@@ -1,6 +1,6 @@
 # Routers — Splitting an App Across Modules
 
-When an app outgrows a single file, declare pages, fragments, and websockets in sibling modules using **`WebAppRouter`**. Each module owns its own router; the top-level `WebApp` attaches the routers at startup with `include_router(...)`. The pattern matches FastAPI's `APIRouter` and Flask's `Blueprint`.
+When an app outgrows a single file, declare pages, fragments and streams in sibling modules using **`WebAppRouter`**. Each module owns its own router; the top-level `WebApp` attaches the routers at startup with `include_router(...)`. The pattern matches FastAPI's `APIRouter` and Flask's `Blueprint`.
 
 ## A two-file app
 
@@ -52,13 +52,13 @@ Both `@app.page(...)` (used in `main.py`) and `@router.page(...)` (used in `page
 | --- | --- | --- |
 | `router.page(path, *, title, icon=None)` | `app.page(...)` | Decorate a page handler |
 | `router.fragment.get/post/put/patch/delete(path)` | `app.fragment.<verb>(...)` | Decorate a fragment handler |
-| `router.add_websocket(ws)` | `WebApp(websockets=[...])` | Register a websocket instance |
+| `router.stream.get(path, *, keepalive=15.0)` | `app.stream.get(...)` | Decorate a server-sent event stream, see [Server-sent events](server-sent-events.md) |
 
 A router does **not** carry navigation, the default page template, or static directories — those are app-level concerns and stay on the `WebApp`.
 
 ## `include_router(router, prefix="")`
 
-Attaches every captured page, fragment, and websocket to the app, optionally prepending a URL prefix:
+Attaches every captured page, fragment and stream to the app, optionally prepending a URL prefix:
 
 ```python
 app.include_router(users.router)                       # mounts at /users, /users/{user_id}

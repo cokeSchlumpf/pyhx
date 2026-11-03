@@ -162,7 +162,7 @@ def resolve_locale(
         except LookupError:
             ctx = None
 
-    connection = None if ctx is None else (ctx.request or ctx.websocket)
+    connection = None if ctx is None else ctx.request
     session = None if connection is None else connection.scope.get("session")
     candidates: list[str | None] = [
         session.get(SESSION_LOCALE_KEY) if session else None

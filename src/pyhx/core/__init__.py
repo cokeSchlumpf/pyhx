@@ -15,7 +15,7 @@ from .stream import (
     StreamResponse,
 )
 from .templates import Design, Nav, NavItem, PageTemplate
-from .webapp import Fragment, Page, WebApp, WebSocket
+from .webapp import Fragment, Page, WebApp
 from .webapp_router import WebAppRouter
 from .webapp_routes import WebAppRoutes
 
@@ -40,7 +40,6 @@ __all__ = [
     "WebApp",
     "WebAppRouter",
     "WebAppRoutes",
-    "WebSocket",
     "component",
     "hx",
     "nav_item",
