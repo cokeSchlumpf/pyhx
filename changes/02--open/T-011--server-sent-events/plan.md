@@ -7,11 +7,14 @@
 - **F3** `anyio` is not declared in `pyproject.toml` but is a dependency of Starlette, so it is always installed; the stream module uses its shielded `move_on_after` for the cleanup on disconnect, as kpmx does. No new dependency.
 - **F4** `commons` 1.5.0 (locked by pyhx) has `commons.streams` (`InMemoryLiveStreams`, `TypedLiveStreams`, `PydanticCodec`), which the sample uses; no update of `commons` is needed.
 - **F5** The WebSocket API is used outside `webapp.py`, `webapp_router.py` and `request_context.py` only by `negotiate_locale.py` (`ctx.request or ctx.websocket`), one test (`tests/pyhx/core/test_request_context.py`), the row in `docs/guides/routers.md` and docstrings.
+- **F7** (implementation) The network emulation "offline" of Chromium (DevTools, Playwright) doesn't close an `EventSource` connection that is already open, so it can't show a reconnect; the sample gets a button that ends a job's response without `pyhx-close` instead (D2).
+- **F8** (implementation) pyhx has no progress bar component; the sample uses a native `<progress>` with sample CSS. The developer asked for a component in a change of its own (T-013), finished before this one; the job page of the sample switches to it then.
 - **F6** Translation is chosen by `Accept-Language` when the session has no language (tests already use the header), so R13 can be tested with `TestClient` and a text of pyhx's catalog, e.g. "Close" → "Schließen".
 
 Deviations from the spec:
 
-- None.
+- **D1** Step 4 (sample) was done before step 3 (guide), so the guide quotes the sample's final code.
+- **D2** The sample has a demo-only ASGI middleware and a "Drop the connection" button (`samples/server_sent_events/pages/_drop.py`) that end a job's response without `pyhx-close`, to show the browser's reconnect with `Last-Event-ID` (F7); the connection event sets `retry=1000`.
 
 ## Branching
 

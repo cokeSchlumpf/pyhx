@@ -109,3 +109,7 @@ Fragments use the same `{name}` placeholder syntax as pages. See [Routing & Path
 async def user_badge(user_id: str) -> y.Node:
     return y.span(cls="badge")[user_id]
 ```
+
+## Streams
+
+A fragment answers one request. To push several updates over time, e.g. the progress of a background job, declare a stream with `@app.stream.get(path)`; it is a `GET` fragment whose handler is an async generator. See [Server-Sent Events](../guides/server-sent-events.md).
