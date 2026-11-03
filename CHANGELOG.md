@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.9.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.8.1...v1.9.0) (2026-11-03)
+
+
+### Features
+
+* loading indicator (T-015) ([#54](https://github.com/cokeSchlumpf/pyhx/issues/54)) ([c70c980](https://github.com/cokeSchlumpf/pyhx/commit/c70c980c8faeab3052c3cbd6e4d8d301075ee517))
+
 ## [1.8.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.8.0...v1.8.1) (2026-11-03)
 
 
