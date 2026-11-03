@@ -1,0 +1,268 @@
+/* --- Loading indicator ---
+   A small mark with no text that says "this is happening right now". One
+   inline element per kind (`--spinner`, `--ripple`, `--pulse`, `--dots`,
+   `--bars`); dots and bars draw from three `__part`s. The mark centres on
+   the line it stands in: by `align-items` in a flex row (buttons, pills),
+   by `vertical-align` in running text. Its shapes use `background-color`
+   and borders only, so Pico's reset (`background-repeat` on every element)
+   has nothing to change; it is `role="status"` and never `aria-busy`, so
+   Pico's busy spinner doesn't reach it. */
+
+.hx-loading-indicator {
+    /* Tokens
+       `--dot` is the size of a dot (and twice a bar's width), `--box` the
+       size of the spinner and the height of the bars. The ring of the
+       spinner derives from the mark's own colour, so it stays faint on a
+       light background and visible on a solid one. */
+    --loading-indicator--color: var(--hx-color-primary);
+    --loading-indicator--dot: 8px;
+    --loading-indicator--box: 16px;
+    --loading-indicator--track: color-mix(in srgb, currentColor 15%, transparent);
+
+    /* Positioning */
+    position: relative;
+
+    /* Layout */
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+
+    /* Box */
+    box-sizing: border-box;
+
+    /* Visual */
+    color: var(--loading-indicator--color);
+}
+
+
+/* --- Kinds --- */
+
+/* Pulse and ripple: a dot. */
+.hx-loading-indicator--pulse,
+.hx-loading-indicator--ripple {
+    /* Box */
+    width: var(--loading-indicator--dot);
+    height: var(--loading-indicator--dot);
+    border-radius: 50%;
+
+    /* Visual */
+    background-color: currentColor;
+}
+
+.hx-loading-indicator--pulse {
+    /* Animation */
+    animation: hx-loading-indicator-pulse 1.8s ease-in-out infinite;
+}
+
+/* The ripple's ring is drawn over the dot and takes no space. */
+.hx-loading-indicator--ripple::after {
+    /* Positioning */
+    position: absolute;
+    inset: 0;
+
+    /* Box */
+    border-radius: 50%;
+
+    /* Visual */
+    background-color: currentColor;
+    content: "";
+
+    /* Animation */
+    animation: hx-loading-indicator-ripple 2s ease-out infinite;
+}
+
+.hx-loading-indicator--spinner {
+    /* Box */
+    width: var(--loading-indicator--box);
+    height: var(--loading-indicator--box);
+    border: 2px solid var(--loading-indicator--track);
+    border-top-color: currentColor;
+    border-radius: 50%;
+
+    /* Animation */
+    animation: hx-loading-indicator-spin 0.9s linear infinite;
+}
+
+.hx-loading-indicator--dots {
+    /* Layout */
+    gap: calc(var(--loading-indicator--dot) / 2);
+
+    /* Box */
+    height: var(--loading-indicator--dot);
+}
+
+.hx-loading-indicator--dots .hx-loading-indicator__part {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: var(--loading-indicator--dot);
+    height: var(--loading-indicator--dot);
+    border-radius: 50%;
+
+    /* Visual */
+    background-color: currentColor;
+
+    /* Animation */
+    animation: hx-loading-indicator-dot 1.2s ease-in-out infinite;
+}
+
+.hx-loading-indicator--bars {
+    /* Layout */
+    align-items: flex-end;
+    gap: 2px;
+
+    /* Box */
+    height: var(--loading-indicator--box);
+}
+
+.hx-loading-indicator--bars .hx-loading-indicator__part {
+    /* Layout */
+    display: block;
+
+    /* Box */
+    width: calc(var(--loading-indicator--dot) / 2);
+    height: 100%;
+    border-radius: 2px;
+
+    /* Visual */
+    background-color: currentColor;
+    transform-origin: bottom;
+
+    /* Animation */
+    animation: hx-loading-indicator-bar 1s ease-in-out infinite;
+}
+
+.hx-loading-indicator__part:nth-child(2) {
+    /* Animation */
+    animation-delay: 0.15s;
+}
+
+.hx-loading-indicator__part:nth-child(3) {
+    /* Animation */
+    animation-delay: 0.3s;
+}
+
+@keyframes hx-loading-indicator-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+@keyframes hx-loading-indicator-ripple {
+    from { opacity: 0.45; transform: scale(1); }
+    to   { opacity: 0; transform: scale(3); }
+}
+
+@keyframes hx-loading-indicator-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes hx-loading-indicator-dot {
+    0%, 80%, 100% { opacity: 0.25; }
+    40%           { opacity: 1; }
+}
+
+@keyframes hx-loading-indicator-bar {
+    0%, 100% { transform: scaleY(0.35); }
+    50%      { transform: scaleY(1); }
+}
+
+/* Nothing moves when the system asks for reduced motion; the mark stays:
+   pulse is a solid dot, ripple has no ring, the spinner shows a half arc,
+   dots and bars stand at a middle step. Same specificity as the motion
+   rules above, so these win. */
+@media (prefers-reduced-motion: reduce) {
+    .hx-loading-indicator,
+    .hx-loading-indicator .hx-loading-indicator__part {
+        animation: none;
+    }
+
+    .hx-loading-indicator--ripple::after {
+        display: none;
+    }
+
+    .hx-loading-indicator--spinner {
+        border-right-color: currentColor;
+    }
+
+    .hx-loading-indicator--dots .hx-loading-indicator__part {
+        opacity: 0.6;
+    }
+
+    .hx-loading-indicator--bars .hx-loading-indicator__part {
+        transform: scaleY(0.6);
+    }
+}
+
+
+/* --- Appearances --- */
+
+.hx-loading-indicator--neutral {
+    --loading-indicator--color: var(--hx-color-neutral-600);
+}
+
+.hx-loading-indicator--primary {
+    --loading-indicator--color: var(--hx-color-primary);
+}
+
+.hx-loading-indicator--info {
+    --loading-indicator--color: var(--hx-color-info-600);
+}
+
+.hx-loading-indicator--success {
+    --loading-indicator--color: var(--hx-color-success-600);
+}
+
+.hx-loading-indicator--warning {
+    --loading-indicator--color: var(--hx-color-warning-600);
+}
+
+.hx-loading-indicator--danger {
+    --loading-indicator--color: var(--hx-color-danger-600);
+}
+
+
+/* --- Sizes: to sit on a text line ---
+   `sm` next to 12-13px text and in table rows, `md` next to body text and
+   pills, `lg` next to headings. In px, as in the draft, so the marks are
+   the same in both designs. */
+
+.hx-loading-indicator--sm {
+    --loading-indicator--dot: 6px;
+    --loading-indicator--box: 12px;
+}
+
+.hx-loading-indicator--lg {
+    --loading-indicator--dot: 12px;
+    --loading-indicator--box: 24px;
+}
+
+
+/* --- Canvas design: primary is the text colour --- */
+
+[data-hx-design="canvas"] .hx-loading-indicator--primary {
+    --loading-indicator--color: var(--hx-color-text);
+}
+
+[data-hx-design="canvas"] .hx-loading-indicator--neutral {
+    --loading-indicator--color: var(--hx-color-neutral-500);
+}
+
+
+/* --- In other components ---
+   A pill's label is a flex row without a gap; with a mark before or after
+   its text it gets one. In a solid button the mark takes the button's text
+   colour, with a stronger ring on the solid background. Last in the file,
+   so it wins over the canvas rules of the same specificity. */
+
+.hx-pill__label:has(> .hx-loading-indicator) {
+    /* Layout */
+    gap: var(--hx-spacing-xs);
+}
+
+.hx-button--solid .hx-loading-indicator {
+    --loading-indicator--color: currentColor;
+    --loading-indicator--track: color-mix(in srgb, currentColor 30%, transparent);
+}
