@@ -148,3 +148,33 @@ def test_styles_stop_the_motion_for_reduced_motion() -> None:
         "progress-bar.css"
         in (Path(pyhx.__file__).parent / "static/css/pyhx.css").read_text()
     )
+
+
+def _rule(selector: str) -> str:
+    """The declarations of the rule for ``selector`` in progress-bar.css."""
+    css = (
+        Path(pyhx.__file__).parent
+        / "static/css/pyhx/components/primitives/progress-bar.css"
+    ).read_text()
+    start = css.index(f"\n{selector} {{") + len(selector) + 3
+    return css[start : css.index("}", start)]
+
+
+def test_stripes_repeat_across_the_fill() -> None:
+    # Pico's reset sets `background-repeat: no-repeat` on every element.
+    assert "background-repeat: repeat;" in _rule(
+        ".hx-progress-bar--stripes .hx-progress-bar__fill"
+    )
+
+
+def test_sheen_stays_a_single_band() -> None:
+    assert "background-repeat: no-repeat;" in _rule(
+        ".hx-progress-bar--sheen .hx-progress-bar__fill"
+    )
+
+
+def test_busy_track_has_no_pico_spinner() -> None:
+    # Pico draws a spinner before every `[aria-busy=true]` element.
+    assert "content: none;" in _rule(
+        '.hx-progress-bar__track[aria-busy="true"]::before'
+    )

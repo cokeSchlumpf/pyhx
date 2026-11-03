@@ -76,6 +76,13 @@
     background-color: var(--progress-bar--track-color);
 }
 
+/* The track is `aria-busy` while working or waiting. Pico draws its loading
+   spinner before every busy element, which the track would clip to a mark at
+   its start; the bar's own motion shows that it is busy. */
+.hx-progress-bar__track[aria-busy="true"]::before {
+    content: none;
+}
+
 .hx-progress-bar__fill {
     /* Positioning */
     position: absolute;
@@ -126,6 +133,8 @@
         transparent 6px 12px
     );
     background-size: 16.97px 16.97px;
+    /* The tile must repeat; Pico's reset sets `no-repeat` on every element. */
+    background-repeat: repeat;
 
     /* Animation */
     animation: hx-progress-bar-stripes 0.8s linear infinite;
