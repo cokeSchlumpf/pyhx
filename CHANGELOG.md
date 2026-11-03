@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.11.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.11.0...v1.11.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* table toolbar inside the filter bar ([#61](https://github.com/cokeSchlumpf/pyhx/issues/61)) ([42f508c](https://github.com/cokeSchlumpf/pyhx/commit/42f508cec07a047c629dd3c88866d2867f2a3366))
+
 ## [1.11.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.10.0...v1.11.0) (2026-11-03)
 
 
