@@ -72,3 +72,20 @@ None. The developer reviewed the design drafts and waived the acceptance stops u
 
 - No docs page lists the components (T-013, F4): the samples and the module docstring are the reference, so no guide page is added.
 - A progress value, a text of its own, changes to `c.button`, `c.pill` or the navigation.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** Design update by the developer during the implementation ("Can we add some spacing to the loading indicator within the button?"): the ripple's box is as big as its ring (twice the dot), the dot (`::before`) and the ring (`::after`) are centred in it, and the ring grows to twice the dot instead of three times. This added **R12**: every kind keeps its motion inside its own box, so the gap next to the mark (e.g. a button's gap) is the visible spacing.
+- **D2** In running text the mark centres by `vertical-align: calc(0.5cap - var(--loading-indicator--height) / 2)`, not `middle` (F1); `--loading-indicator--height` is set per kind.
+- **F1** `vertical-align: middle` centres on half the x-height, so after a link's text in a navigation the mark sat 1.3px low; on the cap height it measures within 0.05px.
+- **F2** The mark's `aria-label` becomes part of the accessible name of a button or link it stands in (a "Saving" button read "Saving Saving"). The docstring and the sample choose a label that reads on from the text ("Import" + "running") or give the button its own `aria_label`.
+- **F3** Measured in the browser in both designs (components sample with `AppShell`, canvas layout sample with `CanvasShell`): all 57 marks of the page animate; the mark's centre is within 0.4px of its text's centre in the header, inside the pill, in the buttons, in the table cells and in the navigation; the visible gap between a button's label and the outermost painted part of its mark (the ripple's ring at its largest) equals the button's gap (7px plain, 8px canvas); with reduced motion emulated no animation runs and every mark keeps its size (pulse solid, ripple without ring, half arc, dots at 0.6, bars at 0.6 height); the spinner in the solid primary button is white on a 30 % white ring.
+- **F4** No page of `docs/` lists the components (as in T-013); the module docstring (when to use which kind) and the samples (`/loading-indicator`, `/loading-indicators`) are the reference.
+
+Screenshots (`screenshots/`, animations paused at 650 ms; the in-use images hide the code blocks of the examples): components sample, plain design: [kinds](screenshots/app-shell--loading-indicator--desktop.png), [in use](screenshots/app-shell--loading-indicator-in-use--desktop.png), [table and navigation](screenshots/app-shell--loading-indicator-table-and-navigation--desktop.png), [phone](screenshots/app-shell--loading-indicator--phone.png), [phone, in use](screenshots/app-shell--loading-indicator-in-use--phone.png); canvas layout sample: [kinds](screenshots/canvas-shell--loading-indicators--desktop.png), [in use](screenshots/canvas-shell--loading-indicators-in-use--desktop.png), [table and navigation](screenshots/canvas-shell--loading-indicators-table-and-navigation--desktop.png), [reduced motion](screenshots/canvas-shell--loading-indicators-reduced-motion--desktop.png), [phone](screenshots/canvas-shell--loading-indicators--phone.png), [phone, in use](screenshots/canvas-shell--loading-indicators-in-use--phone.png).
+
+Rollout: PR #54 (`feat: loading indicator (T-015)`), released with the next minor release of pyhx on `versions/1`.
+
+Open after this change: the app that asked for it uses the component for its running analysis jobs (its own change).
