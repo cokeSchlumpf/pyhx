@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.8.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.8.0...v1.8.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* progress bar stripes and busy spinner (T-014) ([#53](https://github.com/cokeSchlumpf/pyhx/issues/53)) ([7700b6e](https://github.com/cokeSchlumpf/pyhx/commit/7700b6e78ec92d25b208713dd6858b74e527a2b2))
+
 ## [1.8.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.7.0...v1.8.0) (2026-11-03)
 
 
