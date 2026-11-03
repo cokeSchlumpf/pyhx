@@ -13,6 +13,7 @@ from .stream import (
     Stream,
     StreamItem,
     StreamResponse,
+    end_streams,
 )
 from .templates import Design, Nav, NavItem, PageTemplate
 from .webapp import Fragment, Page, WebApp
@@ -41,6 +42,7 @@ __all__ = [
     "WebAppRouter",
     "WebAppRoutes",
     "component",
+    "end_streams",
     "hx",
     "nav_item",
 ]
