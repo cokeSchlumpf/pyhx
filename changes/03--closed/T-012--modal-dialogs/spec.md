@@ -301,3 +301,33 @@ None.
 - Storing answers (pyhx stores nothing; the app does, e.g. CaseSight T-018).
 - More than one dialog at a time, and dialogs above drawers.
 - A dialog bound to a Pydantic model (`DataFormDialog`).
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** `dialog_content(*children, …)` instead of `dialog_content(children=None, …)` (R1): the text and the controls of a dialog are passed as separate nodes, as with `c.example(*preview)`; the dialog is open when at least one child isn't `None`.
+- **D2** `dialog(content=None, *, id=…)` instead of `dialog(*, id=…)` (R2): the page templates render the mount with the dialog a page is delivered with, and a custom template can do the same.
+- **D3** The translation of the close button's label was done with the component, so `poe check` stayed green on every commit.
+- **F1** htmx 2.0.4 cancels the native submit when an `hx-post` button in a form is clicked, but Enter in a text field "clicks" the form's first submit button. The close button is `type="button"`, and `pyhx.dialog.js` cancels any native `submit` of the dialog's form: Enter triggers the first action, never a page load.
+- **F2** A closed drawer is only moved off screen; its close button stays in the tab order, on every page. Behind an open dialog, `pyhx.dialog.js` makes closed drawers inert and focuses a drawer's panel when it opens (`pyhx.drawer.js` tries while it is still inert). Pages without a dialog are unchanged.
+- **F3** Pico styles every `<dialog>` as a full-screen overlay (`min-width`/`min-height: 100%`, `z-index: 999`, `align-items: center`, a backdrop filter) and puts a bottom margin under buttons, sections and fieldsets in forms; `dialog.css` resets them inside the dialog.
+- **F4** The notification's dismiss button stays reachable with Tab while a dialog is open, as notifications stay usable (R8).
+- **F5** pyhx has no browser tests; the CSS and JS rules are tested as text, the behaviour (R8–R11, R14, R15, R18) was checked by hand with Playwright in both samples: inert page, Tab cycle inside the dialog, Escape with and without a drawer above, required dialog ignoring Escape and backdrop clicks, error replacing the content with focus kept inside, focus returning to the opener, phone width.
+
+Screenshots (from the samples):
+
+| | Canvas design | Default design |
+| --- | --- | --- |
+| Required notice | ![](screenshots/canvas-shell--dialog-notice--desktop.png) | ![](screenshots/app-shell--dialog-notice--desktop.png) |
+| Answer refused, content replaced | ![](screenshots/canvas-shell--dialog-refused--desktop.png) | |
+| Confirmation, "Cancel" focused | ![](screenshots/canvas-shell--dialog-confirmation--desktop.png) | ![](screenshots/app-shell--dialog-confirmation--desktop.png) |
+| Drawer above the dialog | ![](screenshots/canvas-shell--dialog-drawer-above--desktop.png) | |
+| Phone width | ![](screenshots/canvas-shell--dialog-notice--phone.png) | ![](screenshots/app-shell--dialog-notice--phone.png) |
+
+Rollout: pyhx PR #49 (`feat: modal dialogs (T-012)`), released as the next minor version by release-please after the merge.
+
+Open after this change:
+
+- CaseSight T-018 (demo notice at first sign-in) uses `CanvasShell(dialog_content=…)`; owner: Michael.
+- Replacing the browser confirm of `hx_confirm` with the dialog, and closed drawers in the tab order on pages without a dialog (F2): possible backlog items; owner: Michael.
