@@ -70,3 +70,18 @@ None. The developer reviewed the design draft and waived the acceptance stops up
 - No docs page lists the components (the samples are their reference), so no guide is added; the T-011 guide uses the component in its sample.
 - Steppers, circular progress, a value the user sets.
 - Switching the T-011 sample to the component: done in T-011 after this change is merged.
+
+## Outcome
+
+Implemented as specified, with these findings (from the plan, removed at close-out):
+
+- **F1** The canvas theme has no own `--hx-color-primary`; its primary controls use `--hx-color-text`, so the canvas block maps `primary` to it, as in the design draft.
+- **F2** A rule under `prefers-reduced-motion` must have the specificity of the motion rules it stops (`.hx-progress-bar .hx-progress-bar__fill`); the first version didn't, and emulating reduced motion in the browser showed every bar still moving.
+- **F3** `hx-grid` has no phone breakpoint; the sample lays its examples out with an auto-fit grid (three columns, one at phone width).
+- **F4** No page of `docs/` lists the components; the components sample (`/progress-bar`) and the canvas layout sample (`/progress-bars`) are the reference.
+
+Screenshots (`screenshots/`): [components sample, plain design](screenshots/app-shell--progress-bar--desktop.png) and [at phone width](screenshots/app-shell--progress-bar--phone.png); [canvas layout sample](screenshots/canvas-shell--progress-bars--desktop.png), [at phone width](screenshots/canvas-shell--progress-bars--phone.png) and [with reduced motion](screenshots/canvas-shell--progress-bars-reduced-motion--desktop.png).
+
+Rollout: PR #50 (`feat: progress bar`), released with the next minor release of pyhx on `versions/1`.
+
+Open after this change: the server-sent events sample (T-011) switches its job page to `c.progress_bar` (Claude, in T-011); CaseSight uses it for the analysis progress (its T-010).
