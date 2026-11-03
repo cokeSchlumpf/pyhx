@@ -35,6 +35,12 @@ class TestDialogContent:
         assert '<h2 id="dialog-content__title">Delete project?</h2>' in html
         assert "<section><p>Body</p></section>" in html
 
+    def test_several_children_are_the_content_and_none_alone_is_closed(self):
+        html = str(c.dialog_content(y.p["One"], None, y.p["Two"], title="Notice"))
+
+        assert "<section><p>One</p><p>Two</p></section>" in html
+        assert " open " not in str(c.dialog_content(None))
+
     def test_content_and_actions_are_in_one_form(self):
         html = str(
             c.dialog_content(

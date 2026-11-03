@@ -42,8 +42,7 @@ def dialog(content: y.Node | None = None, *, id: str = DIALOG_CONTENT_ID) -> y.N
 
 @component
 def dialog_content(
-    children: y.Node | None = None,
-    *,
+    *children: y.Node,
     title: str | None = None,
     actions: y.Node | None = None,
     closable: bool = True,
@@ -57,7 +56,8 @@ def dialog_content(
     one; without children it closes the dialog.
 
     Args:
-        children: The content. Empty content closes the dialog.
+        children: The content, one node or several. Without any (or only
+            ``None``) the dialog is closed.
         title: The heading, which also labels the dialog.
         actions: Buttons in the footer, in order. Each posts to a fragment
             route (``hx_post``); the values of the controls in the dialog and
@@ -68,7 +68,7 @@ def dialog_content(
             so the app can clean up its own state too.
         id: DOM id, the target of out-of-band swaps.
     """
-    is_open = children is not None
+    is_open = any(child is not None for child in children)
     title_id = f"{id}__title"
     if is_open and closable:
         close_attrs = (
