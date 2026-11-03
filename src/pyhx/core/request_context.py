@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, overload
 
 from commons.users import AnonymousUser, User
 from fastapi import Request
-from starlette.websockets import WebSocket
 
 from .app_context import AppContext
 
@@ -20,7 +19,6 @@ def _empty_app_context() -> AppContext:
 @dataclass
 class RequestContext:
     request: Request | None = None
-    websocket: WebSocket | None = None
     user: User = field(default_factory=AnonymousUser)
     app_context: AppContext = field(default_factory=_empty_app_context)
     page_template: PageTemplate | None = None
@@ -51,7 +49,7 @@ class RequestContext:
         req = ctx.request
 
         assert req is not None, (
-            "Request can only be read during request procesing of HTTP Requests (fragments and pages), not in WebSocket calls."
+            "Request can only be read during request processing (pages, fragments, streams and API endpoints)."
         )
         return req
 
@@ -101,7 +99,7 @@ class RequestContext:
         """Resolve each requested type to a value from the current context.
 
         Reads the active :class:`RequestContext` via :meth:`get`, then resolves
-        each requested type: ``Request``, ``WebSocket`` and ``User`` are served
+        each requested type: ``Request`` and ``User`` are served
         straight from the context; every other type is looked up in the
         app-level :class:`AppContext` (``AppContext.get(type)``).
 
@@ -128,8 +126,8 @@ class RequestContext:
            ``form_field_name`` is returned.
 
         This is intended for request/form handling in HTTP flows (fragments and
-        pages). It does not work for WebSocket calls, since it requires a
-        ``Request`` in the context — see :meth:`get_request`.
+        pages). It requires a ``Request`` in the context — see
+        :meth:`get_request`.
 
         Args:
             parameter_name: Path-parameter name to look up first. Also used as
@@ -146,7 +144,7 @@ class RequestContext:
             AssertionError: If the resolved form field is not a plain string
                 (e.g. an uploaded file).
             AttributeError: If no ``Request`` is available in the current
-                context (e.g. within a WebSocket flow), since ``None`` has no
+                context (e.g. outside a request), since ``None`` has no
                 ``path_params``.
         """
         (request,) = RequestContext.get_from_context(Request)
@@ -171,8 +169,6 @@ class RequestContext:
     def _resolve_one(self, t: type) -> Any:
         if isinstance(t, type) and issubclass(t, Request):
             return self.request
-        if isinstance(t, type) and issubclass(t, WebSocket):
-            return self.websocket
         if t is User or isinstance(self.user, t):
             return self.user
         return self.app_context.get(t)
@@ -213,25 +209,6 @@ def build_from_request(
     return RequestContext(
         request=request,
         user=getattr(request.state, "user", AnonymousUser()),
-        app_context=app_context if app_context is not None else _empty_app_context(),
-        page_template=page_template,
-    )
-
-
-def build_from_websocket(
-    websocket: WebSocket,
-    app_context: AppContext | None = None,
-    page_template: PageTemplate | None = None,
-) -> RequestContext:
-    """Build a ``RequestContext`` from a Starlette ``WebSocket``.
-
-    Mirrors :func:`build_from_request` for WS scopes: middleware seeds
-    ``websocket.state.user`` (defaults to ``AnonymousUser`` if unset).
-    ``app_context`` and ``page_template`` are threaded in the same way.
-    """
-    return RequestContext(
-        websocket=websocket,
-        user=getattr(websocket.state, "user", AnonymousUser()),
         app_context=app_context if app_context is not None else _empty_app_context(),
         page_template=page_template,
     )

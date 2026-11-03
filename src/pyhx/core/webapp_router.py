@@ -1,8 +1,8 @@
 """Decorator-based route collector that is attached to a WebApp later.
 
-Use a :class:`WebAppRouter` to declare pages, fragments, and websockets in
+Use a :class:`WebAppRouter` to declare pages, fragments and streams in
 modules that should not import a live :class:`~pyhx.core.WebApp`
-instance. The router exposes the same ``.page`` and ``.fragment``
+instance. The router exposes the same ``.page``, ``.fragment`` and ``.stream``
 decorator surfaces as the WebApp, captured against a local list, and is
 attached via :meth:`WebApp.include_router`. Routers can also be merged
 into one another via :meth:`WebAppRouter.include_router` for nested
@@ -12,15 +12,11 @@ Each router can be included at most once. To use the same routes under a
 different prefix, construct a fresh router.
 """
 
-from typing import TYPE_CHECKING
-
 from .api_endpoint import ApiEndpoint, ApiFactory
 from .fragment import Fragment, FragmentFactory
 from .page import Page, PageDecoratorFactory
 from .primitives import PathTemplate
-
-if TYPE_CHECKING:
-    from .webapp import WebSocket
+from .stream import StreamFactory
 
 
 class WebAppRouter:
@@ -28,18 +24,15 @@ class WebAppRouter:
         self._pages: list[Page] = []
         self._fragments: list[Fragment] = []
         self._api_endpoints: list[ApiEndpoint] = []
-        self._websockets: list[WebSocket] = []
         self._included: bool = False
 
         self.page = PageDecoratorFactory(self._pages)
         self.fragment = FragmentFactory(self._fragments)
+        self.stream = StreamFactory(self._fragments.append)
         self.api = ApiFactory(self._api_endpoints)
 
-    def add_websocket(self, ws: WebSocket) -> None:
-        self._websockets.append(ws)
-
     def include_router(self, router: WebAppRouter, *, prefix: str = "") -> None:
-        """Merge another :class:`WebAppRouter`'s pages, fragments, and websockets
+        """Merge another :class:`WebAppRouter`'s pages, fragments, streams and API endpoints
         into this one. ``prefix`` is prepended to every captured path.
 
         Prefixes compose across inclusion levels: a router included into
@@ -72,11 +65,6 @@ class WebAppRouter:
             if prefix:
                 endpoint.path = PathTemplate(prefix + str(endpoint.path))
             self._api_endpoints.append(endpoint)
-        for ws in router._websockets:
-            if prefix:
-                ws.path = PathTemplate(prefix + str(ws.path))
-            self._websockets.append(ws)
-
         router._included = True
 
     @staticmethod

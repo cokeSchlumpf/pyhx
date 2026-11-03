@@ -64,7 +64,6 @@ class TestRequestContextFromHandler:
         assert ctx is not None
         assert ctx.request is not None
         assert ctx.request.url.path == "/probe"
-        assert ctx.websocket is None
         assert isinstance(ctx.user, AnonymousUser)
 
     def test_user_set_on_request_state_surfaces_on_ctx(self):

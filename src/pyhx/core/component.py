@@ -14,6 +14,7 @@ from .fragment import (
 )
 from .fragment_registry import get_fragment_registry
 from .primitives import PathTemplate
+from .stream import DEFAULT_KEEPALIVE, Stream, StreamDefinition, StreamFn
 
 P = ParamSpec("P")
 
@@ -32,16 +33,21 @@ class ComponentFragmentFactory:
     ) -> Callable[[Callable[..., Awaitable[FragmentResult]]], Fragment]:
         def __call__(fn: Callable[..., Awaitable[FragmentResult]]) -> Fragment:
             fragment = FragmentDefinition(
-                PathTemplate(f"/_components/{fn.__name__}").join(PathTemplate(path)),
-                method,
-                resolve_fragment_result(fn),
+                self._path(fn, path), method, resolve_fragment_result(fn)
             )
-            self._fragments.append(fragment)
-            if self._on_register is not None:
-                self._on_register(fragment)
+            self._register(fragment)
             return fragment
 
         return __call__
+
+    @staticmethod
+    def _path(fn: Callable[..., object], path: str) -> PathTemplate:
+        return PathTemplate(f"/_components/{fn.__name__}").join(PathTemplate(path))
+
+    def _register(self, fragment: Fragment) -> None:
+        self._fragments.append(fragment)
+        if self._on_register is not None:
+            self._on_register(fragment)
 
     def delete(
         self, path: str
@@ -67,6 +73,18 @@ class ComponentFragmentFactory:
         self, path: str
     ) -> Callable[[Callable[..., Awaitable[FragmentResult]]], Fragment]:
         return self._add(path, HTTPMethod.PUT)
+
+    def stream(
+        self, path: str, *, keepalive: float | None = DEFAULT_KEEPALIVE
+    ) -> Callable[[StreamFn], Stream]:
+        """Register a server-sent event stream, see :meth:`StreamFactory.get`."""
+
+        def __call__(fn: StreamFn) -> Stream:
+            stream = StreamDefinition(self._path(fn, path), fn, keepalive=keepalive)
+            self._register(stream)
+            return stream
+
+        return __call__
 
 
 class Component[**P](Protocol):

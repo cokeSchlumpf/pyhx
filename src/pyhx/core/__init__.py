@@ -6,12 +6,22 @@ from .fragment import FragmentResponse
 from .nav_item import nav_item
 from .page import PageResponse
 from .request_context import RequestContext
+from .stream import (
+    STREAM_CLOSE_EVENT,
+    STREAM_ERROR_EVENT,
+    SseEvent,
+    Stream,
+    StreamItem,
+    StreamResponse,
+)
 from .templates import Design, Nav, NavItem, PageTemplate
-from .webapp import Fragment, Page, WebApp, WebSocket
+from .webapp import Fragment, Page, WebApp
 from .webapp_router import WebAppRouter
 from .webapp_routes import WebAppRoutes
 
 __all__ = [
+    "STREAM_CLOSE_EVENT",
+    "STREAM_ERROR_EVENT",
     "ApiEndpoint",
     "AppContext",
     "Design",
@@ -23,10 +33,13 @@ __all__ = [
     "PageResponse",
     "PageTemplate",
     "RequestContext",
+    "SseEvent",
+    "Stream",
+    "StreamItem",
+    "StreamResponse",
     "WebApp",
     "WebAppRouter",
     "WebAppRoutes",
-    "WebSocket",
     "component",
     "hx",
     "nav_item",

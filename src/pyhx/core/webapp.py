@@ -2,12 +2,11 @@ import traceback
 from collections.abc import Awaitable, Callable, Coroutine, Sequence
 from contextvars import ContextVar
 from pathlib import Path
-from typing import Any, Protocol, Self
+from typing import Any, Self
 
 import htpy as y
 from commons.path_operators import get_project_root_dir
 from fastapi import FastAPI, Request, Response
-from fastapi import WebSocket as FastAPIWebSocket
 from htpy.starlette import HtpyResponse
 
 from ._dev_mode import is_dev_mode
@@ -19,30 +18,17 @@ from .log import LOG
 from .nav_item import nav_item
 from .page import Page, PageDecoratorFactory, PageResponse
 from .primitives import HandlerResponse, Omit, PathTemplate
-from .primitives import Path as UrlPath
 from .primitives.lazy_text import Text
 from .reflection_operators import ensure_parameter_type_in_signature
 from .request_context import (
     RequestContext,
     build_from_request,
-    build_from_websocket,
     set_request_context,
 )
 from .static import MultiStaticFiles
+from .stream import StreamFactory
 from .templates import AppNavFn, Design, NavFactory, PageTemplate, Skeleton
 from .webapp_router import WebAppRouter
-
-# Intermediate pseudo types ...
-type WebSocketRequestContext = str
-type WebSocketResponse = HtpyResponse
-
-
-class WebSocket(Protocol):
-    path: PathTemplate
-    topic: UrlPath
-
-    async def render(self, context: WebSocketRequestContext) -> WebSocketResponse: ...
-
 
 ConfigureAppFn = Callable[[FastAPI], None]
 
@@ -61,7 +47,6 @@ class WebApp:
         pages: Sequence[Page] | None = None,
         api_endpoints: Sequence[ApiEndpoint] | None = None,
         static_dirs: Sequence[Path] | None = None,
-        websockets: Sequence[WebSocket] | None = None,
         default_page_template: PageTemplate | None = None,
         configure_fastapi_app: Sequence[ConfigureAppFn] | None = None,
         navigation: AppNavFn | None = None,
@@ -87,11 +72,11 @@ class WebApp:
         self._pages = list(pages or [])
         self._fragments = list(fragments or [])
         self._api_endpoints = list(api_endpoints or [])
-        self._websockets = list(websockets or [])
         self._configure_fastapi_app = list(configure_fastapi_app or [])
         self._is_dev = is_dev if is_dev is not None else is_dev_mode()
 
         self.fragment = FragmentFactory(self._fragments)
+        self.stream = StreamFactory(self._fragments.append)
         self.page = PageDecoratorFactory(self._pages)
         self.api = ApiFactory(self._api_endpoints)
         self.navigation = NavFactory(self._navigation)
@@ -172,7 +157,6 @@ class WebApp:
         self._register_pages(app)
         self._register_fragments(app)
         self._register_api_endpoints(app)
-        self._register_websockets(app)
 
         for fn in self._configure_fastapi_app:
             fn(app)
@@ -180,8 +164,8 @@ class WebApp:
         return app
 
     def include_router(self, router: WebAppRouter, *, prefix: str = "") -> None:
-        """Attach a :class:`WebAppRouter`'s pages, fragments, and websockets
-        to this WebApp. ``prefix`` is prepended to every captured path;
+        """Attach a :class:`WebAppRouter`'s pages, fragments, streams and API
+        endpoints to this WebApp. ``prefix`` is prepended to every captured path;
         each handle's ``.url()`` reflects the effective (prefixed) path
         after this call so ``nav_item(page)`` keeps working.
 
@@ -209,11 +193,6 @@ class WebApp:
             if prefix:
                 endpoint.path = PathTemplate(prefix + str(endpoint.path))
             self._api_endpoints.append(endpoint)
-        for ws in router._websockets:
-            if prefix:
-                ws.path = PathTemplate(prefix + str(ws.path))
-            self._websockets.append(ws)
-
         router._included = True
 
     def _handle_fragment_request(
@@ -381,20 +360,6 @@ class WebApp:
 
         return _render
 
-    def _handle_websocket_request(
-        self, websocket: WebSocket
-    ) -> Callable[[FastAPIWebSocket], Coroutine[Any, Any, None]]:
-        async def _handle_websocket_connection(ws: FastAPIWebSocket) -> None:
-            set_webapp(self)
-            set_request_context(
-                build_from_websocket(ws, self.context, self.default_page_template)
-            )
-
-            # TODO mw: Impelment ....
-            await ws.accept()
-
-        return _handle_websocket_connection
-
     def _on_global_fragment_registered(self, fragment: Fragment) -> None:
         """Listener attached to :class:`FragmentRegistry`.
 
@@ -454,14 +419,6 @@ class WebApp:
                 methods=["GET"],
                 include_in_schema=False,
                 response_model=None,
-            )
-
-    def _register_websockets(self, app: FastAPI) -> None:
-        """Registeres websocket endooints on FastAPI app."""
-
-        for ws in self._websockets:
-            app.add_api_websocket_route(
-                path=str(ws.path), endpoint=self._handle_websocket_request(ws)
             )
 
     async def _render_page_template(

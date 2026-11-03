@@ -65,6 +65,7 @@ nav:
       - Dialogs: guides/dialogs.md
       - Data Tables: guides/data-tables.md
       - Document Viewer: guides/document-viewer.md
+      - Server-Sent Events: guides/server-sent-events.md
       - Sidepanel: guides/sidepanel.md
       - User Authentication: guides/user-authentication.md
       - Multilingual Apps: guides/i18n.md

@@ -78,7 +78,10 @@ def progress_bar(
         The accessible name, when ``label`` is not a plain string or not
         shown.
     **kwargs
-        Additional HTML attributes forwarded to the root ``<div>``.
+        Additional HTML attributes forwarded to the root ``<div>``. Give the
+        bar an ``id`` when htmx replaces it (e.g. a server-sent event with a
+        new value): the filled part then glides to the new value instead of
+        jumping.
 
     Examples
     --------
@@ -104,14 +107,17 @@ def progress_bar(
     if moving or waiting:
         track_attrs["aria-busy"] = "true"
 
-    fill = (
-        y.div(class_="hx-progress-bar__fill")
-        if value is None
-        else y.div(
-            class_="hx-progress-bar__fill",
-            style=f"--progress-bar--value: {value}",
-        )
-    )
+    # With an id, the fill of a bar with a value gets a stable id too: when
+    # htmx swaps in a new bar (e.g. from a server-sent event), it settles the
+    # fill's old style into the new one, so the width change runs as a CSS
+    # transition. A waiting bar's segment gets none: the first value appears
+    # at once instead of the segment shrinking to it.
+    fill_attrs: dict[str, str] = {"class": "hx-progress-bar__fill"}
+    if value is not None:
+        if isinstance(kwargs.get("id"), str):
+            fill_attrs["id"] = f"{kwargs['id']}-fill"
+        fill_attrs["style"] = f"--progress-bar--value: {value}"
+    fill = y.div(fill_attrs)
 
     has_head = label is not None or value_text is not None
 
