@@ -557,6 +557,37 @@
     padding: calc(var(--hx-spacing-sm) + var(--hx-spacing-xs)) var(--hx-spacing-md);
 }
 
+/* With a filter bar, the toolbar is the bar's last item: in the flow at its
+   right end, inside the table, so it never covers what is above the table.
+   It is always shown there; hidden, its space would look empty. */
+.hx-table__filter-bar > .hx-table__toolbar {
+    /* Position */
+    position: static;
+
+    /* Box */
+    margin-left: auto;
+    padding: 0;
+
+    /* Visual */
+    background-color: transparent;
+    box-shadow: none;
+    opacity: 1;
+
+    /* Motion */
+    transform: none;
+    transition: none;
+}
+
+.hx-table__search + .hx-table__toolbar {
+    /* Box — the search field already takes the free space */
+    margin-left: 0;
+}
+
+.hx-table__filter-bar > .hx-table__toolbar::after {
+    /* Layout — no gap to bridge */
+    display: none;
+}
+
 .hx-table__filter-bar .hx-segment-control.hx-table__quick-filters {
     /* Layout */
     flex-wrap: wrap;

@@ -508,6 +508,21 @@ class DataTable[T]:
         if is_multi_select(self.select_mode):
             table_kwargs["aria_multiselectable"] = "true"
 
+        toolbar = render_toolbar(
+            render_table_url=self.render_table_fragment.url(),
+            clear_sort_and_filter_url=self.clear_sort_and_filter_fragment.url(),
+            filter_drawer=self.filter_drawer,
+            state_div_id=self.state_div_id,
+            query=state.query,
+            enable_sort_and_filter=self.enable_sort_and_filter,
+        )
+        filter_bar = await self._render_filter_bar(
+            state.query,
+            search_enabled=search_enabled,
+            preserve_search=preserve_search,
+            toolbar=toolbar,
+        )
+
         table_node = table(
             id=self.wrapper_div_id,
             column_widths=state.column_widths,
@@ -515,19 +530,9 @@ class DataTable[T]:
             scrollable=self.scrollable,
             controls=y.fragment[
                 render_state_input(self.state_div_id, self.state_input_name, state),
-                await self._render_filter_bar(
-                    state.query,
-                    search_enabled=search_enabled,
-                    preserve_search=preserve_search,
-                ),
-                render_toolbar(
-                    render_table_url=self.render_table_fragment.url(),
-                    clear_sort_and_filter_url=self.clear_sort_and_filter_fragment.url(),
-                    filter_drawer=self.filter_drawer,
-                    state_div_id=self.state_div_id,
-                    query=state.query,
-                    enable_sort_and_filter=self.enable_sort_and_filter,
-                ),
+                # With a filter bar, the toolbar is its last item (inside
+                # the card); without one, it floats above the table.
+                filter_bar if filter_bar is not None else toolbar,
             ],
             footer=await self._render_footer(state.query, rows.total),
             table_kwargs=table_kwargs,
@@ -659,11 +664,18 @@ class DataTable[T]:
         )
 
     async def _render_filter_bar(
-        self, query: Query, *, search_enabled: bool, preserve_search: bool
+        self,
+        query: Query,
+        *,
+        search_enabled: bool,
+        preserve_search: bool,
+        toolbar: y.Node,
     ) -> y.Node:
-        """The bar above the header: quick filter pills left, search right.
+        """The bar above the header: quick filter pills left, search and
+        ``toolbar`` right.
 
-        ``None`` when the table has neither. The pills are the radio group
+        ``None`` when the table has neither pills nor search; the caller
+        then renders the toolbar on its own, above the table. The pills are the radio group
         of :func:`segment_control` (one checked, or none for "custom"); a
         change posts ``action=quick_filter`` with the checked radio. The
         search field posts ``action=search`` after a short pause.
@@ -728,7 +740,7 @@ class DataTable[T]:
                 ),
             ]
 
-        return y.div(class_="hx-table__filter-bar")[pills, search_field]
+        return y.div(class_="hx-table__filter-bar")[pills, search_field, toolbar]
 
     async def _render_row(
         self,

@@ -154,6 +154,15 @@ class TestRendering:
         assert "hx-table__filter-bar" not in text
         assert "data-hx-url-param-keys" not in text
 
+    def test_toolbar_is_the_filter_bars_last_item(self):
+        # Inside the table, not floating above it over the page's buttons.
+        client, _ = _app(quick_filters=QUICK_FILTERS)
+        text = client.get("/projects").text
+        bar = text[text.index('class="hx-table__filter-bar"') :]
+        bar = bar[: bar.index("<table")]
+        assert 'class="hx-table__toolbar"' in bar
+        assert text.count('class="hx-table__toolbar"') == 1
+
     def test_pills_are_a_labelled_radio_group_with_counts(self):
         client, _ = _app(quick_filters=QUICK_FILTERS)
         text = client.get("/projects").text
