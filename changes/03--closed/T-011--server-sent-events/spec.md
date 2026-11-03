@@ -110,3 +110,21 @@ Answer below each question; leave **Answer** empty to accept the proposal. The d
 - JSON or other non-HTML payloads, messages from the browser to the server.
 - Translating the error page and the error event (Q1).
 - Using streams in CaseSight: its change T-010, after a pyhx release with this change.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** The sample has a demo-only ASGI middleware and a "Drop the connection" button (`samples/server_sent_events/pages/_drop.py`) that end a job's response without `pyhx-close`, to show the browser's reconnect with `Last-Event-ID`; the connection event sets `retry=1000`. Reason: the network emulation "offline" of Chromium (DevTools, Playwright) doesn't close an open `EventSource` connection, so it can't show a reconnect.
+- **D2** The job page of the sample shows the progress with `c.progress_bar` (waiting while queued, working with the sheen while running, success when finished), added for this purpose in its own change T-013 (PR #50), which was finished first.
+- **D3** Released as 1.8.0, not 1.6.0 as the intent's constraints say: 1.6.0 and 1.7.0 (T-012 modal dialogs) were released while this change was open.
+- **F1** `HandlerResponse` is now `runtime_checkable`, so `resolve_fragment_result` passes any `HandlerResponse` through, which keeps a stream replayed from the global fragment registry a stream.
+- **F2** Starlette runs the body of a `StreamingResponse` in a task that copies the request task's context, so the request context and the language set by `WebApp._handle_request` stay visible while streaming (tested with a German text after an `await`).
+- **F3** `anyio` (a dependency of Starlette) gives the shielded, bounded cleanup on disconnect; no new dependency.
+- **F4** The htmx SSE extension opens a new `EventSource` after a refused or failed request, which sends no `Last-Event-ID`; only the browser's own reconnect after a dropped connection sends it. The guide therefore has streams send the current state first on every connect.
+
+Screenshots (`screenshots/`): [overview](screenshots/canvas-shell--sse-overview--desktop.png), [countdown](screenshots/canvas-shell--sse-countdown--desktop.png), [error event](screenshots/canvas-shell--sse-countdown-error--desktop.png), [job resumed after a dropped connection](screenshots/canvas-shell--sse-job-resumed--desktop.png), [job finished](screenshots/canvas-shell--sse-job-finished--desktop.png), [job at phone width](screenshots/canvas-shell--sse-job-running--phone.png).
+
+Rollout: PR #48 (`feat: server-sent events`), released with the next minor release of pyhx (1.8.0) on `versions/1`.
+
+Open after this change: buffering of `text/event-stream` by the Azure App Service front end is checked when CaseSight T-010 runs on UAT (Michael); CaseSight T-010 replaces its polling stopgap with a stream after `poetry update pyhx` (Michael / Claude in that change).
