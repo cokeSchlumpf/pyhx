@@ -38,7 +38,15 @@ from samples.document_viewer.sample_document import (
     registration,
 )
 
-from . import data_page, dialogs, extracted_values, forms, navigation, progress
+from . import (
+    data_page,
+    dialogs,
+    extracted_values,
+    forms,
+    loading,
+    navigation,
+    progress,
+)
 from .header import header_content
 
 hx = WebApp(
@@ -53,6 +61,7 @@ hx.include_router(data_page.router)
 hx.include_router(forms.router)
 hx.include_router(dialogs.router)
 hx.include_router(progress.router)
+hx.include_router(loading.router)
 navigation.register_navigation(hx)
 
 
@@ -68,6 +77,10 @@ def _modes() -> y.Node:
         y.li[
             y.a(href="/progress-bars")["progress bars"],
             " — static, working and waiting bars, a job panel",
+        ],
+        y.li[
+            y.a(href="/loading-indicators")["loading indicators"],
+            " — spinner, ripple, pulse, dots and bars, in use",
         ],
         y.li[
             y.a(href="/data-page")["data page"],

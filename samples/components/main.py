@@ -33,6 +33,7 @@ from samples.components.pages import (
     grid,
     icons,
     inline_edit,
+    loading_indicator,
     messages,
     meta,
     metric_tile,
@@ -54,6 +55,7 @@ hx = WebApp(title="Components", default_page_template=AppShell(mode="app"))
 
 hx.include_router(pills.router)
 hx.include_router(progress_bar.router)
+hx.include_router(loading_indicator.router)
 hx.include_router(bubble.router)
 hx.include_router(notification_badge.router)
 hx.include_router(buttons.router)
@@ -175,6 +177,19 @@ async def home() -> y.Node:
                     y.a(href=progress_bar.progress_bar_page.url())["Progress Bar"],
                     " — how far work has got: static, working (sheen, stripes, ",
                     "pulse) or waiting (2 axes: ",
+                    y.code["appearance"],
+                    " × ",
+                    y.code["size"],
+                    ")",
+                ],
+                y.li[
+                    y.a(href=loading_indicator.loading_indicator_page.url())[
+                        "Loading Indicator"
+                    ],
+                    " — this is happening right now: spinner, ripple, pulse, dots ",
+                    "or bars (3 axes: ",
+                    y.code["kind"],
+                    " × ",
                     y.code["appearance"],
                     " × ",
                     y.code["size"],

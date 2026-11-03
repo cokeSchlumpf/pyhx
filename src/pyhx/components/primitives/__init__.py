@@ -33,6 +33,7 @@ from .gantt import (
     gantt,
 )
 from .icon import icon
+from .loading_indicator import LoadingIndicatorKind, loading_indicator
 from .markdown import markdown
 from .meta import meta
 from .metric_tile import metric_tile
@@ -61,6 +62,7 @@ __all__ = [
     "FocusListVariant",
     "HilightedDate",
     "InputFactory",
+    "LoadingIndicatorKind",
     "Orientation",
     "PillVariant",
     "PlannedActivity",
@@ -90,6 +92,7 @@ __all__ = [
     "form_field",
     "gantt",
     "icon",
+    "loading_indicator",
     "markdown",
     "meta",
     "metric_tile",
