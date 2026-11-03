@@ -39,6 +39,7 @@ from samples.components.pages import (
     notification_badge,
     notifications,
     pills,
+    progress_bar,
     segment_control,
     slider,
     table,
@@ -52,6 +53,7 @@ from samples.components.pages import (
 hx = WebApp(title="Components", default_page_template=AppShell(mode="app"))
 
 hx.include_router(pills.router)
+hx.include_router(progress_bar.router)
 hx.include_router(bubble.router)
 hx.include_router(notification_badge.router)
 hx.include_router(buttons.router)
@@ -166,6 +168,15 @@ async def home() -> y.Node:
                         "Segment Control"
                     ],
                     " — radio-group as a connected button bar (1 axis: ",
+                    y.code["size"],
+                    ")",
+                ],
+                y.li[
+                    y.a(href=progress_bar.progress_bar_page.url())["Progress Bar"],
+                    " — how far work has got: static, working (sheen, stripes, ",
+                    "pulse) or waiting (2 axes: ",
+                    y.code["appearance"],
+                    " × ",
                     y.code["size"],
                     ")",
                 ],

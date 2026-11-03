@@ -56,6 +56,7 @@
 @import "./pyhx/components/primitives/taglist.css" layer(pyhx);
 @import "./pyhx/components/primitives/form_field.css" layer(pyhx);
 @import "./pyhx/components/primitives/pill.css" layer(pyhx);
+@import "./pyhx/components/primitives/progress-bar.css" layer(pyhx);
 @import "./pyhx/components/primitives/segment-control.css" layer(pyhx);
 @import "./pyhx/components/primitives/select_fieldset.css" layer(pyhx);
 @import "./pyhx/components/primitives/slider.css" layer(pyhx);
