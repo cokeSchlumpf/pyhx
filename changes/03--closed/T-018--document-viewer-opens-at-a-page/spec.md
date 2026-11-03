@@ -55,4 +55,6 @@ Built as specified. Proof: `tests/pyhx/components/test_document_viewer_start_and
 
 Deviation: opening at a page, and keeping the current thumbnail in view, now scroll only inside the viewer (page column, thumbnail rail); before, `scrollIntoView` also scrolled the page around a viewer embedded in a longer page. Smooth scrolling from the pager, thumbnails and linked content is unchanged.
 
+Found with app--casesight: `CanvasShell(mode="full")` removed the width limit but gave the content no height, so a viewer as the page grew to all its pages and the window scrolled instead of the page column (opening at a page then showed the wrong page). In full mode, a document viewer directly in the content now fills the window below the header and its border (`canvas-shell.css`), as the guide said.
+
 Open: the entries are rendered all at once; loading them from the server is left for an app with thousands of documents.

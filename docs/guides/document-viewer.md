@@ -26,7 +26,7 @@ dv(id="case", documents=[registration, medical_report])[
 ]
 ```
 
-The viewer lays the parts out itself: toolbar on top, thumbnails on the left, pages in the middle, sidebar on the right. It fills its container, so give that a height, e.g. `CanvasShell(mode="full")` for a page that fills the window, or a box with a fixed height on a scrolling page. Zoom, the current page and the selection live in the browser; the server only renders the documents.
+The viewer lays the parts out itself: toolbar on top, thumbnails on the left, pages in the middle, sidebar on the right. It fills its container, so give that a height, or use `CanvasShell(mode="full")` with the viewer as the page's content: it then fills the window below the header and scrolls inside. On a scrolling page, put it in a box with a fixed height. Zoom, the current page and the selection live in the browser; the server only renders the documents.
 
 ## Documents and pages
 

@@ -628,6 +628,11 @@
             --content--max-width: none;
             --content--padding-inline: 0;
             --content--padding-block: 0;
+
+            /* A document viewer as the page fills the window below the header (and its border) and scrolls inside. */
+            :is(.hx-canvas-shell__content, .hx-canvas-shell__page) > .hx-document-viewer {
+                height: calc(100dvh - var(--hx-sticky-top) - var(--hx-border-width-sm));
+            }
         }
 
 
