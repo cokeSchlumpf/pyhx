@@ -1,9 +1,12 @@
 """Example: the source picker in a dialog, the posted choice shown on the page (T-021).
 
-Two dialogs: the two sample documents in one picker, and 30 documents in
-three folders, one at a time with the document switcher (``files``).
+Three dialogs: one sample document, the two sample documents in one picker,
+and 30 documents in three folders, one at a time with the document switcher
+(``files``). The pages keep their marks but not their notes: pins only
+distract while choosing a source.
 """
 
+from dataclasses import replace
 from typing import Annotated
 
 import htpy as y
@@ -12,11 +15,31 @@ from fastapi import Query, Request
 import pyhx.components as c
 from pyhx.components.view_model import document_viewer as vm
 from pyhx.core import WebAppRouter
-from samples.document_viewer.sample_document import medical_report, registration, sample_documents
+from samples.document_viewer import sample_document
 
 from ._layout import code, example_page
 
 router = WebAppRouter()
+
+
+def _marks_only(document: vm.Document) -> vm.Document:
+    pages = [
+        replace(page, annotations=[a for a in page.annotations if isinstance(a, vm.Mark)])
+        for page in document.pages
+    ]
+    return replace(document, pages=pages)
+
+
+def sample_documents() -> list[vm.Document]:
+    return [_marks_only(d) for d in sample_document.sample_documents()]
+
+
+def registration() -> vm.Document:
+    return _marks_only(sample_document.registration())
+
+
+def medical_report() -> vm.Document:
+    return _marks_only(sample_document.medical_report())
 
 RESULT_ID = "source-picker-result"
 
