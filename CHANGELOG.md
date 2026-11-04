@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.17.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.16.0...v1.17.0) (2026-11-04)
+
+
+### Features
+
+* **document-viewer:** show and hide all categories; annotation pager like the page pager ([#75](https://github.com/cokeSchlumpf/pyhx/issues/75)) ([f1395aa](https://github.com/cokeSchlumpf/pyhx/commit/f1395aacd3215c56c0ad4c1f12439c7c8df6a14c))
+
 ## [1.16.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.15.0...v1.16.0) (2026-11-04)
 
 
