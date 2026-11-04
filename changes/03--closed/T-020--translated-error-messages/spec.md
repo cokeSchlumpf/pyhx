@@ -71,5 +71,6 @@ Implemented as specified, with these deviations and findings (from the plan, rem
 - **F1** `InlineEdit` reports its validation errors through the same forms, so its messages are translated too ("Enter a value of at most 100.").
 - **F2** The toast falls back to its English texts when a page was rendered by an older pyhx without the `data-text-*` attributes.
 - **F3** Two tests changed with the behavior: the auth addon's catch-all test no longer finds the exception name in the 500 page outside development, and the stream error event says "Something went wrong".
+- **F4** Found while updating an app (fixed in 1.13.1): the forms read an empty field as `None`, so a required field left empty is a `string_type` (or other `*_type`) error, not `missing`; such an error with the input `None` now says "This field is required." instead of "Enter a valid value.".
 
 Rollout: minor release on `versions/1`; apps get the texts with `poetry update pyhx`. Browser requests to unknown URLs now get an HTML 404 page instead of JSON.

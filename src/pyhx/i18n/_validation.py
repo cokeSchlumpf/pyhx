@@ -178,6 +178,9 @@ def validation_message(error: ErrorDetails) -> str:
     kind = error.get("type", "")
     if kind in ("value_error", "assertion_error") and "error" in ctx:
         return str(ctx["error"])
+    if kind.endswith("_type") and kind in _MESSAGES and error.get("input") is None:
+        # The forms read an empty field as ``None``: the value is missing.
+        return _("This field is required.")
     message = _MESSAGES.get(kind)
     if message is None:
         return error.get("msg", "")
