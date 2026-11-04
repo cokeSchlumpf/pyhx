@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.16.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.15.0...v1.16.0) (2026-11-04)
+
+
+### Features
+
+* **document-viewer:** annotation navigation, categories and linked entries in view ([#73](https://github.com/cokeSchlumpf/pyhx/issues/73)) ([01137ba](https://github.com/cokeSchlumpf/pyhx/commit/01137ba90823b861e2ad26d0e50f6371fbeb3045))
+
 ## [1.15.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.14.0...v1.15.0) (2026-11-04)
 
 
