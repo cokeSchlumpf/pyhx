@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.15.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.14.0...v1.15.0) (2026-11-04)
+
+
+### Features
+
+* **source-picker:** choose a page and an area on it in a form ([#71](https://github.com/cokeSchlumpf/pyhx/issues/71)) ([12625dd](https://github.com/cokeSchlumpf/pyhx/commit/12625dd1032c50bb66fa442ded27c145cffb4045))
+
 ## [1.14.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.13.1...v1.14.0) (2026-11-04)
 
 
