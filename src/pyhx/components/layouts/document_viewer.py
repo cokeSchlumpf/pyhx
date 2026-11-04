@@ -58,6 +58,8 @@ class _Viewer:
     documents: tuple[Document, ...]
     start: str | None = None
     selected: str | None = None
+    # one page at a time, annotations read-only (the source picker); internal
+    paged: bool = False
 
     def start_page(self) -> tuple[Document, int]:
         """The document and page (1-based) the viewer opens at: ``start``, else the first page."""
@@ -123,11 +125,16 @@ class _Root(_HxElement):
         *,
         start: str | None = None,
         selected: str | None = None,
+        paged: bool = False,
     ) -> None:
         if not documents:
             raise ValueError("a document viewer needs at least one document")
         self._state = _Viewer(
-            id=id, documents=tuple(documents), start=start, selected=selected
+            id=id,
+            documents=tuple(documents),
+            start=start,
+            selected=selected,
+            paged=paged,
         )
         self._kwargs = kwargs
 
@@ -137,6 +144,7 @@ class _Root(_HxElement):
             data_hx_document_viewer=self._state.id,
             data_hx_document_start=self._state.start or None,
             data_hx_document_selected=self._state.selected or None,
+            data_hx_document_paged=self._state.paged or None,
             **classnames("hx-document-viewer", **self._kwargs),
         )[_viewer.provider(self._state, self._children)]
 
@@ -311,6 +319,8 @@ def _document(state: _Viewer, document: Document, heading: bool) -> y.Node:
                 n,
                 page,
                 eager=document is start and start_number <= n <= start_number + 1,
+                paged=state.paged,
+                shown=document is start and n == start_number,
             )
             for n, page in enumerate(document.pages, start=1)
         ),
@@ -318,7 +328,13 @@ def _document(state: _Viewer, document: Document, heading: bool) -> y.Node:
 
 
 def _page(
-    document: Document, number: int, page: DocumentPage, *, eager: bool
+    document: Document,
+    number: int,
+    page: DocumentPage,
+    *,
+    eager: bool,
+    paged: bool = False,
+    shown: bool = True,
 ) -> y.Node:
     return y.section(
         class_="hx-document-viewer__page",
@@ -327,6 +343,8 @@ def _page(
         # without a size the ratio is assumed; the script corrects it on load
         data_hx_document_ratio=None if page.size_known else "assumed",
         style=f"aspect-ratio: {page.aspect_ratio};",
+        # paged: only the current page is shown
+        hidden=paged and not shown,
     )[
         y.img(
             src=page.src,
@@ -335,7 +353,8 @@ def _page(
             width=str(page.width) if page.size_known else None,
             height=str(page.height) if page.size_known else None,
         ),
-        y.div(class_="hx-document-viewer__annotations")[
+        # paged (source picker): annotations are shown, not selectable
+        y.div(class_="hx-document-viewer__annotations", inert=paged)[
             # notes after marks, so a pin stays on top of a mark
             (_mark(a) for a in page.annotations if isinstance(a, Mark)),
             (_note(a) for a in page.annotations if isinstance(a, Note)),

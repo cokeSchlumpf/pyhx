@@ -51,6 +51,7 @@ from .layouts import (
     open_drawer_htmx_attributes,
     page_header,
     page_section,
+    source_picker,
     split_layout,
 )
 from .primitives import (
@@ -240,6 +241,7 @@ __all__ = [
     "radio_fieldset",
     "segment_control",
     "slider",
+    "source_picker",
     "split_layout",
     "switch",
     "table",

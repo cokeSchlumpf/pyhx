@@ -34,6 +34,11 @@ EXAMPLES: list[tuple[str, str, str]] = [
         "Open at a page",
         "One document at a time, opened at a page or a mark, switched in the toolbar.",
     ),
+    (
+        "/source-picker",
+        "Source picker",
+        "Choose a page and draw an area on it, in a dialog; the choice is posted.",
+    ),
 ]
 
 

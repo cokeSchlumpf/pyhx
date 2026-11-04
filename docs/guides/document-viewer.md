@@ -154,3 +154,69 @@ dv.toolbar[
 ## Sidebar and phone width
 
 `dv.sidebar[...]` is a pane for your content beside the pages, scrolling on its own; set its width with the CSS custom property `--document-viewer--sidebar-width` (default 22rem). Below 40rem the thumbnails are hidden, the toolbar wraps, the pages start at fit to width and the sidebar moves below the pages. On touch devices two fingers zoom.
+
+## Source picker: choosing a page and an area
+
+`c.source_picker` is a form control built from the viewer's parts: the user chooses a page of a set of documents and may mark one area on it, e.g. the source of a statement they write. It takes the same `Document`s and fits in a dialog:
+
+```python
+from fastapi import Request
+
+vm = c.document_viewer.view_model
+
+
+@router.fragment.get("/sources/new")
+async def add_source() -> y.Node:
+    return c.dialog_content(
+        c.source_picker(
+            id="source-picker",
+            documents=documents,  # vm.Document, as for the viewer
+            name="source",  # inputs source_document, source_page, source_box
+            value=None,  # or vm.SourceChoice("report", 2, vm.BoundingBox(...)) to edit one
+        ),
+        title="Add source",
+        actions=[
+            c.button("Cancel", hx_post=c.close_dialog.url()),
+            c.button("Use source", appearance="primary", hx_post=use_source.url()),
+        ],
+    )
+
+
+@router.fragment.post("/sources")
+async def use_source(request: Request) -> y.Node:
+    choice = vm.SourceChoice.from_form(await request.form(), name="source")
+    # choice.document_id, choice.page (1-based), choice.box (BoundingBox, or None for the whole page)
+    ...
+```
+
+- It shows one page at a time; the thumbnails (a strip at phone width) and previous/next choose the page, also by keyboard. Without `value` the first page is chosen; a `value` whose document or page isn't among `documents` falls back to it.
+- A pointer drag on the page (mouse, touch, pen) draws one area; drag it to move it, drag a corner to resize it. On the focused area, arrow keys move it, Shift + arrow keys resize it, Delete removes it. Escape or "Clear area" removes it too; Escape in a dialog closes the dialog only when there is no area. Another page removes the area. Without an area the whole page is the choice.
+- The hidden inputs `<name>_document`, `<name>_page` and `<name>_box` always hold the choice; `<name>_box` is `"x,y,width,height"` in fractions of the page (four decimals, origin top left), empty for the whole page. `SourceChoice.from_form` returns `None` without a document and raises `ValueError` for a malformed page or box; checking that the document and page exist is the app's job.
+- Every change dispatches `hx-source-picker:change` on the picker, with `detail.picker`, `detail.document`, `detail.page` and `detail.box` (`{x, y, width, height}` or `null`), e.g. for `hx-trigger`. The viewer itself dispatches `hx-document:page` (`detail.viewer`, `detail.page` as `"<document id>:<page>"`) whenever its current page changes.
+- Marks and notes of the pages are shown, but can't be selected. The page fits the picker when it opens and on "Fit page"; one finger on the page draws, so a page zoomed in beyond the picker scrolls with two fingers or its scroll bars.
+- In a dialog, the dialog widens to 64rem for the picker; the picker is `min(36rem, 70dvh)` high. When the server sends the dialog again (e.g. with an error), the picker takes the choice of its inputs, so render it with the posted `value`.
+
+### Many documents: the document switcher in the picker
+
+With one or a few documents, pass them all in `documents`. With many, pass only the current one and give `files`, the entries of the document switcher of `dv.files` (`vm.DocumentLink`: title, href, group, detail, current). The toolbar then shows the switcher instead of the title: search, groups, previous and next document, the position.
+
+```python
+def picker(document_id: str, value: vm.SourceChoice | None = None) -> y.Node:
+    document = documents[document_id]
+    return c.source_picker(
+        id="source-picker",
+        documents=[document],  # only the current one
+        files=[
+            vm.DocumentLink(d.title, href=f"/sources/picker?document={d.id}", group=d.folder, current=d is document)
+            for d in documents.values()
+        ],
+        value=value,
+    )
+
+
+@router.fragment.get("/sources/picker")
+async def picker_for(document: str) -> y.Node:
+    return picker(document)  # the picker alone, no dialog around it
+```
+
+Inside the picker, choosing an entry (or previous/next) doesn't leave the page: the script fetches its `href` with htmx and replaces the picker with the answer (`outerHTML` of the picker), so it works in a dialog. Return the picker for that document with the same `id` and `name`; its inputs then hold that document's choice (page 1, whole page, unless you give a `value`). With fewer than two entries in `files` the picker looks as without them: the title, no switcher.
