@@ -194,7 +194,7 @@ html:has(.hx-drawer > aside > section > *) {
 
 
 /* --- Canvas design ---
-   Header with a 17px title and a 32px square close button; neutral buttons
+   Header with a 17px title and a 28px square close button; neutral buttons
    in a drawer (cancel, the close button) are the white secondary buttons of
    the design: the 3:1 control border, the close button a lighter one as in
    the draft. The form layout of DataFormDrawer is in data_form.css. */
@@ -234,11 +234,12 @@ html:has(.hx-drawer > aside > section > *) {
         background-color: var(--hx-color-neutral-050);
     }
 
+    /* As high as the small buttons beside it (e.g. a pager). */
     [data-hx-drawer-close] {
         /* Box */
-        width: 2rem;
-        height: 2rem;
-        min-height: 2rem;
+        width: 1.75rem;
+        height: 1.75rem;
+        min-height: 1.75rem;
         padding: 0;
         border-color: var(--hx-color-neutral-200);
 
