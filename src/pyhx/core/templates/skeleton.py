@@ -64,6 +64,7 @@ class Skeleton(PageTemplate):
                 script(src="/static/js/pyhx.wysiwyg-editor.js"),
                 script(src="/static/js/pyhx.file-dropzone.js"),
                 script(src="/static/js/pyhx.slider.js"),
+                script(src="/static/js/pyhx.timeline.js"),
                 script(src="/static/js/pyhx.code.js"),
                 script(src="/static/js/pyhx.data-form.js"),
                 script(src="/static/js/pyhx.dropdown.js"),

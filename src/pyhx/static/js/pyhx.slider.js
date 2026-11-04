@@ -146,6 +146,29 @@ class PyhxSlider {
         this.root.addEventListener('pointerup', (event) => this.onPointerUp(event));
         this.root.addEventListener('pointercancel', (event) => this.onPointerUp(event));
         this.root.addEventListener('keydown', (event) => this.onKeyDown(event));
+        // Other scripts move the thumbs with
+        // `root.dispatchEvent(new CustomEvent('hx-slider:set', {detail: {values}}))`:
+        // values are snapped, clamped to the scale and kept in order, then
+        // `input` and `change` fire as if the user had moved them.
+        this.root.addEventListener('hx-slider:set', (event) => this.onSet(event));
+    }
+
+    onSet(event) {
+        const wanted = event.detail?.values;
+        if (!Array.isArray(wanted)) return;
+        const { min, max } = this.scale;
+        const values = this.values();
+        wanted.slice(0, values.length).forEach((v, i) => {
+            values[i] = this.snap(Number(v));
+        });
+        for (let i = 0; i < values.length; i++) {
+            values[i] = Math.min(max, Math.max(i ? values[i - 1] : min, values[i]));
+        }
+        this.render(values);
+        values.forEach((_, i) => {
+            this.inputAt(i).dispatchEvent(new Event('input', { bubbles: true }));
+            this.commit(i);
+        });
     }
 
     onPointerDown(event) {

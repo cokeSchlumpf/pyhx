@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 08:26+0100\n"
+"POT-Creation-Date: 2026-11-04 08:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -35,6 +35,7 @@ msgid "Add tag"
 msgstr "Ajouter un tag"
 
 #: components/primitives/conditional_select.py:64
+#: components/primitives/timeline.py:286
 msgid "All"
 msgstr "Tous"
 
@@ -82,6 +83,10 @@ msgstr "Annuler"
 #, python-brace-format
 msgid "Cannot delete {type}"
 msgstr "Impossible de supprimer {type}"
+
+#: components/primitives/timeline.py:258
+msgid "Categories"
+msgstr "Catégories"
 
 #: addons/user_authentication/_pages.py:384
 #: addons/user_authentication/_pages.py:446
@@ -165,6 +170,10 @@ msgstr "Impossible de joindre le serveur. Vérifiez votre réseau et réessayez.
 msgid "Create {type}"
 msgstr "Créer {type}"
 
+#: components/primitives/timeline.py:279
+msgid "Default"
+msgstr "Par défaut"
+
 #. {type} is the name of the item's type, in lower case.
 #: components/data/data_section.py:672
 #, python-brace-format
@@ -233,6 +242,10 @@ msgstr "Modifier {type}"
 #: addons/user_authentication/_pages.py:90
 msgid "Email"
 msgstr "E-mail"
+
+#: components/primitives/timeline.py:328
+msgid "End"
+msgstr "Fin"
 
 #: i18n/_validation.py:114
 #, python-brace-format
@@ -362,7 +375,7 @@ msgstr "Obtenir de l'aide"
 msgid "Get a login link and a code by email."
 msgstr "Recevez un lien de connexion et un code par e-mail."
 
-#: core/_errors.py:72
+#: core/_errors.py:73
 msgid "Go to the start page"
 msgstr "Aller à la page d'accueil"
 
@@ -374,7 +387,7 @@ msgstr "Aide"
 msgid "If an account exists for this address, we've sent you a login link and a code. Open the link, or enter the code here."
 msgstr "Si un compte existe pour cette adresse, nous vous avons envoyé un lien de connexion et un code. Ouvrez le lien ou saisissez le code ici."
 
-#: core/_errors.py:23
+#: core/_errors.py:24
 msgid "Invalid request"
 msgstr "Requête non valide"
 
@@ -427,7 +440,7 @@ msgstr "Page suivante"
 msgid "No"
 msgstr "Non"
 
-#: core/_errors.py:27
+#: core/_errors.py:28
 msgid "No access"
 msgstr "Pas d'accès"
 
@@ -436,6 +449,10 @@ msgstr "Pas d'accès"
 #: components/primitives/drawer_select.py:70
 msgid "No available items."
 msgstr "Aucun élément disponible."
+
+#: components/primitives/timeline.py:251
+msgid "No events of these categories in this period."
+msgstr "Aucun événement de ces catégories dans cette période."
 
 #: components/primitives/drawer_select.py:71
 msgid "No items selected."
@@ -449,7 +466,7 @@ msgstr "Aucun élément à afficher"
 msgid "No selected item."
 msgstr "Aucun élément sélectionné."
 
-#: core/_errors.py:33
+#: core/_errors.py:34
 msgid "Not possible"
 msgstr "Impossible"
 
@@ -466,7 +483,7 @@ msgstr "Ouvrir le menu"
 msgid "Page navigation"
 msgstr "Navigation de la page"
 
-#: core/_errors.py:29
+#: core/_errors.py:30
 msgid "Page not found"
 msgstr "Page introuvable"
 
@@ -483,6 +500,10 @@ msgstr "Pages"
 #: addons/user_authentication/_pages.py:78
 msgid "Password"
 msgstr "Mot de passe"
+
+#: components/primitives/timeline.py:298
+msgid "Period"
+msgstr "Période"
 
 #: components/layouts/document_viewer.py:441
 msgid "Previous document"
@@ -619,7 +640,7 @@ msgstr "Se connecter avec une autre méthode"
 msgid "Sign in with your username and password."
 msgstr "Connectez-vous avec votre nom d'utilisateur et votre mot de passe."
 
-#: core/_errors.py:34 core/stream.py:359
+#: core/_errors.py:35 core/stream.py:359
 msgid "Something went wrong"
 msgstr "Une erreur s'est produite"
 
@@ -635,6 +656,10 @@ msgstr "Tri et filtre"
 #: components/data/filter_drawer.py:899
 msgid "Sort by:"
 msgstr "Trier par :"
+
+#: components/primitives/timeline.py:327
+msgid "Start"
+msgstr "Début"
 
 #: components/primitives/taglist.py:188
 msgid "Suggested Tags"
@@ -652,11 +677,11 @@ msgstr "Le code est invalide ou a expiré. Veuillez le vérifier ou en demander 
 msgid "The email could not be sent. Please try again later."
 msgstr "L'e-mail n'a pas pu être envoyé. Veuillez réessayer plus tard."
 
-#: core/_errors.py:35
+#: core/_errors.py:36
 msgid "The request couldn't be completed. Try again later."
 msgstr "La requête n'a pas pu aboutir. Réessayez plus tard."
 
-#: core/_errors.py:24
+#: core/_errors.py:25
 msgid "The request couldn't be processed. Check your input and try again."
 msgstr "La requête n'a pas pu être traitée. Vérifiez votre saisie et réessayez."
 
@@ -672,11 +697,11 @@ msgstr "La valeur n'a pas le format attendu."
 msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
-#: core/_errors.py:33
+#: core/_errors.py:34
 msgid "This action isn't possible here."
 msgstr "Cette action n'est pas possible ici."
 
-#: i18n/_validation.py:61 i18n/_validation.py:63
+#: i18n/_validation.py:61 i18n/_validation.py:63 i18n/_validation.py:183
 msgid "This field is required."
 msgstr "Ce champ est obligatoire."
 
@@ -684,13 +709,9 @@ msgstr "Ce champ est obligatoire."
 msgid "This login link is invalid or has expired. Please request a new one."
 msgstr "Ce lien de connexion est invalide ou a expiré. Veuillez en demander un nouveau."
 
-#: core/_errors.py:30
+#: core/_errors.py:31
 msgid "This page doesn't exist. Check the address or go to the start page."
 msgstr "Cette page n'existe pas. Vérifiez l'adresse ou allez à la page d'accueil."
-
-#: components/primitives/timeline.py:33
-msgid "Timeline"
-msgstr "Chronologie"
 
 #: page_templates/app_shell.py:258
 msgid "Toggle compact menu"
@@ -723,12 +744,16 @@ msgstr "Nom d'utilisateur et mot de passe"
 msgid "Value"
 msgstr "Valeur"
 
+#: components/primitives/timeline.py:300
+msgid "Whole period"
+msgstr "Toute la période"
+
 #: components/data/annotations/reader.py:555 components/data/data_form.py:706
 #: components/data/data_form.py:726 components/data/data_form.py:736
 msgid "Yes"
 msgstr "Oui"
 
-#: core/_errors.py:27
+#: core/_errors.py:28
 msgid "You don't have permission to see this page."
 msgstr "Vous n'avez pas l'autorisation de voir cette page."
 
@@ -868,12 +893,24 @@ msgctxt "navigation"
 msgid "user"
 msgstr "Menu utilisateur"
 
+#. added to the accessible name of a timeline marker with a flagged event.
+#: components/primitives/timeline.py:250
+msgid "with a warning"
+msgstr "avec avertissement"
+
 #: components/data/data_table.py:653
 #, python-brace-format
 msgid "{n} entry"
 msgid_plural "{n} entries"
 msgstr[0] "{n} entrée"
 msgstr[1] "{n} entrées"
+
+#. accessible name of a timeline marker that combines events; {dates} is a date
+#. or a range.
+#: components/primitives/timeline.py:248
+#, python-brace-format
+msgid "{n} events, {dates}"
+msgstr "{n} événements, {dates}"
 
 #: components/layouts/document_viewer.py:455
 #, python-brace-format
@@ -894,6 +931,12 @@ msgid "{shown} of {total} entry"
 msgid_plural "{shown} of {total} entries"
 msgstr[0] "{shown} sur {total} entrée"
 msgstr[1] "{shown} sur {total} entrées"
+
+#. the line above a timeline; all three are numbers.
+#: components/primitives/timeline.py:246
+#, python-brace-format
+msgid "{shown} of {total} events in {markers} markers"
+msgstr "{shown} sur {total} événements dans {markers} repères"
 
 #: components/layouts/document_viewer.py:431
 msgid "↑↓ to move, Enter to open"

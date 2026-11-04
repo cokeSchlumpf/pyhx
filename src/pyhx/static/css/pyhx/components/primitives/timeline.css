@@ -1,21 +1,631 @@
 /* --- Timeline ---
-   Skeleton container plus a placeholder until the timeline renders real
-   content. */
+   Chips, a summary line, the axis (laid out by `pyhx.timeline.js` through
+   `--timeline--x`, `--timeline--distance` and `--timeline--width`) and the
+   range slider over a strip of events per month. A category's colour comes
+   in as `--timeline--color` on its chip, marker or bar. */
+
+:root {
+    --timeline--axis-height: 22rem;
+    --timeline--dot-size: 0.75rem;
+    --timeline--neutral: var(--hx-color-neutral-700);
+    --timeline--warn: var(--hx-color-warning-500);
+    --timeline--warn-strong: var(--hx-color-warning-700);
+    --timeline--warn-soft: var(--hx-color-warning-100);
+}
 
 .hx-timeline {
     /* Layout */
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-md);
+
+    /* Typography */
+    font-size: var(--hx-text-item);
 }
 
-.hx-timeline__placeholder {
+
+/* --- Chips ---
+   One row of toggles with the same height and padding; the presets sit
+   centred on the same line. The row is a `role="group"`, which Pico styles
+   as a joined button group (stretched children, margin, shadow): undone
+   here. */
+
+.hx-timeline__filters {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--hx-spacing-xs);
+
+    /* Box */
+    width: auto;
+    margin: 0;
+
+    /* Visual */
+    box-shadow: none;
+}
+
+.hx-timeline__filters > * {
+    /* Layout */
+    flex: none;
+}
+
+.hx-timeline__chip {
+    /* Layout */
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* Box */
+    box-sizing: border-box;
+    width: auto;
+    height: 2rem;
+    margin: 0;
+    padding: 0 0.875rem 0 0.75rem;
+    border: 1px solid var(--hx-color-neutral-300);
+    border-radius: var(--hx-radius-full);
+
+    /* Typography */
+    font-size: var(--hx-text-control);
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--hx-color-neutral-700);
+
+    /* Visual */
+    background: var(--hx-color-background);
+    box-shadow: none;
+
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-timeline__chip:hover {
+    /* Box */
+    border-color: var(--hx-color-neutral-500);
+}
+
+.hx-timeline__chip[aria-pressed="true"] {
+    /* Box */
+    border-color: var(--hx-color-text);
+
+    /* Typography */
+    color: var(--hx-color-background);
+
+    /* Visual */
+    background: var(--hx-color-text);
+}
+
+.hx-timeline__chip:focus-visible {
+    /* Visual */
+    outline: 2px solid var(--hx-color-text);
+    outline-offset: 2px;
+}
+
+.hx-timeline__chip-dot {
+    /* Layout */
+    flex: none;
+
+    /* Box */
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--timeline--color);
+}
+
+.hx-timeline__chip-count {
+    /* Typography */
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.hx-timeline__presets {
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hx-spacing-2xs);
+}
+
+.hx-timeline__presets > .hx-button {
+    /* Box */
+    margin: 0;
+}
+
+.hx-timeline__summary {
+    /* Box */
+    margin: 0;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    color: var(--hx-color-neutral-600);
+}
+
+
+/* --- Axis --- */
+
+.hx-timeline__axis {
+    /* Position */
+    position: relative;
+
+    /* Box */
+    height: var(--timeline--axis-height);
+    border-radius: var(--hx-radius-lg);
+
+    /* Visual */
+    background: var(--hx-color-neutral-050);
+}
+
+.hx-timeline__line {
+    /* Position */
+    position: absolute;
+    top: 50%;
+    left: 1.5rem;
+    right: 1.5rem;
+
+    /* Box */
+    height: 2px;
+    margin-top: -1px;
+    border-radius: 1px;
+
+    /* Visual */
+    background: var(--hx-color-neutral-700);
+}
+
+.hx-timeline__tick {
+    /* Position */
+    position: absolute;
+    top: 0.75rem;
+    bottom: 2.25rem;
+    left: var(--timeline--x);
+
+    /* Box */
+    width: 1px;
+
+    /* Visual */
+    background: var(--hx-color-neutral-150);
+}
+
+.hx-timeline__tick[data-major] {
+    /* Visual */
+    background: var(--hx-color-neutral-300);
+}
+
+.hx-timeline__tick-label {
+    /* Position */
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    transform: translateX(-50%);
+
+    /* Typography */
+    font-size: var(--hx-text-badge);
+    white-space: nowrap;
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-timeline__tick[data-major] .hx-timeline__tick-label {
+    /* Typography */
+    font-weight: 600;
+    color: var(--hx-color-text);
+}
+
+.hx-timeline__period {
+    /* Position */
+    position: absolute;
+    top: calc(50% + 0.25rem);
+    left: var(--timeline--x);
+
+    /* Box */
+    width: var(--timeline--width);
+    height: 0.375rem;
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--timeline--color);
+    opacity: 0.55;
+}
+
+.hx-timeline__period[data-lane="1"] {
+    /* Position */
+    top: calc(50% + 0.6875rem);
+}
+
+.hx-timeline__empty {
+    /* Position */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -150%);
+
+    /* Box */
+    margin: 0;
+    padding: var(--hx-spacing-xs) var(--hx-spacing-sm);
+    border: 1px solid var(--hx-color-neutral-200);
+    border-radius: var(--hx-radius-lg);
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    color: var(--hx-color-neutral-700);
+
+    /* Visual */
+    background: var(--hx-color-background);
+}
+
+
+/* --- Markers ---
+   A dot on the axis, a stem and the icon button `--timeline--distance`
+   above or below the axis. The button is 40px (the touch target); its
+   visible circle is drawn by `::before`. */
+
+.hx-timeline__marker {
+    /* Position */
+    position: absolute;
+    top: 50%;
+    left: var(--timeline--x);
+
+    /* Box */
+    width: 0;
+    height: 0;
+}
+
+.hx-timeline__marker[data-mixed] {
+    --timeline--color: var(--timeline--neutral);
+}
+
+.hx-timeline__stem {
+    /* Position */
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    /* Box */
+    width: 1px;
+    height: var(--timeline--distance);
+
+    /* Visual */
+    background: var(--hx-color-neutral-400);
+}
+
+.hx-timeline__marker[data-side="below"] .hx-timeline__stem {
+    /* Position */
+    top: 0;
+    bottom: auto;
+}
+
+.hx-timeline__dot {
+    /* Position */
+    position: absolute;
+    left: calc(var(--timeline--dot-size) / -2);
+    top: calc(var(--timeline--dot-size) / -2);
+
+    /* Box */
+    box-sizing: border-box;
+    width: var(--timeline--dot-size);
+    height: var(--timeline--dot-size);
+    border: 2px solid var(--hx-color-neutral-050);
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    background: var(--timeline--color);
+    box-shadow: 0 0 0 1px var(--timeline--color);
+}
+
+.hx-timeline__icon {
+    /* Position */
+    position: absolute;
+    left: -1.25rem;
+    top: calc(-1 * var(--timeline--distance) - 1.25rem);
+
     /* Layout */
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 8rem;
+
+    /* Box */
+    box-sizing: border-box;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--hx-radius-full);
+
+    /* Visual
+       Its own stacking context, so the ring (`::after`) stays behind the
+       circle but above the axis. */
+    background: transparent;
+    box-shadow: none;
+    isolation: isolate;
+
+    /* Interaction */
+    cursor: pointer;
+}
+
+.hx-timeline__marker[data-side="below"] .hx-timeline__icon {
+    /* Position */
+    top: calc(var(--timeline--distance) - 1.25rem);
+}
+
+.hx-timeline__icon::before {
+    /* Position */
+    position: absolute;
+    inset: 0.25rem;
+    z-index: 0;
+
+    /* Box */
+    box-sizing: border-box;
+    border: 2px solid var(--timeline--color);
+    border-radius: var(--hx-radius-full);
 
     /* Visual */
-    border: 1px dashed var(--hx-color-neutral-500);
-    border-radius: var(--hx-radius-md);
-    color: var(--hx-color-neutral-500);
+    content: "";
+    background: var(--hx-color-background);
+    box-shadow: var(--hx-shadow-sm);
+}
+
+.hx-timeline__icon > svg,
+.hx-timeline__count {
+    /* Position */
+    position: relative;
+    z-index: 1;
+
+    /* Box */
+    width: 1rem;
+    height: 1rem;
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    font-weight: 600;
+    line-height: 1rem;
+    text-align: center;
+    color: var(--timeline--color);
+}
+
+.hx-timeline__icon[aria-expanded="true"]::before {
+    /* Visual */
+    background: var(--hx-color-text);
+    box-shadow: 0 0 0 3px var(--hx-color-neutral-300);
+}
+
+.hx-timeline__icon[aria-expanded="true"] > svg,
+.hx-timeline__icon[aria-expanded="true"] > .hx-timeline__count {
+    /* Typography */
+    color: var(--hx-color-background);
+}
+
+.hx-timeline__icon:focus-visible {
+    /* Visual */
+    outline: 2px solid var(--hx-color-text);
+    outline-offset: 0;
+}
+
+/* A ring around the circle: shown on hover and focus, and pulsing on
+   markers with a warning (like the loading indicator's ripple). */
+
+.hx-timeline__icon::after {
+    /* Position */
+    position: absolute;
+    inset: 0.25rem;
+    z-index: -1;
+
+    /* Box */
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    content: "";
+    background: var(--timeline--color);
+    opacity: 0;
+    transform: scale(1);
+
+    /* Motion */
+    transition:
+        opacity var(--hx-transition-fast),
+        transform var(--hx-transition-fast);
+
+    /* Interaction */
+    pointer-events: none;
+}
+
+.hx-timeline__icon:hover::after,
+.hx-timeline__icon:focus-visible::after {
+    /* Visual */
+    opacity: 0.2;
+    transform: scale(1.4);
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__icon::after {
+    /* Visual */
+    background: var(--timeline--warn);
+
+    /* Motion */
+    animation: hx-timeline-pulse 2s ease-out infinite;
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__icon:hover::after,
+.hx-timeline__marker[data-warn] .hx-timeline__icon:focus-visible::after {
+    /* Visual */
+    opacity: 0.35;
+    transform: scale(1.4);
+
+    /* Motion */
+    animation: none;
+}
+
+@keyframes hx-timeline-pulse {
+    from { opacity: 0.5; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.7); }
+}
+
+.hx-timeline__badge,
+.hx-timeline__flag {
+    /* Position */
+    position: absolute;
+    top: -0.25rem;
+    z-index: 2;
+
+    /* Box */
+    box-sizing: border-box;
+    min-width: 1.125rem;
+    height: 1.125rem;
+    padding: 0 0.25rem;
+    border-radius: var(--hx-radius-full);
+
+    /* Typography */
+    font-size: var(--hx-text-badge);
+    font-weight: 600;
+    line-height: 1.125rem;
+    text-align: center;
+
+    /* Visual */
+    box-shadow: 0 0 0 2px var(--hx-color-neutral-050);
+}
+
+.hx-timeline__badge {
+    /* Position */
+    right: -0.25rem;
+
+    /* Typography */
+    color: var(--hx-color-background);
+
+    /* Visual */
+    background: var(--hx-color-text);
+}
+
+.hx-timeline__flag {
+    /* Position */
+    left: -0.25rem;
+
+    /* Typography */
+    font-weight: 700;
+    color: var(--hx-color-text);
+
+    /* Visual */
+    background: var(--timeline--warn);
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__stem {
+    /* Visual */
+    background: var(--hx-color-warning-600);
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__dot {
+    /* Box */
+    border-color: var(--timeline--warn-strong);
+
+    /* Visual */
+    background: var(--timeline--warn);
+    box-shadow: 0 0 0 3px var(--timeline--warn-soft);
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__icon::before {
+    /* Box */
+    border-color: var(--hx-color-warning-600);
+}
+
+
+/* --- Range ---
+   The strip of events per month sits behind the slider; both keep the
+   slider's inset of half a thumb, so the months line up with the scale. */
+
+.hx-timeline__range {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hx-spacing-2xs);
+}
+
+.hx-timeline__range-head {
+    /* Layout */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--hx-spacing-xs);
+
+    /* Typography */
+    font-size: var(--hx-text-meta);
+    color: var(--hx-color-neutral-600);
+}
+
+.hx-timeline__range-head strong {
+    /* Typography */
+    font-weight: 600;
+    color: var(--hx-color-text);
+}
+
+.hx-timeline__range-control {
+    /* Position */
+    position: relative;
+
+    /* Box */
+    height: 2.75rem;
+}
+
+.hx-timeline__strip {
+    /* Position */
+    position: absolute;
+    inset: 0 calc(var(--hx-slider--thumb-size) / 2) 1.25rem;
+
+    /* Layout */
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.hx-timeline__strip-bar {
+    /* Layout */
+    flex: 1;
+
+    /* Box */
+    height: var(--timeline--height);
+    min-height: 1px;
+    border-radius: 2px 2px 0 0;
+
+    /* Visual */
+    background: var(--hx-color-neutral-200);
+}
+
+.hx-timeline__strip-bar[data-in-span] {
+    /* Visual */
+    background: var(--hx-color-neutral-400);
+}
+
+.hx-timeline__range-control > .hx-slider {
+    /* Position */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hx-timeline__range-ends {
+    /* Layout */
+    display: flex;
+    justify-content: space-between;
+
+    /* Typography */
+    font-size: var(--hx-text-badge);
+    color: var(--hx-color-neutral-600);
+}
+
+
+/* --- Reduced motion ---
+   No pulse: a warning marker keeps a still ring. */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-timeline__icon::after {
+        /* Motion */
+        transition: none;
+    }
+
+    .hx-timeline__marker[data-warn] .hx-timeline__icon::after {
+        /* Visual */
+        opacity: 0.3;
+        transform: scale(1.35);
+
+        /* Motion */
+        animation: none;
+    }
 }

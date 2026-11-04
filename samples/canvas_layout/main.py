@@ -47,6 +47,7 @@ from . import (
     navigation,
     page_sections,
     progress,
+    timeline,
 )
 from .header import header_content
 
@@ -64,6 +65,7 @@ hx.include_router(dialogs.router)
 hx.include_router(progress.router)
 hx.include_router(loading.router)
 hx.include_router(page_sections.router)
+hx.include_router(timeline.router)
 navigation.register_navigation(hx)
 
 
@@ -83,6 +85,10 @@ def _modes() -> y.Node:
         y.li[
             y.a(href="/loading-indicators")["loading indicators"],
             " — spinner, ripple, pulse, dots and bars, in use",
+        ],
+        y.li[
+            y.a(href="/timeline")["timeline"],
+            " — the course of a dossier in a card, a drawer per marker",
         ],
         y.li[
             y.a(href="/data-page")["data page"],

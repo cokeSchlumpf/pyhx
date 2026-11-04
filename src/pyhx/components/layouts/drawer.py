@@ -98,6 +98,8 @@ def drawer_content(
                     aria_label=_p("drawer", "Close"),
                     appearance="neutral",
                     variant="solid",
+                    # Small, like the controls beside it (e.g. a pager).
+                    size="sm",
                     # pyhx.drawer.js clicks this when the backdrop is clicked.
                     data_hx_drawer_close=True,
                     **close_attrs,

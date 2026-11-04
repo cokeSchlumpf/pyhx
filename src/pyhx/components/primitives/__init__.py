@@ -47,7 +47,7 @@ from .switch import switch
 from .table import StackChartItem, table
 from .taglist import taglist
 from .text_diff import text_diff
-from .timeline import timeline
+from .timeline import TimelineCategory, TimelineEvent, TimelineQuery, timeline
 from .wysiwyg_editor import wysiwyg_editor
 
 __all__ = [
@@ -74,6 +74,9 @@ __all__ = [
     "SelectControl",
     "SliderThumb",
     "StackChartItem",
+    "TimelineCategory",
+    "TimelineEvent",
+    "TimelineQuery",
     "bubble",
     "button",
     "button_group",
