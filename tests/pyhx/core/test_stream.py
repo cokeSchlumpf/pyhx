@@ -137,7 +137,7 @@ class TestStreamEndpoint:
 
         assert events[0] == "data: ok"
         assert events[1].startswith(f"event: {STREAM_ERROR_EVENT}\n")
-        assert "Internal Server Error" in events[1]
+        assert "Something went wrong" in events[1]
         assert "secret detail" not in events[1]
         assert events[2] + "\n\n" == _CLOSE
 

@@ -37,7 +37,7 @@ def _install_htmx_request() -> None:
     """Seed a RequestContext carrying the ``HX-Request`` header htmx sends
     on every fragment call it issues. the signal ``update_query_fragment``
     gates on to avoid rendering a literal, visible duplicate during a plain
-    page load 
+    page load
     """
     request = Request({"type": "http", "headers": [(b"hx-request", b"true")]})
     set_request_context(RequestContext(request=request))
@@ -120,6 +120,3 @@ def test_table_render_includes_the_highlighted_oob_button():
         assert 'hx-swap-oob="outerHTML"' in html
     finally:
         _clear_request()
-
-
-

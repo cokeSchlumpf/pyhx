@@ -9,7 +9,8 @@ Texts are looked up in the app's catalog
 (``<project root>/locale/<lang>/LC_MESSAGES/messages.po``, or
 ``WebApp(locale_dir=…)``), then in pyhx's catalog (de, it, fr), then the
 source text is used. The ``format_*`` helpers format numbers, dates and
-times in the language and timezone of the request. ``python -m pyhx.i18n update`` extracts the marked texts
+times in the language and timezone of the request; ``validation_message``
+translates a Pydantic validation error. ``python -m pyhx.i18n update`` extracts the marked texts
 into the catalogs, ``python -m pyhx.i18n check`` finds missing translations.
 
 The language of a request comes from the session, the signed-in user, the
@@ -46,6 +47,7 @@ from ._format import (
 )
 from ._switch import LocaleOption, LocaleSwitch, locale_switch
 from ._translate import _, _l, _n, _p, t
+from ._validation import validation_message
 
 __all__ = [
     "LOCALE_SWITCH_PATH",
@@ -70,4 +72,5 @@ __all__ = [
     "resolve_locale",
     "t",
     "use_locale",
+    "validation_message",
 ]

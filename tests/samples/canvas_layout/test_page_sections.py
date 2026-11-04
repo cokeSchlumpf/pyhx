@@ -14,7 +14,9 @@ class TestCanvasPageSections:
         assert response.status_code == 200
         assert 'data-hx-design="canvas"' in response.text
         assert response.text.count('class="hx-page-section"') == 2
-        assert "Offene Fälle" in response.text and "Abgeschlossene Fälle" in response.text
+        assert (
+            "Offene Fälle" in response.text and "Abgeschlossene Fälle" in response.text
+        )
         assert "IV-2026-0142" in response.text and "IV-2025-0988" in response.text
 
     def test_overview_links_the_page(self):
@@ -22,7 +24,9 @@ class TestCanvasPageSections:
 
     def test_a_table_in_a_section_is_a_card_like_the_table_of_a_data_page(self):
         shell = (CSS / "page-templates" / "canvas-shell.css").read_text()
-        section = (CSS / "pyhx" / "components" / "layout" / "page-section.css").read_text()
+        section = (
+            CSS / "pyhx" / "components" / "layout" / "page-section.css"
+        ).read_text()
 
         assert ".hx-page-section__content > .hx-table__wrapper {" in shell
         # Without scrollable=True there is no scroll container: the table itself is the card's body.

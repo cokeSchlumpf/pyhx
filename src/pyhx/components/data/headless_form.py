@@ -33,6 +33,7 @@ from pydantic import BaseModel, ValidationError
 from pyhx.core.fragment import FragmentResult
 from pyhx.core.primitives import htmx
 from pyhx.core.webapp_routes import WebAppRoutes
+from pyhx.i18n import validation_message
 
 LOG = logging.getLogger("pyhx")
 
@@ -315,5 +316,5 @@ class HeadlessForm[T: BaseModel]:
         for err in exc.errors():
             loc = err.get("loc") or ()
             if loc and isinstance(loc[0], str) and loc[0] not in out:
-                out[loc[0]] = err["msg"]
+                out[loc[0]] = validation_message(err)
         return out

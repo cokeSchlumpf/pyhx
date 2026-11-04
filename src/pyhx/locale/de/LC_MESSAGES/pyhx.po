@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 23:03+0100\n"
+"POT-Creation-Date: 2026-11-04 08:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -88,9 +88,31 @@ msgstr "{type} kann nicht gelöscht werden"
 msgid "Check your email"
 msgstr "Prüfen Sie Ihre E-Mails"
 
+#: i18n/_validation.py:82
+#, python-brace-format
+msgid "Choose at least {n} entry."
+msgid_plural "Choose at least {n} entries."
+msgstr[0] "Wählen Sie mindestens {n} Eintrag."
+msgstr[1] "Wählen Sie mindestens {n} Einträge."
+
+#: i18n/_validation.py:88
+#, python-brace-format
+msgid "Choose at most {n} entry."
+msgid_plural "Choose at most {n} entries."
+msgstr[0] "Wählen Sie höchstens {n} Eintrag."
+msgstr[1] "Wählen Sie höchstens {n} Einträge."
+
 #: addons/user_authentication/_pages.py:356
 msgid "Choose how you want to sign in."
 msgstr "Wählen Sie, wie Sie sich anmelden möchten."
+
+#: i18n/_validation.py:57
+msgid "Choose one of the offered values."
+msgstr "Wählen Sie einen der angebotenen Werte."
+
+#: i18n/_validation.py:128 i18n/_validation.py:129
+msgid "Choose yes or no."
+msgstr "Wählen Sie Ja oder Nein."
 
 #: components/data/_table_helpers.py:226 components/data/filter_drawer.py:589
 msgid "Clear Filter & Sort"
@@ -120,6 +142,10 @@ msgstr "Code"
 msgid "Collapse All"
 msgstr "Alle zuklappen"
 
+#: components/layouts/notifications.py:178
+msgid "Connection lost"
+msgstr "Verbindung unterbrochen"
+
 #: addons/user_authentication/_pages.py:484
 msgid "Continue to sign in on this device."
 msgstr "Fahren Sie fort, um sich auf diesem Gerät anzumelden."
@@ -127,6 +153,10 @@ msgstr "Fahren Sie fort, um sich auf diesem Gerät anzumelden."
 #: components/layouts/code.py:109
 msgid "Copy code"
 msgstr "Code kopieren"
+
+#: components/layouts/notifications.py:180
+msgid "Could not reach the server. Check your network and try again."
+msgstr "Der Server ist nicht erreichbar. Prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut."
 
 #. {type} is the name of the item's type, e.g. "Case".
 #: components/data/data_section.py:493 components/data/data_section.py:499
@@ -165,6 +195,10 @@ msgstr "Nicht erhalten? {link}"
 msgid "Dismiss"
 msgstr "Ausblenden"
 
+#: components/layouts/notifications.py:183
+msgid "Display failed"
+msgstr "Anzeige fehlgeschlagen"
+
 #: components/layouts/document_viewer.py:172
 msgid "Document"
 msgstr "Dokument"
@@ -199,6 +233,87 @@ msgstr "{type} bearbeiten"
 #: addons/user_authentication/_pages.py:90
 msgid "Email"
 msgstr "E-Mail"
+
+#: i18n/_validation.py:114
+#, python-brace-format
+msgid "Enter a multiple of {multiple}."
+msgstr "Geben Sie ein Vielfaches von {multiple} ein."
+
+#: i18n/_validation.py:45
+msgid "Enter a number."
+msgstr "Geben Sie eine Zahl ein."
+
+#: i18n/_validation.py:53
+msgid "Enter a valid URL."
+msgstr "Geben Sie eine gültige URL ein."
+
+#: i18n/_validation.py:41
+msgid "Enter a valid date and time."
+msgstr "Geben Sie ein gültiges Datum mit Uhrzeit ein."
+
+#: i18n/_validation.py:37
+msgid "Enter a valid date."
+msgstr "Geben Sie ein gültiges Datum ein."
+
+#: i18n/_validation.py:137 i18n/_validation.py:138
+msgid "Enter a valid time."
+msgstr "Geben Sie eine gültige Uhrzeit ein."
+
+#: i18n/_validation.py:33
+msgid "Enter a valid value."
+msgstr "Geben Sie einen gültigen Wert ein."
+
+#: i18n/_validation.py:102
+#, python-brace-format
+msgid "Enter a value greater than {limit}."
+msgstr "Geben Sie einen Wert größer als {limit} ein."
+
+#: i18n/_validation.py:108
+#, python-brace-format
+msgid "Enter a value less than {limit}."
+msgstr "Geben Sie einen Wert kleiner als {limit} ein."
+
+#: i18n/_validation.py:105
+#, python-brace-format
+msgid "Enter a value of at least {limit}."
+msgstr "Geben Sie mindestens {limit} ein."
+
+#: i18n/_validation.py:111
+#, python-brace-format
+msgid "Enter a value of at most {limit}."
+msgstr "Geben Sie höchstens {limit} ein."
+
+#: i18n/_validation.py:49
+msgid "Enter a whole number."
+msgstr "Geben Sie eine ganze Zahl ein."
+
+#: i18n/_validation.py:66
+#, python-brace-format
+msgid "Enter at least {n} character."
+msgid_plural "Enter at least {n} characters."
+msgstr[0] "Geben Sie mindestens {n} Zeichen ein."
+msgstr[1] "Geben Sie mindestens {n} Zeichen ein."
+
+#: i18n/_validation.py:73
+#, python-brace-format
+msgid "Enter at most {n} character."
+msgid_plural "Enter at most {n} characters."
+msgstr[0] "Geben Sie höchstens {n} Zeichen ein."
+msgstr[1] "Geben Sie höchstens {n} Zeichen ein."
+
+#: i18n/_validation.py:123
+#, python-brace-format
+msgid "Enter at most {n} decimal place."
+msgid_plural "Enter at most {n} decimal places."
+msgstr[0] "Geben Sie höchstens {n} Nachkommastelle ein."
+msgstr[1] "Geben Sie höchstens {n} Nachkommastellen ein."
+
+#: i18n/_validation.py:117
+#, python-brace-format
+msgid "Enter at most {n} digit."
+msgid_plural "Enter at most {n} digits."
+msgstr[0] "Geben Sie höchstens {n} Ziffer ein."
+msgstr[1] "Geben Sie höchstens {n} Ziffern ein."
 
 #: addons/user_authentication/_pages.py:342
 msgid "Enter your email address and we'll send you a login link and a code."
@@ -247,6 +362,10 @@ msgstr "Hilfe erhalten"
 msgid "Get a login link and a code by email."
 msgstr "Erhalten Sie einen Anmeldelink und einen Code per E-Mail."
 
+#: core/_errors.py:72
+msgid "Go to the start page"
+msgstr "Zur Startseite"
+
 #: page_templates/app_shell.py:272
 msgid "Help"
 msgstr "Hilfe"
@@ -254,6 +373,10 @@ msgstr "Hilfe"
 #: addons/user_authentication/_pages.py:387
 msgid "If an account exists for this address, we've sent you a login link and a code. Open the link, or enter the code here."
 msgstr "Falls ein Konto mit dieser Adresse existiert, haben wir Ihnen einen Anmeldelink und einen Code gesendet. Öffnen Sie den Link oder geben Sie den Code hier ein."
+
+#: core/_errors.py:23
+msgid "Invalid request"
+msgstr "Ungültige Anfrage"
 
 #: addons/user_authentication/_pages.py:220
 msgid "Invalid username or password."
@@ -304,6 +427,10 @@ msgstr "Nächste Seite"
 msgid "No"
 msgstr "Nein"
 
+#: core/_errors.py:27
+msgid "No access"
+msgstr "Kein Zugriff"
+
 #: components/primitives/drawer_action_table.py:99
 #: components/primitives/drawer_radio.py:63
 #: components/primitives/drawer_select.py:70
@@ -322,6 +449,10 @@ msgstr "Keine Einträge vorhanden"
 msgid "No selected item."
 msgstr "Kein Eintrag ausgewählt."
 
+#: core/_errors.py:33
+msgid "Not possible"
+msgstr "Nicht möglich"
+
 #: components/layouts/document_viewer.py:371
 #, python-brace-format
 msgid "Note: {label}"
@@ -334,6 +465,10 @@ msgstr "Menü öffnen"
 #: components/layouts/page_header.py:130
 msgid "Page navigation"
 msgstr "Seitennavigation"
+
+#: core/_errors.py:29
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
 
 #: components/layouts/document_viewer.py:258
 #: components/layouts/document_viewer.py:325
@@ -373,6 +508,16 @@ msgstr "Tag entfernen"
 #: addons/user_authentication/_pages.py:411
 msgid "Request a new link"
 msgstr "Neuen Link anfordern"
+
+#. {status} is the HTTP status code, e.g. 404.
+#: components/layouts/notifications.py:176
+#, python-brace-format
+msgid "Request failed ({status})"
+msgstr "Anfrage fehlgeschlagen ({status})"
+
+#: components/layouts/notifications.py:182
+msgid "Request timed out"
+msgstr "Zeitüberschreitung der Anfrage"
 
 #. tooltip of the drag handle; {label} is the column header.
 #: components/data/_table_helpers.py:294
@@ -474,6 +619,10 @@ msgstr "Mit einer anderen Methode anmelden"
 msgid "Sign in with your username and password."
 msgstr "Melden Sie sich mit Ihrem Benutzernamen und Passwort an."
 
+#: core/_errors.py:34 core/stream.py:359
+msgid "Something went wrong"
+msgstr "Etwas ist schiefgelaufen"
+
 #: components/data/filter_drawer.py:424
 msgctxt "filter drawer tab"
 msgid "Sort"
@@ -491,6 +640,10 @@ msgstr "Sortieren nach:"
 msgid "Suggested Tags"
 msgstr "Vorgeschlagene Tags"
 
+#: components/layouts/notifications.py:185
+msgid "The browser could not apply the server response."
+msgstr "Der Browser konnte die Antwort des Servers nicht anzeigen."
+
 #: addons/user_authentication/_pages.py:58
 msgid "The code is invalid or has expired. Please check it or request a new one."
 msgstr "Der Code ist ungültig oder abgelaufen. Bitte prüfen Sie ihn oder fordern Sie einen neuen an."
@@ -499,13 +652,41 @@ msgstr "Der Code ist ungültig oder abgelaufen. Bitte prüfen Sie ihn oder forde
 msgid "The email could not be sent. Please try again later."
 msgstr "Die E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
 
+#: core/_errors.py:35
+msgid "The request couldn't be completed. Try again later."
+msgstr "Die Anfrage konnte nicht abgeschlossen werden. Versuchen Sie es später erneut."
+
+#: core/_errors.py:24
+msgid "The request couldn't be processed. Check your input and try again."
+msgstr "Die Anfrage konnte nicht verarbeitet werden. Prüfen Sie Ihre Eingabe und versuchen Sie es erneut."
+
+#: components/layouts/notifications.py:177
+msgid "The server returned an error."
+msgstr "Der Server hat einen Fehler gemeldet."
+
+#: i18n/_validation.py:79
+msgid "The value doesn't have the expected format."
+msgstr "Der Wert hat nicht das erwartete Format."
+
 #: components/data/data_section.py:677
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
+#: core/_errors.py:33
+msgid "This action isn't possible here."
+msgstr "Diese Aktion ist hier nicht möglich."
+
+#: i18n/_validation.py:61 i18n/_validation.py:63
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
 #: addons/user_authentication/_pages.py:61
 msgid "This login link is invalid or has expired. Please request a new one."
 msgstr "Dieser Anmeldelink ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an."
+
+#: core/_errors.py:30
+msgid "This page doesn't exist. Check the address or go to the start page."
+msgstr "Diese Seite existiert nicht. Prüfen Sie die Adresse oder gehen Sie zur Startseite."
 
 #: components/primitives/timeline.py:33
 msgid "Timeline"
@@ -546,6 +727,10 @@ msgstr "Wert"
 #: components/data/data_form.py:726 components/data/data_form.py:736
 msgid "Yes"
 msgstr "Ja"
+
+#: core/_errors.py:27
+msgid "You don't have permission to see this page."
+msgstr "Sie haben keine Berechtigung, diese Seite zu sehen."
 
 #: components/layouts/document_viewer.py:578
 msgid "Zoom in"

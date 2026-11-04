@@ -28,9 +28,7 @@ async def _noop_update(query) -> y.Node:  # pragma: no cover - never called here
 
 
 def _make(**kwargs) -> FilterDrawer:
-    return FilterDrawer(
-        _StubRoutes(), "drawer", "state_input", _noop_update, **kwargs
-    )
+    return FilterDrawer(_StubRoutes(), "drawer", "state_input", _noop_update, **kwargs)
 
 
 def _explicit_column(key: str) -> Column:
