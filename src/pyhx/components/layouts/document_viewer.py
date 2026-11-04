@@ -27,20 +27,24 @@ returns ``activate(id)``, ``clear()``, ``goTo("<document id>:<page>")``,
 ``setZoom(zoom)`` and ``fit()``.
 """
 
+import unicodedata
 from collections.abc import AsyncIterator, Iterator, Mapping, Sequence
 from dataclasses import dataclass
+from itertools import groupby
 from typing import Any
 
 import htpy as y
 
 from pyhx.core.primitives import IconName, classnames
-from pyhx.i18n import _
+from pyhx.i18n import _, _n
 
 from ..primitives._element import _HxElement
 from ..primitives.button import button
+from ..primitives.icon import icon
 from ..view_model import document_viewer as view_model
 from ..view_model.document_viewer import (
     Document,
+    DocumentLink,
     DocumentPage,
     Mark,
     Note,
@@ -52,6 +56,34 @@ from ..view_model.document_viewer import (
 class _Viewer:
     id: str
     documents: tuple[Document, ...]
+    start: str | None = None
+    selected: str | None = None
+
+    def start_page(self) -> tuple[Document, int]:
+        """The document and page (1-based) the viewer opens at: ``start``, else the first page."""
+        if self.start:
+            document_id, _sep, page = self.start.rpartition(":")
+            for document in self.documents:
+                if (
+                    document.id == document_id
+                    and page.isdigit()
+                    and 1 <= int(page) <= len(document.pages)
+                ):
+                    return document, int(page)
+        return self.documents[0], 1
+
+    def start_index(self) -> int:
+        """The position of the start page among the pages of all documents (0-based)."""
+        start, number = self.start_page()
+        index = 0
+        for document in self.documents:
+            if document is start:
+                return index + number - 1
+            index += len(document.pages)
+        return 0
+
+    def page_count(self) -> int:
+        return sum(len(d.pages) for d in self.documents)
 
 
 _viewer: y.Context[_Viewer | None] = y.Context("hx-document-viewer", default=None)
@@ -84,17 +116,27 @@ def _tool(icon: IconName, label: str, action: str, *, disabled: bool = False) ->
 
 class _Root(_HxElement):
     def __init__(
-        self, id: str, documents: Sequence[Document], kwargs: dict[str, y.Attribute]
+        self,
+        id: str,
+        documents: Sequence[Document],
+        kwargs: dict[str, y.Attribute],
+        *,
+        start: str | None = None,
+        selected: str | None = None,
     ) -> None:
         if not documents:
             raise ValueError("a document viewer needs at least one document")
-        self._state = _Viewer(id=id, documents=tuple(documents))
+        self._state = _Viewer(
+            id=id, documents=tuple(documents), start=start, selected=selected
+        )
         self._kwargs = kwargs
 
     def _render(self) -> y.Node:
         return y.div(
             id=self._state.id,
             data_hx_document_viewer=self._state.id,
+            data_hx_document_start=self._state.start or None,
+            data_hx_document_selected=self._state.selected or None,
             **classnames("hx-document-viewer", **self._kwargs),
         )[_viewer.provider(self._state, self._children)]
 
@@ -144,7 +186,7 @@ class _Sidebar(_HxElement):
 
 @_viewer.consumer
 def _title(viewer: _Viewer | None, title: y.Node, subtitle: y.Node) -> y.Node:
-    first = _require(viewer, "title()").documents[0]
+    first, _number = _require(viewer, "title()").start_page()
     follows = title is None
     return y.div(class_="hx-document-viewer__title")[
         y.strong(data_hx_document_title=follows or None)[
@@ -158,17 +200,22 @@ def _title(viewer: _Viewer | None, title: y.Node, subtitle: y.Node) -> y.Node:
 
 @_viewer.consumer
 def _pager(viewer: _Viewer | None) -> y.Node:
-    documents = _require(viewer, "pager()").documents
-    first = documents[0]
-    single = len(documents) == 1 and len(first.pages) <= 1
+    state = _require(viewer, "pager()")
+    document, number = state.start_page()
+    index = state.start_index()
     return y.div(class_="hx-document-viewer__group")[
-        _tool("chevron-left", _("Previous page"), "prev", disabled=True),
+        _tool("chevron-left", _("Previous page"), "prev", disabled=index == 0),
         y.span(class_="hx-document-viewer__counter", aria_live="polite")[
-            y.span(data_hx_document_current=True)["1"],
+            y.span(data_hx_document_current=True)[str(number)],
             " / ",
-            y.span(data_hx_document_count=True)[str(len(first.pages))],
+            y.span(data_hx_document_count=True)[str(len(document.pages))],
         ],
-        _tool("chevron-right", _("Next page"), "next", disabled=single),
+        _tool(
+            "chevron-right",
+            _("Next page"),
+            "next",
+            disabled=index >= state.page_count() - 1,
+        ),
     ]
 
 
@@ -183,7 +230,7 @@ def _thumbnails(viewer: _Viewer | None, grouped: bool | None) -> y.Node:
 
 def _thumbnail_group(state: _Viewer, document: Document, heading: bool) -> y.Node:
     heading_id = f"{state.id}--{document.id}--thumbnails"
-    first = state.documents[0]
+    start, start_number = state.start_page()
     return y.div(
         class_="hx-document-viewer__thumbnail-group",
         role="group",
@@ -196,7 +243,9 @@ def _thumbnail_group(state: _Viewer, document: Document, heading: bool) -> y.Nod
         if heading
         else None,
         (
-            _thumbnail(document, n, page, current=document is first and n == 1)
+            _thumbnail(
+                document, n, page, current=document is start and n == start_number
+            )
             for n, page in enumerate(document.pages, start=1)
         ),
     ]
@@ -245,7 +294,7 @@ def _pages(viewer: _Viewer | None) -> y.Node:
 
 
 def _document(state: _Viewer, document: Document, heading: bool) -> y.Node:
-    first = state.documents[0]
+    start, start_number = state.start_page()
     return y.section(
         class_="hx-document-viewer__document",
         aria_label=document.title,
@@ -257,7 +306,12 @@ def _document(state: _Viewer, document: Document, heading: bool) -> y.Node:
         if heading
         else None,
         (
-            _page(document, n, page, eager=document is first and n <= 2)
+            _page(
+                document,
+                n,
+                page,
+                eager=document is start and start_number <= n <= start_number + 1,
+            )
             for n, page in enumerate(document.pages, start=1)
         ),
     ]
@@ -326,6 +380,124 @@ def _note(note: Note) -> y.Node:
     )
 
 
+def _searchable(text: str) -> str:
+    """``text`` as the switcher's filter compares it: lower case, without accents."""
+    decomposed = unicodedata.normalize("NFD", text)
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch)).lower()
+
+
+@_viewer.consumer
+def _files(viewer: _Viewer | None, entries: tuple[DocumentLink, ...]) -> y.Node:
+    _require(viewer, "files()")
+    current = next((i for i, e in enumerate(entries) if e.current), None)
+    linked = [i for i, e in enumerate(entries) if e.href]
+    before = [i for i in linked if current is not None and i < current]
+    after = [i for i in linked if current is not None and i > current]
+    previous = entries[before[-1]] if before else None
+    following = entries[after[0]] if after else None
+    shown = entries[current] if current is not None else None
+    total = len(entries)
+    return y.div(class_="hx-document-viewer__files")[
+        y.details(class_="hx-document-viewer__files-menu")[
+            y.summary(class_="hx-document-viewer__files-button")[
+                y.span(class_="hx-document-viewer__files-current")[
+                    y.strong[shown.title if shown else _("Documents")],
+                    y.span[shown.group or ""] if shown else None,
+                ],
+                icon("chevron-down", aria_hidden="true"),
+            ],
+            y.div(class_="hx-document-viewer__files-panel")[
+                y.label(class_="hx-document-viewer__files-search")[
+                    _("Search"),
+                    y.input(
+                        type="search",
+                        autocomplete="off",
+                        data_hx_document_files_search=True,
+                    ),
+                ],
+                y.div(class_="hx-document-viewer__files-list")[
+                    (
+                        _files_group(group, list(items))
+                        for group, items in groupby(entries, key=lambda e: e.group)
+                    )
+                ],
+                y.div(class_="hx-document-viewer__files-footer")[
+                    y.span(
+                        data_hx_document_files_matches=True,
+                        # the script fills in {n} while filtering
+                        data_template=_("{n} of {total} match", n="{n}", total=total),
+                    )[_("{n} of {total} match", n=total, total=total)],
+                    " · ",
+                    _("↑↓ to move, Enter to open"),
+                ],
+            ],
+        ],
+        button(
+            icon="arrow-up",
+            href=previous.href if previous else None,
+            disabled=previous is None,
+            variant="ghost",
+            size="sm",
+            aria_label=_("Previous document"),
+            title=previous.title if previous else None,
+        ),
+        button(
+            icon="arrow-down",
+            href=following.href if following else None,
+            disabled=following is None,
+            variant="ghost",
+            size="sm",
+            aria_label=_("Next document"),
+            title=following.title if following else None,
+        ),
+        y.span(class_="hx-document-viewer__files-position")[
+            _n(
+                "{n} of {total} document",
+                "{n} of {total} documents",
+                total,
+                n=(current or 0) + 1,
+                total=total,
+            )
+        ]
+        if shown
+        else None,
+    ]
+
+
+def _files_group(group: str | None, entries: list[DocumentLink]) -> y.Node:
+    return y.div(
+        class_="hx-document-viewer__files-group", role="group", aria_label=group
+    )[
+        y.div(class_="hx-document-viewer__files-heading", aria_hidden="true")[group]
+        if group
+        else None,
+        (_files_entry(entry) for entry in entries),
+    ]
+
+
+def _files_entry(entry: DocumentLink) -> y.Node:
+    content = [
+        y.span(class_="hx-document-viewer__files-check")[
+            icon("check", aria_hidden="true") if entry.current else None
+        ],
+        y.span(class_="hx-document-viewer__files-name")[entry.title],
+        y.span(class_="hx-document-viewer__files-detail")[entry.detail or ""],
+    ]
+    search = _searchable(f"{entry.title} {entry.group or ''}")
+    if entry.href:
+        return y.a(
+            href=entry.href,
+            class_="hx-document-viewer__files-entry",
+            aria_current="true" if entry.current else None,
+            data_hx_document_search=search,
+        )[content]
+    return y.span(
+        class_="hx-document-viewer__files-entry",
+        aria_disabled="true",
+        data_hx_document_search=search,
+    )[content]
+
+
 class _SidebarFactory:
     def __call__(self, **kwargs: y.Attribute) -> _Sidebar:
         return _Sidebar(kwargs)
@@ -355,6 +527,10 @@ class _DocumentViewer:
       ``zoom()``, ``fit()`` and ``spacer()`` (pushes what follows to the end);
     - ``thumbnails(grouped=None)`` – one group per document, headings by
       default only with more than one document;
+    - ``files(entries)`` – a toolbar control to switch between documents shown
+      one at a time: the current one on a button that opens a searchable list
+      of :class:`~pyhx.components.view_model.document_viewer.DocumentLink`,
+      grouped, with previous and next document beside it;
     - ``pages()`` – the pages of all documents in a scrolling column;
     - ``sidebar[...]`` – a pane for the app's content, beside the pages and
       below them at phone width.
@@ -366,9 +542,21 @@ class _DocumentViewer:
     """The data types: :mod:`pyhx.components.view_model.document_viewer`."""
 
     def __call__(
-        self, *, id: str, documents: Sequence[Document], **kwargs: y.Attribute
+        self,
+        *,
+        id: str,
+        documents: Sequence[Document],
+        start: str | None = None,
+        selected: str | None = None,
+        **kwargs: y.Attribute,
     ) -> _Root:
-        return _Root(id, documents, kwargs)
+        """The viewer's root.
+
+        ``start`` (``"<document id>:<page>"``) opens it at that page instead of
+        the first one; ``selected`` (an annotation id) selects that annotation
+        and scrolls it into view when the page loads, and wins over ``start``.
+        """
+        return _Root(id, documents, kwargs, start=start, selected=selected)
 
     def back(self, href: str, label: str) -> y.Node:
         return button(label, icon="chevron-left", href=href, variant="ghost", size="sm")
@@ -401,6 +589,9 @@ class _DocumentViewer:
 
     def pages(self) -> y.Node:
         return _pages()
+
+    def files(self, entries: Sequence[DocumentLink]) -> y.Node:
+        return _files(tuple(entries))
 
 
 document_viewer = _DocumentViewer()

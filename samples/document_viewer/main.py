@@ -20,7 +20,7 @@ import pyhx.components as c
 from pyhx.core import WebApp
 from pyhx.page_templates import CanvasShell
 
-from .pages import basic, case, documents, marks, notes, toolbar
+from .pages import basic, case, documents, marks, notes, open_at_page, toolbar
 from .pages._layout import links
 from .sample_document import register_routes
 
@@ -36,7 +36,7 @@ hx = WebApp(
     configure_fastapi_app=[register_routes],
 )
 
-for module in (basic, documents, marks, notes, toolbar, case):
+for module in (basic, documents, marks, notes, toolbar, case, open_at_page):
     hx.include_router(module.router)
 
 _GLANCE = """dv = c.document_viewer

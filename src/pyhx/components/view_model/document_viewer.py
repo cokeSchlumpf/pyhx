@@ -4,6 +4,7 @@ The values an app builds to show documents in :data:`pyhx.components.document_vi
 :class:`Document` with its :class:`DocumentPage` s, a :class:`PageBadge` per
 thumbnail, and the annotations of a page, :class:`Mark` (an area highlighted
 like a text marker, styled by :class:`MarkStyle`) and :class:`Note` (a pin).
+:class:`DocumentLink` is an entry of the document switcher (``dv.files``).
 Positions are fractions (0–1) of the page, :class:`BoundingBox` and
 :class:`Point`, with ``from_pixels`` for coordinates in pixels of the page
 image.
@@ -30,6 +31,7 @@ __all__ = [
     "Annotation",
     "BoundingBox",
     "Document",
+    "DocumentLink",
     "DocumentPage",
     "Mark",
     "MarkLook",
@@ -334,3 +336,32 @@ class Document:
     title: str
     pages: Sequence[DocumentPage]
     subtitle: str | None = None
+
+
+@dataclass(frozen=True)
+class DocumentLink:
+    """An entry of the document switcher (``document_viewer.files``): a document to switch to.
+
+    Attributes
+    ----------
+    title : str
+        The document's name, shown in the list and, for the current entry, on
+        the switcher's button.
+    href : str, optional
+        Where choosing it leads, e.g. the viewer with that document. Without
+        it the entry is shown greyed out and can't be chosen (e.g. its pages
+        aren't ready).
+    group : str, optional
+        The group it is listed under, e.g. its folder; entries of a group
+        follow each other in the order given.
+    detail : str, optional
+        Shown at the end of the entry, e.g. the number of pages.
+    current : bool
+        Whether it is the document the viewer shows.
+    """
+
+    title: str
+    href: str | None = None
+    group: str | None = None
+    detail: str | None = None
+    current: bool = False

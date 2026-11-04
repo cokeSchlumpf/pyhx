@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 08:50+0100\n"
+"POT-Creation-Date: 2026-11-03 23:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -101,7 +101,7 @@ msgid "Clear selection"
 msgstr "Annulla selezione"
 
 #. accessible name of the close button of a dialog.
-#: components/layouts/dialog.py:80
+#: components/layouts/dialog.py:82
 msgctxt "dialog"
 msgid "Close"
 msgstr "Chiudi"
@@ -165,9 +165,13 @@ msgstr "Non l'hai ricevuta? {link}"
 msgid "Dismiss"
 msgstr "Ignora"
 
-#: components/layouts/document_viewer.py:130
+#: components/layouts/document_viewer.py:172
 msgid "Document"
 msgstr "Documento"
+
+#: components/layouts/document_viewer.py:404
+msgid "Documents"
+msgstr "Documenti"
 
 #: components/primitives/file_dropzone.py:41
 msgid "Drag & drop a file here, or click to browse"
@@ -231,11 +235,11 @@ msgstr "Modalità filtro"
 msgid "Filter items"
 msgstr "Filtra elementi"
 
-#: components/layouts/document_viewer.py:394
+#: components/layouts/document_viewer.py:582
 msgid "Fit to width"
 msgstr "Adatta alla larghezza"
 
-#: page_templates/app_shell.py:246
+#: page_templates/app_shell.py:272
 msgid "Get Help"
 msgstr "Ottieni aiuto"
 
@@ -243,7 +247,7 @@ msgstr "Ottieni aiuto"
 msgid "Get a login link and a code by email."
 msgstr "Ricevi un link di accesso e un codice via e-mail."
 
-#: page_templates/app_shell.py:246
+#: page_templates/app_shell.py:272
 msgid "Help"
 msgstr "Aiuto"
 
@@ -275,7 +279,7 @@ msgstr "Accesso non riuscito."
 msgid "Login link not valid"
 msgstr "Link di accesso non valido"
 
-#: page_templates/app_shell.py:277
+#: page_templates/app_shell.py:303
 msgid "Logout"
 msgstr "Esci"
 
@@ -287,7 +291,11 @@ msgstr "Soddisfa tutti i filtri"
 msgid "Match Any Filter"
 msgstr "Soddisfa almeno un filtro"
 
-#: components/layouts/document_viewer.py:171
+#: components/layouts/document_viewer.py:450
+msgid "Next document"
+msgstr "Documento successivo"
+
+#: components/layouts/document_viewer.py:215
 msgid "Next page"
 msgstr "Pagina successiva"
 
@@ -314,12 +322,12 @@ msgstr "Nessun elemento da visualizzare"
 msgid "No selected item."
 msgstr "Nessun elemento selezionato."
 
-#: components/layouts/document_viewer.py:317
+#: components/layouts/document_viewer.py:371
 #, python-brace-format
 msgid "Note: {label}"
 msgstr "Nota: {label}"
 
-#: page_templates/app_shell.py:222
+#: page_templates/app_shell.py:248
 msgid "Open menu"
 msgstr "Apri menu"
 
@@ -327,13 +335,13 @@ msgstr "Apri menu"
 msgid "Page navigation"
 msgstr "Navigazione della pagina"
 
-#: components/layouts/document_viewer.py:209
-#: components/layouts/document_viewer.py:271
+#: components/layouts/document_viewer.py:258
+#: components/layouts/document_viewer.py:325
 #, python-brace-format
 msgid "Page {page}"
 msgstr "Pagina {page}"
 
-#: components/layouts/document_viewer.py:179
+#: components/layouts/document_viewer.py:226
 msgid "Pages"
 msgstr "Pagine"
 
@@ -341,7 +349,11 @@ msgstr "Pagine"
 msgid "Password"
 msgstr "Password"
 
-#: components/layouts/document_viewer.py:165
+#: components/layouts/document_viewer.py:441
+msgid "Previous document"
+msgstr "Documento precedente"
+
+#: components/layouts/document_viewer.py:207
 msgid "Previous page"
 msgstr "Pagina precedente"
 
@@ -384,6 +396,7 @@ msgid "Save {type}"
 msgstr "Salva {type}"
 
 #: components/data/filter_drawer.py:609 components/data/quick_filter.py:24
+#: components/layouts/document_viewer.py:411
 msgid "Search"
 msgstr "Cerca"
 
@@ -427,7 +440,7 @@ msgstr "Elementi selezionati"
 msgid "Send login link"
 msgstr "Invia link di accesso"
 
-#: page_templates/app_shell.py:271 page_templates/settings_menu.py:134
+#: page_templates/app_shell.py:297 page_templates/settings_menu.py:134
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -437,8 +450,8 @@ msgstr "Mostra tabella a schermo intero"
 
 #: addons/user_authentication/_pages.py:66
 #: addons/user_authentication/_pages.py:96
-#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:318
-#: page_templates/app_shell.py:319 page_templates/app_shell.py:320
+#: addons/user_authentication/_pages.py:486 page_templates/app_shell.py:345
+#: page_templates/app_shell.py:346 page_templates/app_shell.py:347
 msgid "Sign In"
 msgstr "Accedi"
 
@@ -498,11 +511,11 @@ msgstr "Questo link di accesso non è valido o è scaduto. Richiedine uno nuovo.
 msgid "Timeline"
 msgstr "Cronologia"
 
-#: page_templates/app_shell.py:232
+#: page_templates/app_shell.py:258
 msgid "Toggle compact menu"
 msgstr "Attiva/disattiva menu compatto"
 
-#: page_templates/app_shell.py:325
+#: page_templates/app_shell.py:352
 msgid "Toggle user menu"
 msgstr "Apri/chiudi menu utente"
 
@@ -534,11 +547,11 @@ msgstr "Valore"
 msgid "Yes"
 msgstr "Sì"
 
-#: components/layouts/document_viewer.py:390
+#: components/layouts/document_viewer.py:578
 msgid "Zoom in"
 msgstr "Ingrandisci"
 
-#: components/layouts/document_viewer.py:384
+#: components/layouts/document_viewer.py:572
 msgid "Zoom out"
 msgstr "Riduci"
 
@@ -654,7 +667,7 @@ msgid "less than or equal"
 msgstr "minore o uguale a"
 
 #. accessible name of the main navigation.
-#: page_templates/app_shell.py:257
+#: page_templates/app_shell.py:283
 msgctxt "navigation"
 msgid "main"
 msgstr "Navigazione principale"
@@ -665,22 +678,39 @@ msgid "starts with"
 msgstr "inizia con"
 
 #. accessible name of the user menu.
-#: page_templates/app_shell.py:267
+#: page_templates/app_shell.py:293
 msgctxt "navigation"
 msgid "user"
 msgstr "Menu utente"
 
-#: components/data/data_table.py:648
+#: components/data/data_table.py:653
 #, python-brace-format
 msgid "{n} entry"
 msgid_plural "{n} entries"
 msgstr[0] "{n} voce"
 msgstr[1] "{n} voci"
 
-#: components/data/data_table.py:654
+#: components/layouts/document_viewer.py:455
+#, python-brace-format
+msgid "{n} of {total} document"
+msgid_plural "{n} of {total} documents"
+msgstr[0] "{n} di {total} documento"
+msgstr[1] "{n} di {total} documenti"
+
+#: components/layouts/document_viewer.py:428
+#: components/layouts/document_viewer.py:429
+#, python-brace-format
+msgid "{n} of {total} match"
+msgstr "{n} di {total} corrispondono"
+
+#: components/data/data_table.py:659
 #, python-brace-format
 msgid "{shown} of {total} entry"
 msgid_plural "{shown} of {total} entries"
 msgstr[0] "{shown} di {total} voce"
 msgstr[1] "{shown} di {total} voci"
+
+#: components/layouts/document_viewer.py:431
+msgid "↑↓ to move, Enter to open"
+msgstr "↑↓ per spostarsi, Invio per aprire"
 
