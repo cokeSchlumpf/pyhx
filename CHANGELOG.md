@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.13.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.13.0...v1.13.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* **i18n:** an empty required field says it is required ([#68](https://github.com/cokeSchlumpf/pyhx/issues/68)) ([4d45eb2](https://github.com/cokeSchlumpf/pyhx/commit/4d45eb2be6d75757a135f2eb9ed6319f83d18afe))
+
 ## [1.13.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.12.0...v1.13.0) (2026-11-04)
 
 
