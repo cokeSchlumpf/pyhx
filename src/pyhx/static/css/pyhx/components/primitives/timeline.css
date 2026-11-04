@@ -24,7 +24,11 @@
 }
 
 
-/* --- Chips --- */
+/* --- Chips ---
+   One row of toggles with the same height and padding; the presets sit
+   centred on the same line. The row is a `role="group"`, which Pico styles
+   as a joined button group (stretched children, margin, shadow): undone
+   here. */
 
 .hx-timeline__filters {
     /* Layout */
@@ -32,24 +36,40 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--hx-spacing-xs);
+
+    /* Box */
+    width: auto;
+    margin: 0;
+
+    /* Visual */
+    box-shadow: none;
+}
+
+.hx-timeline__filters > * {
+    /* Layout */
+    flex: none;
 }
 
 .hx-timeline__chip {
     /* Layout */
     display: inline-flex;
+    flex: none;
     align-items: center;
-    gap: var(--hx-spacing-xs);
+    gap: 0.5rem;
 
     /* Box */
+    box-sizing: border-box;
     width: auto;
-    min-height: 2.5rem;
+    height: 2rem;
     margin: 0;
-    padding: 0 var(--hx-spacing-sm);
+    padding: 0 0.875rem 0 0.75rem;
     border: 1px solid var(--hx-color-neutral-300);
     border-radius: var(--hx-radius-full);
 
     /* Typography */
     font-size: var(--hx-text-control);
+    line-height: 1;
+    white-space: nowrap;
     color: var(--hx-color-neutral-700);
 
     /* Visual */
@@ -58,6 +78,11 @@
 
     /* Interaction */
     cursor: pointer;
+}
+
+.hx-timeline__chip:hover {
+    /* Box */
+    border-color: var(--hx-color-neutral-500);
 }
 
 .hx-timeline__chip[aria-pressed="true"] {
@@ -78,6 +103,9 @@
 }
 
 .hx-timeline__chip-dot {
+    /* Layout */
+    flex: none;
+
     /* Box */
     width: 0.5rem;
     height: 0.5rem;
@@ -85,11 +113,6 @@
 
     /* Visual */
     background: var(--timeline--color);
-}
-
-.hx-timeline__chip[aria-pressed="true"] .hx-timeline__chip-dot {
-    /* Visual */
-    box-shadow: 0 0 0 2px var(--hx-color-background);
 }
 
 .hx-timeline__chip-count {
@@ -101,7 +124,13 @@
 .hx-timeline__presets {
     /* Layout */
     display: inline-flex;
+    align-items: center;
     gap: var(--hx-spacing-2xs);
+}
+
+.hx-timeline__presets > .hx-button {
+    /* Box */
+    margin: 0;
 }
 
 .hx-timeline__summary {
@@ -303,9 +332,12 @@
     border: 0;
     border-radius: var(--hx-radius-full);
 
-    /* Visual */
+    /* Visual
+       Its own stacking context, so the ring (`::after`) stays behind the
+       circle but above the axis. */
     background: transparent;
     box-shadow: none;
+    isolation: isolate;
 
     /* Interaction */
     cursor: pointer;
@@ -367,6 +399,63 @@
     /* Visual */
     outline: 2px solid var(--hx-color-text);
     outline-offset: 0;
+}
+
+/* A ring around the circle: shown on hover and focus, and pulsing on
+   markers with a warning (like the loading indicator's ripple). */
+
+.hx-timeline__icon::after {
+    /* Position */
+    position: absolute;
+    inset: 0.25rem;
+    z-index: -1;
+
+    /* Box */
+    border-radius: var(--hx-radius-full);
+
+    /* Visual */
+    content: "";
+    background: var(--timeline--color);
+    opacity: 0;
+    transform: scale(1);
+
+    /* Motion */
+    transition:
+        opacity var(--hx-transition-fast),
+        transform var(--hx-transition-fast);
+
+    /* Interaction */
+    pointer-events: none;
+}
+
+.hx-timeline__icon:hover::after,
+.hx-timeline__icon:focus-visible::after {
+    /* Visual */
+    opacity: 0.2;
+    transform: scale(1.4);
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__icon::after {
+    /* Visual */
+    background: var(--timeline--warn);
+
+    /* Motion */
+    animation: hx-timeline-pulse 2s ease-out infinite;
+}
+
+.hx-timeline__marker[data-warn] .hx-timeline__icon:hover::after,
+.hx-timeline__marker[data-warn] .hx-timeline__icon:focus-visible::after {
+    /* Visual */
+    opacity: 0.35;
+    transform: scale(1.4);
+
+    /* Motion */
+    animation: none;
+}
+
+@keyframes hx-timeline-pulse {
+    from { opacity: 0.5; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.7); }
 }
 
 .hx-timeline__badge,
@@ -495,12 +584,12 @@
     border-radius: 2px 2px 0 0;
 
     /* Visual */
-    background: var(--hx-color-neutral-300);
+    background: var(--hx-color-neutral-200);
 }
 
 .hx-timeline__strip-bar[data-in-span] {
     /* Visual */
-    background: var(--hx-color-neutral-600);
+    background: var(--hx-color-neutral-400);
 }
 
 .hx-timeline__range-control > .hx-slider {
@@ -519,4 +608,24 @@
     /* Typography */
     font-size: var(--hx-text-badge);
     color: var(--hx-color-neutral-600);
+}
+
+
+/* --- Reduced motion ---
+   No pulse: a warning marker keeps a still ring. */
+
+@media (prefers-reduced-motion: reduce) {
+    .hx-timeline__icon::after {
+        /* Motion */
+        transition: none;
+    }
+
+    .hx-timeline__marker[data-warn] .hx-timeline__icon::after {
+        /* Visual */
+        opacity: 0.3;
+        transform: scale(1.35);
+
+        /* Motion */
+        animation: none;
+    }
 }
