@@ -120,3 +120,10 @@ class TestAnnotationPager:
     def test_needs_the_viewer(self):
         with pytest.raises(RuntimeError, match="annotation_pager"):
             str(y.div[dv.annotation_pager()])
+
+
+def test_category_query_names_the_url_parameter():
+    html = _render(_mark("m1", category="a"), category_query="types")
+
+    assert 'data-hx-document-category-query="types"' in html
+    assert "data-hx-document-category-query" not in _render(_mark("m1"))

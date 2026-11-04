@@ -189,7 +189,8 @@ dv(id="list", documents=[document], hidden_categories=["check"])[  # hidden at f
 
 - A toggle has `aria-pressed="true"` while its category is shown; the viewer keeps it up to date.
 - Hidden marks and notes are not drawn and the pager skips them; elements with `data-hx-document-category="<viewer>:<category>"` (entries, headings) are hidden with them. Hiding the category of the selected annotation clears the selection.
-- Every change dispatches `hx-document:categories` on the viewer, with `detail.viewer` and `detail.hidden` (e.g. to keep the categories in the URL).
+- Every change dispatches `hx-document:categories` on the viewer, with `detail.viewer` and `detail.hidden`.
+- `category_query="types"` keeps the shown categories in that URL parameter (comma separated, written with `history.replaceState` after every change); read it when the page loads and pass the others as `hidden_categories`, so a reload or a shared link shows the same.
 - Content swapped in by HTMX later gets the current state.
 
 ### Linked entries in view

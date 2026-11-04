@@ -23,7 +23,8 @@
 //   data-hx-document-category-toggle="<viewer>:<category>" shows and hides it
 //   (aria-pressed while shown), anything with data-hx-document-category=
 //   "<viewer>:<category>" is hidden with it; every change dispatches
-//   "hx-document:categories" ({viewer, hidden})
+//   "hx-document:categories" ({viewer, hidden}); with data-hx-document-category-query
+//   the shown categories are kept in that URL parameter (history.replaceState)
 // - selected by a mark, the pager or on load, the linked elements are scrolled into
 //   view within their own scrolling container (never the page, nor the pages)
 // - paged (data-hx-document-paged, the source picker): one page at a time, shown by
@@ -254,10 +255,23 @@
             if (hidden.size) root.dataset.hxDocumentHidden = [...hidden].sort().join(" ");
             else delete root.dataset.hxDocumentHidden;
             applyCategories();
+            writeQuery();
             const id = selectedId();
             if (id !== null && marksOf(id).every((mark) => mark.hidden)) clear();
             else updatePosition();
             root.dispatchEvent(new CustomEvent("hx-document:categories", { bubbles: true, detail: { viewer: root.id, hidden: [...hidden].sort() } }));
+        }
+
+        // category_query: the shown categories in the URL (comma separated) after every change
+        function writeQuery() {
+            const name = root.dataset.hxDocumentCategoryQuery;
+            if (!name) return;
+            const all = new Set();
+            root.querySelectorAll("[data-hx-document-annotation-id][data-hx-document-category]").forEach((mark) => all.add(mark.dataset.hxDocumentCategory));
+            document.querySelectorAll(`[data-hx-document-category-toggle^="${CSS.escape(prefix)}"]`).forEach((toggle) => all.add(categoryOf(toggle, "data-hx-document-category-toggle")));
+            const url = new URL(window.location.href);
+            url.searchParams.set(name, [...all].filter((c) => !hidden.has(c)).sort().join(","));
+            history.replaceState(history.state, "", url);
         }
 
         // after content was swapped in: hidden categories, pressed links, the position

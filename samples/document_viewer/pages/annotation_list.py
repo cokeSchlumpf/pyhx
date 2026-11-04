@@ -165,12 +165,19 @@ def group(key: str, entries: list[tuple[str, str, int]]) -> y.Node:
 
 
 @router.page("/annotation-list", title="Annotation list")
-async def annotation_list() -> y.Node:
+async def annotation_list(types: str | None = None) -> y.Node:
     document = with_categories(data.registration())
     entries = _entries(document)
     counts = Counter({key: len(items) for key, items in entries.items()})
     # docs:start viewer
-    viewer = dv(id=VIEWER, documents=[document], hidden_categories=["check"])[
+    # ?types= holds the shown categories (written by the viewer); "To check" starts hidden
+    shown = set(types.split(",")) if types is not None else set(CATEGORIES) - {"check"}
+    viewer = dv(
+        id=VIEWER,
+        documents=[document],
+        hidden_categories=[key for key in CATEGORIES if key not in shown],
+        category_query="types",
+    )[
         dv.toolbar(),
         dv.thumbnails(),
         dv.pages(),

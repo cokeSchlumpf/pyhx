@@ -151,6 +151,7 @@ class _Root(_HxElement):
         selected: str | None = None,
         paged: bool = False,
         hidden_categories: Iterable[str] = (),
+        category_query: str | None = None,
     ) -> None:
         if not documents:
             raise ValueError("a document viewer needs at least one document")
@@ -165,6 +166,7 @@ class _Root(_HxElement):
             paged=paged,
             hidden_categories=hidden,
         )
+        self._category_query = category_query
         self._kwargs = kwargs
 
     def _render(self) -> y.Node:
@@ -176,6 +178,7 @@ class _Root(_HxElement):
             data_hx_document_paged=self._state.paged or None,
             data_hx_document_hidden=" ".join(sorted(self._state.hidden_categories))
             or None,
+            data_hx_document_category_query=self._category_query,
             **classnames("hx-document-viewer", **self._kwargs),
         )[_viewer.provider(self._state, self._children)]
 
@@ -636,6 +639,7 @@ class _DocumentViewer:
         start: str | None = None,
         selected: str | None = None,
         hidden_categories: Iterable[str] = (),
+        category_query: str | None = None,
         **kwargs: y.Attribute,
     ) -> _Root:
         """The viewer's root.
@@ -644,7 +648,10 @@ class _DocumentViewer:
         the first one; ``selected`` (an annotation id) selects that annotation
         and scrolls it into view when the page loads, and wins over ``start``.
         ``hidden_categories`` hides the marks and notes of those categories
-        until the user shows them (``data-hx-document-category-toggle``).
+        until the user shows them (``data-hx-document-category-toggle``);
+        ``category_query`` names a URL parameter in which the browser keeps
+        the shown categories (comma separated) after the user changed them,
+        for the app to read them as ``hidden_categories`` when the page loads.
         """
         return _Root(
             id,
@@ -653,6 +660,7 @@ class _DocumentViewer:
             start=start,
             selected=selected,
             hidden_categories=hidden_categories,
+            category_query=category_query,
         )
 
     def back(self, href: str, label: str) -> y.Node:

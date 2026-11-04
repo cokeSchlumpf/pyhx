@@ -11,6 +11,8 @@
 Deviations from the spec:
 
 - **D1** Linked elements swapped in later get the hidden state on `htmx:load` (F1), not on `htmx:afterSwap`.
+- **D2** Added while specifying the first user (CaseSight T-022, types in the URL as on its Timeline): `document_viewer(..., category_query=None)`; with a parameter name the browser writes the shown categories there (comma separated) after every change, like `TimelineQuery` of `c.timeline`. Without it nothing changes. Proven in step 2 (sample reads `?types=`, browser: written on toggle, restored on reload).
+- **D3** Selecting an annotation by the pager scrolls the pages with `scrollIntoView` as before (T-018); in a viewer embedded in a longer page this also moves the page around it. Unchanged here; in a viewer that fills the window (`CanvasShell(mode="full")`) nothing else moves.
 
 ## Branching
 
