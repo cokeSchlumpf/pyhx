@@ -1,6 +1,11 @@
 /* Styles of the sample itself (example pages and the app content in the sidebars), not of the viewer. */
 
 .sample-example { display: flex; flex-direction: column; gap: 1rem; }
+
+.sample-source__result { padding: 1rem; }
+.sample-source__result p { margin: 0 0 0.5rem; }
+.sample-source__result pre { margin: 0 0 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+.sample-source__log { display: block; min-height: 1.25rem; margin-top: 0.5rem; font-family: ui-monospace, monospace; font-size: 0.6875rem; color: var(--hx-color-neutral-600, #52525b); overflow-wrap: anywhere; }
 .sample-example h1 { margin: 0; }
 .sample-example__intro { max-width: 52rem; }
 .sample-example__intro p, .sample-example__intro ul { margin: 0 0 0.5rem; }

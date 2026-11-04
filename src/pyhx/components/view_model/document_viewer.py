@@ -39,6 +39,7 @@ __all__ = [
     "Note",
     "PageBadge",
     "Point",
+    "SourceChoice",
     "css_color",
 ]
 
@@ -365,3 +366,91 @@ class DocumentLink:
     group: str | None = None
     detail: str | None = None
     current: bool = False
+
+
+@dataclass(frozen=True)
+class SourceChoice:
+    """What the user chose in the source picker (``c.source_picker``): a page, optionally an area on it.
+
+    Attributes
+    ----------
+    document_id : str
+        The :attr:`Document.id` of the chosen document.
+    page : int
+        The chosen page, 1-based.
+    box : BoundingBox, optional
+        The area marked on the page; ``None`` for the whole page.
+
+    Raises
+    ------
+    ValueError
+        If ``document_id`` is empty or ``page`` is not positive.
+    """
+
+    document_id: str
+    page: int
+    box: BoundingBox | None = None
+
+    def __post_init__(self) -> None:
+        if not self.document_id:
+            raise ValueError("document_id must not be empty")
+        if self.page < 1:
+            raise ValueError(f"page must be positive, got {self.page}")
+
+    @classmethod
+    def from_form(
+        cls, form: Mapping[str, object], name: str = "source"
+    ) -> SourceChoice | None:
+        """Read the choice from the posted inputs of a source picker.
+
+        Parameters
+        ----------
+        form : Mapping
+            The posted form, e.g. ``await request.form()``.
+        name : str
+            The picker's ``name``; its inputs are ``<name>_document``,
+            ``<name>_page`` and ``<name>_box``.
+
+        Returns
+        -------
+        SourceChoice or None
+            ``None`` when no document was posted.
+
+        Raises
+        ------
+        ValueError
+            If the page is not a positive integer or the box is not four
+            fractions within the page. Whether the document and page exist
+            is the app's check.
+        """
+        document_id = str(form.get(f"{name}_document") or "").strip()
+        if not document_id:
+            return None
+        page = str(form.get(f"{name}_page") or "").strip()
+        if not (page.isascii() and page.isdigit()):
+            raise ValueError(f"page must be a positive integer, got {page!r}")
+        raw_box = str(form.get(f"{name}_box") or "").strip()
+        box = None
+        if raw_box:
+            parts = raw_box.split(",")
+            try:
+                if len(parts) != 4:
+                    raise ValueError
+                x, top, width, height = (float(p) for p in parts)
+            except ValueError:
+                raise ValueError(f"box must be four numbers, got {raw_box!r}") from None
+            # four rounded decimals may reach a rounding step beyond the page's edge
+            if 1 < x + width <= 1.0001:
+                width = 1 - x
+            if 1 < top + height <= 1.0001:
+                height = 1 - top
+            box = BoundingBox(x=x, y=top, width=width, height=height)
+        return cls(document_id=document_id, page=int(page), box=box)
+
+    @property
+    def box_value(self) -> str:
+        """The box as the picker's ``<name>_box`` input holds it: ``"x,y,width,height"``, or ``""``."""
+        if self.box is None:
+            return ""
+        b = self.box
+        return ",".join(f"{v:.4f}" for v in (b.x, b.y, b.width, b.height))

@@ -32,6 +32,7 @@ from .notifications import (
 )
 from .page_header import page_header
 from .page_section import page_section
+from .source_picker import source_picker
 from .split_layout import split_layout
 
 __all__ = [
@@ -62,5 +63,6 @@ __all__ = [
     "open_drawer_htmx_attributes",
     "page_header",
     "page_section",
+    "source_picker",
     "split_layout",
 ]

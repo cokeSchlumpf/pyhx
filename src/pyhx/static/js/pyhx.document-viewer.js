@@ -12,6 +12,10 @@
 //   data-hx-document-selected="<annotation>" selects that annotation (and wins)
 // - document switcher (dv.files): filters its list while typing, ↑/↓ and Enter,
 //   closes on a click outside and on Escape
+// - every change of the current page dispatches "hx-document:page" ({viewer, page})
+// - paged (data-hx-document-paged, the source picker): one page at a time, shown by
+//   toggling `hidden` instead of scrolling; fit fits the whole page
+// - source picker (c.source_picker): see its section at the end
 (function () {
     "use strict";
 
@@ -23,6 +27,7 @@
 
         const column = root.querySelector(".hx-document-viewer__pages");
         const pages = [...root.querySelectorAll("[data-hx-document-page]")];
+        const paged = root.hasAttribute("data-hx-document-paged");
         let zoom = 1;
         let current = 0;
         // While a scroll started here runs (thumbnail, prev/next, activation), the
@@ -30,6 +35,12 @@
         let lock = null;
 
         function scrollTo(element, index, block, behavior = "smooth") {
+            if (paged) {
+                pages.forEach((page, i) => { page.hidden = i !== index; });
+                setCurrent(index);
+                if (column) column.scrollTop = 0;
+                return;
+            }
             lock = index;
             setCurrent(index);
             if (behavior === "auto" && column) {
@@ -57,7 +68,8 @@
         };
 
         function setZoom(value) {
-            zoom = Math.min(STEPS.at(-1), Math.max(STEPS[0], value));
+            // paged: fitting a whole page into a small picker may need less than the smallest step
+            zoom = Math.min(STEPS.at(-1), Math.max(paged ? 0.25 : STEPS[0], value));
             // keep the same place of the document in view while the pages grow or shrink
             const ratio = column && column.scrollHeight ? column.scrollTop / column.scrollHeight : 0;
             root.style.setProperty("--document-viewer--zoom", String(zoom));
@@ -65,7 +77,7 @@
             text("[data-hx-document-zoom]", `${Math.round(zoom * 100)} %`);
             const out = q('[data-hx-document-action="zoom-out"]');
             const into = q('[data-hx-document-action="zoom-in"]');
-            if (out) out.disabled = zoom <= STEPS[0];
+            if (out) out.disabled = zoom <= STEPS[0] + 0.001;
             if (into) into.disabled = zoom >= STEPS.at(-1);
         }
 
@@ -74,6 +86,14 @@
             const style = getComputedStyle(column);
             const free = column.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
             const base = parseFloat(getComputedStyle(root).getPropertyValue("--document-viewer--page-width")) || 612;
+            const shown = paged && pages[current];
+            if (shown && shown.offsetWidth) {
+                // the whole page: its width and its height fit into the column
+                const height = column.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+                const ratio = shown.offsetHeight / shown.offsetWidth;
+                setZoom(Math.min(free / base, height / (base * ratio)));
+                return;
+            }
             setZoom(free / base);
         }
 
@@ -94,6 +114,7 @@
                 text("[data-hx-document-title]", document_.dataset.title);
                 text("[data-hx-document-subtitle]", document_.dataset.subtitle);
             }
+            root.dispatchEvent(new CustomEvent("hx-document:page", { bubbles: true, detail: { viewer: root.id, page: key } }));
             const prev = q('[data-hx-document-action="prev"]');
             const next = q('[data-hx-document-action="next"]');
             if (prev) prev.disabled = index <= 0;
@@ -180,7 +201,7 @@
         });
 
         // current page: the page under the middle of the column, checked once per frame while scrolling
-        if (column) {
+        if (column && !paged) {
             let queued = false;
             column.addEventListener("scrollend", release);
             column.addEventListener("scroll", () => {
@@ -238,6 +259,8 @@
 
         if (PHONE.matches) fit();
         else setZoom(1);
+        // paged: the whole page in view (after setCurrent, which fit measures)
+        if (paged) requestAnimationFrame(fit);
         // where the viewer opens: the selected annotation, else the start page, else the first page
         const start = Math.max(0, indexOf(root.dataset.hxDocumentStart || ""));
         const selected = root.dataset.hxDocumentSelected;
@@ -356,8 +379,224 @@
         else entries[at - 1].focus();
     }, true);
 
+    // ------------------------------------------------------------------ source picker
+    //
+    // c.source_picker: a paged viewer whose current page is the choice. A pointer drag
+    // on the page draws one box (the area); a drag on it moves it, on a corner handle
+    // resizes it. On the focused box arrow keys move it, Shift + arrows resize it,
+    // Delete/Backspace/Escape remove it; Escape anywhere in the picker removes the box
+    // (and, prevented, doesn't close a surrounding dialog). Another page removes the box.
+    // The choice is kept in the hidden inputs <name>_document, _page and _box
+    // ("x,y,width,height", fractions with four decimals, empty for the whole page);
+    // every change dispatches "hx-source-picker:change" ({picker, document, page, box}).
+
+    const MIN = 0.01;
+    const STEP = 0.01;
+    const HANDLES = ["nw", "ne", "sw", "se"];
+    const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
+    const pct = (value) => `${(value * 100).toFixed(4)}%`;
+    const fixed = (value) => Math.round(value * 10000) / 10000;
+
+    function corners(a, b) {
+        const x = Math.min(a.x, b.x);
+        const y = Math.min(a.y, b.y);
+        return { x, y, width: Math.max(a.x, b.x) - x, height: Math.max(a.y, b.y) - y };
+    }
+
+    function parseBox(value) {
+        const parts = (value || "").split(",").map(Number);
+        if (!value || parts.length !== 4 || parts.some((n) => !Number.isFinite(n))) return null;
+        const [x, y, width, height] = parts;
+        return { x, y, width, height };
+    }
+
+    // the box with four decimals, still within the page
+    function rounded(box) {
+        const x = fixed(box.x);
+        const y = fixed(box.y);
+        return { x, y, width: Math.min(fixed(box.width), fixed(1 - x)), height: Math.min(fixed(box.height), fixed(1 - y)) };
+    }
+
+    function picker(root) {
+        if (root.hxSourcePicker) return root.hxSourcePicker;
+        const view = viewer(root);
+        const name = root.dataset.hxSourcePicker;
+        const footer = root.querySelector(".hx-source-picker__footer");
+        const input = (part) => [...footer.querySelectorAll('input[type="hidden"]')].find((i) => i.name === `${name}_${part}`);
+        const status = footer.querySelector("[data-hx-source-picker-status]");
+        const clearButton = footer.querySelector("[data-hx-source-picker-clear]");
+        let box = null;
+        let area = null;
+        let key = null;
+        let drag = null;
+
+        const shownPage = () => root.querySelector("[data-hx-document-page]:not([hidden])");
+
+        function makeArea() {
+            const element = document.createElement("div");
+            element.className = "hx-source-picker__area";
+            element.tabIndex = 0;
+            element.setAttribute("role", "group");
+            element.setAttribute("aria-label", footer.dataset.textAreaLabel);
+            element.title = footer.dataset.textAreaKeys;
+            for (const handle of HANDLES) {
+                const span = document.createElement("span");
+                span.className = "hx-source-picker__handle";
+                span.dataset.handle = handle;
+                element.appendChild(span);
+            }
+            return element;
+        }
+
+        function render() {
+            const page = shownPage();
+            if (!box || !page) {
+                if (area) area.remove();
+                area = null;
+            } else {
+                if (!area || !area.isConnected) area = makeArea();
+                if (area.parentElement !== page) page.appendChild(area);
+                Object.assign(area.style, { left: pct(box.x), top: pct(box.y), width: pct(box.width), height: pct(box.height) });
+            }
+            root.toggleAttribute("data-hx-source-picker-area", !!(box && page));
+            if (clearButton) clearButton.disabled = !box;
+        }
+
+        // the inputs, the status line and the event, after every change of the choice
+        function commit() {
+            const page = shownPage();
+            if (!page) return;
+            const pageKey = page.dataset.hxDocumentPage;
+            const split = pageKey.lastIndexOf(":");
+            const documentId = pageKey.slice(0, split);
+            const number = Number(pageKey.slice(split + 1));
+            const title = page.closest("[data-hx-document-id]")?.dataset.title || documentId;
+            const value = box ? rounded(box) : null;
+            input("document").value = documentId;
+            input("page").value = String(number);
+            input("box").value = value ? [value.x, value.y, value.width, value.height].map((n) => n.toFixed(4)).join(",") : "";
+            if (status) status.textContent = (box ? footer.dataset.textArea : footer.dataset.textWhole).replace("{document}", title).replace("{page}", String(number));
+            root.dispatchEvent(new CustomEvent("hx-source-picker:change", { bubbles: true, detail: { picker: root.id, document: documentId, page: number, box: value } }));
+        }
+
+        function set(next) {
+            box = next;
+            render();
+            commit();
+        }
+
+        // the state from the inputs: on load, and when the server sent the picker again
+        function sync() {
+            const target = `${input("document").value}:${input("page").value}`;
+            key = target;
+            // also when the page is shown already: the viewer's pager follows
+            view.goTo(target);
+            key = shownPage()?.dataset.hxDocumentPage || target;
+            box = parseBox(input("box").value);
+            render();
+        }
+
+        function point(page, event) {
+            const rect = page.getBoundingClientRect();
+            return { x: clamp((event.clientX - rect.left) / rect.width, 0, 1), y: clamp((event.clientY - rect.top) / rect.height, 0, 1) };
+        }
+
+        root.addEventListener("hx-document:page", (event) => {
+            if (event.target !== root || event.detail.page === key) return;
+            key = event.detail.page;
+            set(null);
+        });
+
+        root.addEventListener("pointerdown", (event) => {
+            if (drag) {
+                // a second finger (pinch zoom): give up the drag
+                box = drag.from;
+                drag = null;
+                render();
+                return;
+            }
+            const page = event.target.closest(".hx-document-viewer__page");
+            if (!page || page.hidden || event.button !== 0 || !root.contains(page)) return;
+            const handle = event.target.closest("[data-handle]");
+            const mode = handle ? handle.dataset.handle : event.target.closest(".hx-source-picker__area") ? "move" : "draw";
+            drag = { page, mode, id: event.pointerId, start: point(page, event), from: box };
+            page.setPointerCapture(event.pointerId);
+            event.preventDefault();
+        });
+
+        root.addEventListener("pointermove", (event) => {
+            if (!drag || event.pointerId !== drag.id) return;
+            const p = point(drag.page, event);
+            const from = drag.from;
+            if (drag.mode === "draw") {
+                box = corners(drag.start, p);
+            } else if (drag.mode === "move") {
+                box = {
+                    x: clamp(from.x + p.x - drag.start.x, 0, 1 - from.width),
+                    y: clamp(from.y + p.y - drag.start.y, 0, 1 - from.height),
+                    width: from.width,
+                    height: from.height,
+                };
+            } else {
+                // a corner follows the pointer, the opposite one stays
+                const left = drag.mode.includes("w") ? p.x : from.x;
+                const right = drag.mode.includes("e") ? p.x : from.x + from.width;
+                const top = drag.mode.startsWith("n") ? p.y : from.y;
+                const bottom = drag.mode.startsWith("s") ? p.y : from.y + from.height;
+                box = corners({ x: left, y: top }, { x: right, y: bottom });
+            }
+            render();
+        });
+
+        root.addEventListener("pointerup", (event) => {
+            if (!drag || event.pointerId !== drag.id) return;
+            const { from } = drag;
+            drag = null;
+            // a click or a tiny drag keeps the box there was
+            if (!box || box.width < MIN || box.height < MIN) box = from;
+            render();
+            if (box !== from) commit();
+            if (area) area.focus({ preventScroll: true });
+        });
+
+        root.addEventListener("pointercancel", (event) => {
+            if (!drag || event.pointerId !== drag.id) return;
+            box = drag.from;
+            drag = null;
+            render();
+        });
+
+        root.addEventListener("keydown", (event) => {
+            if (!box) return;
+            if (event.key === "Escape" || (event.target === area && (event.key === "Delete" || event.key === "Backspace"))) {
+                // prevented: a surrounding dialog stays open (pyhx.dialog.js)
+                event.preventDefault();
+                const hadFocus = event.target === area;
+                set(null);
+                if (hadFocus) root.querySelector(".hx-document-viewer__pages")?.focus({ preventScroll: true });
+                return;
+            }
+            if (event.target !== area || !event.key.startsWith("Arrow")) return;
+            event.preventDefault();
+            const dx = event.key === "ArrowRight" ? STEP : event.key === "ArrowLeft" ? -STEP : 0;
+            const dy = event.key === "ArrowDown" ? STEP : event.key === "ArrowUp" ? -STEP : 0;
+            if (event.shiftKey) {
+                set({ ...box, width: clamp(box.width + dx, MIN, 1 - box.x), height: clamp(box.height + dy, MIN, 1 - box.y) });
+            } else {
+                set({ ...box, x: clamp(box.x + dx, 0, 1 - box.width), y: clamp(box.y + dy, 0, 1 - box.height) });
+            }
+        });
+
+        if (clearButton) clearButton.addEventListener("click", () => set(null));
+
+        root.hxSourcePicker = { sync, clear: () => set(null) };
+        return root.hxSourcePicker;
+    }
+
     function init(scope) {
         (scope || document).querySelectorAll("[data-hx-document-viewer]").forEach(viewer);
+        // also when the server sent a picker again (e.g. a dialog with an error): the state of its inputs
+        (scope || document).querySelectorAll("[data-hx-source-picker]").forEach((root) => picker(root).sync());
     }
 
     window.pyhx = window.pyhx || {};
