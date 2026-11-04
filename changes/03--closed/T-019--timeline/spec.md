@@ -61,3 +61,21 @@ None.
 ## Out of scope
 
 - Zoom by mouse wheel or dragging, a vertical layout, export, editing events.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** `slider` gets a small hook: other scripts move its thumbs with a `hx-slider:set` event (values snapped, clamped and kept in order; `input` and `change` fire as if the user had moved them). "Whole period" uses it; nothing else in `slider` changed.
+- **D2** Tick spacing is 68 px, or 48 px and then 40 px when that gives fewer than three ticks (narrow axes); on an axis under 480 px the first label carries its year only if no January tick shows one. Without this a phone showed a single label ("2026") for a year.
+- **D3** The axis is 22rem high (not 20rem), so the far places below the axis keep clear of the tick labels at phone width.
+- **F1** `feather.replace()` doesn't reach into `<template>`: the script turns a category's Feather icon into SVG with `feather.icons[name].toSvg()`.
+- **F2** The drawer's close button is swapped out with the drawer's content, so htmx events of the close don't reach the document; while a marker is open the script follows the drawer with a `MutationObserver`, to show the marker closed again.
+- **F3** A period that began before the shown span puts its marker at the axis' start (it stuck out on the left before).
+- **F4** Checked in the browser (components sample, `AppShell`) at 1280, 390 and 360 px: no two icons overlap, no icon leaves the axis, no tick labels collide, no horizontal scroll; the units change from quarters to weeks when the span is narrowed to six weeks; chips filter and update their counts; sprints show as bars; the busiest marker (4 events) opens the drawer with its pager; Esc closes it and the focus is back on the marker, shown closed; the URL follows chips and slider, and a reload restores the view. Not checked: `CanvasShell` (its theme has the same tokens), screen readers beyond the accessible names.
+
+Screenshots (`screenshots/`, components sample): [desktop](screenshots/timeline--desktop.png), [desktop with drawer](screenshots/timeline-drawer--desktop.png), [phone](screenshots/timeline--phone.png), [phone with drawer](screenshots/timeline-drawer--phone.png).
+
+Rollout: PR #65, released with the next minor release of pyhx on `versions/1`.
+
+Open after this change: the app that asked for it shows the course of its records with the timeline (its own change).
