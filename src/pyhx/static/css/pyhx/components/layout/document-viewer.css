@@ -120,7 +120,10 @@ a.hx-document-viewer__files-entry:focus-visible { box-shadow: inset 2px 0 0 var(
 }
 
 .hx-document-viewer__group { display: flex; align-items: center; gap: 0.125rem; }
-.hx-document-viewer__toolbar .hx-button { margin: 0; }
+.hx-document-viewer__toolbar .hx-button,
+.hx-document-viewer__group .hx-button { margin: 0; }
+/* a click leaves no ring on the icon buttons of a group (also outside the toolbar); the keyboard still shows it */
+.hx-document-viewer__group .hx-button:focus:not(:focus-visible) { box-shadow: none; outline: none; border-color: transparent; }
 .hx-document-viewer__group + .hx-document-viewer__group { padding-left: 0.75rem; border-left: 1px solid var(--document-viewer--line); }
 
 .hx-document-viewer__counter,
