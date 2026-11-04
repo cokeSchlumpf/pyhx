@@ -24,7 +24,15 @@ selection. Anything on the page selects an annotation with
 dispatches ``hx-document:annotation-select`` (``detail.viewer``,
 ``detail.id``, ``detail.kind``) on the viewer; ``pyhx.documentViewer(id)``
 returns ``activate(id)``, ``clear()``, ``goTo("<document id>:<page>")``,
-``setZoom(zoom)`` and ``fit()``.
+``setZoom(zoom)``, ``fit()``, ``next()``, ``previous()`` and
+``showCategory(category, shown)``.
+
+Navigating annotations: marks with the same ``annotation`` are one annotation;
+``annotation_pager()`` steps through the shown annotations in document order;
+``category`` on marks and notes with ``hidden_categories`` on the root and
+``data-hx-document-category-toggle="<viewer>:<category>"`` show and hide them
+in the browser (``hx-document:categories``); a mark selected by a click, the
+pager or on load scrolls its linked elements into view in their container.
 """
 
 import unicodedata

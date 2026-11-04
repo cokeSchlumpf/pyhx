@@ -151,6 +151,53 @@ dv.toolbar[
 - An entry without `href` is shown greyed out and can't be chosen. Choosing an entry follows its `href`: the app renders the viewer with that document.
 - At phone width the dropdown spans the toolbar and its entries are 44 px high.
 
+## Navigating annotations
+
+An app that lists its annotations beside the viewer (findings, values read, remarks) gets these from the viewer; the sample page "Annotation list" shows them together.
+
+### One annotation, several marks
+
+A quote over two lines, or from one page to the next, is several boxes. Give its marks the same `annotation`: they are selected, highlighted on hover, linked and stepped through as one, and selecting it scrolls to its first mark.
+
+```python
+vm.Mark(id="r1-a", annotation="r1", label="Remark", box=line_1, category="remark")
+vm.Mark(id="r1-b", annotation="r1", label="Remark", box=line_2, category="remark")
+
+y.button(type="button", aria_pressed="false", data_hx_document_annotation="list:r1")["Remark"]
+```
+
+Without `annotation` a mark is an annotation of its own, named by its `id`. `data-hx-document-annotation`, `selected=`, `activate(id)` and `detail.id` of `hx-document:annotation-select` use the annotation's id.
+
+### Previous and next
+
+`dv.annotation_pager()` steps through the shown annotations in document order (document, page, then the top and left of the first mark), with the position "3 / 12" between the buttons; marks and notes count, the marks of one annotation once. Next without a selection starts at the first annotation, previous at the last; both wrap around. Put it in the toolbar or the sidebar; name your annotations with `previous_label` and `next_label`, e.g. "Next finding".
+
+### Categories
+
+Marks and notes take a `category` (no whitespace). The app's toggles show and hide a category in the browser, without a request:
+
+```python
+dv(id="list", documents=[document], hidden_categories=["check"])[  # hidden at first
+    ...,
+    dv.sidebar[
+        y.button(type="button", aria_pressed="true", data_hx_document_category_toggle="list:remark")["Remarks"],
+        y.section(data_hx_document_category="list:remark")[...],  # hidden with the category
+        dv.annotation_pager(),
+    ],
+]
+```
+
+- A toggle has `aria-pressed="true"` while its category is shown; the viewer keeps it up to date.
+- Hidden marks and notes are not drawn and the pager skips them; elements with `data-hx-document-category="<viewer>:<category>"` (entries, headings) are hidden with them. Hiding the category of the selected annotation clears the selection.
+- Every change dispatches `hx-document:categories` on the viewer, with `detail.viewer` and `detail.hidden` (e.g. to keep the categories in the URL).
+- Content swapped in by HTMX later gets the current state.
+
+### Linked entries in view
+
+When an annotation is selected by a click on a mark, by the pager or on load (`selected=`), each linked element outside its scrolling container (e.g. the sidebar) is scrolled into view inside it; the page and the page column don't move. A click on the linked element itself doesn't scroll it.
+
+In your own JavaScript, `pyhx.documentViewer("list")` also returns `next()`, `previous()` and `showCategory(category, shown)`.
+
 ## Sidebar and phone width
 
 `dv.sidebar[...]` is a pane for your content beside the pages, scrolling on its own; set its width with the CSS custom property `--document-viewer--sidebar-width` (default 22rem). Below 40rem the thumbnails are hidden, the toolbar wraps, the pages start at fit to width and the sidebar moves below the pages. On touch devices two fingers zoom.
