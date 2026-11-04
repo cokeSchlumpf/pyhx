@@ -58,6 +58,10 @@ class TestEnglish:
         assert required() == "This field is required."
         assert message(number="A") == "Enter at least 3 characters."
         assert message(name="") == "This field is required."
+        # The forms read an empty field as None.
+        assert message(name=None) == "This field is required."
+        assert message(pages=None) == "This field is required."
+        assert message(pages=[]) == "Enter a whole number."
         assert message(number="ABCDEFGHIJ") == "Enter at most 8 characters."
         assert message(number="ab") == "Enter at least 3 characters."
         assert message(number="abc") == "The value doesn't have the expected format."
