@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.12.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.11.1...v1.12.0) (2026-11-04)
+
+
+### Features
+
+* **document-viewer:** open at a page and switch documents ([#63](https://github.com/cokeSchlumpf/pyhx/issues/63)) ([67e5dac](https://github.com/cokeSchlumpf/pyhx/commit/67e5dacc517e2941d231ce69613a1cafb6cc751b))
+
 ## [1.11.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.11.0...v1.11.1) (2026-11-03)
 
 
