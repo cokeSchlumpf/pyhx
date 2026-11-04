@@ -20,6 +20,10 @@ as fractions of the page, empty for the whole page) and read back with
 Every change dispatches ``hx-source-picker:change`` on the picker
 (``detail.picker``, ``detail.document``, ``detail.page``, ``detail.box``).
 
+With many documents, ``files`` shows one document at a time with the
+document switcher of ``document_viewer.files``; its entries are fetched with
+htmx and replace the picker.
+
 The browser part is the section "source picker" of ``pyhx.document-viewer.js``.
 """
 
@@ -31,7 +35,7 @@ from pyhx.core.primitives import classnames
 from pyhx.i18n import _
 
 from ..primitives.button import button
-from ..view_model.document_viewer import Document, SourceChoice
+from ..view_model.document_viewer import Document, DocumentLink, SourceChoice
 from .document_viewer import _Root, _tool, document_viewer
 
 
@@ -52,6 +56,7 @@ def source_picker(
     documents: Sequence[Document],
     name: str = "source",
     value: SourceChoice | None = None,
+    files: Sequence[DocumentLink] | None = None,
     **kwargs: y.Attribute,
 ) -> y.Node:
     """A form control to choose a page of ``documents`` and optionally an area on it.
@@ -69,6 +74,14 @@ def source_picker(
     value : SourceChoice, optional
         The choice it opens with, e.g. a source being edited; without it, or
         when its page isn't among ``documents``, the first page, whole.
+    files : Sequence of DocumentLink, optional
+        For many documents: the toolbar shows the document switcher of
+        ``document_viewer.files`` instead of the title, and ``documents``
+        holds only the current one. Choosing an entry (or previous/next)
+        doesn't leave the page: its ``href`` is fetched with htmx and must
+        return the picker for that document, which replaces this one (also
+        inside a dialog). With fewer than two entries the toolbar shows the
+        title, as without ``files``.
     **kwargs
         Further attributes of the picker's root element.
 
@@ -96,7 +109,8 @@ def source_picker(
     )
     return root[
         dv.toolbar[
-            dv.title(),
+            # a single document looks as without a switcher
+            dv.files(files) if files is not None and len(files) > 1 else dv.title(),
             dv.pager(),
             dv.zoom(),
             _tool("maximize-2", _("Fit page"), "fit"),

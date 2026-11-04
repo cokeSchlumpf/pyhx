@@ -1,4 +1,8 @@
-"""Example: the source picker in a dialog, the posted choice shown on the page (T-021)."""
+"""Example: the source picker in a dialog, the posted choice shown on the page (T-021).
+
+Two dialogs: the two sample documents in one picker, and 30 documents in
+three folders, one at a time with the document switcher (``files``).
+"""
 
 from typing import Annotated
 
@@ -8,7 +12,7 @@ from fastapi import Query, Request
 import pyhx.components as c
 from pyhx.components.view_model import document_viewer as vm
 from pyhx.core import WebAppRouter
-from samples.document_viewer.sample_document import sample_documents
+from samples.document_viewer.sample_document import medical_report, registration, sample_documents
 
 from ._layout import code, example_page
 
@@ -28,6 +32,24 @@ document.addEventListener("hx-source-picker:change", (event) => {
 def _box(text: str) -> vm.BoundingBox | None:
     parts = [float(p) for p in text.split(",")] if text else []
     return vm.BoundingBox(*parts) if len(parts) == 4 else None
+
+
+def _many() -> dict[str, vm.Document]:
+    """30 made-up documents in three folders, built from the pages of the two sample documents."""
+    folders = [
+        ("Applications", "Application {n:02d}.pdf", registration(), 6),
+        ("Medical reports", "Medical report {n:02d}.pdf", medical_report(), 12),
+        ("Correspondence", "Letter {n:02d}.pdf", medical_report(), 12),
+    ]
+    documents: dict[str, vm.Document] = {}
+    for folder, title, source, count in folders:
+        for n in range(1, count + 1):
+            id_ = f"{folder[:3].lower()}-{n:02d}"
+            documents[id_] = vm.Document(id=id_, title=title.format(n=n), subtitle=folder, pages=source.pages)
+    return documents
+
+
+MANY = _many()
 
 
 # docs:start dialog
@@ -66,8 +88,70 @@ async def use_source(request: Request) -> y.Node:
 # docs:end dialog
 
 
+# docs:start many
+def _many_picker(document_id: str, value: vm.SourceChoice | None = None) -> y.Node:
+    document = MANY.get(document_id) or next(iter(MANY.values()))
+    files = [
+        vm.DocumentLink(
+            d.title,
+            # fetched with htmx; the answer replaces the picker, the dialog stays
+            href=f"{many_picker.url()}?document={d.id}",
+            group=d.subtitle,
+            detail=f"{len(d.pages)} p.",
+            current=d is document,
+        )
+        for d in MANY.values()
+    ]
+    return c.source_picker(
+        id="source-picker",
+        documents=[document],  # only the current one
+        files=files,  # the document switcher in the toolbar
+        value=value,
+    )
+
+
+@router.fragment.get("/source-picker/many/picker")
+async def many_picker(document: Annotated[str, Query()] = "") -> y.Node:
+    return _many_picker(document)
+
+
+@router.fragment.get("/source-picker/many")
+async def many_dialog(
+    document: Annotated[str, Query()] = "",
+    page: Annotated[int, Query()] = 1,
+    box: Annotated[str, Query()] = "",
+) -> y.Node:
+    value = vm.SourceChoice(document, page, _box(box)) if document else None
+    return c.dialog_content(
+        _many_picker(document, value),
+        y.small(id="source-picker-log", class_="sample-source__log"),
+        title="Add source",
+        actions=[
+            c.button("Cancel", hx_post=c.close_dialog.url()),
+            c.button("Use source", appearance="primary", hx_post=use_source.url()),
+        ],
+    )
+# docs:end many
+
+
+# docs:start single
+@router.fragment.get("/source-picker/single")
+async def single_dialog() -> y.Node:
+    return c.dialog_content(
+        # one document: the title in the toolbar, no switcher
+        c.source_picker(id="source-picker", documents=[medical_report()]),
+        y.small(id="source-picker-log", class_="sample-source__log"),
+        title="Add source",
+        actions=[
+            c.button("Cancel", hx_post=c.close_dialog.url()),
+            c.button("Use source", appearance="primary", hx_post=use_source.url()),
+        ],
+    )
+# docs:end single
+
+
 def _result(choice: vm.SourceChoice | None, posted: dict[str, object] | None = None) -> y.Node:
-    documents = {d.id: d for d in sample_documents()}
+    documents = {d.id: d for d in sample_documents()} | MANY
     if choice is None:
         body: y.Node = y.p["Nothing chosen yet."]
     else:
@@ -80,7 +164,9 @@ def _result(choice: vm.SourceChoice | None, posted: dict[str, object] | None = N
             c.button(
                 "Edit this source",
                 icon="edit-2",
-                **c.open_dialog_htmx_attributes(f"{source_dialog.url()}?{query}"),
+                **c.open_dialog_htmx_attributes(
+                    f"{(many_dialog if choice.document_id in MANY else source_dialog).url()}?{query}"
+                ),
             ),
         ]
     return y.div(id=RESULT_ID, class_="sample-source__result", hx_swap_oob="true")[body]
@@ -104,11 +190,22 @@ async def source_picker_page() -> y.Node:
                 y.code["source_box"],
                 "), so the dialog's action posts it; ",
                 y.code["SourceChoice.from_form"],
-                " reads it back. ",
+                " reads it back.",
+            ],
+            y.p[
+                "With many documents, give ",
+                y.code["files"],
+                ": the picker shows one document, and the toolbar the document switcher of ",
+                y.code["dv.files"],
+                " (search, folders, previous and next). Choosing a document fetches its entry's link with htmx and replaces the picker, so the dialog stays open.",
+            ],
+            y.p(style="display: flex; flex-wrap: wrap; gap: 0.5rem;")[
                 c.button("Add source", appearance="primary", **c.open_dialog_htmx_attributes(source_dialog.url())),
+                c.button("Add source (one document)", **c.open_dialog_htmx_attributes(single_dialog.url())),
+                c.button("Add source (30 documents)", **c.open_dialog_htmx_attributes(many_dialog.url())),
             ],
         ],
-        code=code(__file__, "dialog"),
+        code=code(__file__, "dialog", "single", "many"),
         viewer=_result(None),
         height="auto",
         script=_SCRIPT,

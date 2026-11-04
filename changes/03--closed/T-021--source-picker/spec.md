@@ -11,6 +11,12 @@
 - **R5** `vm.SourceChoice.from_form(form, name="source")` reads the posted inputs: `None` when `<name>_document` is missing or empty, a `SourceChoice` otherwise; a page that isn't a positive integer or a box that isn't four fractions within the page raises `ValueError`. Whether the document and page exist is the app's check.
 - **R6** Marks and notes of the pages are shown but can't be selected or focused (read-only).
 
+### Many documents (added after the demo)
+
+- **R15** `files: Sequence[DocumentLink] | None = None`: with two or more entries the toolbar shows the document switcher of `document_viewer.files` (search, groups, previous/next, "n of total documents") instead of the title, and `documents` may hold only the current document. With no `files`, or fewer than two entries, the picker is as before (one document or several in `documents`).
+- **R16** Inside the picker, choosing an entry or previous/next document doesn't navigate: the script fetches the entry's `href` with htmx and swaps the picker root (`outerHTML`), so it works inside `c.dialog_content`; the app's route returns the picker for that document, whose inputs then hold its choice. The focus returns to the switcher's button (or the page column after previous/next).
+- **R17** The sample has a dialog with one document, with two documents and with 30 documents in three folders.
+
 ### Drawing
 
 - **R7** A pointer drag (mouse, touch, pen) on the page draws one box, replacing the previous one; a drag shorter than 1 % of the page in width or height keeps the previous box. A drag on the box moves it, a drag on one of its four corner handles resizes it; the box always stays within the page.
@@ -69,19 +75,24 @@ None.
 
 Built as specified. Proof: `tests/pyhx/components/test_source_picker.py` (inputs, start page, shown page, fallbacks, read-only annotations, the viewer unchanged; `SourceChoice.from_form` and its refusals) and `tests/samples/document_viewer/test_source_picker_sample.py`; the sample page "Source picker" checked in a browser at 1280 px and 390 px (touch emulated): drawing, moving, resizing by a corner beyond the page (clamped), arrow keys and Shift + arrow keys, Escape removes the area and keeps the dialog open, a second Escape closes it; a thumbnail chosen by keyboard (Enter) chooses the page; posting echoes the choice; "Edit this source" opens at the page with the area; a dialog sent again by the server (morph) takes the inputs' page and area and the pager follows; the existing viewer pages scroll and track the current page as before.
 
+R15–R17 were added after the developer's review of the demo ("many documents: a document switcher as in the document reader"; "a single document stays supported"). Checked in the browser: in the 30-document dialog, typing in the switcher's search and Enter, a click on an entry (also by touch at 390 px) and "Next document" replace the picker without leaving the page or closing the dialog; the inputs hold the new document's page 1; drawing works in the swapped picker; posting echoes it. Tests: the switcher in place of the title, a single entry rendering exactly as without `files`, a single document without `files`, and the sample's routes.
+
 Deviations:
 
 - In paged mode the zoom may go below the smallest step (to 25 %), so a whole page fits a small picker; zooming out by the buttons still stops at 50 %.
 - `hx-document:page` is dispatched by every viewer on each change of its current page (documented in the guide), not only by the picker.
+- The picker has no `overflow: hidden`, so the switcher's dropdown isn't cut off; at phone width the switcher hides its position ("n of total documents"), the pager shows the place.
 
-Findings: a picker sent again by the server keeps its root element (morph), so the script takes its state from the inputs again on `htmx:load` (`sync`), including the viewer's current page; otherwise previous/next continued from the old page.
+Findings: a picker sent again by the server keeps its root element (morph), so the script takes its state from the inputs again on `htmx:load` (`sync`), including the viewer's current page; otherwise previous/next continued from the old page. A picker swapped in with `outerHTML` is the target of `htmx:load` itself, so the script's `init` now includes the scope element (`within`), for viewers too.
 
 Screenshots (sample `samples/document_viewer`, page "Source picker"):
 
 - [An area drawn, desktop](screenshots/document-viewer--source-picker-area--desktop.png)
 - [The posted choice, desktop](screenshots/document-viewer--source-picker-posted--desktop.png)
 - [Whole page, phone](screenshots/document-viewer--source-picker-whole-page--phone.png)
+- [Document switcher, desktop](screenshots/document-viewer--source-picker-switcher--desktop.png)
+- [Document switcher, phone](screenshots/document-viewer--source-picker-switcher--phone.png)
 
 No "before": the component is new.
 
-Open: the page fits the picker on open and on "Fit page", not again when the window is resized; touch users zoomed in beyond the picker scroll with two fingers (concern 1). JavaScript has no automated tests in this repository.
+Open: the page fits the picker on open and on "Fit page", not again when the window is resized; touch users zoomed in beyond the picker scroll with two fingers (concern 1). JavaScript has no automated tests in this repository. The switcher's entries are rendered all at once, as in the document viewer (T-018).

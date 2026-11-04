@@ -195,3 +195,28 @@ async def use_source(request: Request) -> y.Node:
 - Every change dispatches `hx-source-picker:change` on the picker, with `detail.picker`, `detail.document`, `detail.page` and `detail.box` (`{x, y, width, height}` or `null`), e.g. for `hx-trigger`. The viewer itself dispatches `hx-document:page` (`detail.viewer`, `detail.page` as `"<document id>:<page>"`) whenever its current page changes.
 - Marks and notes of the pages are shown, but can't be selected. The page fits the picker when it opens and on "Fit page"; one finger on the page draws, so a page zoomed in beyond the picker scrolls with two fingers or its scroll bars.
 - In a dialog, the dialog widens to 64rem for the picker; the picker is `min(36rem, 70dvh)` high. When the server sends the dialog again (e.g. with an error), the picker takes the choice of its inputs, so render it with the posted `value`.
+
+### Many documents: the document switcher in the picker
+
+With one or a few documents, pass them all in `documents`. With many, pass only the current one and give `files`, the entries of the document switcher of `dv.files` (`vm.DocumentLink`: title, href, group, detail, current). The toolbar then shows the switcher instead of the title: search, groups, previous and next document, the position.
+
+```python
+def picker(document_id: str, value: vm.SourceChoice | None = None) -> y.Node:
+    document = documents[document_id]
+    return c.source_picker(
+        id="source-picker",
+        documents=[document],  # only the current one
+        files=[
+            vm.DocumentLink(d.title, href=f"/sources/picker?document={d.id}", group=d.folder, current=d is document)
+            for d in documents.values()
+        ],
+        value=value,
+    )
+
+
+@router.fragment.get("/sources/picker")
+async def picker_for(document: str) -> y.Node:
+    return picker(document)  # the picker alone, no dialog around it
+```
+
+Inside the picker, choosing an entry (or previous/next) doesn't leave the page: the script fetches its `href` with htmx and replaces the picker with the answer (`outerHTML` of the picker), so it works in a dialog. Return the picker for that document with the same `id` and `name`; its inputs then hold that document's choice (page 1, whole page, unless you give a `value`). With fewer than two entries in `files` the picker looks as without them: the title, no switcher.

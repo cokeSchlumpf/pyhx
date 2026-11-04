@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 09:36+0100\n"
+"POT-Creation-Date: 2026-11-04 10:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -43,7 +43,7 @@ msgstr "Tutti"
 msgid "Apply Filter & Sort"
 msgstr "Applica filtro e ordinamento"
 
-#: components/layouts/source_picker.py:120
+#: components/layouts/source_picker.py:134
 msgid "Arrow keys move the area, Shift and arrow keys resize it, Delete removes it."
 msgstr "I tasti freccia spostano l'area, Maiusc e i tasti freccia la ridimensionano, Canc la rimuove."
 
@@ -127,7 +127,7 @@ msgstr "Scegli sì o no."
 msgid "Clear Filter & Sort"
 msgstr "Reimposta filtro e ordinamento"
 
-#: components/layouts/source_picker.py:145
+#: components/layouts/source_picker.py:159
 msgid "Clear area"
 msgstr "Rimuovi area"
 
@@ -228,11 +228,11 @@ msgstr "Documenti"
 msgid "Drag & drop a file here, or click to browse"
 msgstr "Trascina qui un file o fai clic per sfogliare"
 
-#: components/layouts/source_picker.py:138
+#: components/layouts/source_picker.py:152
 msgid "Drag on the page to mark an area."
 msgstr "Trascina sulla pagina per segnare un'area."
 
-#: components/layouts/source_picker.py:141
+#: components/layouts/source_picker.py:155
 msgid "Drag the area or its corners to change it."
 msgstr "Trascina l'area o i suoi angoli per modificarla."
 
@@ -379,7 +379,7 @@ msgstr "Modalità filtro"
 msgid "Filter items"
 msgstr "Filtra elementi"
 
-#: components/layouts/source_picker.py:102
+#: components/layouts/source_picker.py:116
 msgid "Fit page"
 msgstr "Pagina intera"
 
@@ -439,7 +439,7 @@ msgstr "Link di accesso non valido"
 msgid "Logout"
 msgstr "Esci"
 
-#: components/layouts/source_picker.py:118
+#: components/layouts/source_picker.py:132
 msgid "Marked area"
 msgstr "Area segnata"
 
@@ -922,14 +922,14 @@ msgstr "Menu utente"
 msgid "with a warning"
 msgstr "con avviso"
 
-#: components/layouts/source_picker.py:114
-#: components/layouts/source_picker.py:126
+#: components/layouts/source_picker.py:128
+#: components/layouts/source_picker.py:140
 #, python-brace-format
 msgid "{document}, page {page}: marked area"
 msgstr "{document}, pagina {page}: area segnata"
 
-#: components/layouts/source_picker.py:109
-#: components/layouts/source_picker.py:132
+#: components/layouts/source_picker.py:123
+#: components/layouts/source_picker.py:146
 #, python-brace-format
 msgid "{document}, page {page}: whole page"
 msgstr "{document}, pagina {page}: pagina intera"

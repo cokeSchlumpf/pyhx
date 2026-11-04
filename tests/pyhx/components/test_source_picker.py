@@ -103,6 +103,42 @@ class TestRendering:
         assert 'data-text-area="{document}, page {page}: marked area"' in html
         assert 'data-text-area-label="Marked area"' in html
 
+    def test_without_files_the_toolbar_has_the_title(self):
+        html = _render()
+
+        assert "hx-document-viewer__title" in html
+        assert "hx-document-viewer__files" not in html
+
+    def test_files_put_the_document_switcher_in_place_of_the_title(self):
+        files = [
+            vm.DocumentLink("Letter", href="/pick?d=letter", group="Mail", current=True),
+            vm.DocumentLink("Report", href="/pick?d=report", group="Reports"),
+        ]
+
+        html = str(c.source_picker(id="pick", documents=_documents()[:1], files=files))
+
+        assert "hx-document-viewer__title" not in html
+        assert 'class="hx-document-viewer__files-menu"' in html
+        assert 'href="/pick?d=report"' in html
+        assert "1 of 2 documents" in html
+        assert _input(html, "source_document") == "letter"
+
+    def test_a_single_document_without_files(self):
+        html = str(c.source_picker(id="pick", documents=_documents()[1:]))
+
+        assert "hx-document-viewer__title" in html
+        assert "hx-document-viewer__files" not in html
+        assert _input(html, "source_document") == "report"
+        assert _shown_pages(html) == ["report:1"]
+
+    def test_files_with_a_single_entry_look_like_a_single_document(self):
+        files = [vm.DocumentLink("Report", href="/pick?d=report", current=True)]
+
+        with_files = str(c.source_picker(id="pick", documents=_documents()[1:], files=files))
+        without = str(c.source_picker(id="pick", documents=_documents()[1:]))
+
+        assert with_files == without
+
     def test_needs_a_document(self):
         with pytest.raises(ValueError):
             c.source_picker(id="pick", documents=[])

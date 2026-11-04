@@ -589,14 +589,37 @@
 
         if (clearButton) clearButton.addEventListener("click", () => set(null));
 
+        // with a document switcher (files): an entry or previous/next replaces the picker
+        // with the one its href returns, so the page (or the dialog) stays
+        root.addEventListener("click", (event) => {
+            const link = event.target.closest(".hx-document-viewer__files a[href]");
+            if (!link || !root.contains(link) || !window.htmx) return;
+            event.preventDefault();
+            const id = root.id;
+            const switcher = !!link.closest(SWITCHER);
+            window.htmx.ajax("GET", link.getAttribute("href"), { target: root, swap: "outerHTML" }).then(() => {
+                // the focus stays on the control that was used
+                const next = document.getElementById(id);
+                const control = switcher ? next?.querySelector(`${SWITCHER} > summary`) : null;
+                (control || next?.querySelector(".hx-document-viewer__pages"))?.focus({ preventScroll: true });
+            });
+        });
+
         root.hxSourcePicker = { sync, clear: () => set(null) };
         return root.hxSourcePicker;
     }
 
+    // the elements matching `selector` in `scope`, the scope itself included (a swapped-in viewer)
+    function within(scope, selector) {
+        const root = scope || document;
+        const found = [...root.querySelectorAll(selector)];
+        return root.matches && root.matches(selector) ? [root, ...found] : found;
+    }
+
     function init(scope) {
-        (scope || document).querySelectorAll("[data-hx-document-viewer]").forEach(viewer);
+        within(scope, "[data-hx-document-viewer]").forEach(viewer);
         // also when the server sent a picker again (e.g. a dialog with an error): the state of its inputs
-        (scope || document).querySelectorAll("[data-hx-source-picker]").forEach((root) => picker(root).sync());
+        within(scope, "[data-hx-source-picker]").forEach((root) => picker(root).sync());
     }
 
     window.pyhx = window.pyhx || {};

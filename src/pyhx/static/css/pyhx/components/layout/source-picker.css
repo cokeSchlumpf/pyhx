@@ -14,7 +14,7 @@
     height: min(36rem, 70dvh);
     border: 1px solid var(--document-viewer--line);
     border-radius: var(--hx-radius-md, 0.375rem);
-    overflow: hidden;
+    /* no overflow: hidden, the document switcher's dropdown may reach beyond the picker */
 }
 
 /* --- Layout --- */
@@ -164,4 +164,6 @@
     .hx-source-picker .hx-document-viewer__thumbnail-image { width: 2.75rem; }
     .hx-source-picker > .hx-document-viewer__pages { grid-row: 3; align-items: center; }
     .hx-source-picker > .hx-source-picker__footer { grid-row: 4; flex-wrap: wrap; padding: 0.375rem 0.75rem; }
+    /* the switcher's button keeps the width for the document's name; the pager shows the place */
+    .hx-source-picker .hx-document-viewer__files-position { display: none; }
 }
