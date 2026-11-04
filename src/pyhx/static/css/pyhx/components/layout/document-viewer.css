@@ -247,8 +247,17 @@ a.hx-document-viewer__files-entry:focus-visible { box-shadow: inset 2px 0 0 var(
 /* Spotlight: while an annotation is selected, the other marks recede, so the
    selected instance stands out even among many marks of the same kind. */
 .hx-document-viewer:has([data-hx-document-annotation-id][aria-pressed="true"]) .hx-document-viewer__mark:not([aria-pressed="true"]) { opacity: 0.35; }
-.hx-document-viewer:has([data-hx-document-annotation-id][aria-pressed="true"]) .hx-document-viewer__mark:not([aria-pressed="true"]):hover { opacity: 1; }
+.hx-document-viewer:has([data-hx-document-annotation-id][aria-pressed="true"]) .hx-document-viewer__mark:not([aria-pressed="true"]):hover,
+.hx-document-viewer:has([data-hx-document-annotation-id][aria-pressed="true"]) .hx-document-viewer__mark:not([aria-pressed="true"])[data-hover] { opacity: 1; }
 .hx-document-viewer__mark { transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s, opacity 0.2s; }
+
+/* Categories the app hides (data-hx-document-category-toggle): the buttons set
+   their own display, so the browser's [hidden] needs help. */
+.hx-document-viewer__mark[hidden],
+.hx-document-viewer__note[hidden] { display: none; }
+
+/* Annotation pager: the position keeps its width while it counts. */
+.hx-document-viewer__annotation-pager [data-hx-document-annotation-position] { min-width: 3.5rem; text-align: center; font-variant-numeric: tabular-nums; }
 
 /* Notes: a pin of fixed size at its point; the content is the app's (sidebar). */
 

@@ -21,6 +21,7 @@ from pyhx.core import WebApp
 from pyhx.page_templates import CanvasShell
 
 from .pages import (
+    annotation_list,
     basic,
     case,
     documents,
@@ -54,6 +55,7 @@ for module in (
     case,
     open_at_page,
     source_picker,
+    annotation_list,
 ):
     hx.include_router(module.router)
 

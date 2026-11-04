@@ -13,6 +13,19 @@
 // - document switcher (dv.files): filters its list while typing, ↑/↓ and Enter,
 //   closes on a click outside and on Escape
 // - every change of the current page dispatches "hx-document:page" ({viewer, page})
+// - several marks with the same data-hx-document-annotation-id are one annotation:
+//   selected, highlighted and stepped through together; selecting it scrolls to the
+//   first of them
+// - annotation pager (dv.annotation_pager): previous/next annotation in document
+//   order (page, then top and left of its first mark), skipping hidden ones, with
+//   the position "n / total"
+// - categories: marks and notes carry data-hx-document-category; anything with
+//   data-hx-document-category-toggle="<viewer>:<category>" shows and hides it
+//   (aria-pressed while shown), anything with data-hx-document-category=
+//   "<viewer>:<category>" is hidden with it; every change dispatches
+//   "hx-document:categories" ({viewer, hidden})
+// - selected by a mark, the pager or on load, the linked elements are scrolled into
+//   view within their own scrolling container (never the page, nor the pages)
 // - paged (data-hx-document-paged, the source picker): one page at a time, shown by
 //   toggling `hidden` instead of scrolling; fit fits the whole page
 // - source picker (c.source_picker): see its section at the end
@@ -142,7 +155,11 @@
         }
 
         const indexOf = (key) => pages.findIndex((p) => p.dataset.hxDocumentPage === key);
-        const find = (id) => root.querySelector(`[data-hx-document-annotation-id="${CSS.escape(id)}"]`);
+        const marksOf = (id) => [...root.querySelectorAll(`[data-hx-document-annotation-id="${CSS.escape(id)}"]`)];
+        // the first mark of the annotation in document order
+        const find = (id) => marksOf(id)[0] || null;
+        const selectedId = () => root.querySelector('[data-hx-document-annotation-id][aria-pressed="true"]')?.dataset.hxDocumentAnnotationId ?? null;
+        const links = (id) => [...document.querySelectorAll(`[data-hx-document-annotation="${CSS.escape(root.id)}:${CSS.escape(id)}"]`)];
 
         // One annotation is selected at a time (aria-pressed); while one is,
         // CSS lets the other marks recede (spotlight, via :has). Selecting the
@@ -152,16 +169,17 @@
             document.querySelectorAll(`[data-hx-document-annotation^="${CSS.escape(root.id)}:"]`).forEach((link) => {
                 link.setAttribute("aria-pressed", String(id !== null && link.dataset.hxDocumentAnnotation === `${root.id}:${id}`));
             });
-            const target = id === null ? null : find(id);
-            if (target) target.setAttribute("aria-pressed", "true");
-            return target;
+            const all = id === null ? [] : marksOf(id);
+            all.forEach((mark) => mark.setAttribute("aria-pressed", "true"));
+            updatePosition();
+            return all[0] || null;
         }
 
         function clear() {
             select(null);
         }
 
-        function activate(id, { scroll = true, toggle = false, behavior = "smooth" } = {}) {
+        function activate(id, { scroll = true, toggle = false, behavior = "smooth", show = false } = {}) {
             const target = find(id);
             if (toggle && target && target.getAttribute("aria-pressed") === "true") {
                 clear();
@@ -169,11 +187,103 @@
             }
             if (!select(id)) return;
             if (scroll) scrollTo(target, pages.indexOf(target.closest("[data-hx-document-page]")), "center", behavior);
+            if (show) requestAnimationFrame(() => links(id).forEach(reveal));
         }
 
         function hover(id, on) {
-            const target = find(id);
-            if (target) target.toggleAttribute("data-hover", on);
+            marksOf(id).forEach((mark) => mark.toggleAttribute("data-hover", on));
+        }
+
+        // the shown annotations in document order: page, then top and left of the first mark
+        function annotations() {
+            const items = [];
+            pages.forEach((page, index) => {
+                page.querySelectorAll("[data-hx-document-annotation-id]:not([hidden])").forEach((mark) => {
+                    items.push({ id: mark.dataset.hxDocumentAnnotationId, index, top: parseFloat(mark.style.top) || 0, left: parseFloat(mark.style.left) || 0 });
+                });
+            });
+            items.sort((a, b) => a.index - b.index || a.top - b.top || a.left - b.left);
+            return [...new Set(items.map((item) => item.id))];
+        }
+
+        function updatePosition() {
+            const counters = root.querySelectorAll("[data-hx-document-annotation-position]");
+            if (!counters.length) return;
+            const list = annotations();
+            const at = list.indexOf(selectedId());
+            counters.forEach((counter) => {
+                counter.textContent = `${at < 0 ? "–" : at + 1} / ${list.length}`;
+            });
+            root.querySelectorAll('[data-hx-document-action^="annotation-"]').forEach((button) => {
+                button.disabled = list.length === 0;
+            });
+        }
+
+        function stepAnnotation(direction) {
+            const list = annotations();
+            if (!list.length) return;
+            const at = list.indexOf(selectedId());
+            const next = at < 0 ? (direction > 0 ? 0 : list.length - 1) : (at + direction + list.length) % list.length;
+            activate(list[next], { show: true });
+        }
+
+        // categories: hidden marks and notes, hidden linked elements, pressed toggles
+        const hidden = new Set((root.dataset.hxDocumentHidden || "").split(" ").filter(Boolean));
+        const prefix = `${root.id}:`;
+        const categoryOf = (element, attribute) => {
+            const value = element.getAttribute(attribute) || "";
+            return value.startsWith(prefix) ? value.slice(prefix.length) : null;
+        };
+
+        function applyCategories() {
+            root.querySelectorAll("[data-hx-document-annotation-id][data-hx-document-category]").forEach((mark) => {
+                mark.hidden = hidden.has(mark.dataset.hxDocumentCategory);
+            });
+            document.querySelectorAll(`[data-hx-document-category^="${CSS.escape(prefix)}"]`).forEach((element) => {
+                if (element.hasAttribute("data-hx-document-annotation-id")) return;
+                element.hidden = hidden.has(categoryOf(element, "data-hx-document-category"));
+            });
+            document.querySelectorAll(`[data-hx-document-category-toggle^="${CSS.escape(prefix)}"]`).forEach((toggle) => {
+                toggle.setAttribute("aria-pressed", String(!hidden.has(categoryOf(toggle, "data-hx-document-category-toggle"))));
+            });
+        }
+
+        function showCategory(category, shown) {
+            if (shown) hidden.delete(category);
+            else hidden.add(category);
+            if (hidden.size) root.dataset.hxDocumentHidden = [...hidden].sort().join(" ");
+            else delete root.dataset.hxDocumentHidden;
+            applyCategories();
+            const id = selectedId();
+            if (id !== null && marksOf(id).every((mark) => mark.hidden)) clear();
+            else updatePosition();
+            root.dispatchEvent(new CustomEvent("hx-document:categories", { bubbles: true, detail: { viewer: root.id, hidden: [...hidden].sort() } }));
+        }
+
+        // after content was swapped in: hidden categories, pressed links, the position
+        function sync() {
+            applyCategories();
+            select(selectedId());
+        }
+
+        // a linked element outside its scrolling container is scrolled into it; never
+        // the document, nor a container that holds the pages (that would move them)
+        function reveal(link) {
+            if (!link.getClientRects().length) return;
+            let box = link.parentElement;
+            while (box && box !== document.body && box !== document.documentElement) {
+                const overflow = getComputedStyle(box).overflowY;
+                if ((overflow === "auto" || overflow === "scroll") && box.scrollHeight > box.clientHeight) break;
+                box = box.parentElement;
+            }
+            if (!box || box === document.body || box === document.documentElement || (column && box.contains(column))) return;
+            const r = link.getBoundingClientRect();
+            const c = box.getBoundingClientRect();
+            const margin = 8;
+            let delta = 0;
+            if (r.top < c.top) delta = r.top - c.top - margin;
+            else if (r.bottom > c.bottom) delta = r.height > c.height ? r.top - c.top - margin : r.bottom - c.bottom + margin;
+            if (delta) box.scrollTo({ top: box.scrollTop + delta, behavior: "smooth" });
         }
 
         root.addEventListener("click", (event) => {
@@ -185,6 +295,8 @@
                 if (name === "zoom-in") step(1);
                 if (name === "zoom-out") step(-1);
                 if (name === "fit") fit();
+                if (name === "annotation-prev") stepAnnotation(-1);
+                if (name === "annotation-next") stepAnnotation(1);
                 return;
             }
             const thumb = event.target.closest("[data-hx-document-goto]");
@@ -195,7 +307,7 @@
             const annotation = event.target.closest("[data-hx-document-annotation-id]");
             if (annotation) {
                 const id = annotation.dataset.hxDocumentAnnotationId;
-                activate(id, { scroll: false, toggle: true });
+                activate(id, { scroll: false, toggle: true, show: true });
                 root.dispatchEvent(new CustomEvent("hx-document:annotation-select", { bubbles: true, detail: { viewer: root.id, id, kind: annotation.dataset.kind } }));
             }
         });
@@ -265,12 +377,25 @@
         const start = Math.max(0, indexOf(root.dataset.hxDocumentStart || ""));
         const selected = root.dataset.hxDocumentSelected;
         setCurrent(start);
+        applyCategories();
+        updatePosition();
         requestAnimationFrame(() => {
-            if (selected && find(selected)) activate(selected, { behavior: "auto" });
+            if (selected && find(selected)) activate(selected, { behavior: "auto", show: true });
             else if (start > 0) scrollTo(pages[start], start, "start", "auto");
         });
 
-        root.hxDocumentViewer = { activate, clear, hover, goTo: (key) => goTo(indexOf(key)), setZoom, fit };
+        // hovering one mark of an annotation highlights all of them
+        for (const [type, on] of [["mouseover", true], ["mouseout", false], ["focusin", true], ["focusout", false]]) {
+            root.addEventListener(type, (event) => {
+                const mark = event.target.closest && event.target.closest("[data-hx-document-annotation-id]");
+                if (mark && root.contains(mark)) hover(mark.dataset.hxDocumentAnnotationId, on);
+            });
+        }
+
+        root.hxDocumentViewer = {
+            activate, clear, hover, goTo: (key) => goTo(indexOf(key)), setZoom, fit,
+            showCategory, next: () => stepAnnotation(1), previous: () => stepAnnotation(-1), sync,
+        };
         return root.hxDocumentViewer;
     }
 
@@ -286,6 +411,16 @@
         if (!link) return;
         const [v, id] = resolve(link);
         if (v) v.activate(id, { toggle: true });
+    });
+
+    document.addEventListener("click", (event) => {
+        const toggle = event.target.closest && event.target.closest("[data-hx-document-category-toggle]");
+        if (!toggle) return;
+        const value = toggle.dataset.hxDocumentCategoryToggle || "";
+        const split = value.indexOf(":");
+        const root = split > 0 && document.getElementById(value.slice(0, split));
+        if (!root || !root.matches("[data-hx-document-viewer]")) return;
+        viewer(root).showCategory(value.slice(split + 1), toggle.getAttribute("aria-pressed") === "false");
     });
 
     for (const [type, on] of [["mouseover", true], ["mouseout", false], ["focusin", true], ["focusout", false]]) {
@@ -617,7 +752,14 @@
     }
 
     function init(scope) {
-        within(scope, "[data-hx-document-viewer]").forEach(viewer);
+        const created = within(scope, "[data-hx-document-viewer]");
+        created.forEach(viewer);
+        // content swapped in beside a viewer: its hidden categories and pressed links
+        if (scope) {
+            document.querySelectorAll("[data-hx-document-viewer]").forEach((root) => {
+                if (!created.includes(root) && root.hxDocumentViewer) root.hxDocumentViewer.sync();
+            });
+        }
         // also when the server sent a picker again (e.g. a dialog with an error): the state of its inputs
         within(scope, "[data-hx-source-picker]").forEach((root) => picker(root).sync());
     }

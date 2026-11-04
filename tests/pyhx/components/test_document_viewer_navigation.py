@@ -28,9 +28,7 @@ class TestAnnotationOfSeveralMarks:
         html = _render(_mark("m1", annotation="a"), _mark("m2", annotation="a"))
 
         assert html.count('data-hx-document-annotation-id="a"') == 2
-        assert "m1" not in html.replace('aria-label="m1"', "").replace(
-            'title="m1"', ""
-        )
+        assert "m1" not in html.replace('aria-label="m1"', "").replace('title="m1"', "")
 
     def test_a_mark_without_annotation_is_its_own(self):
         mark = _mark("m1")
@@ -74,7 +72,11 @@ class TestCategories:
         with pytest.raises(ValueError, match="category"):
             vm.Note(id="n", at=vm.Point(0.5, 0.5), label="N", category=category)
         with pytest.raises(ValueError, match="category"):
-            dv(id="v", documents=[vm.Document(id="d", title="D", pages=[])], hidden_categories=[category])
+            dv(
+                id="v",
+                documents=[vm.Document(id="d", title="D", pages=[])],
+                hidden_categories=[category],
+            )
 
 
 class TestAnnotationPager:
