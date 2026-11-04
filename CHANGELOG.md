@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.13.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.12.0...v1.13.0) (2026-11-04)
+
+
+### Features
+
+* **i18n:** translated validation messages, error toasts and error pages ([#66](https://github.com/cokeSchlumpf/pyhx/issues/66)) ([4798d62](https://github.com/cokeSchlumpf/pyhx/commit/4798d627b498007aac5ce8f056f44c3da165c41a))
+
 ## [1.12.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.11.1...v1.12.0) (2026-11-04)
 
 
