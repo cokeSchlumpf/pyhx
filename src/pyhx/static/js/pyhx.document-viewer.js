@@ -293,10 +293,15 @@
             if (!box || box === document.body || box === document.documentElement || (column && box.contains(column))) return;
             const r = link.getBoundingClientRect();
             const c = box.getBoundingClientRect();
+            // a sticky head of the container (title, filters) covers its top
+            let top = c.top;
+            for (const child of box.children) {
+                if (child !== link && !child.contains(link) && getComputedStyle(child).position === "sticky") top = Math.max(top, child.getBoundingClientRect().bottom);
+            }
             const margin = 8;
             let delta = 0;
-            if (r.top < c.top) delta = r.top - c.top - margin;
-            else if (r.bottom > c.bottom) delta = r.height > c.height ? r.top - c.top - margin : r.bottom - c.bottom + margin;
+            if (r.top < top) delta = r.top - top - margin;
+            else if (r.bottom > c.bottom) delta = r.height > c.bottom - top ? r.top - top - margin : r.bottom - c.bottom + margin;
             if (delta) box.scrollTo({ top: box.scrollTop + delta, behavior: "smooth" });
         }
 
