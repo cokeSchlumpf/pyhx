@@ -62,3 +62,14 @@ None.
 ## Out of scope
 
 - Log messages, apps' own messages, model-level errors in forms, the browser's own validation messages.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** An app that replaces the handler of HTTP errors registers it for `starlette.exceptions.HTTPException`, as FastAPI's default does; a handler for FastAPI's subclass alone doesn't see the router's 404s (as before this change).
+- **F1** `InlineEdit` reports its validation errors through the same forms, so its messages are translated too ("Enter a value of at most 100.").
+- **F2** The toast falls back to its English texts when a page was rendered by an older pyhx without the `data-text-*` attributes.
+- **F3** Two tests changed with the behavior: the auth addon's catch-all test no longer finds the exception name in the 500 page outside development, and the stream error event says "Something went wrong".
+
+Rollout: minor release on `versions/1`; apps get the texts with `poetry update pyhx`. Browser requests to unknown URLs now get an HTML 404 page instead of JSON.
