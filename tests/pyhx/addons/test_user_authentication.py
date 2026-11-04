@@ -737,7 +737,7 @@ class TestNotAuthenticatedHandler:
 
     def test_include_exception_handler_false_lets_exception_propagate(self):
         # With the handler turned off, the WebApp's in-route catch-all
-        # falls back to its debug page (500 + stacktrace HTML).
+        # answers its error page (500, the trace only in development).
         client = _build_app_with_protected_route(
             include_exception_handler=False,
         )
@@ -747,7 +747,8 @@ class TestNotAuthenticatedHandler:
         assert resp.status_code == 500
         assert resp.headers.get("location") is None
         assert resp.headers.get("HX-Redirect") is None
-        assert "NotAuthenticated" in resp.text
+        assert "Something went wrong" in resp.text
+        assert "NotAuthenticated" not in resp.text
 
 
 def _set_user(user) -> None:

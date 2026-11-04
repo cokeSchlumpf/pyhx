@@ -24,7 +24,9 @@ class TestDialogPage:
         client = TestClient(app)
 
         refused = client.post(dialog.accept.url(), headers=HTMX, data={}).text
-        accepted = client.post(dialog.accept.url(), headers=HTMX, data={"accepted": "true"}).text
+        accepted = client.post(
+            dialog.accept.url(), headers=HTMX, data={"accepted": "true"}
+        ).text
 
         assert "Confirm this to continue." in refused
         assert "show again: no)." in accepted

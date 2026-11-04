@@ -22,15 +22,25 @@ def test_no_text_keeps_the_plain_fieldset():
 
 
 def test_an_error_text_is_shown_below_and_marks_the_group_invalid():
-    html = str(checkbox_fieldset("Rights", "rights", OPTIONS, error_text="Pick one.", class_="hx-grid-span-2"))
+    html = str(
+        checkbox_fieldset(
+            "Rights", "rights", OPTIONS, error_text="Pick one.", class_="hx-grid-span-2"
+        )
+    )
 
     assert html.startswith('<div class="hx-form-field hx-grid-span-2">')
-    assert 'aria-invalid="true"' in html and 'aria-describedby="rights__help_text"' in html
+    assert (
+        'aria-invalid="true"' in html and 'aria-describedby="rights__help_text"' in html
+    )
     assert '<small id="rights__help_text">Pick one.</small>' in html
 
 
 def test_the_error_replaces_the_help_text():
-    html = str(radio_fieldset("Right", "right", OPTIONS, help_text="Choose.", error_text="Wrong."))
+    html = str(
+        radio_fieldset(
+            "Right", "right", OPTIONS, help_text="Choose.", error_text="Wrong."
+        )
+    )
 
     assert "Wrong." in html and "Choose." not in html
 
@@ -38,7 +48,10 @@ def test_the_error_replaces_the_help_text():
 def test_a_help_text_is_shown_without_marking_the_group_invalid():
     html = str(radio_fieldset("Right", "right", OPTIONS, help_text="Choose."))
 
-    assert '<small id="right__help_text">Choose.</small>' in html and "aria-invalid" not in html
+    assert (
+        '<small id="right__help_text">Choose.</small>' in html
+        and "aria-invalid" not in html
+    )
 
 
 class _Fragment:
@@ -62,7 +75,10 @@ async def _noop(value):  # pragma: no cover - never invoked in these tests
 
 class Rights(BaseModel):
     rights: Annotated[
-        list[str], a.MultiselectChoiceField(label="Rights", control=a.CheckboxFieldsetControl(options=OPTIONS))
+        list[str],
+        a.MultiselectChoiceField(
+            label="Rights", control=a.CheckboxFieldsetControl(options=OPTIONS)
+        ),
     ]
     active: Annotated[bool, a.BooleanField(label="Active")] = True
 

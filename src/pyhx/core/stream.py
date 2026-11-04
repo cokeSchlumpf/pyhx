@@ -353,12 +353,13 @@ def _render_error(exc: BaseException) -> y.Node:
     except LookupError:
         is_dev = is_dev_mode()
 
+    # Imported lazily: ``pyhx.i18n`` imports ``pyhx.core``.
+    from pyhx.i18n import _
+
+    title = y.h1[_("Something went wrong")]
     if not is_dev:
-        return y.div[y.h1["Internal Server Error"]]
-    return y.div[
-        y.h1["Internal Server Error"],
-        y.pre["".join(traceback.format_exception(exc))],
-    ]
+        return y.div[title]
+    return y.div[title, y.pre["".join(traceback.format_exception(exc))]]
 
 
 async def _prepend(

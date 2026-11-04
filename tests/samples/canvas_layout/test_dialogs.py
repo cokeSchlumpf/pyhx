@@ -70,7 +70,15 @@ class TestConfirmation:
         assert 'hx-post="/_components/close_dialog/close"' in cancel.group(0)
 
     def test_close_dialog_closes_it(self):
-        html = _client().post("/_components/close_dialog/close", headers=HTMX, data={"id": "dialog-content"}).text
+        html = (
+            _client()
+            .post(
+                "/_components/close_dialog/close",
+                headers=HTMX,
+                data={"id": "dialog-content"},
+            )
+            .text
+        )
 
         assert "aria-modal" not in html
 
@@ -86,7 +94,9 @@ class TestDrawerAboveTheDialog:
     def test_hand_over_echoes_the_chosen_owners(self):
         html = (
             _client()
-            .post(dialogs.hand_over.url(), headers=HTMX, data={"owner": ["anna", "lena"]})
+            .post(
+                dialogs.hand_over.url(), headers=HTMX, data={"owner": ["anna", "lena"]}
+            )
             .text
         )
 

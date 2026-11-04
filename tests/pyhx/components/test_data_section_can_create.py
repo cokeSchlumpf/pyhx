@@ -24,12 +24,20 @@ class _Routes:
 
 def _page(can_create) -> tuple[DataPage, SimpleDataSource]:
     source = SimpleDataSource([Person(id=1, name="Ann")])
-    page = DataPage(routes=_Routes(), path="/people", source=source, type=Person, can_create=can_create)
+    page = DataPage(
+        routes=_Routes(),
+        path="/people",
+        source=source,
+        type=Person,
+        can_create=can_create,
+    )
     return page, source
 
 
 def _create_button_shown(page: DataPage) -> bool:
-    return page.section.open_create_form.url() in str(asyncio.run(page.section.render_actions()))
+    return page.section.open_create_form.url() in str(
+        asyncio.run(page.section.render_actions())
+    )
 
 
 def test_a_producer_returning_false_hides_the_create_button():
@@ -56,5 +64,8 @@ def test_drawer_and_submit_are_refused_when_creating_is_not_allowed():
     page, source = _page(lambda: False)
 
     assert asyncio.run(page.section._on_create_item_click()) is None
-    assert asyncio.run(page.section._on_create_form_submit(Person(id=2, name="Bob"))) is None
+    assert (
+        asyncio.run(page.section._on_create_form_submit(Person(id=2, name="Bob")))
+        is None
+    )
     assert asyncio.run(source.count(Query())) == 1

@@ -109,10 +109,16 @@ class TestFiles:
         html = _render(dv.toolbar[dv.files(_entries())], dv.pages())
 
         listing = html[html.index("hx-document-viewer__files-list") :]
-        assert listing.index("Letters") < listing.index("Brief.pdf") < listing.index("Images")
+        assert (
+            listing.index("Letters")
+            < listing.index("Brief.pdf")
+            < listing.index("Images")
+        )
         assert html.count('class="hx-document-viewer__files-group"') == 2
         assert '<a href="/d/1" class="hx-document-viewer__files-entry"' in html
-        assert 'aria-current="true" data-hx-document-search="rontgen.pdf images"' in html
+        assert (
+            'aria-current="true" data-hx-document-search="rontgen.pdf images"' in html
+        )
         # an entry without a link is greyed out and not a link
         assert re.search(
             r'<span class="hx-document-viewer__files-entry" aria-disabled="true"'
@@ -132,11 +138,16 @@ class TestFiles:
 
     def test_skips_entries_without_a_link_and_ends_disabled(self):
         entries = _entries()
-        entries[0] = vm.DocumentLink("Brief.pdf", href="/d/1", group="Letters", current=True)
+        entries[0] = vm.DocumentLink(
+            "Brief.pdf", href="/d/1", group="Letters", current=True
+        )
         entries[2] = vm.DocumentLink("Röntgen.pdf", href="/d/3", group="Images")
         html = _render(dv.toolbar[dv.files(entries)], dv.pages())
 
-        assert re.search(r'aria-label="Previous document"[^>]*disabled|disabled[^>]*aria-label="Previous document"', html)
+        assert re.search(
+            r'aria-label="Previous document"[^>]*disabled|disabled[^>]*aria-label="Previous document"',
+            html,
+        )
         assert re.search(r'<a[^>]*href="/d/3"[^>]*aria-label="Next document"', html)
         assert "1 of 4 documents" in html
 

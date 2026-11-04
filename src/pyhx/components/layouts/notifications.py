@@ -166,9 +166,25 @@ def notification_error_template() -> y.Node:
     """Hidden notification card cloned by ``pyhx.notifications.js`` on htmx errors.
 
     Surfaces request / network / timeout / swap failures as toasts without a
-    server roundtrip. Render once in the page shell, next to
+    server roundtrip. Its texts are rendered in the language of the page
+    (``data-text-*``); a failed response with a short plain text shows that
+    text, so an app can say why it refused a request. Render once in the page shell, next to
     :func:`notifications`, and load ``/static/js/pyhx.notifications.js``.
     """
-    return y.template(id=NOTIFICATION_ERROR_TEMPLATE_ID)[
+    texts = {
+        # Translators: {status} is the HTTP status code, e.g. 404.
+        "data-text-request-failed": _("Request failed ({status})"),
+        "data-text-server-error": _("The server returned an error."),
+        "data-text-connection-lost": _("Connection lost"),
+        "data-text-connection-lost-detail": _(
+            "Could not reach the server. Check your network and try again."
+        ),
+        "data-text-timeout": _("Request timed out"),
+        "data-text-swap-failed": _("Display failed"),
+        "data-text-swap-failed-detail": _(
+            "The browser could not apply the server response."
+        ),
+    }
+    return y.template(id=NOTIFICATION_ERROR_TEMPLATE_ID, **texts)[
         notification_card(appearance="danger", icon="alert-octagon"),
     ]

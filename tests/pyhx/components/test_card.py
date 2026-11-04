@@ -145,7 +145,9 @@ class TestCardGroup:
         assert '<summary class="hx-card__header">Group' in html
 
     def test_fixed_group_in_collapsible_card(self):
-        html = str(card(open=True)[card.header["Card"], card.group[card.header["Group"]]])
+        html = str(
+            card(open=True)[card.header["Card"], card.group[card.header["Group"]]]
+        )
 
         assert '<summary class="hx-card__header">Card' in html
         assert '<header class="hx-card__header">Group</header>' in html
