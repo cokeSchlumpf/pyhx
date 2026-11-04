@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 23:03+0100\n"
+"POT-Creation-Date: 2026-11-04 08:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -35,6 +35,7 @@ msgid "Add tag"
 msgstr "Tag hinzufügen"
 
 #: components/primitives/conditional_select.py:64
+#: components/primitives/timeline.py:286
 msgid "All"
 msgstr "Alle"
 
@@ -82,6 +83,10 @@ msgstr "Abbrechen"
 #, python-brace-format
 msgid "Cannot delete {type}"
 msgstr "{type} kann nicht gelöscht werden"
+
+#: components/primitives/timeline.py:258
+msgid "Categories"
+msgstr "Kategorien"
 
 #: addons/user_authentication/_pages.py:384
 #: addons/user_authentication/_pages.py:446
@@ -134,6 +139,10 @@ msgstr "Code kopieren"
 #, python-brace-format
 msgid "Create {type}"
 msgstr "{type} erstellen"
+
+#: components/primitives/timeline.py:279
+msgid "Default"
+msgstr "Standard"
 
 #. {type} is the name of the item's type, in lower case.
 #: components/data/data_section.py:672
@@ -199,6 +208,10 @@ msgstr "{type} bearbeiten"
 #: addons/user_authentication/_pages.py:90
 msgid "Email"
 msgstr "E-Mail"
+
+#: components/primitives/timeline.py:328
+msgid "End"
+msgstr "Ende"
 
 #: addons/user_authentication/_pages.py:342
 msgid "Enter your email address and we'll send you a login link and a code."
@@ -310,6 +323,10 @@ msgstr "Nein"
 msgid "No available items."
 msgstr "Keine verfügbaren Einträge."
 
+#: components/primitives/timeline.py:251
+msgid "No events of these categories in this period."
+msgstr "Keine Ereignisse dieser Kategorien in diesem Zeitraum."
+
 #: components/primitives/drawer_select.py:71
 msgid "No items selected."
 msgstr "Keine Einträge ausgewählt."
@@ -348,6 +365,10 @@ msgstr "Seiten"
 #: addons/user_authentication/_pages.py:78
 msgid "Password"
 msgstr "Passwort"
+
+#: components/primitives/timeline.py:298
+msgid "Period"
+msgstr "Zeitraum"
 
 #: components/layouts/document_viewer.py:441
 msgid "Previous document"
@@ -487,6 +508,10 @@ msgstr "Sortierung & Filter"
 msgid "Sort by:"
 msgstr "Sortieren nach:"
 
+#: components/primitives/timeline.py:327
+msgid "Start"
+msgstr "Beginn"
+
 #: components/primitives/taglist.py:188
 msgid "Suggested Tags"
 msgstr "Vorgeschlagene Tags"
@@ -506,10 +531,6 @@ msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 #: addons/user_authentication/_pages.py:61
 msgid "This login link is invalid or has expired. Please request a new one."
 msgstr "Dieser Anmeldelink ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an."
-
-#: components/primitives/timeline.py:33
-msgid "Timeline"
-msgstr "Zeitachse"
 
 #: page_templates/app_shell.py:258
 msgid "Toggle compact menu"
@@ -541,6 +562,10 @@ msgstr "Benutzername und Passwort"
 #: components/primitives/drawer_select.py:61
 msgid "Value"
 msgstr "Wert"
+
+#: components/primitives/timeline.py:300
+msgid "Whole period"
+msgstr "Ganzer Zeitraum"
 
 #: components/data/annotations/reader.py:555 components/data/data_form.py:706
 #: components/data/data_form.py:726 components/data/data_form.py:736
@@ -683,12 +708,24 @@ msgctxt "navigation"
 msgid "user"
 msgstr "Benutzermenü"
 
+#. added to the accessible name of a timeline marker with a flagged event.
+#: components/primitives/timeline.py:250
+msgid "with a warning"
+msgstr "mit Warnung"
+
 #: components/data/data_table.py:653
 #, python-brace-format
 msgid "{n} entry"
 msgid_plural "{n} entries"
 msgstr[0] "{n} Eintrag"
 msgstr[1] "{n} Einträge"
+
+#. accessible name of a timeline marker that combines events; {dates} is a date
+#. or a range.
+#: components/primitives/timeline.py:248
+#, python-brace-format
+msgid "{n} events, {dates}"
+msgstr "{n} Ereignisse, {dates}"
 
 #: components/layouts/document_viewer.py:455
 #, python-brace-format
@@ -709,6 +746,12 @@ msgid "{shown} of {total} entry"
 msgid_plural "{shown} of {total} entries"
 msgstr[0] "{shown} von {total} Eintrag"
 msgstr[1] "{shown} von {total} Einträgen"
+
+#. the line above a timeline; all three are numbers.
+#: components/primitives/timeline.py:246
+#, python-brace-format
+msgid "{shown} of {total} events in {markers} markers"
+msgstr "{shown} von {total} Ereignissen in {markers} Markern"
 
 #: components/layouts/document_viewer.py:431
 msgid "↑↓ to move, Enter to open"

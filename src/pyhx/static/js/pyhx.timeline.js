@@ -14,7 +14,7 @@
     const DAY_MS = 86400000;
     // Distance between two tick labels, in px: the first that gives at least
     // three ticks (narrow axes accept closer, shorter labels).
-    const TICK_GAPS = [68, 48];
+    const TICK_GAPS = [68, 48, 40];
     // The icons' places: [side, distance from the axis in px].
     const PLACES = [[-1, 64], [1, 64], [-1, 116], [1, 116]];
     // Two icons in one place need this much room, in px.
@@ -248,14 +248,16 @@
             const inner = width - 2 * PAD;
             const x = (day) => PAD + ((day - from) / Math.max(1, to - from)) * inner;
             const visible = this.events.filter((e) => shown.has(e.category) && e.to >= from && e.from <= to);
-            const markers = place(visible.map((e) => ({ x: x(e.from), event: e })));
+            // A period that began before the span sits at the axis' start.
+            const markers = place(visible.map((e) => ({ x: Math.max(PAD, x(e.from)), event: e })));
 
             const nodes = [];
             const { unit, ticks: list } = ticks(from, to, inner);
-            // The year at each January; at the first tick only if no January shows it.
+            // The year at each January and at the first tick; on a narrow axis
+            // at the first tick only if no January shows it.
             const anyMajor = list.some((t) => t.major);
             list.forEach((t, i) => {
-                const withYear = t.major || (i === 0 && !anyMajor);
+                const withYear = t.major || (i === 0 && (!anyMajor || inner >= 480));
                 nodes.push(this.tick(x(t.day), t.major, this.format(t.day, unit, withYear)));
             });
             nodes.push(Object.assign(document.createElement('span'), { className: 'hx-timeline__line' }));
