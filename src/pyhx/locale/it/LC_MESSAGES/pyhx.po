@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-04 10:00+0100\n"
+"POT-Creation-Date: 2026-11-04 10:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -216,11 +216,11 @@ msgstr "Ignora"
 msgid "Display failed"
 msgstr "Visualizzazione non riuscita"
 
-#: components/layouts/document_viewer.py:180
+#: components/layouts/document_viewer.py:203
 msgid "Document"
 msgstr "Documento"
 
-#: components/layouts/document_viewer.py:423
+#: components/layouts/document_viewer.py:481
 msgid "Documents"
 msgstr "Documenti"
 
@@ -383,7 +383,7 @@ msgstr "Filtra elementi"
 msgid "Fit page"
 msgstr "Pagina intera"
 
-#: components/layouts/document_viewer.py:601
+#: components/layouts/document_viewer.py:681
 msgid "Fit to width"
 msgstr "Adatta alla larghezza"
 
@@ -451,11 +451,15 @@ msgstr "Soddisfa tutti i filtri"
 msgid "Match Any Filter"
 msgstr "Soddisfa almeno un filtro"
 
-#: components/layouts/document_viewer.py:469
+#: components/layouts/document_viewer.py:275
+msgid "Next annotation"
+msgstr "Annotazione successiva"
+
+#: components/layouts/document_viewer.py:527
 msgid "Next document"
 msgstr "Documento successivo"
 
-#: components/layouts/document_viewer.py:223
+#: components/layouts/document_viewer.py:246
 msgid "Next page"
 msgstr "Pagina successiva"
 
@@ -494,7 +498,7 @@ msgstr "Nessun elemento selezionato."
 msgid "Not possible"
 msgstr "Non possibile"
 
-#: components/layouts/document_viewer.py:390
+#: components/layouts/document_viewer.py:446
 #, python-brace-format
 msgid "Note: {label}"
 msgstr "Nota: {label}"
@@ -511,13 +515,13 @@ msgstr "Navigazione della pagina"
 msgid "Page not found"
 msgstr "Pagina non trovata"
 
-#: components/layouts/document_viewer.py:266
-#: components/layouts/document_viewer.py:341
+#: components/layouts/document_viewer.py:318
+#: components/layouts/document_viewer.py:395
 #, python-brace-format
 msgid "Page {page}"
 msgstr "Pagina {page}"
 
-#: components/layouts/document_viewer.py:234
+#: components/layouts/document_viewer.py:286
 msgid "Pages"
 msgstr "Pagine"
 
@@ -529,11 +533,15 @@ msgstr "Password"
 msgid "Period"
 msgstr "Periodo"
 
-#: components/layouts/document_viewer.py:460
+#: components/layouts/document_viewer.py:264
+msgid "Previous annotation"
+msgstr "Annotazione precedente"
+
+#: components/layouts/document_viewer.py:518
 msgid "Previous document"
 msgstr "Documento precedente"
 
-#: components/layouts/document_viewer.py:215
+#: components/layouts/document_viewer.py:238
 msgid "Previous page"
 msgstr "Pagina precedente"
 
@@ -586,7 +594,7 @@ msgid "Save {type}"
 msgstr "Salva {type}"
 
 #: components/data/filter_drawer.py:609 components/data/quick_filter.py:24
-#: components/layouts/document_viewer.py:430
+#: components/layouts/document_viewer.py:488
 msgid "Search"
 msgstr "Cerca"
 
@@ -781,11 +789,11 @@ msgstr "Sì"
 msgid "You don't have permission to see this page."
 msgstr "Non hai l'autorizzazione per vedere questa pagina."
 
-#: components/layouts/document_viewer.py:597
+#: components/layouts/document_viewer.py:677
 msgid "Zoom in"
 msgstr "Ingrandisci"
 
-#: components/layouts/document_viewer.py:591
+#: components/layouts/document_viewer.py:671
 msgid "Zoom out"
 msgstr "Riduci"
 
@@ -948,15 +956,15 @@ msgstr[1] "{n} voci"
 msgid "{n} events, {dates}"
 msgstr "{n} eventi, {dates}"
 
-#: components/layouts/document_viewer.py:474
+#: components/layouts/document_viewer.py:532
 #, python-brace-format
 msgid "{n} of {total} document"
 msgid_plural "{n} of {total} documents"
 msgstr[0] "{n} di {total} documento"
 msgstr[1] "{n} di {total} documenti"
 
-#: components/layouts/document_viewer.py:447
-#: components/layouts/document_viewer.py:448
+#: components/layouts/document_viewer.py:505
+#: components/layouts/document_viewer.py:506
 #, python-brace-format
 msgid "{n} of {total} match"
 msgstr "{n} di {total} corrispondono"
@@ -974,7 +982,7 @@ msgstr[1] "{shown} di {total} voci"
 msgid "{shown} of {total} events in {markers} markers"
 msgstr "{shown} di {total} eventi in {markers} indicatori"
 
-#: components/layouts/document_viewer.py:450
+#: components/layouts/document_viewer.py:508
 msgid "↑↓ to move, Enter to open"
 msgstr "↑↓ per spostarsi, Invio per aprire"
 

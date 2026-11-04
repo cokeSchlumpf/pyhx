@@ -39,6 +39,12 @@ EXAMPLES: list[tuple[str, str, str]] = [
         "Source picker",
         "Choose a page and draw an area on it, in a dialog; the choice is posted.",
     ),
+
+    (
+        "/annotation-list",
+        "Annotation list",
+        "Annotations listed by category, shown and hidden, previous and next.",
+    ),
 ]
 
 

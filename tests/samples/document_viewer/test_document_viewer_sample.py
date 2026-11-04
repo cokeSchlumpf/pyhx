@@ -8,7 +8,15 @@ from samples.document_viewer.main import app
 dv = c.document_viewer
 vm = c.document_viewer.view_model
 
-EXAMPLES = ["/basic", "/documents", "/marks", "/notes", "/toolbar", "/case"]
+EXAMPLES = [
+    "/basic",
+    "/documents",
+    "/marks",
+    "/notes",
+    "/toolbar",
+    "/case",
+    "/annotation-list",
+]
 
 
 def _doc(id_: str, *annotations, badge: vm.PageBadge | None = None) -> vm.Document:
@@ -186,3 +194,24 @@ class TestGeometry:
         point = vm.Point.from_pixels(x=620, y=877, page_width=1240, page_height=1754)
 
         assert point == vm.Point(0.5, 0.5)
+
+
+class TestAnnotationList:
+    def test_lists_annotations_with_toggles_and_the_pager(self):
+        html = TestClient(app).get("/annotation-list").text
+
+        assert 'data-hx-document-category-toggle="list:remark"' in html
+        assert 'data-hx-document-category="list:remark"' in html
+        assert 'data-hx-document-hidden="check"' in html
+        assert "data-hx-document-annotation-position" in html
+        # the remark over two lines and the one over two pages: two marks each, one entry each
+        assert html.count('data-hx-document-annotation-id="r1"') == 2
+        assert html.count('data-hx-document-annotation-id="r2"') == 2
+        assert html.count('data-hx-document-annotation="list:r1"') == 1
+        assert html.count('data-hx-document-annotation="list:r2"') == 1
+
+    def test_reads_the_shown_categories_from_the_url(self):
+        html = TestClient(app).get("/annotation-list?types=person,check").text
+
+        assert 'data-hx-document-category-query="types"' in html
+        assert 'data-hx-document-hidden="address health remark work"' in html

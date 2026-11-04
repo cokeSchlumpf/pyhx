@@ -24,11 +24,19 @@ selection. Anything on the page selects an annotation with
 dispatches ``hx-document:annotation-select`` (``detail.viewer``,
 ``detail.id``, ``detail.kind``) on the viewer; ``pyhx.documentViewer(id)``
 returns ``activate(id)``, ``clear()``, ``goTo("<document id>:<page>")``,
-``setZoom(zoom)`` and ``fit()``.
+``setZoom(zoom)``, ``fit()``, ``next()``, ``previous()`` and
+``showCategory(category, shown)``.
+
+Navigating annotations: marks with the same ``annotation`` are one annotation;
+``annotation_pager()`` steps through the shown annotations in document order;
+``category`` on marks and notes with ``hidden_categories`` on the root and
+``data-hx-document-category-toggle="<viewer>:<category>"`` show and hide them
+in the browser (``hx-document:categories``); a mark selected by a click, the
+pager or on load scrolls its linked elements into view in their container.
 """
 
 import unicodedata
-from collections.abc import AsyncIterator, Iterator, Mapping, Sequence
+from collections.abc import AsyncIterator, Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from itertools import groupby
 from typing import Any
@@ -60,6 +68,7 @@ class _Viewer:
     selected: str | None = None
     # one page at a time, annotations read-only (the source picker); internal
     paged: bool = False
+    hidden_categories: frozenset[str] = frozenset()
 
     def start_page(self) -> tuple[Document, int]:
         """The document and page (1-based) the viewer opens at: ``start``, else the first page."""
@@ -86,6 +95,21 @@ class _Viewer:
 
     def page_count(self) -> int:
         return sum(len(d.pages) for d in self.documents)
+
+    def shown(self, annotation: Mark | Note) -> bool:
+        return annotation.category not in self.hidden_categories
+
+    def annotation_count(self) -> int:
+        """The number of shown annotations (marks of one annotation count once)."""
+        return len(
+            {
+                a.annotation_id
+                for d in self.documents
+                for page in d.pages
+                for a in page.annotations
+                if self.shown(a)
+            }
+        )
 
 
 _viewer: y.Context[_Viewer | None] = y.Context("hx-document-viewer", default=None)
@@ -126,16 +150,23 @@ class _Root(_HxElement):
         start: str | None = None,
         selected: str | None = None,
         paged: bool = False,
+        hidden_categories: Iterable[str] = (),
+        category_query: str | None = None,
     ) -> None:
         if not documents:
             raise ValueError("a document viewer needs at least one document")
+        hidden = frozenset(hidden_categories)
+        for category in hidden:
+            view_model._category(category)
         self._state = _Viewer(
             id=id,
             documents=tuple(documents),
             start=start,
             selected=selected,
             paged=paged,
+            hidden_categories=hidden,
         )
+        self._category_query = category_query
         self._kwargs = kwargs
 
     def _render(self) -> y.Node:
@@ -145,6 +176,9 @@ class _Root(_HxElement):
             data_hx_document_start=self._state.start or None,
             data_hx_document_selected=self._state.selected or None,
             data_hx_document_paged=self._state.paged or None,
+            data_hx_document_hidden=" ".join(sorted(self._state.hidden_categories))
+            or None,
+            data_hx_document_category_query=self._category_query,
             **classnames("hx-document-viewer", **self._kwargs),
         )[_viewer.provider(self._state, self._children)]
 
@@ -223,6 +257,35 @@ def _pager(viewer: _Viewer | None) -> y.Node:
             _("Next page"),
             "next",
             disabled=index >= state.page_count() - 1,
+        ),
+    ]
+
+
+@_viewer.consumer
+def _annotation_pager(
+    viewer: _Viewer | None, previous_label: str | None, next_label: str | None
+) -> y.Node:
+    state = _require(viewer, "annotation_pager()")
+    total = state.annotation_count()
+    return y.div(
+        class_="hx-document-viewer__group hx-document-viewer__annotation-pager"
+    )[
+        _tool(
+            "chevron-up",
+            previous_label or _("Previous annotation"),
+            "annotation-prev",
+            disabled=total == 0,
+        ),
+        y.span(
+            class_="hx-document-viewer__counter",
+            aria_live="polite",
+            data_hx_document_annotation_position=True,
+        )[f"– / {total}"],
+        _tool(
+            "chevron-down",
+            next_label or _("Next annotation"),
+            "annotation-next",
+            disabled=total == 0,
         ),
     ]
 
@@ -321,6 +384,7 @@ def _document(state: _Viewer, document: Document, heading: bool) -> y.Node:
                 eager=document is start and start_number <= n <= start_number + 1,
                 paged=state.paged,
                 shown=document is start and n == start_number,
+                hidden=state.hidden_categories,
             )
             for n, page in enumerate(document.pages, start=1)
         ),
@@ -335,6 +399,7 @@ def _page(
     eager: bool,
     paged: bool = False,
     shown: bool = True,
+    hidden: frozenset[str] = frozenset(),
 ) -> y.Node:
     return y.section(
         class_="hx-document-viewer__page",
@@ -356,13 +421,13 @@ def _page(
         # paged (source picker): annotations are shown, not selectable
         y.div(class_="hx-document-viewer__annotations", inert=paged)[
             # notes after marks, so a pin stays on top of a mark
-            (_mark(a) for a in page.annotations if isinstance(a, Mark)),
-            (_note(a) for a in page.annotations if isinstance(a, Note)),
+            (_mark(a, hidden) for a in page.annotations if isinstance(a, Mark)),
+            (_note(a, hidden) for a in page.annotations if isinstance(a, Note)),
         ],
     ]
 
 
-def _mark(mark: Mark) -> y.Node:
+def _mark(mark: Mark, hidden: frozenset[str] = frozenset()) -> y.Node:
     box = mark.box
     return y.button(
         dict(mark.attrs or {}),
@@ -371,7 +436,9 @@ def _mark(mark: Mark) -> y.Node:
         aria_label=mark.label,
         aria_pressed="false",
         title=mark.label,
-        data_hx_document_annotation_id=mark.id,
+        data_hx_document_annotation_id=mark.annotation_id,
+        data_hx_document_category=mark.category,
+        hidden=mark.category in hidden,
         data_kind="mark",
         data_look=mark.style.look,
         style=(
@@ -382,7 +449,7 @@ def _mark(mark: Mark) -> y.Node:
     )
 
 
-def _note(note: Note) -> y.Node:
+def _note(note: Note, hidden: frozenset[str] = frozenset()) -> y.Node:
     return y.button(
         dict(note.attrs or {}),
         type="button",
@@ -391,6 +458,8 @@ def _note(note: Note) -> y.Node:
         aria_pressed="false",
         title=note.label,
         data_hx_document_annotation_id=note.id,
+        data_hx_document_category=note.category,
+        hidden=note.category in hidden,
         data_kind="note",
         style=(
             f"left: {_pct(note.at.x)}; top: {_pct(note.at.y)}; "
@@ -544,6 +613,8 @@ class _DocumentViewer:
     - the controls ``back(href, label)``, ``title(title=None, subtitle=None)``
       (without a title it follows the document in view), ``pager()``,
       ``zoom()``, ``fit()`` and ``spacer()`` (pushes what follows to the end);
+    - ``annotation_pager(previous_label=None, next_label=None)`` – previous and
+      next annotation with the position, in the toolbar or the sidebar;
     - ``thumbnails(grouped=None)`` – one group per document, headings by
       default only with more than one document;
     - ``files(entries)`` – a toolbar control to switch between documents shown
@@ -567,6 +638,8 @@ class _DocumentViewer:
         documents: Sequence[Document],
         start: str | None = None,
         selected: str | None = None,
+        hidden_categories: Iterable[str] = (),
+        category_query: str | None = None,
         **kwargs: y.Attribute,
     ) -> _Root:
         """The viewer's root.
@@ -574,8 +647,21 @@ class _DocumentViewer:
         ``start`` (``"<document id>:<page>"``) opens it at that page instead of
         the first one; ``selected`` (an annotation id) selects that annotation
         and scrolls it into view when the page loads, and wins over ``start``.
+        ``hidden_categories`` hides the marks and notes of those categories
+        until the user shows them (``data-hx-document-category-toggle``);
+        ``category_query`` names a URL parameter in which the browser keeps
+        the shown categories (comma separated) after the user changed them,
+        for the app to read them as ``hidden_categories`` when the page loads.
         """
-        return _Root(id, documents, kwargs, start=start, selected=selected)
+        return _Root(
+            id,
+            documents,
+            kwargs,
+            start=start,
+            selected=selected,
+            hidden_categories=hidden_categories,
+            category_query=category_query,
+        )
 
     def back(self, href: str, label: str) -> y.Node:
         return button(label, icon="chevron-left", href=href, variant="ghost", size="sm")
@@ -585,6 +671,16 @@ class _DocumentViewer:
 
     def pager(self) -> y.Node:
         return _pager()
+
+    def annotation_pager(
+        self, *, previous_label: str | None = None, next_label: str | None = None
+    ) -> y.Node:
+        """Previous and next annotation with the position ("3 / 12").
+
+        In document order, skipping hidden categories; marks of one annotation
+        count once. The labels name the app's annotations, e.g. "Next finding".
+        """
+        return _annotation_pager(previous_label, next_label)
 
     def zoom(self) -> y.Node:
         return y.div(class_="hx-document-viewer__group")[
