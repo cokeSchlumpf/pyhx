@@ -183,7 +183,18 @@ async def annotation_list(types: str | None = None) -> y.Node:
         dv.pages(),
         dv.sidebar(class_="sample-sidebar")[
             y.div(class_="sample-toggles")[
-                (toggle(key, counts[key]) for key in CATEGORIES)
+                (toggle(key, counts[key]) for key in CATEGORIES),
+                # all categories at once; disabled while that changes nothing
+                y.button(
+                    type="button",
+                    class_="sample-all",
+                    data_hx_document_categories_show=VIEWER,
+                )["All"],
+                y.button(
+                    type="button",
+                    class_="sample-all",
+                    data_hx_document_categories_hide=VIEWER,
+                )["None"],
             ],
             y.div(class_="sample-pager")[dv.annotation_pager()],
             (group(key, items) for key, items in entries.items() if items),

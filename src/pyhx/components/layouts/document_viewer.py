@@ -271,7 +271,7 @@ def _annotation_pager(
         class_="hx-document-viewer__group hx-document-viewer__annotation-pager"
     )[
         _tool(
-            "chevron-up",
+            "chevron-left",
             previous_label or _("Previous annotation"),
             "annotation-prev",
             disabled=total == 0,
@@ -282,7 +282,7 @@ def _annotation_pager(
             data_hx_document_annotation_position=True,
         )[f"– / {total}"],
         _tool(
-            "chevron-down",
+            "chevron-right",
             next_label or _("Next annotation"),
             "annotation-next",
             disabled=total == 0,

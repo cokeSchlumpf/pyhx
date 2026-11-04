@@ -209,6 +209,8 @@ class TestAnnotationList:
         assert html.count('data-hx-document-annotation-id="r2"') == 2
         assert html.count('data-hx-document-annotation="list:r1"') == 1
         assert html.count('data-hx-document-annotation="list:r2"') == 1
+        assert 'data-hx-document-categories-show="list"' in html
+        assert 'data-hx-document-categories-hide="list"' in html
 
     def test_reads_the_shown_categories_from_the_url(self):
         html = TestClient(app).get("/annotation-list?types=person,check").text

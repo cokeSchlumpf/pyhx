@@ -23,7 +23,8 @@
 //   data-hx-document-category-toggle="<viewer>:<category>" shows and hides it
 //   (aria-pressed while shown), anything with data-hx-document-category=
 //   "<viewer>:<category>" is hidden with it; every change dispatches
-//   "hx-document:categories" ({viewer, hidden}); with data-hx-document-category-query
+//   "hx-document:categories" ({viewer, hidden}); data-hx-document-categories-show="<viewer>" and
+//   -hide="<viewer>" show and hide all of them (disabled while that changes nothing); with data-hx-document-category-query
 //   the shown categories are kept in that URL parameter (history.replaceState)
 // - selected by a mark, the pager or on load, the linked elements are scrolled into
 //   view within their own scrolling container (never the page, nor the pages)
@@ -247,11 +248,34 @@
             document.querySelectorAll(`[data-hx-document-category-toggle^="${CSS.escape(prefix)}"]`).forEach((toggle) => {
                 toggle.setAttribute("aria-pressed", String(!hidden.has(categoryOf(toggle, "data-hx-document-category-toggle"))));
             });
+            // "show all" and "hide all": disabled while they would change nothing
+            const all = categories();
+            document.querySelectorAll(`[data-hx-document-categories-show="${CSS.escape(root.id)}"]`).forEach((button) => {
+                button.disabled = hidden.size === 0;
+            });
+            document.querySelectorAll(`[data-hx-document-categories-hide="${CSS.escape(root.id)}"]`).forEach((button) => {
+                button.disabled = all.every((c) => hidden.has(c));
+            });
+        }
+
+        // every category of the viewer: of its marks and notes, and of its toggles
+        function categories() {
+            const all = new Set();
+            root.querySelectorAll("[data-hx-document-annotation-id][data-hx-document-category]").forEach((mark) => all.add(mark.dataset.hxDocumentCategory));
+            document.querySelectorAll(`[data-hx-document-category-toggle^="${CSS.escape(prefix)}"]`).forEach((toggle) => all.add(categoryOf(toggle, "data-hx-document-category-toggle")));
+            return [...all];
         }
 
         function showCategory(category, shown) {
-            if (shown) hidden.delete(category);
-            else hidden.add(category);
+            showCategories([category], shown);
+        }
+
+        function showAll(shown) {
+            showCategories(categories(), shown);
+        }
+
+        function showCategories(list, shown) {
+            list.forEach((category) => (shown ? hidden.delete(category) : hidden.add(category)));
             if (hidden.size) root.dataset.hxDocumentHidden = [...hidden].sort().join(" ");
             else delete root.dataset.hxDocumentHidden;
             applyCategories();
@@ -266,11 +290,8 @@
         function writeQuery() {
             const name = root.dataset.hxDocumentCategoryQuery;
             if (!name) return;
-            const all = new Set();
-            root.querySelectorAll("[data-hx-document-annotation-id][data-hx-document-category]").forEach((mark) => all.add(mark.dataset.hxDocumentCategory));
-            document.querySelectorAll(`[data-hx-document-category-toggle^="${CSS.escape(prefix)}"]`).forEach((toggle) => all.add(categoryOf(toggle, "data-hx-document-category-toggle")));
             const url = new URL(window.location.href);
-            url.searchParams.set(name, [...all].filter((c) => !hidden.has(c)).sort().join(","));
+            url.searchParams.set(name, categories().filter((c) => !hidden.has(c)).sort().join(","));
             history.replaceState(history.state, "", url);
         }
 
@@ -413,7 +434,8 @@
 
         root.hxDocumentViewer = {
             activate, clear, hover, goTo: (key) => goTo(indexOf(key)), setZoom, fit,
-            showCategory, next: () => stepAnnotation(1), previous: () => stepAnnotation(-1), sync,
+            showCategory, showAll: () => showAll(true), hideAll: () => showAll(false),
+            next: () => stepAnnotation(1), previous: () => stepAnnotation(-1), sync,
         };
         return root.hxDocumentViewer;
     }
@@ -430,6 +452,15 @@
         if (!link) return;
         const [v, id] = resolve(link);
         if (v) v.activate(id, { toggle: true });
+    });
+
+    // "show all" / "hide all" categories: data-hx-document-categories-show="<viewer>" / -hide="<viewer>"
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest && event.target.closest("[data-hx-document-categories-show], [data-hx-document-categories-hide]");
+        if (!button) return;
+        const show = button.hasAttribute("data-hx-document-categories-show");
+        const root = document.getElementById(show ? button.dataset.hxDocumentCategoriesShow : button.dataset.hxDocumentCategoriesHide);
+        if (root && root.matches("[data-hx-document-viewer]")) (show ? viewer(root).showAll : viewer(root).hideAll)();
     });
 
     document.addEventListener("click", (event) => {
