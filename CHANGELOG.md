@@ -2,6 +2,13 @@
 
 All notable changes to PyHX are documented here. The newest release is at the top.
 
+## [1.14.0](https://github.com/cokeSchlumpf/pyhx/compare/v1.13.1...v1.14.0) (2026-11-04)
+
+
+### Features
+
+* **timeline:** timeline with adaptive axis, combined markers and range slider ([#65](https://github.com/cokeSchlumpf/pyhx/issues/65)) ([8d86dad](https://github.com/cokeSchlumpf/pyhx/commit/8d86dada41b6a907bbbcff8bfd9c1ebd48a52755))
+
 ## [1.13.1](https://github.com/cokeSchlumpf/pyhx/compare/v1.13.0...v1.13.1) (2026-11-04)
 
 
