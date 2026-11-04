@@ -146,9 +146,7 @@ class TestStyles:
             ),
         ],
     )
-    def test_reduced_motion_keeps_the_mark_visible(
-        self, selector, declaration
-    ) -> None:
+    def test_reduced_motion_keeps_the_mark_visible(self, selector, declaration) -> None:
         assert declaration in _rule(selector, _reduced_motion())
 
     def test_spinner_ring_follows_the_mark_colour(self) -> None:

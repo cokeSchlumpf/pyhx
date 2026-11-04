@@ -109,7 +109,9 @@ def test_flat_query_mapping_translates_filter_key() -> None:
     page = asyncio.run(
         adapter.fetch(
             Query(
-                filter=[Condition(key="display_name", values=[StringContains(value="a")])]
+                filter=[
+                    Condition(key="display_name", values=[StringContains(value="a")])
+                ]
             )
         )
     )
@@ -255,9 +257,7 @@ def test_hierarchical_create_writes_through_reverse() -> None:
     inner = SimpleHierarchicalDataSource(list(HIERARCHICAL_DATA))
     adapter = MappedHierarchicalDataSource(inner, inner_to_outer, outer_to_inner)
 
-    asyncio.run(
-        adapter.create(Outer(id="c", display_name="Charlie", parent_id="root"))
-    )
+    asyncio.run(adapter.create(Outer(id="c", display_name="Charlie", parent_id="root")))
 
     page = asyncio.run(inner.fetch(Query(), parent="root"))
     assert {n.item.id for n in page.items} == {"a", "b", "c"}

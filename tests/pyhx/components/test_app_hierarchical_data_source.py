@@ -32,7 +32,9 @@ class Registry:
     calls: list[tuple[str, tuple]] = field(default_factory=list)
 
 
-def _install_context(registry: Registry | None = None, user: User | None = None) -> None:
+def _install_context(
+    registry: Registry | None = None, user: User | None = None
+) -> None:
     source: dict = {}
     if registry is not None:
         source[Registry.__name__] = registry

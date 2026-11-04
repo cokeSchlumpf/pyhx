@@ -22,7 +22,9 @@ def fresh_streams(monkeypatch):
         signal.signal(sig, handler)
 
 
-async def _get(app: FastAPI, path: str, *, after_first_chunk: Callable[[], None] = lambda: None) -> str:
+async def _get(
+    app: FastAPI, path: str, *, after_first_chunk: Callable[[], None] = lambda: None
+) -> str:
     """Drive ``app`` at the ASGI level until the response is complete; call ``after_first_chunk`` once."""
     body: list[str] = []
     never = asyncio.Event()
@@ -110,7 +112,11 @@ def test_sigterm_ends_open_streams_and_runs_the_previous_handler():
     signal.signal(signal.SIGTERM, lambda sig, frame: received.append(sig))
 
     async def run() -> str:
-        return await _get(_endless_app(), "/s", after_first_chunk=lambda: signal.raise_signal(signal.SIGTERM))
+        return await _get(
+            _endless_app(),
+            "/s",
+            after_first_chunk=lambda: signal.raise_signal(signal.SIGTERM),
+        )
 
     body = asyncio.run(run())
 

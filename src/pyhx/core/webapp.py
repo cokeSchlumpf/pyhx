@@ -1,15 +1,24 @@
-import traceback
-from collections.abc import Awaitable, Callable, Coroutine, Sequence
+from collections.abc import Awaitable, Callable, Coroutine, Mapping, Sequence
 from contextvars import ContextVar
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Self
 
-import htpy as y
 from commons.path_operators import get_project_root_dir
 from fastapi import FastAPI, Request, Response
+from fastapi.exception_handlers import http_exception_handler
 from htpy.starlette import HtpyResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from ._dev_mode import is_dev_mode
+from ._errors import (
+    error_page,
+    error_text_response,
+    error_texts,
+    is_htmx,
+    own_detail,
+    wants_html,
+)
 from .api_endpoint import ApiEndpoint, ApiFactory
 from .app_context import AppContext
 from .fragment import Fragment, FragmentFactory
@@ -154,6 +163,16 @@ class WebApp:
         app = app or FastAPI(title="PyHX App")
 
         app.mount("/static", MultiStaticFiles(list(self._static_dirs)))
+        # Before the app's configure functions, so an app's own handler wins;
+        # a handler passed to the app's constructor is kept as well.
+        if app.exception_handlers.get(StarletteHTTPException) in (
+            None,
+            http_exception_handler,
+        ):
+            app.add_exception_handler(
+                StarletteHTTPException,
+                self._handle_http_exception,  # type: ignore[arg-type]
+            )
         self._register_pages(app)
         self._register_fragments(app)
         self._register_api_endpoints(app)
@@ -238,14 +257,9 @@ class WebApp:
                 # had the request param deleted before page.render ran.
                 if _has_app_exception_handler(RequestContext.get().request, exc):
                     raise
-                # TODO mw: Default error page.
-                # Log Error
-                # TODO: Error handler must be different / configurable
                 LOG.exception("Error handling request")
-                stacktrace_str = traceback.format_exc()
-                return HtpyResponse(
-                    y.div[y.h1["Internal Server Error"], y.pre[stacktrace_str]],
-                    status_code=500,
+                return await self._error_page_response(
+                    HTTPStatus.INTERNAL_SERVER_ERROR, exc=exc
                 )
 
         signature, request_param_name, request_param_added = (
@@ -290,14 +304,9 @@ class WebApp:
                 # had the request param deleted before page.render ran.
                 if _has_app_exception_handler(RequestContext.get().request, exc):
                     raise
-                # TODO mw: Default error page.
-                # Log Error
-                # TODO: Error handler must be different / configurable
                 LOG.exception("Error handling request")
-                stacktrace_str = traceback.format_exc()
-                return HtpyResponse(
-                    y.div[y.h1["Internal Server Error"], y.pre[stacktrace_str]],
-                    status_code=500,
+                return error_text_response(
+                    HTTPStatus.INTERNAL_SERVER_ERROR, exc=exc, is_dev=self.is_dev
                 )
 
         signature, request_param_name, request_param_added = (
@@ -341,10 +350,8 @@ class WebApp:
                 if _has_app_exception_handler(RequestContext.get().request, exc):
                     raise
                 LOG.exception("Error handling request")
-                stacktrace_str = traceback.format_exc()
-                return HtpyResponse(
-                    y.div[y.h1["Internal Server Error"], y.pre[stacktrace_str]],
-                    status_code=500,
+                return error_text_response(
+                    HTTPStatus.INTERNAL_SERVER_ERROR, exc=exc, is_dev=self.is_dev
                 )
 
         signature, request_param_name, request_param_added = (
@@ -420,6 +427,51 @@ class WebApp:
                 include_in_schema=False,
                 response_model=None,
             )
+
+    async def _error_page_response(
+        self,
+        status: int,
+        *,
+        text: str | None = None,
+        exc: BaseException | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> Response:
+        """An error page in the page template; the bare message if the template fails too."""
+        node = error_page(status, text=text, exc=exc, is_dev=self.is_dev)
+        try:
+            page_response = await self._render_page_template(
+                error_texts(status)[0],
+                PageResponse(node=node, status_code=HTTPStatus(status)),
+            )
+            response: Response = page_response.to_response()
+        except Exception:  # noqa: BLE001 - the template may fail like the page did
+            LOG.exception("Error rendering the error page in the page template")
+            response = HtpyResponse(node, status_code=status)
+        if headers:
+            response.headers.update(headers)
+        return response
+
+    async def _handle_http_exception(
+        self, request: Request, exc: StarletteHTTPException
+    ) -> Response:
+        """An ``HTTPException`` (unknown URL, 404 of a page, …) in the language of the request.
+
+        A browser page gets an error page in the page template, an htmx
+        request a plain text for its error toast; any other request (API
+        clients) FastAPI's JSON answer.
+        """
+        if exc.status_code < 400 or not (is_htmx(request) or wants_html(request)):
+            return await http_exception_handler(request, exc)
+        set_webapp(self)
+        set_request_context(
+            build_from_request(request, self.context, self.default_page_template)
+        )
+        text = own_detail(exc.status_code, exc.detail)
+        if is_htmx(request):
+            return error_text_response(exc.status_code, text=text, headers=exc.headers)
+        return await self._error_page_response(
+            exc.status_code, text=text, headers=exc.headers
+        )
 
     async def _render_page_template(
         self, page_title: Text | None, page_response: PageResponse

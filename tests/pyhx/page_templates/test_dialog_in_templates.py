@@ -22,7 +22,9 @@ def _get(page_template) -> str:
 
 
 def _notice() -> y.Node:
-    return c.dialog_content(y.p["Use only test data."], title="Demo instance", closable=False)
+    return c.dialog_content(
+        y.p["Use only test data."], title="Demo instance", closable=False
+    )
 
 
 @pytest.mark.parametrize("template", TEMPLATES)
@@ -31,13 +33,19 @@ class TestDialogInTemplates:
         html = _get(template())
 
         assert '<div class="hx-dialog">' in html
-        assert re.search(r'<dialog id="dialog-content" tabindex="-1"[^>]*></dialog>', html)
+        assert re.search(
+            r'<dialog id="dialog-content" tabindex="-1"[^>]*></dialog>', html
+        )
 
     def test_mount_comes_after_the_drawers(self, template):
         html = _get(template())
 
-        assert html.index('id="drawer-content-popup"') < html.index('<div class="hx-dialog">')
-        assert html.index('<div class="hx-dialog">') < html.index('id="hx-notifications"')
+        assert html.index('id="drawer-content-popup"') < html.index(
+            '<div class="hx-dialog">'
+        )
+        assert html.index('<div class="hx-dialog">') < html.index(
+            'id="hx-notifications"'
+        )
 
     def test_page_is_delivered_with_the_dialog_open(self, template):
         html = _get(template(dialog_content=_notice))

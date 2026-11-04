@@ -39,13 +39,21 @@ class Period(BaseModel):
 def _names_with_date_input(value: object = None) -> list[str]:
     form = DataForm(routes=_Routes(), name="t", type=Period, handle_submit=_noop)  # type: ignore[arg-type]
     html = str(asyncio.run(form.render(value)))  # type: ignore[arg-type]
-    return sorted(m for tag in re.findall(r'<input[^>]*type="date"[^>]*>', html) for m in re.findall(r'name="(\w+)"', tag))
+    return sorted(
+        m
+        for tag in re.findall(r'<input[^>]*type="date"[^>]*>', html)
+        for m in re.findall(r'name="(\w+)"', tag)
+    )
 
 
 def _value_of(name: str, value: object) -> str:
     form = DataForm(routes=_Routes(), name="t", type=Period, handle_submit=_noop)  # type: ignore[arg-type]
     html = str(asyncio.run(form.render(value)))  # type: ignore[arg-type]
-    tag = next(t for t in re.findall(r'<input[^>]*type="date"[^>]*>', html) if f'name="{name}"' in t)
+    tag = next(
+        t
+        for t in re.findall(r'<input[^>]*type="date"[^>]*>', html)
+        if f'name="{name}"' in t
+    )
     match = re.search(r'value="([^"]*)"', tag)
     return match.group(1) if match else ""
 
@@ -64,4 +72,6 @@ def test_a_datetime_shows_its_day():
 
 
 def test_raw_text_of_a_rerendered_form_is_kept():
-    assert _value_of("starts", Period.model_construct(starts="2026-12-24")) == "2026-12-24"
+    assert (
+        _value_of("starts", Period.model_construct(starts="2026-12-24")) == "2026-12-24"
+    )

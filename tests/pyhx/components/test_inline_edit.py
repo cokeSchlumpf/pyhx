@@ -245,7 +245,7 @@ class TestSubmit:
         assert 'id="hx-inline-edit--pensum--case-1__form"' in html
         assert 'hx-swap-oob="morph"' in html
         assert 'aria-invalid="true"' in html
-        assert "less than or equal to 100" in html
+        assert "Enter a value of at most 100." in html
         assert 'value="120"' in html
 
     def test_error_raised_by_save_is_shown_at_the_field(self, app):
