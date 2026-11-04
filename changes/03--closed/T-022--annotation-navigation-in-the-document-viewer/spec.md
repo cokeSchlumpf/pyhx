@@ -73,3 +73,19 @@ None.
 - The list of annotations itself (the app builds it, as in the sample).
 - Annotations without a mark (no position): the pager doesn't know them; the app lists them.
 - Keyboard shortcuts for previous/next beyond the buttons.
+
+## Outcome
+
+Implemented as specified, with these deviations and findings (from the plan, removed at close-out):
+
+- **D1** Linked elements swapped in later get the hidden state on `htmx:load` (where the script already initialises viewers), not on `htmx:afterSwap`.
+- **D2** `document_viewer(..., category_query=None)`, added for the first user (CaseSight T-022, types in the URL as on its timeline): with a parameter name the browser writes the shown categories there (comma separated) after every change; the app reads them as `hidden_categories`. Written also when all are shown, so a reload doesn't fall back to the app's default.
+- **D3** Selecting an annotation by the pager scrolls the pages with `scrollIntoView` as before (T-018); in a viewer embedded in a longer page this also moves the page around it. In a viewer that fills the window (`CanvasShell(mode="full")`) nothing else moves. Unchanged here.
+- **D4** Found with CaseSight's reader, whose list has a sticky head: revealing an entry above the visible part scrolled it under the head. `reveal` treats the bottom of a sticky child of the scrolling container as its top.
+- **F1** Marks and notes are buttons with author CSS; `[hidden]` needed `display: none` in `document-viewer.css`.
+
+Proof: `tests/pyhx/components/test_document_viewer_navigation.py` (shared annotation ids, unchanged markup without the new parameters, categories, hidden marks, pager markup and labels, `category_query`), the sample tests of the page "Annotation list", and in a browser (Playwright) at 1280 px and 390 px: a two-line annotation pressed and hovered as one; previous/next in document order with wrap and "n / total"; a two-page annotation opens at its first mark; hiding a category hides marks and entries, skips them and clears a hidden selection, fires `hx-document:categories` and writes `?types=`, restored on reload; a click on a mark scrolls its entry into view in the sidebar without moving the page; the pages "Marks" and "Source picker" unchanged, no console errors. In CaseSight (T-022): 185 marks and 113 findings in one file, under 5 ms per step.
+
+Rolled out with the pyhx release after PR #73.
+
+Open after this change: Nothing.
