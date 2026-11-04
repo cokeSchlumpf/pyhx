@@ -51,6 +51,13 @@ MarkLook = Literal["fill", "outline", "fill-outline"]
 ``outline`` a border without tint, ``fill-outline`` both."""
 
 
+def _category(value: str | None) -> None:
+    if value is not None and (not value or any(ch.isspace() for ch in value)):
+        raise ValueError(
+            f"a category must be non-empty without whitespace, got {value!r}"
+        )
+
+
 def _fraction(name: str, value: float) -> None:
     if not 0 <= value <= 1:
         raise ValueError(f"{name} must be between 0 and 1, got {value}")
@@ -203,6 +210,20 @@ class Mark:
     attrs : Mapping, optional
         Further attributes of the mark's button, e.g. ``hx-get`` and
         ``hx-target``.
+    annotation : str, optional
+        The annotation the mark belongs to: marks with the same
+        ``annotation`` are one annotation (a quote over two lines or two
+        pages), selected, highlighted and stepped through together, and
+        linked by this id instead of their own. Without it the mark is an
+        annotation of its own.
+    category : str, optional
+        A category the app shows and hides, e.g. the type of a finding
+        (``data-hx-document-category-toggle``); no whitespace.
+
+    Raises
+    ------
+    ValueError
+        If ``category`` contains whitespace.
     """
 
     id: str
@@ -210,6 +231,16 @@ class Mark:
     label: str
     style: MarkStyle = MarkStyle()
     attrs: Mapping[str, y.Attribute] | None = None
+    annotation: str | None = None
+    category: str | None = None
+
+    def __post_init__(self) -> None:
+        _category(self.category)
+
+    @property
+    def annotation_id(self) -> str:
+        """The id the mark is selected and linked by: ``annotation``, else ``id``."""
+        return self.annotation or self.id
 
 
 @dataclass(frozen=True)
@@ -232,6 +263,13 @@ class Note:
     attrs : Mapping, optional
         Further attributes of the pin's button, e.g. ``hx-get`` and
         ``hx-target``.
+    category : str, optional
+        A category the app shows and hides, as for :class:`Mark`.
+
+    Raises
+    ------
+    ValueError
+        If ``category`` contains whitespace.
     """
 
     id: str
@@ -239,6 +277,15 @@ class Note:
     label: str
     color: Appearance | Color = "warning"
     attrs: Mapping[str, y.Attribute] | None = None
+    category: str | None = None
+
+    def __post_init__(self) -> None:
+        _category(self.category)
+
+    @property
+    def annotation_id(self) -> str:
+        """The id the pin is selected and linked by."""
+        return self.id
 
 
 type Annotation = Mark | Note
